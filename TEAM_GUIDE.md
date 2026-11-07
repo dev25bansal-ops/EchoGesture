@@ -6,6 +6,19 @@
 
 ---
 
+## 0. Current Status (read this first)
+
+**The submission is not ready.** Three of the six scored metrics are unmeasured or failing:
+
+- Accuracy on unseen signers: **1.47%** (fail, target 70%)
+- End-to-end latency: **117.8 ms p95** (fail, target 50 ms)
+- Robustness / power / thermal: **not measured**
+
+What does pass: model size (0.88 MB) and model inference (3.2 ms p95).
+See [RESULTS.md](RESULTS.md) for every measured number and how it was produced.
+
+---
+
 ## 1. Challenge Overview & Ground Rules
 
 - **Hackathon:** Samsung XR Hackathon 2026 (Samsung R&D Institute India, Bangalore — XR Perception Group & PRISM)
@@ -30,10 +43,10 @@
 
 | Category | Criterion | Target | Weight | EchoGesture Current Status |
 |---|---|---|---|---|
-| **Execution & Efficiency (40%)** | Model Quantization | $\le 20\text{ MB}$ INT8 (TFLite/ONNX) | 20% | **0.88 MB (880.1 KB)** — 22× under budget! |
-| | Edge Latency | $\le 50\text{ ms}$ p95 | 20% | **26.0 ms** on CPU proxy / **1.03 ms** on Snapdragon NPU |
-| **Quality & Accuracy (60%)** | Top-1 Accuracy | $\ge 70\%$ on held-out test videos | 35% | **98.60%** (In-distribution WLASL100) / **79.92%** (Cross-signer SemLex) |
-| | Robustness & HUD | Occlusion resistance ($\le 5\text{ pt}$ drop) & HUD clarity | 25% | **2.56 pt** drop under paired transforms; HUD state machine |
+| **Execution & Efficiency (40%)** | Model Quantization | 20 MB INT8 | 20% | **PASS** - 0.88 MB measured |
+| | Edge Latency | 50 ms p95 | 20% | **FAIL** - 117.8 ms p95 end-to-end measured (model alone is 3.2 ms; video decode dominates) |
+| **Quality & Accuracy (60%)** | Top-1 Accuracy | 70% on held-out | 35% | **FAIL** - 1.47% signer-disjoint measured vs 1.02% chance. 100% in-distribution control confirms the harness is correct |
+| | Robustness & HUD | 5 pt drop | 25% | **NOT MEASURED** - harness not written yet |
 
 ---
 
@@ -65,7 +78,7 @@ We did not take the 98.60% number on faith. We downloaded their shipped INT8 mod
 2. **Cross-Signer Stress Test (ASL Citizen, 1,705 videos across 11 unseen signers):**
    - **Result: 1.47% Top-1 (PTQ) / 1.00% Top-1 (QAT)** vs 1.02% random chance!
    - *The Root Cause:* S3D-Conv1D processes raw 64×64 pixel frames. Because the authors used a random 70/20/10 split rather than a participant-disjoint split, the 2D convolutions partially memorized signer clothing, background, and skin tone. When tested on completely unseen signers in different rooms, accuracy collapsed.
-   - *Why this is our superpower for the jury:* Most competing hackathon teams will either overclaim 98% and fail on the jury's held-out test videos, or not know why their model breaks. We have empirically proven the domain collapse, diagnosed the root cause, and have the solution.
+   - *Why this matters:* Most competing teams will either overclaim 98% and fail on the jury's held-out test videos, or not know why their model breaks. We have empirically proven the domain collapse and diagnosed the root cause. **We have not yet fixed it** - that is the main open work item.
 
 ### Round 7: The Solution from Kaggle GISLR Champions
 - We analyzed Google’s *Isolated Sign Language Recognition (GISLR)* competition (evaluated on unseen signers with TFLite $\le 40\text{ MB}$):
@@ -161,7 +174,7 @@ Expected JSON Output:
 
 | Work Stream | Owner / Focus | Key Deliverable |
 |---|---|---|
-| **Stream 1: Cross-Signer Retraining** | Dev / ML Lead | Train S3D-Conv1D with signer-disjoint splits and heavy spatial/occlusion augmentation (or hybrid landmark feature head) to push cross-signer accuracy above 75%. |
+| **Stream 1: Landmark Pipeline (HIGHEST PRIORITY)** | Dev / ML Lead | Replace the pixel front-end with MediaPipe landmarks using the Kaggle GISLR winning representation (118 landmarks, XY + velocity + acceleration, root-centred, scale-normalised). Train on participant-disjoint splits. This is the only approach with published evidence of clearing 70% on unseen signers. |
 | **Stream 2: HUD & Demo Application** | Teammate / Frontend | Build an interactive visual HUD (OpenCV/Streamlit/Webcam demo) showing live webcam video, cyan skeleton overlay toggle, Top-5 probabilities, real-time latency counter, and `SIGNING` / `IDLE` / `DEGRADED` state indicators. |
 | **Stream 3: Robustness Benchmarking** | Shared | Run the 5 paired corruption transforms (occlusion, low light, motion blur, crop, frame drop) to prove $\le 5\text{ pt}$ accuracy drop for the `results.csv` table. |
 | **Stream 4: Demo Video & Pitch Deck** | Teammate / Story Lead | Prepare the 2–3 minute demo video (screen recording of HUD + picture-in-picture signer) and the 10-slide presentation deck covering our empirical findings, architecture, and edge metrics. |

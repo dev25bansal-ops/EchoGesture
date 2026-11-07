@@ -1,7 +1,11 @@
-metric,target,measured,unit,device,runtime,pass
-top1_accuracy,>=70,98.60,%,Samsung Galaxy S25 (Snapdragon 8 Elite),LiteRT INT8 XNNPACK,PASS
-latency_p95,<=50,26.00,ms,Samsung Galaxy S25 (Snapdragon 8 Elite),LiteRT INT8 NPU/CPU,PASS
-model_size,<=25,0.88,MB,Samsung Galaxy S25 (Snapdragon 8 Elite),LiteRT INT8,PASS
-accuracy_drop_robustness,<=5,2.56,pt,Samsung Galaxy S25 (Snapdragon 8 Elite),LiteRT INT8 (Cross-dataset SemLex100),PASS
-avg_power,<=500,285,mW,Samsung Galaxy S25 (Snapdragon 8 Elite),LiteRT INT8 PowerStats,PASS
-thermal_drift_10min,<=20,4.2,%,Samsung Galaxy S25 (Snapdragon 8 Elite),Sustained 10min loop,PASS
+metric,target,measured,unit,device,runtime,pass,notes
+top1_accuracy,>=70,1.47,%,n/a (offline eval),LiteRT INT8 XNNPACK weighted average,FAIL,"Signer-disjoint ASL Citizen, 1705 clips / 11 unseen participants, 25 correct. Chance = 1.02%. Shipped upstream weights, unmodified. See S3D_signer_disjoint_evaluation.md"
+top1_accuracy_in_distribution,>=70,100.00,%,n/a (offline eval),LiteRT INT8 XNNPACK,pass,"WLASL100 clips from signers present in training, 17/17 readable clips. Positive control proving the pipeline is correct; NOT a valid held-out estimate"
+top1_accuracy_upstream_claimed,>=70,98.60,%,n/a,n/a,n/a,"Paper's own number (Kimpinde & Olukanmi 2026). Trained on random 70/20/10 split, not signer-disjoint - cannot be reproduced on unseen signers"
+latency_p95,<=50,117.8,ms,dev laptop (Windows, x86 CPU, 4 threads),LiteRT INT8 + OpenCV decode,FAIL,"End-to-end predict() incl. video decode, N=60 real clips. p50=54.1 ms, p99=146.3 ms"
+latency_model_only_p95,<=50,3.2,ms,dev laptop (Windows, x86 CPU, 4 threads),LiteRT INT8 XNNPACK,pass,"Tensor invocation only, excludes decode. p50=2.1 ms. Model is NOT the bottleneck - decode is"
+latency_decode_only_p95,<=50,158.6,ms,dev laptop (Windows, x86 CPU, 4 threads),OpenCV VideoCapture,FAIL,"Full-file decode dominates total latency. This is the metric to optimise"
+model_size,<=20,0.88,MB,any,LiteRT INT8,pass,"880.1 KB QAT model. 883.1 KB PTQ variant also shipped"
+accuracy_drop_robustness,<=5,NOT_MEASURED,,n/a,not_instrumented,not_instrumented,"The 2.56pt figure in earlier drafts was not produced by any script in this repo. Only the SemLex cross-dataset delta (-2.56pt) exists in the paper; that is a different population, not our occlusion test"
+avg_power,<=500,NOT_MEASURED,mW,n/a,not_instrumented,not_instrumented,"No power measurement exists. No Monsoon meter, no battery API capture, no device under test"
+thermal_drift_10min,<=20,NOT_MEASURED,%,n/a,not_instrumented,not_instrumented,"No 10-minute sustained run was performed. Earlier 4.2% figure has no source"

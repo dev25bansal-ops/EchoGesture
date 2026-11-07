@@ -13,6 +13,12 @@ Python entry point and a phone demo that displays live captions.
 
 ## Start here
 
+**If you're Abhijeet**, start with [ABH-01](ABHIJEET.md#abh-01--lock-the-evaluator-rules-by-8-november).
+Get the organizer contract and physical phone in place, then open the
+evaluator branch. Send Dev the [data handoff](HANDOFF.md) so the first model
+uses the right vocabulary. Follow the [GitHub workflow](GITHUB.md) to publish
+the plan and keep the two feature branches separate.
+
 | Owner | First action | End-of-sprint deliverable |
 | --- | --- | --- |
 | [Dev](DEV.md) | Create the data manifest and run a small both-hand extraction and training pilot. | A reproducible INT8 candidate, label map, feature contract and unseen-signer results. |

@@ -5,7 +5,13 @@
 **Hand off to Abhijeet** a model bundle with reproducible accuracy and explicit
 input and output semantics.
 
-**Start here** [Sprint schedule](README.md) · [Handoff contract](HANDOFF.md)
+**Start here** [Sprint schedule](README.md) · [Handoff contract](HANDOFF.md) · [GitHub workflow](GITHUB.md)
+
+Work on `hackathon/dev-model`. While Abhijeet checks the official
+vocabulary, build the provisional manifest and extraction pilot. Keep
+model and feature changes together so Abhijeet can integrate one versioned
+candidate. Provide the seeded corruption fixtures and model-evaluation
+results. Abhijeet runs them through the evaluator and owns `results/`.
 
 ## DEV-01 · Freeze the data rules by 8 November
 

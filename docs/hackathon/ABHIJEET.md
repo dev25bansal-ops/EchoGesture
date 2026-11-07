@@ -5,7 +5,30 @@
 **Hand off to Dev** the official vocabulary and data constraints, full-path
 profiles and feedback tied to a model SHA.
 
-**Start here** [Sprint schedule](README.md) · [Handoff contract](HANDOFF.md)
+**Start here** [Sprint schedule](README.md) · [Handoff contract](HANDOFF.md) · [GitHub workflow](GITHUB.md)
+
+## Abhijeet's first working session
+
+1. Confirm registration, find the starter kit and reserve the phone. Share
+   the vocabulary and open questions with Dev.
+2. Check that the plan branch is available remotely and create
+   `hackathon/abhijeet-integration` from it. If write access is pending,
+   branch from the local plan and verify the remote base before pushing.
+3. Run the current predictor with one permitted local MP4 on Python 3.11.
+   Record the command, device, model SHA and actual output. Then start the
+   manifest runner against that baseline so Dev can train independently.
+
+Run the model baseline from the repository root using a Python 3.11 virtual
+environment and a local fixture whose filename you control.
+
+```sh
+python3.11 -m venv .venv
+. .venv/bin/activate
+python -m pip install -r src/requirements.txt
+python src/main.py /absolute/path/to/permitted-fixture.mp4
+```
+
+Keep `.venv/` and the clip out of Git. Track the first work as **ABH-01**.
 
 ## ABH-01 · Lock the evaluator rules by 8 November
 

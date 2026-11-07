@@ -2,20 +2,23 @@
 
 ## Branches and reviews
 
-Use `hackathon/two-person-sprint` as the shared starting point. Dev works from
-`hackathon/dev-model`. Abhijeet works from `hackathon/abhijeet-integration`.
-Create your branch from the current remote sprint head.
+Abhijeet owns integration into `hackathon/two-person-sprint`. Work and push
+from your own branch, then request the other teammate's review. See the
+[GitHub workflow](GITHUB.md) for publishing the plan, branch commands, PR
+targets and recovery steps.
 
-```sh
-git fetch origin
-git switch -c hackathon/dev-model origin/hackathon/two-person-sprint
-# Abhijeet uses hackathon/abhijeet-integration in the same command.
-```
+| Files or proposed area | Primary editor | Boundary |
+| --- | --- | --- |
+| `src/features.py`, `models/`, `scripts/ml/` | Dev | Model interface, features, training and export |
+| `src/main.py`, `app/`, `scripts/release/` | Abhijeet | Evaluator API, phone app and packaging |
+| `evaluation/model/` | Dev | Data checks, unseen-signer model comparison and reproducible corruption fixtures |
+| `evaluation/device/`, `results/` | Abhijeet | Full-path timings, end-to-end robustness and final submission outputs |
+| `src/requirements.txt`, `src/README.md`, sprint docs | Abhijeet coordinates | Dev hands off dependency, model and reproduction changes for the same PR or a follow-up |
 
-Review and integrate small changes into the shared branch. Dev reviews
-feature/model compatibility. Abhijeet reviews evaluator and device impact.
-Both review the frozen candidate. Avoid two people editing the same generated
-results file. Abhijeet regenerates submission outputs after the final model
+The proposed paths do not exist until the owner adds them. Agree on any
+change that crosses these boundaries before editing. For interface changes,
+merge Dev's model-side PR first, then have Abhijeet sync and integrate against
+the exact artifact SHA. Abhijeet regenerates final results after the model
 is pinned.
 
 ## Abhijeet → Dev · Evaluator inputs

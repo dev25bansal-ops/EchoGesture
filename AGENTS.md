@@ -11,9 +11,11 @@ ask only if the task crosses them.
 | Dev | Dataset, signer splits, shared model features, training, INT8 conversion and model artifacts | [Dev's workflow](docs/hackathon/DEV.md) |
 | Abhijeet | Organizer requirements, evaluator entry point, device evaluation, live demo, packaging and submission | [Abhijeet's workflow](docs/hackathon/ABHIJEET.md) |
 
-- Keep model work on Dev's feature branch and integration work on Abhijeet's
-  feature branch. Start from the agreed sprint base. Review the other
-  teammate's changes before integrating them.
+- Dev works on `hackathon/dev-model`. Abhijeet works on
+  `hackathon/abhijeet-integration` and owns merges into
+  `hackathon/two-person-sprint`. Open PRs against that shared branch and
+  review each other's work. Follow the [GitHub workflow](docs/hackathon/GITHUB.md)
+  and the file ownership in the [handoff](docs/hackathon/HANDOFF.md).
 - Dev owns the feature and model interface. Abhijeet owns `src/main.py` and the
   public `predict(video_path) -> dict` contract. Coordinate changes across that
   boundary through the handoff notes.

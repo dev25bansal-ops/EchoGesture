@@ -51,3 +51,10 @@ mj.html
 .idea/
 .DS_Store
 Thumbs.db
+
+# Downloaded third-party competition data (not our work, own licence terms)
+merged/
+rerun/labels.parqet
+*.parqet
+eda/
+hoyso_tfr/

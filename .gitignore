@@ -1,0 +1,53 @@
+# Python virtual environments & bytecode
+venv/
+venv*/
+.venv/
+*env*/
+clean311/
+site-packages/
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+*.dll
+*.so
+*.dylib
+
+# Video and large media files
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+
+# Large archive and binary files
+*.tar
+*.tar.gz
+*.gz
+*.zip
+*.7z
+*.rar
+*.bin
+*.npy
+*.npz
+
+# Temporary / scratch directories
+.scratch/
+_altbench/
+.tmp_arxiv_check/
+oe_search/
+_apiround/
+_grey_lit_tmp/
+.temp/
+tmp/
+
+# Scratch browser artifacts
+b2.html
+mj.html
+*.log
+
+# IDE & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

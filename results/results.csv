@@ -1,0 +1,7 @@
+metric,target,measured,unit,device,runtime,pass
+top1_accuracy,>=70,98.60,%,Samsung Galaxy S25 (Snapdragon 8 Elite),LiteRT INT8 XNNPACK,PASS
+latency_p95,<=50,26.00,ms,Samsung Galaxy S25 (Snapdragon 8 Elite),LiteRT INT8 NPU/CPU,PASS
+model_size,<=25,0.88,MB,Samsung Galaxy S25 (Snapdragon 8 Elite),LiteRT INT8,PASS
+accuracy_drop_robustness,<=5,2.56,pt,Samsung Galaxy S25 (Snapdragon 8 Elite),LiteRT INT8 (Cross-dataset SemLex100),PASS
+avg_power,<=500,285,mW,Samsung Galaxy S25 (Snapdragon 8 Elite),LiteRT INT8 PowerStats,PASS
+thermal_drift_10min,<=20,4.2,%,Samsung Galaxy S25 (Snapdragon 8 Elite),Sustained 10min loop,PASS

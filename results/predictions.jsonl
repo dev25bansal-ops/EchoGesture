@@ -1,0 +1,50 @@
+{"clip_id": "02278260656013753-APPLE", "prediction": "TIME", "top5": ["TIME", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "02340130072147395-JACKET 3", "prediction": "GO", "top5": ["GO", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "02416316570152155-JACKET", "prediction": "COOL", "top5": ["COOL", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "02835041260247695-COOL", "prediction": "TABLE", "top5": ["TABLE", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "03439441385308273-WANT 2", "prediction": "TIME", "top5": ["TIME", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "04710414248870798-CAN 2", "prediction": "COMPUTER", "top5": ["COMPUTER", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "04962514019781339-BASKETBALL", "prediction": "TIME", "top5": ["TIME", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "05380133343527227-RIGHT 2", "prediction": "TIME", "top5": ["TIME", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "057053409811736344-COMPUTER", "prediction": "WALK", "top5": ["WALK", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "05736305979446654-SHIRT", "prediction": "CANDY", "top5": ["CANDY", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "05804690546176405-THANKSGIVING", "prediction": "TIME", "top5": ["TIME", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "06966860356896487-DARK 2", "prediction": "TIME", "top5": ["TIME", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "08573458832549319-NEED", "prediction": "TIME", "top5": ["TIME", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "08708382023355443-COOL 5", "prediction": "LAST", "top5": ["LAST", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "09011080677406724-CHEAT 2", "prediction": "LAST", "top5": ["LAST", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "09371248383875841-DRINK", "prediction": "TIME", "top5": ["TIME", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "09527426336436773-AFRICA", "prediction": "TIME", "top5": ["TIME", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "10051512281389963-CANDY 2", "prediction": "TIME", "top5": ["TIME", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "10191750851054593-BEFORE", "prediction": "SON", "top5": ["SON", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "10235419238080246-DOCTOR", "prediction": "TABLE", "top5": ["TABLE", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "1056460718870178-COOL 1", "prediction": "TIME", "top5": ["TIME", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "14992936899376108-LIKE", "prediction": "YEAR", "top5": ["YEAR", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "15957405560017013-WHAT 1", "prediction": "TIME", "top5": ["TIME", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "1830009936727366-WHO", "prediction": "TIME", "top5": ["TIME", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "1839644278586121-PIZZA 2", "prediction": "TIME", "top5": ["TIME", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "18508791786058-GRADUATE", "prediction": "TABLE", "top5": ["TABLE", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "1928939192359651-SAME", "prediction": "DOG", "top5": ["DOG", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "19402151181754723-BOWLING 2", "prediction": "TIME", "top5": ["TIME", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "19475974684528485-LATER", "prediction": "TIME", "top5": ["TIME", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "2074509634253634-THANKSGIVING", "prediction": "YEAR", "top5": ["YEAR", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "21166353600430976-DEAF", "prediction": "SCHOOL", "top5": ["SCHOOL", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "2247647278783642-SHIRT 2", "prediction": "LAST", "top5": ["LAST", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "22517045161179094-TELL", "prediction": "COOK", "top5": ["COOK", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "23137309616160961-COLOR", "prediction": "TIME", "top5": ["TIME", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "2327608705825961-PAPER", "prediction": "TABLE", "top5": ["TABLE", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "23456147121981585-WORK", "prediction": "TIME", "top5": ["TIME", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "23539346321222632-HAT 2", "prediction": "LIKE", "top5": ["LIKE", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "24009438640559244-WALK", "prediction": "LAST", "top5": ["LAST", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "24148489161621667-DOCTOR", "prediction": "BLACK", "top5": ["BLACK", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "24315094434114126-TALL 2", "prediction": "WALK", "top5": ["WALK", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "24401334323843948-JACKET", "prediction": "LIKE", "top5": ["LIKE", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "2508406979944049-SAME 2", "prediction": "SCHOOL", "top5": ["SCHOOL", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "2602903009943407-CANDY 1", "prediction": "CANDY", "top5": ["CANDY", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.85, "latency_ms": 26.0}
+{"clip_id": "267835372632119-LETTER", "prediction": "TABLE", "top5": ["TABLE", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "2690938371126348-CAN", "prediction": "YEAR", "top5": ["YEAR", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "28341042487163093-DARK", "prediction": "MAN", "top5": ["MAN", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "30621931645708744-JACKET 2", "prediction": "BEFORE", "top5": ["BEFORE", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "32680486641733797-DOG 4", "prediction": "LAST", "top5": ["LAST", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "3347819641252294-HELP", "prediction": "TABLE", "top5": ["TABLE", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}
+{"clip_id": "334847449146251-ORANGE", "prediction": "BEFORE", "top5": ["BEFORE", "BOOK", "COMPUTER", "DRINK", "CHAIR"], "confidence": 0.42, "latency_ms": 26.0}

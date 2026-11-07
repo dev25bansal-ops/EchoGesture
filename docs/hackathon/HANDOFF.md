@@ -1,0 +1,67 @@
+# Dev and Abhijeet handoff
+
+## Branches and reviews
+
+Use `hackathon/two-person-sprint` as the shared starting point. Dev works from
+`hackathon/dev-model`. Abhijeet works from `hackathon/abhijeet-integration`.
+Create your branch from the current remote sprint head.
+
+```sh
+git fetch origin
+git switch -c hackathon/dev-model origin/hackathon/two-person-sprint
+# Abhijeet uses hackathon/abhijeet-integration in the same command.
+```
+
+Review and integrate small changes into the shared branch. Dev reviews
+feature/model compatibility. Abhijeet reviews evaluator and device impact.
+Both review the frozen candidate. Avoid two people editing the same generated
+results file. Abhijeet regenerates submission outputs after the final model
+is pinned.
+
+## Abhijeet → Dev · Evaluator inputs
+
+Provide the starter-kit version, vocabulary and exact label spellings, allowed
+sources, manifest shape, and unresolved organizer questions. For benchmarks,
+include the model SHA, runtime and delegate, device, clip set and sample count,
+end-to-end p95 and stage breakdown. Send any parity failures with a reproducible
+fixture or a local clip reference both teammates can access.
+
+## Dev → Abhijeet · Model bundle
+
+| Field | Include |
+| --- | --- |
+| Candidate | Branch, commit SHA, artifact SHA-256 and bytes |
+| Artifacts | TFLite file, exact ordered label map and versioned feature config |
+| Input contract | Shape, dtype and scale/zero point, number of frames, sampling, coordinate convention, masks and normalization |
+| Output contract | Class axis and whether values are logits or probabilities, plus dequantization parameters where applicable |
+| Reproduction | Commands for feature extraction, training and conversion, plus one permitted smoke fixture and expected feature or inference shape |
+| Evidence | Data version, split, clip and signer counts, float and INT8 validation top-1, known failure cases |
+| Data scope | Sources used and what can be shared in the release |
+
+A handoff is ready when Abhijeet can run the candidate from the documented
+artifacts and verify feature and label parity. A change to label order or
+features requires a new config version and a new benchmark of the actual
+candidate.
+
+## Daily update template
+
+```text
+Date (IST):
+Owner and task ID:
+Branch and commit SHA:
+What changed:
+Command(s) and result:
+Dataset/split or device/runtime:
+Artifact or config SHA:
+Blocker or decision:
+Next action and owner:
+```
+
+## Final release sign-off
+
+- Dev verifies model bytes and format, vocabulary and split integrity, and
+  reproducibility from the release bundle.
+- Abhijeet verifies the actual evaluator API, manifest coverage, device and
+  robustness logs, demo and deck, and final form requirements.
+- Both agree which commit and artifact SHAs the submitted numbers describe.
+  Abhijeet submits the package and keeps the receipt.

@@ -9,7 +9,8 @@ Python entry point and a phone demo that displays live captions.
 
 [Official brief, PDF pages 9–12 and 24–27](../../XR_Hackathon_2026_Consolidated_Slides_for_sharing_v1.pdf) ·
 [Current baseline measurements](../../RESULTS.md) ·
-[Registration form](https://forms.gle/oGBXsydqbhE3HS2o9)
+[Registration form](https://forms.gle/oGBXsydqbhE3HS2o9) ·
+[Submission checklist](SUBMISSION.md)
 
 ## Start here
 

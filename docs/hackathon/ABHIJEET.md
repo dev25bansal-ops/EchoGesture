@@ -89,6 +89,9 @@ are tied to the exact model in the demo.
 
 ## ABH-04 · Package and submit by 17 November
 
+Use the [slide-checked submission checklist](SUBMISSION.md) for the
+exact deliverables and the open questions to confirm with the organizer.
+
 1. Generate predictions from the organizer manifest if supplied. Keep
    existing research outputs separate. Produce the official `results.csv`
    with target, measured value, unit, device, runtime and pass status.

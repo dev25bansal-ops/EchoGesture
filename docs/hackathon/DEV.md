@@ -81,7 +81,8 @@ asking for a private file or a hard-coded path.
 1. Pick the release candidate jointly. Freeze the vocabulary, runtime feature
    config, conversion command and model SHA. Evaluate the frozen candidate on
    the locked split and record what was measured.
-2. Review the bundle from a clean directory on Python 3.11. Run a sample clip
+2. Use the [submission checklist](SUBMISSION.md) to review the bundle
+   from a clean directory on Python 3.11. Run a sample clip
    and verify the prediction fields, model size, claimed metrics and demo scope.
 
 ## Prompt for Dev's agent

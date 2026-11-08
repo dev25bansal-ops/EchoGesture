@@ -1,7 +1,7 @@
 """Export the trained landmark classifier to INT8 TFLite.
 
 DEV-03. Produces the artifact Abhijeet ships: an integer-only TFLite file whose
-input is the 126-feature landmark stream from src/features.py.
+input is the FEATURE_DIM-wide (255) landmark stream from src/features.py.
 
 The model is 100% Conv1d / BatchNorm / Linear / attention-pool. Attention uses
 a single learned query against the sequence, which lowers to MatMul + Softmax -
@@ -112,6 +112,15 @@ def main():
     label_path = ROOT / "models" / "landmark_labels.json"
     json.dump({g: i for i, g in enumerate(vocab)}, open(label_path, "w"), indent=0)
     print(f"labels {label_path}  ({len(vocab)} classes)")
+
+    # Frame count and feature width ship beside the model. src/main.py reads
+    # this to size its input; .scratch (where training writes its own copy)
+    # is gitignored and will not exist on the evaluator's machine.
+    meta_path = ROOT / "models" / "landmark_model_meta.json"
+    json.dump({"frames": frames, "feature_dim": FEATURE_DIM,
+               "classes": len(vocab), "backbone": backbone, "dim": dim},
+              open(meta_path, "w"), indent=2)
+    print(f"meta  {meta_path}  frames={frames} feature_dim={FEATURE_DIM}")
 
     # ------------------------------------------------------------ sanity check
     import onnxruntime as ort

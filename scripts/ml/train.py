@@ -1,7 +1,7 @@
 """Train the landmark temporal classifier.
 
 DEV-02. Conv1D + attention (the GISLR 1st-place topology, scaled down) over
-the 126-feature landmark stream from src/features.py.
+the 255-feature landmark stream from src/features.py.
 
 Success gate (from the sprint plan): signer-disjoint validation top-1 >= 60%
 on the first run. Below that, the problem is data or normalisation, not
@@ -111,7 +111,7 @@ class ClipDataset(Dataset):
         return len(self.items)
 
     def __getitem__(self, i):
-        path, label = self.items[i]
+        path, label, signer = self.items[i]
         d = np.load(path)
         lm, pres = d["landmarks"], d["present"]
 
@@ -124,10 +124,21 @@ class ClipDataset(Dataset):
             keep = np.random.rand(len(pres)) > 0.1
             if keep.sum() >= 4:
                 lm, pres = lm[keep], pres[keep]
-            # spatial jitter: small translation and scale, applied to x/y only
-            lm = lm.copy()
-            lm[..., :2] += np.random.randn() * 0.01
-            lm[..., :2] *= 1.0 + np.random.randn() * 0.05
+            # Spatial jitter must happen AFTER normalisation, not before.
+            # build_features root-centres on the wrist and divides by a
+            # wrist-to-MCP scale, so a global translate/shift of the raw
+            # landmarks cancels out identically - it would be a silent no-op.
+            # More usefully, the jitter that matters is per-landmark landmark
+            # noise, which mimics MediaPipe jitter between runs; scaling the
+            # whole hand is precisely what we normalise away, so we do not
+            # fake it.
+            if np.random.rand() < 0.5:
+                noise = np.random.randn(*lm[..., :2].shape) * 0.01
+                lm = lm.copy()
+                lm[..., :2] += noise.astype(np.float32)
+                # a landmark that jittered out of frame is not a real
+                # observation; keep coordinates legal
+                np.clip(lm[..., :2], 0.0, 1.0, out=lm[..., :2])
             # hand masking: simulate occlusion of one or both hands
             if np.random.rand() < 0.3:
                 n = np.random.randint(1, max(2, len(pres) // 4))
@@ -140,36 +151,51 @@ class ClipDataset(Dataset):
                     pres[start:start + n] = 0.0
 
         feats, mask = build_features(lm, pres, expected_frames=self.frames)
-        return torch.from_numpy(feats), torch.from_numpy(mask), label
+        return torch.from_numpy(feats), torch.from_numpy(mask), label, signer
 
 
 def index_split(vocab_idx, split):
     d = LANDMARKS / split
-    items, skipped = [], 0
+    items, skipped, empty = [], 0, 0
     for p in sorted(d.glob("*.npz")):
         rec = np.load(p, allow_pickle=False)
         gloss = str(rec["gloss"])
         if gloss not in vocab_idx:
             skipped += 1
             continue
-        items.append((p, vocab_idx[gloss]))
+        # A clip whose every frame lacks a hand carries no signal; training on
+        # its all-zero landmarks teaches the model that the class is "nothing".
+        if float(rec["present"].max()) < 0.5:
+            empty += 1
+            continue
+        signer = str(rec["participant"]) if "participant" in rec else "?"
+        items.append((p, vocab_idx[gloss], signer))
+    if empty:
+        print(f"  [{split}] dropped {empty} clips with no hand detected")
     return items, skipped
 
 
 # ---------------------------------------------------------------- train
 
 def evaluate(model, loader, device):
+    """Return (accuracy, correct, total, per_signer)."""
     model.eval()
     correct = total = 0
     per_signer = {}
     with torch.no_grad():
-        for feats, mask, labels in loader:
+        for batch in loader:
+            feats, mask, labels = batch[0], batch[1], batch[2]
+            signers = batch[3] if len(batch) > 3 else None
             feats, mask = feats.to(device), mask.to(device)
             logits = model(feats, mask)
             pred = logits.argmax(1).cpu()
             correct += int((pred == labels).sum())
             total += len(labels)
-    return correct / max(total, 1), correct, total
+            if signers is not None:
+                for p, ok in zip(signers, (pred == labels).tolist()):
+                    c, t = per_signer.get(p, (0, 0))
+                    per_signer[p] = (c + int(ok), t + 1)
+    return correct / max(total, 1), correct, total, per_signer
 
 
 def main():
@@ -217,17 +243,17 @@ def main():
     for ep in range(1, args.epochs + 1):
         model.train()
         run_loss = 0.0
-        for feats, mask, labels in train_dl:
+        for feats, mask, labels, _signers in train_dl:
             feats, mask, labels = feats.to(device), mask.to(device), labels.to(device)
             opt.zero_grad()
             loss = lossf(model(feats, mask), labels)
             loss.backward()
             nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             opt.step()
-            run_loss += float(loss)
+            run_loss += float(loss.detach())
         sched.step()
 
-        acc, c, t = evaluate(model, val_dl, device) if val_items else (0.0, 0, 0)
+        acc, c, t, _ps = evaluate(model, val_dl, device) if val_items else (0.0, 0, 0, {})
         marker = ""
         if acc > best:
             best = acc
@@ -237,7 +263,7 @@ def main():
             # Keep a slice of real validation inputs for INT8 calibration.
             # Calibrating on noise biases every activation range.
             cal = []
-            for feats, _mask, _labels in val_dl:
+            for feats, _mask, _labels, _signers in val_dl:
                 for row in feats:
                     cal.append(row.detach().cpu())
                     if len(cal) >= 400:
@@ -246,6 +272,12 @@ def main():
                     break
             if cal:
                 torch.save(cal, out.parent / "calib.pt")
+            # Plain-JSON sidecar so the evaluator and the INT8 export can
+            # recover the vocab and frame count without loading torch.
+            json.dump({"vocab": vocab, "frames": args.frames,
+                       "dim": args.dim, "backbone": args.backbone,
+                       "val_top1": acc},
+                      open(out.parent / "model_meta.json", "w", encoding="utf-8"))
             marker = "  <- best"
         print(f"ep {ep:3d} loss {run_loss/max(len(train_dl),1):.3f} "
               f"val_top1 {acc*100:5.1f}% ({c}/{t}){marker}", flush=True)
@@ -253,6 +285,22 @@ def main():
     print(f"\nbest signer-disjoint val top-1: {best*100:.1f}%  -> {out}")
     print("gate: >=60% on first run. Below that, check data and normalisation "
           "before touching the architecture.")
+
+    # Per-signer breakdown. A high mean with one signer near zero is a
+    # different (and worse) failure than a uniform low mean: it means the
+    # model still leans on a signer and only the average hides it.
+    if val_items:
+        state = torch.load(out, map_location=device, weights_only=True)
+        model.load_state_dict(state["model"])
+        acc, c, t, per_signer = evaluate(model, val_dl, device)
+        print(f"\nper-signer val accuracy ({len(per_signer)} held-out signers):")
+        for p in sorted(per_signer):
+            pc, pt = per_signer[p]
+            print(f"  {p:6s} {pc:4d}/{pt:<4d} {100*pc/max(pt,1):5.1f}%")
+        accs = [pc / max(pt, 1) for pc, pt in per_signer.values()]
+        if accs:
+            print(f"  mean {100*np.mean(accs):.1f}%  min {100*min(accs):.1f}%  "
+                  f"max {100*max(accs):.1f}%")
 
 
 if __name__ == "__main__":

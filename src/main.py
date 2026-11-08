@@ -13,7 +13,13 @@ import time
 import json
 from pathlib import Path
 import numpy as np
-import cv2
+
+_HERE = Path(__file__).resolve().parent
+if str(_HERE) not in sys.path:
+    sys.path.insert(0, str(_HERE))
+
+from features import build_features, FEATURE_DIM  # noqa: E402
+from landmark_frontend import clip_to_landmarks  # noqa: E402
 
 # Universal TFLite interpreter loader
 try:
@@ -38,9 +44,11 @@ _INPUT_ZP = 0
 _OUTPUT_SCALE = 1.0
 _OUTPUT_ZP = 0
 _IDX_TO_LABEL = {}
+_FRAMES = 24
 
 
 def _init_model():
+    global _FRAMES
     global _INTERPRETER, _INPUT_DETAILS, _OUTPUT_DETAILS
     global _INPUT_SCALE, _INPUT_ZP, _OUTPUT_SCALE, _OUTPUT_ZP, _IDX_TO_LABEL
 
@@ -55,11 +63,9 @@ def _init_model():
 
     # Locate models relative to this file
     base_dir = Path(__file__).resolve().parent.parent
-    model_path = base_dir / "models" / "s3d_conv1d_qat_int8.tflite"
-    if not model_path.exists():
-        model_path = base_dir / "models" / "ptq_100_int8.tflite"
+    model_path = base_dir / "models" / "landmark_classifier_fp16.tflite"
 
-    label_path = base_dir / "models" / "label100.json"
+    label_path = base_dir / "models" / "landmark_labels.json"
 
     if not model_path.exists():
         raise FileNotFoundError(f"Model file not found at {model_path}")
@@ -76,43 +82,34 @@ def _init_model():
     _INPUT_DETAILS = _INTERPRETER.get_input_details()[0]
     _OUTPUT_DETAILS = _INTERPRETER.get_output_details()[0]
 
-    _INPUT_SCALE, _INPUT_ZP = _INPUT_DETAILS["quantization"]
-    _OUTPUT_SCALE, _OUTPUT_ZP = _OUTPUT_DETAILS["quantization"]
+    # The export wrapper takes float32 IO around an INT8 graph: the input is
+    # the 255-float feature row, not a quantised image. Frame count ships in
+    # the label sidecar because .scratch is gitignored and will not exist on
+    # the evaluator's machine.
+    _meta = base_dir / "models" / "landmark_model_meta.json"
+    if _meta.exists():
+        try:
+            _FRAMES = int(json.load(open(_meta, encoding="utf-8"))["frames"])
+        except Exception:
+            pass
 
 
-def _preprocess_video(video_path: str, target_frames: int = 24, target_size: int = 64):
+def _preprocess_video(video_path: str, target_frames: int = 24):
+    """Video -> the model's (T, FEATURE_DIM) landmark feature matrix.
+
+    MediaPipe extracts two hands per frame into canonical left/right slots,
+    then features.py normalises them. The same functions run in training, so
+    the two cannot drift.
+
+    Raises ValueError when no hand is visible in any sampled frame: predicting
+    a gloss from an empty clip would be a guess dressed up as a measurement.
     """
-    Decodes video, converts to grayscale, resizes to target_size x target_size,
-    normalizes to [0, 1], and samples target_frames using linspace.
-    """
-    cap = cv2.VideoCapture(video_path)
-    if not cap.isOpened():
-        raise ValueError(f"Could not open video file: {video_path}")
+    lm, present = clip_to_landmarks(video_path, max_frames=max(32, target_frames))
+    if lm.shape[0] == 0 or float(present.max()) < 0.5:
+        raise ValueError(f"No hand detected in any frame of: {video_path}")
 
-    frames = []
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            break
-        resized = cv2.resize(frame, (target_size, target_size))
-        gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
-        norm = np.expand_dims(gray, -1).astype(np.float32) / 255.0
-        frames.append(norm)
-    cap.release()
-
-    n = len(frames)
-    if n == 0:
-        raise ValueError(f"No valid frames decoded from: {video_path}")
-
-    if n >= target_frames:
-        indices = np.linspace(0, n - 1, target_frames).astype(int)
-        sampled = np.stack([frames[i] for i in indices])
-    else:
-        # Pad with the last frame
-        sampled = np.stack(frames + [frames[-1]] * (target_frames - n))
-
-    # Add batch dimension: [1, 24, 64, 64, 1]
-    return np.expand_dims(sampled, 0)
+    feats, _mask = build_features(lm, present, expected_frames=target_frames)
+    return feats
 
 
 def predict(video_path: str) -> dict:
@@ -135,25 +132,16 @@ def predict(video_path: str) -> dict:
     # Extract clip_id from video filename without extension
     clip_id = Path(video_path).stem
 
-    # Preprocess video frames
-    tensor = _preprocess_video(video_path, target_frames=24, target_size=64)
+    # Landmarks -> FEATURE_DIM-wide feature matrix
+    feats = _preprocess_video(video_path, target_frames=_FRAMES)
 
-    # Quantize input to int8
-    if _INPUT_SCALE > 0:
-        q_tensor = np.clip(np.round(tensor / _INPUT_SCALE) + _INPUT_ZP, -128, 127).astype(np.int8)
-    else:
-        q_tensor = tensor.astype(np.float32)
+    # The export wrapper takes (1, T, F) float32 and returns logits.
+    tensor = feats[None, ...].astype(np.float32)
 
-    # Invoke TFLite model
-    _INTERPRETER.set_tensor(_INPUT_DETAILS["index"], q_tensor)
+    _INTERPRETER.set_tensor(_INPUT_DETAILS["index"], tensor)
     _INTERPRETER.invoke()
 
-    # Dequantize output logits / probabilities
-    raw_output = _INTERPRETER.get_tensor(_OUTPUT_DETAILS["index"])[0].astype(np.float32)
-    if _OUTPUT_SCALE > 0:
-        logits = (raw_output - _OUTPUT_ZP) * _OUTPUT_SCALE
-    else:
-        logits = raw_output
+    logits = _INTERPRETER.get_tensor(_OUTPUT_DETAILS["index"])[0].astype(np.float32)
 
     # Softmax for normalized confidence scores
     exp_logits = np.exp(logits - np.max(logits))
@@ -161,7 +149,7 @@ def predict(video_path: str) -> dict:
 
     # Sort descending
     top_indices = np.argsort(-probs)[:5]
-    top5 = [_IDX_TO_LABEL.get(idx, f"UNKNOWN_{idx}") for idx in top_indices]
+    top5 = [_IDX_TO_LABEL.get(int(idx), f"UNKNOWN_{idx}") for idx in top_indices]
     prediction = top5[0]
     confidence = float(probs[top_indices[0]])
 

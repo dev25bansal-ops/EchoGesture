@@ -1,79 +1,132 @@
-# EchoGesture — measured results
+# Results
 
-Every number here was produced by a script in this repository on 7 Nov 2026,
-or is explicitly marked as unmeasured. Nothing is copied from a paper without
-saying so.
+Every number here was produced by a script in this repo, on this machine, and names
+that script. Nothing is copied from a paper, extrapolated, or left over from an
+earlier draft.
 
-## Accuracy
+**Headline: 62.61% top-1 / 80.46% top-5 on 11 unseen signers, 1,249 clips, 100
+classes, chance 1.00%.** Target is ≥70%, so this is short — reported as measured.
 
-| Measurement | n | Result | Chance | Script |
-|---|---|---|---|---|
-| In-distribution positive control (WLASL100, training signers) | 17 | **100.0%** | — | `evaluation/eval_wlasl_signers.py` |
-| Signer-disjoint, PTQ INT8 (ASL Citizen official test) | 1,705 | **1.47%** | 1.02% | `evaluation/eval_asl_citizen.py` |
-| Signer-disjoint, QAT INT8 (ASL Citizen official test) | 1,705 | **1.00%** | 1.02% | `evaluation/eval_asl_citizen.py` |
-| Signer-disjoint, top-5 (PTQ, 341-clip sample) | 341 | **5.87%** | 5.10% | inline, see README |
+---
 
-The positive control is the load-bearing check: it proves the harness is not
-broken. Without it, 1.47% would be indistinguishable from a preprocessing bug.
+## The pipeline that produced it
 
-## Latency (dev laptop, Windows, x86 CPU, 4 threads)
+```
+video -> 32 frames sampled evenly across the clip (not the opening 32)
+      -> MediaPipe HandLandmarker, 2 hands x 21 landmarks
+      -> src/features.py: 255 floats/frame
+      -> Conv1D + attention classifier (396K params)
+      -> TFLite FP16 (813 KB)
+```
 
-| Stage | p50 | p95 | p99 | n |
-|---|---|---|---|---|
-| TensorFlow Lite invoke only | 0.75 ms | 1.01 ms | 1.15 ms | 200 |
-| Quantise + invoke | 2.1 ms | 3.2 ms | — | 40 |
-| Resize + gray + normalise | 4.1 ms | 7.1 ms | — | 40 |
-| **Video decode (full file)** | **83.4 ms** | **158.6 ms** | — | 40 |
-| **End-to-end `predict()`** | **54.1 ms** | **117.8 ms** | **146.3 ms** | 60 |
+## Main result
 
-Decode dominates. The model is under 1% of the budget.
+| | val | test |
+| --- | --- | --- |
+| signers (unseen) | 5 | 11 |
+| clips | 345 | 1,249 |
+| **top-1** | 76.52% | **62.61%** |
+| **top-5** | 88.41% | **80.46%** |
+| chance | 1.00% | 1.00% |
 
-### Decode optimisations tested
+Val is optimistic because the checkpoint was selected on it. **Test is the honest
+number.**
 
-| Configuration | p50 | p95 |
-|---|---|---|
-| Full-res, all frames (current) | 57.8 ms | 132.5 ms |
-| Capped at 240p | 41.8 ms | 112.5 ms |
-| Capped at 120p | 39.5 ms | 109.0 ms |
-| 240p + 12 sampled frames | 38.9 ms | 92.1 ms |
-| 240p + 8 sampled frames | 40.4 ms | 94.1 ms |
-| Seek to 24 frames (`CAP_PROP_POS_FRAMES`) | 549.8 ms | 1376.6 ms |
+Per-signer test accuracy — the spread is the real story:
 
-Seeking is dramatically worse than sequential decode — do not use it.
+| signer | acc | | signer | acc |
+| --- | --- | --- | --- | --- |
+| P22 | 80.4% | | P15 | 60.2% |
+| P47 | 76.2% | | P17 | 52.0% |
+| P49 | 73.5% | | P6 | 50.7% |
+| P48 | 73.1% | | P9 | 48.1% |
+| P35 | 72.0% | | P42 | 45.8% |
+| P18 | 64.8% | | | |
 
-## Size
+Mean 63.4%, min 45.8%, max 80.4%. A 35-point spread across signers means the model
+generalises better to some people than others — the expected signature of only 17–24
+training clips per class.
 
-| Artefact | Bytes | MB |
-|---|---|---|
-| `models/s3d_conv1d_qat_int8.tflite` | 901,200 | 0.86 |
-| `models/ptq_100_int8.tflite` | 904,256 | 0.86 |
+Reproduce: `scripts/ml/evaluate.py --split test`
 
-Budget is ≤20 MB. Using 0.9 MB.
+---
+
+## What failed, and why
+
+### The published pixel model: 1.47% (chance 1.02%)
+
+This repo originally shipped S3D-Conv1D's published weights. Re-measured on the
+signer-disjoint split: **25/1705 correct**. A positive control on in-distribution
+WLASL clips scored **17/17 = 100%**, proving the harness was correct.
+
+Root cause: S3D consumes raw 64×64 grayscale. On a random 70/20/10 split the paper's
+98.60% is real, but the network learns signer appearance and background, which do not
+transfer to unseen people. Landmarks discard both. This is why the pipeline was
+rebuilt.
+
+### INT8 quantization: −6.37 points, and two runtimes disagreed
+
+| variant | val top-1 | size |
+| --- | --- | --- |
+| FP32 | 75.36% | 1,575 KB |
+| **FP16 (shipped)** | **75.36%** | **813 KB** |
+| INT8 | 68.99% | 498 KB |
+| PyTorch dynamic INT8 | 75.36% | — |
+
+INT8 lost 6.4 points and, worse, the **same file** scored 72.0% under
+`ai_edge_litert` and 4.0% under `tf.lite.Interpreter`. A file that behaves that way
+cannot ship. FP16 is equally accurate to float32 at half the size, and both runtimes
+agree. Full analysis: [`QUANTIZATION.md`](QUANTIZATION.md).
+
+The scored criterion is "Compilation to TFLite/ONNX <20MB" — FP16 at 813 KB satisfies
+it with 24× headroom.
+
+### Wider model: worse
+
+dim=256 vs dim=192, same schedule: test **61.25% vs 62.61%**. With ~18 clips per
+class, extra capacity overfits. Widening is not the lever.
+
+### Longer schedule: +1.2 points
+
+60 → 140 epochs moved test from 61.41% to 62.61%. Real but small.
+
+---
+
+## Latency, stated three ways so they are never conflated
+
+| what | value | what it means |
+| --- | --- | --- |
+| classifier only | **0.55 ms p50 / 0.76 p95** | the metric the jury matrix scores |
+| per frame, streaming | **~16 ms** | MediaPipe 15.7 + classifier 0.55 → ~30 fps, inside 50 ms |
+| whole clip, warm | ~447 ms | decode 52 + MediaPipe over 32 frames 503 + features 0.4 + classifier 0.6 |
+| cold start | ~7.7 s | MediaPipe graph init, one time; model load is 3 ms |
+
+Measured with `scripts/ml/evaluate.py` (classifier) and a staged timer over 25 clips
+(decode/MediaPipe/features).
+
+**The 50 ms budget is met per frame.** It is *not* met as a whole-clip batch, and
+should not be claimed as such.
+
+---
 
 ## Not measured
 
-These appear in the hackathon's `results.csv` schema and must be filled before
-submission. They are **not** currently measured, and earlier drafts of this
-repository contained invented values for them:
+- **Robustness (≤5 pt drop):** no occlusion/blur/lighting harness exists.
+- **Power (≤500 mW):** no meter, no device under test.
+- **Thermal (≤20% over 10 min):** no sustained run.
 
-| Metric | Status | What it needs |
-|---|---|---|
-| `accuracy_drop_robustness` | **not measured** | Script applying seeded occlusion / low-light / blur / crop / frame-drop to a val set, then a paired comparison. The harness does not exist yet. |
-| `avg_power` | **not measured** | A physical device plus either a Monsoon meter or Android `dumpsys batterystats` over a fixed workload. |
-| `thermal_drift_10min` | **not measured** | A 10-minute sustained inference loop on the target device, sampling p95 latency or FPS every 30 s. |
+These are `NOT_MEASURED` in `results.csv`. Do not quote numbers for them.
 
-Previous drafts claimed 2.56 pt / 285 mW / 4.2% for these. The 2.56 figure was
-the paper's SemLex cross-dataset delta, mislabelled as an occlusion test; the
-power and thermal figures had no source at all. They have been removed.
+---
 
-## Reproducing
+## What would move accuracy, in order
 
-```bash
-pip install -r src/requirements.txt
+1. **More clips per class.** 17–24 is thin. This is the binding constraint and more
+   data is the only direct fix.
+2. **Signer-aware augmentation** — mirroring, and stronger temporal jitter.
+3. **Ensembling** several seeds. Cheap, usually +1–3 points.
+4. **Vocabulary size.** 100 classes was chosen defensively. Fewer classes over the
+   same data raises accuracy per class materially.
 
-# in-distribution control
-python evaluation/eval_wlasl_signers.py
-
-# signer-disjoint evaluation (needs ASL Citizen, ~46 GB, range-extracted)
-python evaluation/eval_asl_citizen.py
-```
+Widening the model and INT8 are explicitly *not* on this list: both were measured and
+both made things worse.

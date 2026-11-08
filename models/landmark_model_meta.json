@@ -1,0 +1,8 @@
+{
+  "frames": 24,
+  "feature_dim": 255,
+  "classes": 100,
+  "dim": 192,
+  "backbone": "conv",
+  "quantization": "float16"
+}

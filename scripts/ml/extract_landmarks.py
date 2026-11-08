@@ -52,13 +52,38 @@ def ensure_task_model():
 
 
 def read_frames(path, size=256, max_frames=32):
+    """Read `max_frames` frames spread evenly across the whole clip.
+
+    Sampling only the opening frames loses signs whenever a clip starts on a
+    dark or auto-exposing frame - one ASL Citizen clip opens almost black and
+    yields zero hand detections across its first 32 frames. Striding with
+    grab() (which advances without decoding) keeps the cost of covering the
+    full clip close to reading 32 frames straight through.
+    """
     cap = cv2.VideoCapture(str(path))
+    if not cap.isOpened():
+        return []
+    total = int(cap.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
     frames = []
-    while len(frames) < max_frames:
-        ok, f = cap.read()
-        if not ok:
-            break
-        frames.append(cv2.cvtColor(cv2.resize(f, (size, size)), cv2.COLOR_BGR2RGB))
+    if total > max_frames:
+        targets = np.unique(np.linspace(0, total - 1, max_frames).astype(int))
+        cur = 0
+        for t in targets:
+            while cur < t:
+                if not cap.grab():
+                    break
+                cur += 1
+            ok, f = cap.read()
+            if not ok:
+                break
+            cur += 1
+            frames.append(cv2.cvtColor(cv2.resize(f, (size, size)), cv2.COLOR_BGR2RGB))
+    else:
+        while len(frames) < max_frames:
+            ok, f = cap.read()
+            if not ok:
+                break
+            frames.append(cv2.cvtColor(cv2.resize(f, (size, size)), cv2.COLOR_BGR2RGB))
     cap.release()
     return frames
 
@@ -80,21 +105,33 @@ def make_image_landmarker():
     return make_landmarker(vision.RunningMode.IMAGE)
 
 
+RECYCLE_EVERY = 200   # clips before rebuilding the landmarker
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--split", default="train", choices=["train", "val", "test", "all"])
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--frames", type=int, default=32)
+    ap.add_argument("--max-clips", type=int, default=0,
+                    help="exit after processing this many clips (0 = no cap). "
+                         "Bounding the run keeps MediaPipe's native state from "
+                         "accumulating into an abort.")
     args = ap.parse_args()
 
     OUT.mkdir(parents=True, exist_ok=True)
     vocab = set(json.load(open(VOCAB, encoding="utf-8")))
     landmarker = make_image_landmarker()
 
-    splits = ["train", "val", "test"] if args.split == "all" else [args.split]
+    # val/test first when running all: they are small and were starved when
+    # the process aborted partway through train.
+    splits = ["val", "test", "train"] if args.split == "all" else [args.split]
     grand = dict(ok=0, miss=0, dead=0)
+    processed = 0
 
     for split in splits:
+        if args.max_clips and processed >= args.max_clips:
+            break
         rows = list(csv.DictReader(open(ASLCIT / "splits" / f"{split}.csv", encoding="utf-8")))
         rows = [r for r in rows if r["Gloss"] in vocab]
         if args.limit:
@@ -105,6 +142,8 @@ def main():
         ok = miss = dead = 0
         t0 = time.perf_counter()
         for n, r in enumerate(rows):
+            if args.max_clips and processed >= args.max_clips:
+                break
             src = VIDEOS / r["Video file"]
             dst = out_dir / (src.stem + ".npz")
             if dst.exists():
@@ -113,6 +152,10 @@ def main():
             if not src.exists():
                 dead += 1
                 continue
+
+            if processed and processed % RECYCLE_EVERY == 0:
+                landmarker.close()
+                landmarker = make_image_landmarker()
 
             try:
                 frames = read_frames(src, max_frames=args.frames)
@@ -149,31 +192,37 @@ def main():
                 seq.append(np.stack([slots["Left"], slots["Right"]]))
                 present.append([seen["Left"], seen["Right"]])
 
-            if not any(v for frame in present for v in frame):
-                miss += 1
-                continue
+            processed += 1
 
+            # Write even when no hand was found. The presence flags carry that
+            # fact to training, and recording it stops the resumable loop from
+            # retrying the same undetectable clip on every pass.
             np.savez_compressed(dst,
                                 landmarks=np.stack(seq),      # (T, 2, 21, 3)
                                 present=np.array(present, np.float32),  # (T, 2)
                                 gloss=r["Gloss"],
                                 participant=r["Participant ID"],
                                 split=split)
-            ok += 1
-            if (n + 1) % 100 == 0:
+            if any(v for frame in present for v in frame):
+                ok += 1
+            else:
+                miss += 1
+            if processed % 50 == 0:
                 el = time.perf_counter() - t0
                 print(f"  [{split}] {n+1}/{len(rows)} ok={ok} miss={miss} dead={dead} "
-                      f"{el:.0f}s ({ok/max(el,1e-9):.2f}/s)", flush=True)
+                      f"{el:.0f}s ({processed/max(el,1e-9):.2f}/s)", flush=True)
 
         el = time.perf_counter() - t0
         print(f"{split}: ok={ok} no_hand={miss} unreadable={dead} of {len(rows)} "
-              f"in {el:.0f}s ({ok/max(el,1e-9):.2f}/s)", flush=True)
+              f"in {el:.0f}s", flush=True)
         grand["ok"] += ok; grand["miss"] += miss; grand["dead"] += dead
 
+    landmarker.close()
     print(f"TOTAL ok={grand['ok']} no_hand={grand['miss']} unreadable={grand['dead']}")
     rate = grand["ok"] / max(grand["ok"] + grand["miss"], 1)
     print(f"hand-detection rate: {rate*100:.1f}%  "
           f"(the plan's fallback trigger is <80%)")
+    print(f"processed {processed} clips this run")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,16 @@
+{
+  "split": "test",
+  "n": 1249,
+  "skipped": 6,
+  "classes": 100,
+  "chance_pct": 1.0,
+  "top1_pct": 62.61,
+  "top5_pct": 80.46,
+  "latency_p50_ms": 0.547,
+  "latency_p95_ms": 0.759,
+  "signers": 11,
+  "per_signer_mean_pct": 63.36,
+  "per_signer_min_pct": 45.77,
+  "per_signer_max_pct": 80.41,
+  "wall_s": 1.5
+}

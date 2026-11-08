@@ -2,7 +2,11 @@
   "frames": 24,
   "feature_dim": 255,
   "classes": 100,
-  "dim": 192,
-  "backbone": "conv",
-  "quantization": "float16"
+  "members": [
+    "landmark_ens_tcn21_fp16.tflite",
+    "landmark_ens_tcn42_fp16.tflite",
+    "landmark_ens_mirror05_s0_fp16.tflite"
+  ],
+  "quantization": "float16",
+  "ensemble_test_top1": 0.7022
 }

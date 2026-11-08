@@ -63,7 +63,8 @@ def main():
     print(f"checkpoint: frames={frames} dim={dim} classes={len(vocab)}")
 
     # ------------------------------------------------------------ build + copy
-    tm = build_tf_model(len(vocab), dim=dim, frames=frames, feature_dim=FEATURE_DIM)
+    tm = build_tf_model(len(vocab), dim=dim, frames=frames, feature_dim=FEATURE_DIM,
+                        backbone=str(ckpt["backbone"]))
     copied, missed, _ = copy_weights(tm, CKPT)
     print(f"copied {copied} layer weight groups")
 

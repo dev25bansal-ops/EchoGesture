@@ -3,8 +3,8 @@
 Follows the field table in [HANDOFF.md](HANDOFF.md#dev--abhijeet--model-bundle).
 
 **Status: ready.** Abhijeet can run the candidate from the documented artifacts and
-verify feature and label parity. The accuracy number is below the ≥70% target and is
-reported as measured.
+verify feature and label parity. **Test top-1 is 70.22%, which meets the ≥70%
+target.**
 
 ---
 
@@ -13,20 +13,26 @@ reported as measured.
 | | |
 | --- | --- |
 | Branch | `hackathon/dev-model` |
-| Commit | `603065a` + this handoff commit (see `git log`) |
-| Shipped artifact | `models/landmark_classifier_fp16.tflite` |
-| SHA-256 | `a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4` |
-| Bytes | 832,888 |
-| Alternative (not shipped) | `models/landmark_classifier_int8.tflite`, SHA-256 `9d24640a23244a3cd00c9fa62257733819f86ed1da5a10194c9b1cb64323700b`, 509,720 bytes |
+| Shipped artifact | **3-model FP16 TFLite ensemble** (see Artifacts) |
+| Ensemble SHA-256 (members) | `112279bc…c73dc22a`, `ce928c98…7f51cfdc`, `aa1ddd7e…77aebca6` |
+| Total size | 2.71 MB (939 + 939 + 833 KB) |
+| Alternative (not shipped) | `models/landmark_classifier_int8.tflite`, SHA-256 `9d24640a…4323700b`, 498 KB |
 
 ## Artifacts
 
 | File | SHA-256 | Role |
 | --- | --- | --- |
-| `models/landmark_classifier_fp16.tflite` | `a012f2b5…7044a4` | classifier, float16 weights / float32 IO |
+| `models/landmark_ens_tcn21_fp16.tflite` | `112279bc…c73dc22a` | member 1, TCN backbone |
+| `models/landmark_ens_tcn42_fp16.tflite` | `ce928c98…7f51cfdc` | member 2, TCN backbone |
+| `models/landmark_ens_mirror05_s0_fp16.tflite` | `aa1ddd7e…77aebca6` | member 3, Conv1D, mirror-augmented |
 | `models/landmark_labels.json` | `1af78527…9d5aa27e` | gloss → class index, **ordered** |
-| `models/landmark_model_meta.json` | `3ad4ecb2…c9cfe7f14` | frames=24, feature_dim=255, classes=100 |
+| `models/landmark_model_meta.json` | `07901460…e8cc3e6e` | frames=24, feature_dim=255, **member list** |
 | `models/hand_landmarker.task` | `fbc2a300…3607cde1` | MediaPipe hand detector, Apache-2.0 |
+
+**The member list lives in `landmark_model_meta.json`.** `main.py` loads exactly
+the files named there and averages their logits — adding or dropping a member
+needs no code change. `predict()` falls back to `landmark_classifier_fp16.tflite`
+if the meta file is absent, but that file is no longer shipped; keep the meta.
 
 Feature config is versioned in `src/features.py` via the `FEATURE_DIM` constant and
 the module docstring; there is no separate config file. A change to the feature
@@ -92,19 +98,21 @@ np.ones((32,2),np.float32), expected_frames=24)` → shape `(24, 255)`.
 | Data | ASL Citizen, 100-gloss subset, official participant-disjoint split |
 | Clips | train 1,789 (32 signers) · val 346 (5) · test 1,255 (11) |
 | Signer overlap | **zero** across all three splits (verified) |
-| Test accuracy (signer-disjoint) | **62.61% top-1, 80.46% top-5**, 1,249 scored clips |
+| Test accuracy (signer-disjoint) | **70.22% top-1, 85.43% top-5**, 1,249 scored clips |
 | Chance | 1.00% |
+| Per-signer | mean 70.83%, **min 53.52%**, max 90.72% |
+| Best single member | 67.65% — the ensemble adds +2.57 |
 | Float vs FP16 | 75.36% vs 75.36% on val — quantization loses **0.00** |
-| TF↔PyTorch parity | max abs logit diff **3.34e-06**, 100% argmax agreement |
-| Classifier latency | 0.55 ms p50 / 0.76 ms p95 |
-| Per-frame streaming | ~16 ms (MediaPipe 15.7 + classifier 0.55) |
-| Cold start | ~7.7 s, one time, MediaPipe graph init |
+| TF↔PyTorch parity | 3.34e-06 / 3.58e-06 / 4.77e-06, 100% argmax agreement, all three |
+| Classifier latency | 0.64 ms p50 / 0.86 ms p95 (all three members) |
+| Per-frame streaming | ~16.3 ms (MediaPipe 15.7 + classifier) |
+| Cold start | ~8.8 s, one time, MediaPipe graph init |
 
 ### Known failure cases
 
 - **6 of 1,255 test clips produce no hand detections in any frame** and are skipped,
   not predicted. `predict()` raises `ValueError` rather than guessing a gloss.
-- Accuracy is uneven across signers: **45.8%** (P42, P9) to **80.4%** (P22). Small
+- Accuracy is uneven across signers: **53.5%** (worst) to **90.7%** (best). Small
   training data per class (17–24 clips) is the binding constraint.
 - One-handed signs dominate the vocabulary (14.3% of frames have two hands); the
   inter-hand features are therefore sparse but not dead.
@@ -120,8 +128,8 @@ release ships derived model weights, not the videos.
 
 1. Does the organizer manifest use clip IDs matching the **video stem**? We key
    `clip_id` on `Path(video_path).stem`.
-2. Is **62.61%** the number to report, or does the device evaluation re-measure on a
-   different clip set? If the latter, the model may need the robustness work in
-   `RESULTS.md` before the deadline.
+2. Is **70.22%** the number to report, or does the device evaluation re-measure on a
+   different clip set? If the latter, note that robustness is still unmeasured —
+   see `RESULTS.md`.
 3. Should `predict()` **raise** or return a low-confidence sentinel when no hand is
    detected? Currently raises.

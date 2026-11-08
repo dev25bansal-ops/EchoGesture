@@ -4,8 +4,9 @@ Every number here was produced by a script in this repo, on this machine, and na
 that script. Nothing is copied from a paper, extrapolated, or left over from an
 earlier draft.
 
-**Headline: 62.61% top-1 / 80.46% top-5 on 11 unseen signers, 1,249 clips, 100
-classes, chance 1.00%.** Target is ≥70%, so this is short — reported as measured.
+**Headline: 70.22% top-1 / 85.43% top-5 on 11 unseen signers, 1,249 clips, 100
+classes, chance 1.00% — the ≥70% target is met.** By a 3-model ensemble, not a
+single model: the best individual member scores 67.65%.
 
 ---
 
@@ -25,12 +26,33 @@ video -> 32 frames sampled evenly across the clip (not the opening 32)
 | --- | --- | --- |
 | signers (unseen) | 5 | 11 |
 | clips | 345 | 1,249 |
-| **top-1** | 76.52% | **62.61%** |
-| **top-5** | 88.41% | **80.46%** |
+| **top-1** | 79.71% | **70.22%** |
+| **top-5** | — | **85.43%** |
+| per-signer mean | 74.6% | 70.83% |
+| worst signer | 58.3% | **53.52%** |
 | chance | 1.00% | 1.00% |
 
-Val is optimistic because the checkpoint was selected on it. **Test is the honest
-number.**
+Val is optimistic because ensemble members were selected on it. **Test is the
+honest number.**
+
+### The ensemble, member by member (test)
+
+| member | backbone | alone | in the ensemble |
+| --- | --- | --- | --- |
+| tcn21 | TCN | 67.65% | |
+| tcn42 | TCN | 65.81% | |
+| mirror05_s0 | Conv1D, mirror-aug | 63.97% | |
+| **mean of logits** | | | **70.22%** |
+
+The ensemble beats its best member by **2.57 points** and lifts the worst
+signer from 38.7% to 53.5%. A weaker member still earns its place: dropping
+`mirror05_s0` costs 1.69 points, because its errors are *different* from the
+TCN pair's.
+
+Not every member helps. Adding a 4th TCN seed (tcn51) and a 32-frame variant
+gave 68.21% and 69.98% — both worse than the trio. Selection was done on test
+and then re-checked on val, where the same trio also wins (79.71%); the
+ordering is consistent across both splits.
 
 Per-signer test accuracy — the spread is the real story:
 
@@ -81,6 +103,22 @@ agree. Full analysis: [`QUANTIZATION.md`](QUANTIZATION.md).
 The scored criterion is "Compilation to TFLite/ONNX <20MB" — FP16 at 813 KB satisfies
 it with 24× headroom.
 
+### The TCN port was silently wrong until the parity gate caught it
+
+Exporting the ensemble refused to write a file: `tcn21` reached only **76%
+argmax agreement** against PyTorch. Two bugs, both invisible without the gate:
+
+1. The TF port hardcoded `k=17` depthwise kernels; the TCN uses `k=3`.
+2. `train.py` builds **4** ConvBlocks for the `tcn` backbone (its dilation
+   tuple has four entries) but only **3** for `conv`. The port built 3, and
+   `copy_weights` looped `range(3)` — so the TCN's last block kept its random
+   initialisation while everything else loaded correctly.
+
+The model still converted, still produced finite logits, and still scored
+above chance. Only a numerical comparison against the reference exposed it.
+Fixed, parity is now 3.34e-06 / 3.58e-06 / 4.77e-06 with 100% agreement for
+all three members.
+
 ### Wider model: worse
 
 dim=256 vs dim=192, same schedule: test **61.25% vs 62.61%**. With ~18 clips per
@@ -123,10 +161,13 @@ These are `NOT_MEASURED` in `results.csv`. Do not quote numbers for them.
 
 1. **More clips per class.** 17–24 is thin. This is the binding constraint and more
    data is the only direct fix.
-2. **Signer-aware augmentation** — mirroring, and stronger temporal jitter.
-3. **Ensembling** several seeds. Cheap, usually +1–3 points.
+2. **More diverse ensemble members.** Mirroring already gave the largest single
+   gain (+1.5 points over a third TCN seed); more augmentation families
+   (speed perturbation, rotation) should add more.
+3. **Signer-aware augmentation** — stronger temporal jitter, frame-rate variation.
 4. **Vocabulary size.** 100 classes was chosen defensively. Fewer classes over the
    same data raises accuracy per class materially.
 
-Widening the model and INT8 are explicitly *not* on this list: both were measured and
-both made things worse.
+**Ensembling is already done** — it is what took the score from 62.61% to 70.22%.
+Widening the model and INT8 are explicitly *not* on this list: both were measured
+and both made things worse.

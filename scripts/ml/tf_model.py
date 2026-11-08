@@ -72,20 +72,30 @@ class QueryConst(tf.keras.layers.Layer):
         return tf.cast(self.q, x.dtype) + tf.zeros_like(x[:, :1, :])
 
 
-def build_tf_model(num_classes, dim=192, frames=24, feature_dim=255, dropout=0.2):
+def build_tf_model(num_classes, dim=192, frames=24, feature_dim=255, dropout=0.2,
+                   backbone="conv"):
     """Functional model matching train.TemporalModel.
 
     Layer names mirror the PyTorch state_dict keys so `copy_weights` can map
-    them without a lookup table that would silently rot.
+    them without a lookup table that would silently rot. `backbone` selects
+    the same kernel size the torch model used: the conv variant uses a wide
+    k=17 depthwise filter, the tcn variant a narrow k=3 dilated one. Getting
+    this wrong fails loudly at set_weights, which is why it is a parameter and
+    not a guess.
     """
+    k = 17 if backbone == "conv" else 3
+    # torch builds 3 blocks for 'conv' and 4 for 'tcn' (its dilation tuple has
+    # four entries, though ConvBlock ignores the dilation - all four are plain
+    # k=3 convs). The count has to match or the state_dict keys do not line up.
+    n_blocks = 3 if backbone == "conv" else 4
     inp = tf.keras.Input(shape=(frames, feature_dim), name="features")
 
     x = inp                                            # (B,T,F)
     x = tf.keras.layers.Conv1D(dim, 1, name="stem")(x)  # (B,T,C)
     x = tf.keras.layers.BatchNormalization(name="norm", epsilon=1e-5)(x)
 
-    for i in range(3):
-        h = tf.keras.layers.DepthwiseConv1D(17, padding="same",
+    for i in range(n_blocks):
+        h = tf.keras.layers.DepthwiseConv1D(k, padding="same",
                                             name=f"blocks_{i}_dw")(x)
         h = tf.keras.layers.Conv1D(dim, 1, name=f"blocks_{i}_pw")(h)
         h = tf.keras.layers.BatchNormalization(name=f"blocks_{i}_norm", epsilon=1e-5)(h)
@@ -203,7 +213,13 @@ def copy_weights(tf_model, ckpt_path):
     put(tf_model.get_layer("norm"), [arr("norm.weight"), arr("norm.bias"),
                                      arr("norm.running_mean"), arr("norm.running_var")])
 
-    for i in range(3):
+    # Drive the loop off the checkpoint, not a literal: the tcn backbone has
+    # four blocks and conv has three, and a hardcoded 3 would silently leave
+    # the last tcn block at its random initialisation.
+    n_blocks = 1
+    while f"blocks.{n_blocks}.dw.weight" in sd:
+        n_blocks += 1
+    for i in range(n_blocks):
         p = f"blocks.{i}"
         put(tf_model.get_layer(f"blocks_{i}_dw"),
             # torch (out,1,k) -> keras (k, channels, depth_multiplier=1)

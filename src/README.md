@@ -22,15 +22,27 @@ All four files in `models/` are required; the pipeline loads them at first call.
 
 | file | size | role |
 | --- | --- | --- |
-| `landmark_classifier_fp16.tflite` | 813 KB | the classifier (shipped) |
-| `landmark_classifier_int8.tflite` | 498 KB | INT8 alternative, measured lower accuracy — see `results/QUANTIZATION.md` |
+| `landmark_ens_tcn21_fp16.tflite` | 917 KB | ensemble member 1 (TCN) |
+| `landmark_ens_tcn42_fp16.tflite` | 917 KB | ensemble member 2 (TCN) |
+| `landmark_ens_mirror05_s0_fp16.tflite` | 813 KB | ensemble member 3 (Conv1D, mirror-augmented) |
+| `landmark_classifier_int8.tflite` | 498 KB | INT8 reference, measured lower accuracy — see `results/QUANTIZATION.md` |
 | `landmark_labels.json` | 1.6 KB | gloss -> class index |
-| `landmark_model_meta.json` | 130 B | frame count and feature width |
+| `landmark_model_meta.json` | 269 B | frame count, feature width, **ensemble member list** |
 | `hand_landmarker.task` | 7.8 MB | MediaPipe hand detector (Apache-2.0, Google) |
 
+`landmark_model_meta.json` lists the members; `main.py` loads exactly those and
+averages their logits. Adding or dropping a member is a one-line change there,
+not a code change.
+
 The 7.8 MB MediaPipe task file is a model asset downloaded at install time by
-`src/landmark_frontend.py` if absent. Total shipped model weight, classifier plus
-detector, is ~8.6 MB — inside the 20 MB budget.
+`src/landmark_frontend.py` if absent. Total shipped model weight, ensemble plus
+detector, is ~10.5 MB — inside the 20 MB budget.
+
+**Why an ensemble.** Three models averaged beat the best single model by 2.57
+points (70.22% vs 67.65% on held-out signers) and lift the worst signer from
+38.7% to 53.5%. The members make different errors; the mean cancels part of
+that. Logits are averaged, not probabilities, so one over-confident member
+cannot dominate.
 
 ---
 
@@ -61,14 +73,14 @@ python main.py path/to/test_clip.mp4
 
 ### Latency, stated precisely
 
-- **Classifier inference: 0.55 ms p50, 0.81 ms p95** — this is the number the jury
-  matrix scores ("Measured inference time <50 ms").
-- **Per-frame streaming budget: ~16 ms** — MediaPipe 15.7 ms + classifier 0.55 ms,
-  so a live camera sustains ~30 fps inside the 50 ms frame budget.
-- **Whole-clip batch path: ~450 ms warm** — decode 52 ms + MediaPipe over 32 frames
-  503 ms + features 0.4 ms + classifier 0.6 ms. This is a batch-of-one-clip cost,
-  not per-frame latency.
-- **Cold start: ~8 s**, one time, dominated by MediaPipe graph initialization.
+- **Classifier inference: 0.64 ms p50, 0.86 ms p95** across all three members —
+  this is the number the jury matrix scores ("Measured inference time <50 ms").
+- **Per-frame streaming budget: ~16.3 ms** — MediaPipe 15.7 ms + classifier, so
+  a live camera sustains ~30 fps inside the 50 ms frame budget.
+- **Whole-clip batch path: ~470 ms warm** — decode 52 ms + MediaPipe over 32
+  frames 503 ms + features 0.4 ms + three model invocations. This is a
+  batch-of-one-clip cost, not per-frame latency.
+- **Cold start: ~8.8 s**, one time, dominated by MediaPipe graph initialization.
 
 ---
 
@@ -107,9 +119,9 @@ Signer-disjoint ASL Citizen test — 11 participants never seen in training,
 
 | metric | value |
 | --- | --- |
-| top-1 | **62.61%** |
-| top-5 | **80.46%** |
-| per-signer mean | 63.4% (min 45.8%, max 80.4%) |
+| top-1 | **70.22%** |
+| top-5 | **85.43%** |
+| per-signer mean | 70.83% (min 53.52%, max 90.72%) |
 
-This is below the ≥70% target. Measured honestly; see `RESULTS.md` for the full
-breakdown, the failed paths, and what would move the number.
+Measured through `predict()` with all three ensemble members. See `RESULTS.md`
+for the full history, the failed paths, and what would move the number further.

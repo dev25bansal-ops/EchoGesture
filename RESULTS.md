@@ -221,15 +221,39 @@ reliable and the exact values as approximate.
 
 ---
 
+## Overfitting: the number that explains the ceiling
+
+Measured on the shipped member `rob71`:
+
+| | top-1 |
+| --- | --- |
+| training clips | **99.40%** |
+| held-out signers | 72.00% |
+
+A 27-point gap. The model memorises the 1,787 training clips and generalises
+far less well. This single measurement rules out most architectural
+improvements:
+
+- **More capacity makes it worse** — dim=256 scored 61.25%, consistent with
+  the gap widening.
+- **The softmax is well calibrated anyway** (mean max-prob 0.418, only 5% of
+  predictions above 0.9). So the failure is not overconfidence; the model is
+  honestly uncertain on people it has not seen.
+- **The constraint is 17–24 clips per class**, and no amount of
+  regularisation, capacity, or TTA creates data.
+
+Every remaining idea in the list below was tested and measured; the negative
+results are in [`EXPERIMENTS.md`](EXPERIMENTS.md).
+
 ## What would move accuracy, in order
 
-1. **More clips per class.** 17–24 is thin. This is the binding constraint and more
-   data is the only direct fix.
-2. **More diverse ensemble members.** Mirroring already gave the largest single
-   gain (+1.5 points over a third TCN seed); more augmentation families
-   (speed perturbation, rotation) should add more.
-3. **Signer-aware augmentation** — stronger temporal jitter, frame-rate variation.
-4. **Vocabulary size.** 100 classes was chosen defensively. Fewer classes over the
+1. **More clips per class.** 17–24 is thin and it is the binding constraint —
+   training accuracy is already 99.4%. More data is the only direct fix.
+2. **More diverse ensemble members.** Mirroring works and is already in;
+   speed perturbation was tried and made things worse (see EXPERIMENTS.md).
+   A genuinely different input view — e.g. adding the z channel the model
+   currently drops — is the most promising untried axis.
+3. **Vocabulary size.** 100 classes was chosen defensively. Fewer classes over the
    same data raises accuracy per class materially.
 
 **Ensembling is already done** — it is what took the score from 62.61% to 72.78%.

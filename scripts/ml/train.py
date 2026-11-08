@@ -22,6 +22,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
+import features as _F  # noqa: E402
 from features import build_features, FEATURE_DIM  # noqa: E402
 
 import torch  # noqa: E402
@@ -216,7 +217,14 @@ def main():
     ap.add_argument("--backbone", default="conv", choices=["conv", "tcn"])
     ap.add_argument("--out", default=".scratch/runs/model.pt")
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--dropout", type=float, default=0.2)
+    ap.add_argument("--wd", type=float, default=1e-4)
+    ap.add_argument("--strict-resample", action="store_true",
+                    help="use the corrected _resample (must match at inference)")
     args = ap.parse_args()
+    if args.strict_resample:
+        _F.STRICT_RESAMPLE = True
+        print("STRICT_RESAMPLE=True (corrected hand-presence interpolation)")
 
     random.seed(args.seed); np.random.seed(args.seed); torch.manual_seed(args.seed)
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -236,11 +244,11 @@ def main():
                         batch_size=args.batch, shuffle=False, num_workers=0)
 
     model = TemporalModel(len(vocab), dim=args.dim, frames=args.frames,
-                          backbone=args.backbone).to(device)
+                          backbone=args.backbone, dropout=args.dropout).to(device)
     n_params = sum(p.numel() for p in model.parameters())
     print(f"model: {args.backbone} dim={args.dim} params={n_params:,}")
 
-    opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-4)
+    opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.wd)
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=args.epochs)
     lossf = nn.CrossEntropyLoss(label_smoothing=0.1)
 
@@ -267,7 +275,7 @@ def main():
             best = acc
             torch.save({"model": model.state_dict(), "vocab": vocab,
                         "dim": args.dim, "frames": args.frames,
-                        "backbone": args.backbone}, out)
+                        "backbone": args.backbone, "dropout": args.dropout}, out)
             # Keep a slice of real validation inputs for INT8 calibration.
             # Calibrating on noise biases every activation range.
             cal = []

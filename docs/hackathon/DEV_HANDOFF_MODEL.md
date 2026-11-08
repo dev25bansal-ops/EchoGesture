@@ -115,10 +115,11 @@ np.ones((32,2),np.float32), expected_frames=24)` → shape `(24, 255)`.
 - Accuracy is uneven across signers: **53.5%** (worst) to **87.6%** (best). Small
   training data per class (17–24 clips) is the binding constraint.
 - **A hand leaving frame for 25% of a clip costs 6.65 points** — the one
-  robustness case outside the ≤5-point budget. `features._resample` blends a
-  present and an absent frame into a phantom half-hand; the fix is written and
-  understood but changes the input distribution, so it must ship with a
-  retrain (it costs 5.3 points on the current weights). See `RESULTS.md`.
+  robustness case outside the ≤5-point budget. This gap is **open**: a
+  corrected feature interpolation was implemented and fully retrained, and it
+  made both clean and hand-dropped accuracy worse (64.61% / 47.64% vs 72.78% /
+  58.21%), so it was not shipped. `RESULTS.md` and `EXPERIMENTS.md` have the
+  measurements.
 - Pixel-level degradation is harsher than landmark-level: motion blur and
   downscaling cost 13–35 points because they corrupt MediaPipe's input before
   the classifier sees anything.

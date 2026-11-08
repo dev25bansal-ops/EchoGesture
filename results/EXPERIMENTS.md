@@ -8,6 +8,31 @@ shipped baseline is a 4-model ensemble at **72.78%**.
 
 ---
 
+## Rejected: the `_resample` "phantom hand" fix — 64.61%
+
+`features._resample` interpolates coordinates and the presence flag
+independently, so a frame straddling a hand appearing or disappearing blends a
+real hand with an absent one into a half-size phantom. Making that consistent
+(zero the slot when either source frame lacks the hand) looked obviously
+correct, and `STRICT_RESAMPLE` was added so it could be tested.
+
+Full retrain with the corrected transform:
+
+| | clean | hand dropped |
+| --- | --- | --- |
+| shipped 4-model ensemble | **72.78%** | **58.21%** |
+| strict91, own retrain | 64.61% | 47.64% |
+
+Worse on **both** axes. It does not even fix the hand-drop case it was
+designed for — because removing the blended frames also removes the
+transition frames that carry the sign's onset, and 17–24 clips per class
+cannot pay for that.
+
+Adding it to the shipped ensemble gives 72.62%, no gain. The flag stays in
+`features.py` (default False, documented) so the experiment is reproducible,
+but the shipped transform is correct as-is. This entry exists because the
+fix *looked* right and measuring it is what stopped it shipping.
+
 ## Rejected: speed perturbation — 63.65%
 
 Stretched or compressed each training clip's timeline by 0.8x–1.25x before the

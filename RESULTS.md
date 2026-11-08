@@ -176,17 +176,25 @@ end-to-end test).
 Five of six inside the ≤5-point criterion. The failure is real and understood:
 a hand leaving frame for a quarter of the clip costs 6.65 points.
 
-**Cause, precisely.** `features._resample` interpolates coordinates and the
-presence flag independently. When a frame straddles a hand appearing or
-disappearing, it blends a real hand with an absent one, producing a half-size
-hand at the origin whose interpolated presence can land above 0.5 — so it is
-treated as real. Making that interpolation consistent (zero the slot when
-either source frame lacks the hand) is the correct fix and measurably helps.
+**A hypothesis that looked right and was wrong.** `features._resample`
+interpolates coordinates and the presence flag independently, so a frame
+straddling a hand appearing or disappearing blends a real hand with an absent
+one into a half-size phantom whose presence value can still exceed 0.5. Making
+that consistent looked like an obvious fix, so it was implemented
+(`STRICT_RESAMPLE`) and retrained from scratch.
 
-**Why it is not applied yet.** The shipped checkpoints were trained against the
-current behaviour. Applying the fix to the feature code without retraining
-drops the ensemble from **72.78% to 67.49%** — the input distribution shifts
-under weights that never saw it. The fix ships only together with a retrain.
+It made things worse on both axes:
+
+| | clean | hand dropped |
+| --- | --- | --- |
+| shipped 4-model ensemble | **72.78%** | **58.21%** |
+| strict-resample model, own retrain | 64.61% | 47.64% |
+
+Removing the blended frames also removes the transition frames carrying the
+sign's onset, and 17–24 clips per class cannot pay for that. Adding the model
+to the ensemble gave 72.62%, no gain. The flag remains in `features.py`,
+default False, so the experiment is reproducible — but this robustness gap is
+**open**, not merely unapplied. `EXPERIMENTS.md` has the full entry.
 
 ### Two corruption definitions were corrected, not the model
 

@@ -5,6 +5,11 @@ Organized by **Samsung R&D Institute India, Bangalore** (XR Perception Group & P
 
 ---
 
+## Hackathon team workflow
+
+Start with the [two-person sprint plan](docs/hackathon/README.md) and the
+[agent guide](AGENTS.md) for Abhijeet and Dev's ownership and handoffs.
+
 ## Status: research complete, submission NOT ready
 
 This repository contains a working inference pipeline, an empirically-validated

@@ -139,14 +139,22 @@ class ClipDataset(Dataset):
                 # a landmark that jittered out of frame is not a real
                 # observation; keep coordinates legal
                 np.clip(lm[..., :2], 0.0, 1.0, out=lm[..., :2])
-            # hand masking: simulate occlusion of one or both hands
-            if np.random.rand() < 0.3:
-                n = np.random.randint(1, max(2, len(pres) // 4))
+            # Hand masking: a hand leaving frame is the most common real
+            # failure and the one degradation this model handled worst
+            # (-6.7 pts at 25% dropout in scripts/ml/robustness.py). The old
+            # version fired on 30% of clips for at most T//4 frames, which
+            # never showed the model a long absence. This fires harder so the
+            # model learns to classify from one hand when it has to.
+            if np.random.rand() < 0.5:
+                n = np.random.randint(1, max(2, int(len(pres) * 0.5)))
                 start = np.random.randint(0, max(1, len(pres) - n))
                 pres = pres.copy()
                 if pres.ndim == 2:
                     which = np.random.randint(0, 2)
                     pres[start:start + n, which] = 0.0
+                    # Occasionally drop both, as a fully occluded frame.
+                    if np.random.rand() < 0.2:
+                        pres[start:start + n, 1 - which] = 0.0
                 else:
                     pres[start:start + n] = 0.0
 

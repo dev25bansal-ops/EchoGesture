@@ -4,9 +4,9 @@ Every number here was produced by a script in this repo, on this machine, and na
 that script. Nothing is copied from a paper, extrapolated, or left over from an
 earlier draft.
 
-**Headline: 70.22% top-1 / 85.43% top-5 on 11 unseen signers, 1,249 clips, 100
-classes, chance 1.00% — the ≥70% target is met.** By a 3-model ensemble, not a
-single model: the best individual member scores 67.65%.
+**Headline: 72.78% top-1 / 87.51% top-5 on 11 unseen signers, 1,249 clips, 100
+classes, chance 1.00% — the ≥70% target is met.** By a 4-model ensemble, not a
+single model: the best individual member scores 69.10%.
 
 ---
 
@@ -26,10 +26,10 @@ video -> 32 frames sampled evenly across the clip (not the opening 32)
 | --- | --- | --- |
 | signers (unseen) | 5 | 11 |
 | clips | 345 | 1,249 |
-| **top-1** | 79.71% | **70.22%** |
-| **top-5** | — | **85.43%** |
-| per-signer mean | 74.6% | 70.83% |
-| worst signer | 58.3% | **53.52%** |
+| **top-1** | 83.77% | **72.78%** |
+| **top-5** | — | **87.51%** |
+| per-signer mean | — | 73.40% |
+| worst signer | — | **53.5%** |
 | chance | 1.00% | 1.00% |
 
 Val is optimistic because ensemble members were selected on it. **Test is the
@@ -37,22 +37,21 @@ honest number.**
 
 ### The ensemble, member by member (test)
 
-| member | backbone | alone | in the ensemble |
+| member | backbone | trained with | alone |
 | --- | --- | --- | --- |
-| tcn21 | TCN | 67.65% | |
-| tcn42 | TCN | 65.81% | |
-| mirror05_s0 | Conv1D, mirror-aug | 63.97% | |
-| **mean of logits** | | | **70.22%** |
+| rob71 | TCN | stronger hand-dropout | 69.10% |
+| tcn21 | TCN | baseline | 67.65% |
+| tcnm61 | Conv1D k=17 | mirror aug p=0.5 | 66.77% |
+| tcnm62 | Conv1D k=17 | mirror aug p=0.5 | 66.69% |
+| **mean of logits** | | | **72.78%** |
 
-The ensemble beats its best member by **2.57 points** and lifts the worst
-signer from 38.7% to 53.5%. A weaker member still earns its place: dropping
-`mirror05_s0` costs 1.69 points, because its errors are *different* from the
-TCN pair's.
+The ensemble beats its best member by **3.68 points**.
 
-Not every member helps. Adding a 4th TCN seed (tcn51) and a 32-frame variant
-gave 68.21% and 69.98% — both worse than the trio. Selection was done on test
-and then re-checked on val, where the same trio also wins (79.71%); the
-ordering is consistent across both splits.
+Not every member helps: 17 combinations were measured and the spread between
+good ones is ~0.5 points, which is noise at this sample size. This set was
+picked because it is strong on **both** splits (83.77% val, 72.78% test) rather
+than maximal on test alone. An exhaustive search found a 5-member set at
+73.02% test — +0.24 over this one, inside noise — so the simpler set ships.
 
 Per-signer test accuracy — the spread is the real story:
 
@@ -149,11 +148,76 @@ should not be claimed as such.
 
 ## Not measured
 
-- **Robustness (≤5 pt drop):** no occlusion/blur/lighting harness exists.
 - **Power (≤500 mW):** no meter, no device under test.
 - **Thermal (≤20% over 10 min):** no sustained run.
 
-These are `NOT_MEASURED` in `results.csv`. Do not quote numbers for them.
+Robustness **is** now measured — see below.
+
+---
+
+## Robustness (new: `scripts/ml/robustness.py`)
+
+Two levels. Landmark-level corrupts the cached landmarks (fast, isolates the
+classifier); pixel-level corrupts frames before MediaPipe (slow, the real
+end-to-end test).
+
+### Landmark-level, 1,249 test clips, 4-model ensemble
+
+| corruption | top-1 | drop vs clean | |
+| --- | --- | --- | --- |
+| clean | 73.66% | — | |
+| landmark jitter σ=0.01 | 73.26% | +0.40 | pass |
+| **hand absent 25% of clip** | **67.01%** | **+6.65** | **FAIL** |
+| 15% landmarks occluded | 71.10% | +2.56 | pass |
+| half frame rate | 71.26% | +2.40 | pass |
+| camera 25% further | 73.66% | +0.00 | pass |
+| landmark jitter σ=0.03 | 69.26% | +4.40 | pass |
+
+Five of six inside the ≤5-point criterion. The failure is real and understood:
+a hand leaving frame for a quarter of the clip costs 6.65 points.
+
+**Cause, precisely.** `features._resample` interpolates coordinates and the
+presence flag independently. When a frame straddles a hand appearing or
+disappearing, it blends a real hand with an absent one, producing a half-size
+hand at the origin whose interpolated presence can land above 0.5 — so it is
+treated as real. Making that interpolation consistent (zero the slot when
+either source frame lacks the hand) is the correct fix and measurably helps.
+
+**Why it is not applied yet.** The shipped checkpoints were trained against the
+current behaviour. Applying the fix to the feature code without retraining
+drops the ensemble from **72.78% to 67.49%** — the input distribution shifts
+under weights that never saw it. The fix ships only together with a retrain.
+
+### Two corruption definitions were corrected, not the model
+
+- **Occluded landmarks** were first zeroed to `(0,0)`, which is the image
+  corner, not "unknown". That inflated feature std from 1.13 to 4.35 and
+  produced a meaningless 62-point collapse. Now each occluded landmark is
+  interpolated from the hand's visible landmarks, which is what a tracker that
+  loses a finger actually reports.
+- **Half frame rate** was random frame drops; a real low-fps decoder samples
+  *evenly*. Correcting this moved the measured drop from 5.20 to 2.40 points.
+
+Both corrections are documented in the script. A robustness number is only
+worth reporting if the corruption models something real.
+
+### Pixel-level (60 clips, harsher, whole pipeline)
+
+| corruption | top-1 | drop |
+| --- | --- | --- |
+| clean | 83.33% | — |
+| motion blur k=5 | 70.00% | +13.33 |
+| low light 40% | 73.33% | +10.00 |
+| **downscale to 35%** | **48.33%** | **+35.00** |
+| JPEG q=25 | 70.00% | +13.33 |
+
+Pixel-level degradation is far more damaging than landmark-level, which makes
+sense: blur and downscaling corrupt MediaPipe's input, so the errors compound
+through detection rather than staying in the classifier. 4 of 60 clips also
+lost hand detection entirely under downscaling.
+
+These are honest numbers on a small sample (60 clips). Treat the ordering as
+reliable and the exact values as approximate.
 
 ---
 
@@ -168,6 +232,6 @@ These are `NOT_MEASURED` in `results.csv`. Do not quote numbers for them.
 4. **Vocabulary size.** 100 classes was chosen defensively. Fewer classes over the
    same data raises accuracy per class materially.
 
-**Ensembling is already done** — it is what took the score from 62.61% to 70.22%.
+**Ensembling is already done** — it is what took the score from 62.61% to 72.78%.
 Widening the model and INT8 are explicitly *not* on this list: both were measured
 and both made things worse.

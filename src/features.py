@@ -181,7 +181,20 @@ def build_features(landmarks, present, expected_frames=None, use_z=False):
 
 
 def _resample(xy, present, target):
-    """Linear resample along time to a fixed frame count."""
+    """Linear resample along time to a fixed frame count.
+
+    KNOWN ISSUE, deliberately left as-is for the shipped models. Coordinates
+    and presence are interpolated independently, so a frame that straddles a
+    hand appearing or disappearing gets a blended "half hand" with a
+    fractional presence flag. Making the interpolation consistent (zero the
+    slot when EITHER source frame lacks the hand) is the physically correct
+    behaviour and measurably helps the hand-drop robustness case - but the
+    current checkpoints were TRAINED against this version, and changing it
+    drops the shipped ensemble from 72.78% to 67.49% because the input
+    distribution shifts under them.
+
+    Fix this only together with a retrain. Tracked in RESULTS.md.
+    """
     t = len(xy)
     if t == target:
         return xy, present

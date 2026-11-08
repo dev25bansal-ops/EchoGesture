@@ -1,0 +1,22 @@
+{
+  "clean": {
+    "top1": 83.33333333333333,
+    "no_detection": 0
+  },
+  "blur_k5": {
+    "top1": 70.0,
+    "no_detection": 0
+  },
+  "low_light_40pct": {
+    "top1": 73.33333333333333,
+    "no_detection": 0
+  },
+  "downscale_35pct": {
+    "top1": 48.333333333333336,
+    "no_detection": 4
+  },
+  "jpeg_q25": {
+    "top1": 70.0,
+    "no_detection": 1
+  }
+}

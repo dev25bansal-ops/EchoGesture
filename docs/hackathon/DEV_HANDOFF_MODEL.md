@@ -3,8 +3,7 @@
 Follows the field table in [HANDOFF.md](HANDOFF.md#dev--abhijeet--model-bundle).
 
 **Status: ready.** Abhijeet can run the candidate from the documented artifacts and
-verify feature and label parity. **Test top-1 is 70.22%, which meets the ≥70%
-target.**
+verify feature and label parity. **Test top-1 is 72.78%, which clears the ≥70% target.**
 
 ---
 
@@ -14,19 +13,20 @@ target.**
 | --- | --- |
 | Branch | `hackathon/dev-model` |
 | Shipped artifact | **3-model FP16 TFLite ensemble** (see Artifacts) |
-| Ensemble SHA-256 (members) | `112279bc…c73dc22a`, `ce928c98…7f51cfdc`, `aa1ddd7e…77aebca6` |
-| Total size | 2.71 MB (939 + 939 + 833 KB) |
+| Ensemble SHA-256 (members) | `08417e72…76d1ab21`, `112279bc…c73dc22a`, `01a261d8…b1390f63`, `27058a85…428d20b3` |
+| Total size | 3.46 MB across four members |
 | Alternative (not shipped) | `models/landmark_classifier_int8.tflite`, SHA-256 `9d24640a…4323700b`, 498 KB |
 
 ## Artifacts
 
 | File | SHA-256 | Role |
 | --- | --- | --- |
-| `models/landmark_ens_tcn21_fp16.tflite` | `112279bc…c73dc22a` | member 1, TCN backbone |
-| `models/landmark_ens_tcn42_fp16.tflite` | `ce928c98…7f51cfdc` | member 2, TCN backbone |
-| `models/landmark_ens_mirror05_s0_fp16.tflite` | `aa1ddd7e…77aebca6` | member 3, Conv1D, mirror-augmented |
+| `models/landmark_ens_rob71_fp16.tflite` | `08417e72…76d1ab21` | member 1, TCN, stronger augmentation |
+| `models/landmark_ens_tcn21_fp16.tflite` | `112279bc…c73dc22a` | member 2, TCN |
+| `models/landmark_ens_tcnm61_fp16.tflite` | `01a261d8…b1390f63` | member 3, Conv1D, mirror-augmented |
+| `models/landmark_ens_tcnm62_fp16.tflite` | `27058a85…428d20b3` | member 4, Conv1D, mirror-augmented |
 | `models/landmark_labels.json` | `1af78527…9d5aa27e` | gloss → class index, **ordered** |
-| `models/landmark_model_meta.json` | `07901460…e8cc3e6e` | frames=24, feature_dim=255, **member list** |
+| `models/landmark_model_meta.json` | `60fecd51…24ad3f174` | frames=24, feature_dim=255, **member list** |
 | `models/hand_landmarker.task` | `fbc2a300…3607cde1` | MediaPipe hand detector, Apache-2.0 |
 
 **The member list lives in `landmark_model_meta.json`.** `main.py` loads exactly
@@ -98,13 +98,13 @@ np.ones((32,2),np.float32), expected_frames=24)` → shape `(24, 255)`.
 | Data | ASL Citizen, 100-gloss subset, official participant-disjoint split |
 | Clips | train 1,789 (32 signers) · val 346 (5) · test 1,255 (11) |
 | Signer overlap | **zero** across all three splits (verified) |
-| Test accuracy (signer-disjoint) | **70.22% top-1, 85.43% top-5**, 1,249 scored clips |
+| Test accuracy (signer-disjoint) | **72.78% top-1, 87.51% top-5**, 1,249 scored clips |
 | Chance | 1.00% |
-| Per-signer | mean 70.83%, **min 53.52%**, max 90.72% |
-| Best single member | 67.65% — the ensemble adds +2.57 |
+| Per-signer | mean 73.40%, **min 53.5%**, max 87.6% |
+| Best single member | 69.10% — the ensemble adds +3.68 |
 | Float vs FP16 | 75.36% vs 75.36% on val — quantization loses **0.00** |
 | TF↔PyTorch parity | 3.34e-06 / 3.58e-06 / 4.77e-06, 100% argmax agreement, all three |
-| Classifier latency | 0.64 ms p50 / 0.86 ms p95 (all three members) |
+| Classifier latency | 1.21 ms p50 / 1.60 ms p95 (all four members) |
 | Per-frame streaming | ~16.3 ms (MediaPipe 15.7 + classifier) |
 | Cold start | ~8.8 s, one time, MediaPipe graph init |
 
@@ -112,8 +112,16 @@ np.ones((32,2),np.float32), expected_frames=24)` → shape `(24, 255)`.
 
 - **6 of 1,255 test clips produce no hand detections in any frame** and are skipped,
   not predicted. `predict()` raises `ValueError` rather than guessing a gloss.
-- Accuracy is uneven across signers: **53.5%** (worst) to **90.7%** (best). Small
+- Accuracy is uneven across signers: **53.5%** (worst) to **87.6%** (best). Small
   training data per class (17–24 clips) is the binding constraint.
+- **A hand leaving frame for 25% of a clip costs 6.65 points** — the one
+  robustness case outside the ≤5-point budget. `features._resample` blends a
+  present and an absent frame into a phantom half-hand; the fix is written and
+  understood but changes the input distribution, so it must ship with a
+  retrain (it costs 5.3 points on the current weights). See `RESULTS.md`.
+- Pixel-level degradation is harsher than landmark-level: motion blur and
+  downscaling cost 13–35 points because they corrupt MediaPipe's input before
+  the classifier sees anything.
 - One-handed signs dominate the vocabulary (14.3% of frames have two hands); the
   inter-hand features are therefore sparse but not dead.
 
@@ -128,7 +136,7 @@ release ships derived model weights, not the videos.
 
 1. Does the organizer manifest use clip IDs matching the **video stem**? We key
    `clip_id` on `Path(video_path).stem`.
-2. Is **70.22%** the number to report, or does the device evaluation re-measure on a
+2. Is **72.78%** the number to report, or does the device evaluation re-measure on a
    different clip set? If the latter, note that robustness is still unmeasured —
    see `RESULTS.md`.
 3. Should `predict()` **raise** or return a low-confidence sentinel when no hand is

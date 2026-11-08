@@ -114,37 +114,48 @@ def main():
                 dead += 1
                 continue
 
-            frames = read_frames(src, max_frames=args.frames)
+            try:
+                frames = read_frames(src, max_frames=args.frames)
+            except Exception:
+                dead += 1
+                continue
             if not frames:
                 dead += 1
                 continue
 
-            # 21x3 for the dominant hand per frame, plus presence
+            # TWO hands per frame, in canonical left/right slots. Most ASL
+            # signs are two-handed, so keeping only the dominant hand would
+            # discard the sign. MediaPipe returns handedness labels, which are
+            # from the camera's point of view; ASL Citizen clips are not
+            # mirrored, so we map label "Left"/"Right" straight through and
+            # never swap them.
             seq, present = [], []
             for f in frames:
-                mp_img = mp.Image(image_format=mp.ImageFormat.SRGB, data=f)
-                res = landmarker.detect(mp_img)
-                if res.hand_landmarks:
-                    # pick the hand with the largest bounding box (closest)
-                    best, best_area = None, -1.0
-                    for hl in res.hand_landmarks:
-                        xs = [p.x for p in hl]; ys = [p.y for p in hl]
-                        area = (max(xs) - min(xs)) * (max(ys) - min(ys))
-                        if area > best_area:
-                            best, best_area = hl, area
-                    seq.append(np.array([[p.x, p.y, p.z] for p in best], np.float32))
-                    present.append(1.0)
-                else:
-                    seq.append(np.zeros((21, 3), np.float32))
-                    present.append(0.0)
+                try:
+                    mp_img = mp.Image(image_format=mp.ImageFormat.SRGB, data=f)
+                    res = landmarker.detect(mp_img)
+                except Exception:
+                    res = None
+                slots = {"Left": np.zeros((21, 3), np.float32),
+                         "Right": np.zeros((21, 3), np.float32)}
+                seen = {"Left": 0.0, "Right": 0.0}
+                if res is not None and res.hand_landmarks:
+                    for hl, hd in zip(res.hand_landmarks, res.handedness):
+                        cat = hd[0].category_name if hd else "Right"
+                        if cat not in slots:
+                            continue
+                        slots[cat] = np.array([[p.x, p.y, p.z] for p in hl], np.float32)
+                        seen[cat] = 1.0
+                seq.append(np.stack([slots["Left"], slots["Right"]]))
+                present.append([seen["Left"], seen["Right"]])
 
-            if not any(present):
+            if not any(v for frame in present for v in frame):
                 miss += 1
                 continue
 
             np.savez_compressed(dst,
-                                landmarks=np.stack(seq),
-                                present=np.array(present, np.float32),
+                                landmarks=np.stack(seq),      # (T, 2, 21, 3)
+                                present=np.array(present, np.float32),  # (T, 2)
                                 gloss=r["Gloss"],
                                 participant=r["Participant ID"],
                                 split=split)

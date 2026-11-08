@@ -124,16 +124,20 @@ class ClipDataset(Dataset):
             keep = np.random.rand(len(pres)) > 0.1
             if keep.sum() >= 4:
                 lm, pres = lm[keep], pres[keep]
-            # spatial jitter: small translation and scale
+            # spatial jitter: small translation and scale, applied to x/y only
             lm = lm.copy()
-            lm[:, :, :2] += np.random.randn() * 0.01
-            lm[:, :, :2] *= 1.0 + np.random.randn() * 0.05
-            # hand masking: simulate occlusion
+            lm[..., :2] += np.random.randn() * 0.01
+            lm[..., :2] *= 1.0 + np.random.randn() * 0.05
+            # hand masking: simulate occlusion of one or both hands
             if np.random.rand() < 0.3:
                 n = np.random.randint(1, max(2, len(pres) // 4))
                 start = np.random.randint(0, max(1, len(pres) - n))
                 pres = pres.copy()
-                pres[start:start + n] = 0.0
+                if pres.ndim == 2:
+                    which = np.random.randint(0, 2)
+                    pres[start:start + n, which] = 0.0
+                else:
+                    pres[start:start + n] = 0.0
 
         feats, mask = build_features(lm, pres, expected_frames=self.frames)
         return torch.from_numpy(feats), torch.from_numpy(mask), label

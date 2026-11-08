@@ -9,12 +9,26 @@ kit and final submission form to settle any differences in the slides.
 
 ## Registration and organizer inputs
 
+- [ ] **Check the college dropdown before anything else.** The live
+  registration form's College field is a closed list of exactly five
+  institutions: **VIT Vellore, VIT Chennai, SRM Institute of Science and
+  Technology, Thapar Institute of Engg & Technology, and Manipal Institute of
+  Technology**. The slides say only "single college" and never mention this
+  restriction. If either teammate is not from one of those five, email
+  `prism@samsung.com` **before** submitting the form. Verified from the form
+  itself on 6 November 2026; capture saved at `.scratch/form_live.html`.
 - [ ] Register for Track 2 by **8 November 2026, 11:59 PM IST** with both
   teammates from the same college. Use `CollegeName_TeamName`. The slides
-  allow up to four members, one theme and one submission per team.
+  allow up to four members, one theme and one submission per team. Only one
+  member should submit the registration form; multiple submissions for the
+  same idea are explicitly disallowed on the form.
 - [ ] Save the official vocabulary and test-manifest instructions. Confirm
   the clip ID mapping, allowed data sources, target device/runtime,
   timing boundary and whether detector files count toward the size limit.
+  **Fallback if no starter kit or vocabulary arrives:** define a fixed
+  vocabulary ourselves, publish it in the release, and state the scope
+  explicitly. Five research rounds found no public organizer materials, so do
+  not block Dev's work waiting for one.
 - [ ] Check for the final form. The brief says the link goes only to
   registered teams. Use **17 November** as the internal submission date.
   The published deadline is **18 November 2026, 11:59 PM IST**.

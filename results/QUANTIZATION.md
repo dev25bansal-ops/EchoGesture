@@ -69,13 +69,19 @@ there is no size pressure forcing that work.
 ## Reproduction
 
 ```bash
+# runtime venv (not committed - .scratch/ is gitignored)
+py -V:3.11 -m venv .scratch/venv311
+.scratch/venv311/Scripts/python.exe -m pip install numpy opencv-python-headless \
+    mediapipe==1.2.2 ai-edge-litert
+
 # FP16 (shipped): parity-checked against PyTorch, writes the artifact
-.scratch/s3d_repro/venv311/Scripts/python.exe scripts/ml/export_tflite_tf.py
+.scratch/venv311/Scripts/python.exe scripts/ml/export_tflite_tf.py
 
 # INT8 (measured, not shipped)
-.scratch/s3d_repro/venv311/Scripts/python.exe scripts/ml/export_int8.py \
+.scratch/venv311/Scripts/python.exe scripts/ml/export_int8.py \
     --ckpt .scratch/runs/model.pt
 ```
 
 `export_tflite_tf.py` refuses to write `models/` unless the TF port reproduces
-PyTorch logits to <1e-2 with >99% argmax agreement. It passes at 3.34e-06 and 100%.
+PyTorch logits to <1e-2 with >99% argmax agreement. Measured on the four shipped
+members: **100% argmax agreement, max |d| 3.5–4.5e-03** (FP16 rounding).

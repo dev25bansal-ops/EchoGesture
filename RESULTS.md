@@ -28,7 +28,7 @@ video -> 32 frames sampled evenly across the clip (not the opening 32)
 | clips | 345 | 1,249 |
 | **top-1** | 83.77% | **72.78%** |
 | **top-5** | — | **87.51%** |
-| per-signer mean | — | 73.40% |
+| per-signer mean | — | 73.36% |
 | worst signer | — | **53.5%** |
 | chance | 1.00% | 1.00% |
 
@@ -57,16 +57,18 @@ Per-signer test accuracy — the spread is the real story:
 
 | signer | acc | | signer | acc |
 | --- | --- | --- | --- | --- |
-| P22 | 80.4% | | P15 | 60.2% |
-| P47 | 76.2% | | P17 | 52.0% |
-| P49 | 73.5% | | P6 | 50.7% |
-| P48 | 73.1% | | P9 | 48.1% |
-| P35 | 72.0% | | P42 | 45.8% |
-| P18 | 64.8% | | | |
+| P22 | 87.6% | | P18 | 72.2% |
+| P48 | 85.2% | | P6 | 69.0% |
+| P49 | 84.3% | | P15 | 64.3% |
+| P47 | 81.2% | | P9 | 56.6% |
+| P35 | 80.4% | | P42 | **53.5%** |
+| P17 | 72.5% | | | |
 
-Mean 63.4%, min 45.8%, max 80.4%. A 35-point spread across signers means the model
-generalises better to some people than others — the expected signature of only 17–24
-training clips per class.
+Mean 73.36%, min 53.5%, max 87.6%. The per-signer mean (73.36%) is above the
+pooled 72.78% because the weakest signers contribute more clips — P42 and P6
+carry 142 each, the largest test groups. A 34-point spread still means the model
+generalises better to some people than others, the expected signature of only
+17–24 training clips per class.
 
 Reproduce: `scripts/ml/evaluate.py --split test`
 
@@ -115,8 +117,9 @@ argmax agreement** against PyTorch. Two bugs, both invisible without the gate:
 
 The model still converted, still produced finite logits, and still scored
 above chance. Only a numerical comparison against the reference exposed it.
-Fixed, parity is now 3.34e-06 / 3.58e-06 / 4.77e-06 with 100% agreement for
-all three members.
+Fixed, all four members now agree 100% in argmax. The FP32 conversions matched to
+3.3e-06; the shipped FP16 files round to ~3.5e-03 max absolute logit difference,
+comfortably inside the 1e-2 gate that guards the export.
 
 ### Wider model: worse
 

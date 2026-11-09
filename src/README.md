@@ -121,7 +121,7 @@ Signer-disjoint ASL Citizen test — 11 participants never seen in training,
 | --- | --- |
 | top-1 | **72.78%** |
 | top-5 | **87.51%** |
-| per-signer mean | 73.40% (min 53.5%, max 87.6%) |
+| per-signer mean | 73.36% (min 53.5%, max 87.6%) |
 
-Measured through `predict()` with all three ensemble members. See `RESULTS.md`
+Measured through `predict()` with all four ensemble members. See `RESULTS.md`
 for the full history, the failed paths, and what would move the number further.

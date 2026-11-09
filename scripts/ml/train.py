@@ -219,6 +219,14 @@ def main():
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--dropout", type=float, default=0.2)
     ap.add_argument("--wd", type=float, default=1e-4)
+    ap.add_argument("--workers", type=int, default=0,
+                    help="DataLoader workers. Measured: 4 workers is SLOWER than 0 "
+                         "on this corpus (98s vs 80s for 3 epochs) - the .npz files "
+                         "are small enough that IPC costs more than the parallelism "
+                         "saves. Left configurable for a different disk/CPU.")
+    ap.add_argument("--train-split", default="train",
+                    help="landmark subdir to train on; trainval adds the val "
+                         "signers (test stays held out)")
     ap.add_argument("--strict-resample", action="store_true",
                     help="use the corrected _resample (must match at inference)")
     args = ap.parse_args()
@@ -232,16 +240,18 @@ def main():
     vocab = json.load(open(VOCAB, encoding="utf-8"))
     vocab_idx = {g: i for i, g in enumerate(vocab)}
 
-    train_items, sk_tr = index_split(vocab_idx, "train")
+    train_items, sk_tr = index_split(vocab_idx, args.train_split)
     val_items, sk_va = index_split(vocab_idx, "val")
     print(f"train clips: {len(train_items)} (skipped {sk_tr}) | val: {len(val_items)} (skipped {sk_va})")
     if not train_items:
         sys.exit("no training clips found - run extract_landmarks.py first")
 
     train_dl = DataLoader(ClipDataset(train_items, args.frames, train=True),
-                          batch_size=args.batch, shuffle=True, num_workers=0)
+                          batch_size=args.batch, shuffle=True, num_workers=args.workers,
+                          persistent_workers=args.workers > 0)
     val_dl = DataLoader(ClipDataset(val_items, args.frames, train=False),
-                        batch_size=args.batch, shuffle=False, num_workers=0)
+                        batch_size=args.batch, shuffle=False, num_workers=args.workers,
+                        persistent_workers=args.workers > 0)
 
     model = TemporalModel(len(vocab), dim=args.dim, frames=args.frames,
                           backbone=args.backbone, dropout=args.dropout).to(device)

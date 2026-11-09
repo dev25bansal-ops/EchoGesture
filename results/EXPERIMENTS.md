@@ -8,6 +8,52 @@ shipped baseline is a 4-model ensemble at **72.78%**.
 
 ---
 
+## Data availability: there is no more of it
+
+Before trying to train more, I checked how much data actually exists.
+
+The ASL Citizen archive holds **83,399 clips across 2,731 glosses**. For our
+100 glosses the official split contains exactly **3,390 clips**, and all 3,390
+were already extracted. The other 80,009 archive clips belong to the other
+2,631 glosses — they are not our vocabulary, so they cannot be added.
+
+Per gloss in the training split: **min 17, median 17, max 24 clips.**
+ASL Citizen simply did not film these 100 signs with more than those 32
+participants. There is no hidden reserve.
+
+### The only way to add data, and what it costs
+
+| option | training clips | test set | verdict |
+| --- | --- | --- | --- |
+| official split | 1,787 | 11 unseen signers | the shipped setup |
+| **merge val into train** | **2,132 (+19%)** | **11 unseen signers, untouched** | tried |
+| merge all three splits | 3,390 (+89%) | none left | rejected |
+
+Merging val is legitimate: val's 5 signers do not overlap the test 11
+(verified at both signer and clip level — 2,135 + 1,255 = 3,390 exactly, zero
+intersection). It buys +19% training data and costs the val split as a
+selection set.
+
+**Tried it. Result: +0.24 points, which is noise.**
+
+| | test top-1 |
+| --- | --- |
+| shipped 4-model ensemble | 72.78% |
+| + merged-data model | 73.02% |
+
+With n=1,249 the standard error is ±1.26 points, so +0.24 is **0.19 standard
+errors** — indistinguishable from zero. Training-set accuracy also stayed at
+~98% for both, so the extra 345 clips did not change the memorisation regime.
+
+This is the clearest evidence for the real conclusion: **the problem is not
+"not enough data" in the sense that 19% more would fix it.** Doubling the
+clips per class (17 → 32) might; a fifth more does not.
+
+Merging all three splits was rejected. It would leave no held-out signers, so
+the headline number would stop being comparable to anything — and with 18 of
+48 signers contributing fewer than 30 clips (some as few as 2), any re-split
+would either strand those signers or make val/test too small to be stable.
+
 ## Rejected: the `_resample` "phantom hand" fix — 64.61%
 
 `features._resample` interpolates coordinates and the presence flag

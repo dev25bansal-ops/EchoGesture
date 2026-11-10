@@ -1,0 +1,27 @@
+{
+ "frames": 24,
+ "feature_dim": 255,
+ "classes": 100,
+ "dim": 192,
+ "backbone": "conv",
+ "quantization": "float16",
+ "model_file": "landmark_classifier_fp16.tflite",
+ "detector_file": "hand_landmarker.task",
+ "model_sha256": "a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4",
+ "detector_sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1",
+ "input_shape": [
+  1,
+  24,
+  255
+ ],
+ "output_shape": [
+  1,
+  100
+ ],
+ "input_dtype": "float32",
+ "output_dtype": "float32",
+ "output_semantics": "logits",
+ "quantization_classification": "fp16_float32_io",
+ "feature_layout": "pos[84]|vel[84]|acc[84]|geom[3]",
+ "inter_hand": "[distance,dx,dy] measured on raw landmarks before centring; zeros unless both hands present"
+}

@@ -1,0 +1,104 @@
+EchoGesture NOTICE
+==================
+
+This NOTICE records licence and provenance facts for the EchoGesture Track 2
+repository as audited on 2026-11-10. It does not grant, claim, or upgrade any
+redistribution right. Where a right is unresolved it says so explicitly.
+Including an artifact in this repository is NOT a licence grant for it.
+
+Reading guide: section 1 repo-authored code (MIT). Section 2 model artifacts
+under ``models/`` (the only redistribution-risk surface) with a provenance
+table and a permission-request draft. Section 3 datasets. Section 4 Python
+dependencies. Section 5 what this project deliberately does not claim.
+
+------------------------------------------------------------------------
+1. Repo-authored code and harnesses — MIT (see LICENSE)
+------------------------------------------------------------------------
+Covered by LICENSE: ``src/``, ``app/``, ``evaluation/device/`` harnesses,
+``scripts/``. The MIT text in LICENSE is the only licence text that binds this
+code. It does not extend to any model artifact or dataset in this repository.
+
+------------------------------------------------------------------------
+2. Model artifacts under models/ — NOT MIT, redistribution NOT cleared
+------------------------------------------------------------------------
+Every row below is a fact recorded at audit time. SHA-256 values are of the
+local files; sizes are the on-disk byte counts.
+
+| Artifact | Bytes | Provenance (as already recorded in this repo) | Redistribution status |
+| --- | --- | --- | --- |
+| ``models/hand_landmarker.task`` | 7,819,105 | Google MediaPipe hand-landmark detector. Published by MediaPipe at ``https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task``. Licence context: Apache-2.0 per MediaPipe terms. SHA-256 ``fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1``. | Apache-2.0 claimed. Re-verify current MediaPipe terms and carry the upstream attribution + source URL at submission. |
+| ``models/landmark_classifier_fp16.tflite`` | 832,888 | Landmark classifier trained on ASL Citizen-derived data (repo attendance). SHA-256 ``a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4``. | **NO confirmed redistribution permission. LOCAL/PRIVATE only pending written authorization** from the data/library rights holders (see draft in 2a). |
+| ``models/landmark_classifier_int8.tflite`` | 509,720 | INT8 export of the landmark classifier above. SHA-256 ``9d24640a23244a3cd00c9fa62257733819f86ed1da5a10194c9b1cb64323700b``. | Same as the FP16 weights: **NO confirmed redistribution permission; local/private only.** |
+| ``models/landmark_labels.json`` | 1,492 | 100-label vocabulary for the landmark classifier. SHA-256 ``e78f5028e97e2eaf86aff65af403af65061eebef010f0fbd41012293e8019a4a``. | Follows the landmark weights; not separately licensed for redistribution. |
+| ``models/landmark_model_meta.json`` | 123 | Feature/quantisation metadata (frames 24, feature_dim 255, classes 100, float16). SHA-256 ``7f189a16f4d175042b5481afb973217fc21410832ebd14c5bacf2f516473947e``. | Project-authored metadata; no third-party claim. |
+| ``models/s3d_conv1d_qat_int8.tflite`` | 901,200 | S3D-Conv1D INT8 weights attributed in README to Kimpinde & Olukanmi, *Algorithms* 2026. Trained on WLASL. SHA-256 ``107756f3a5ec118dec7855ed5ada34dcf85dccaedbef7d80a953d8cc1294cc0a``. | **NO confirmed redistribution permission for these specific weight files. LOCAL/PRIVATE only pending written authorization.** WLASL C-UDA (academic / non-commercial) restriction reattaches. |
+| ``models/ptq_100_int8.tflite`` | 904,256 | Post-training-quantised S3D INT8 weights, same lineage as above. SHA-256 ``067c743c81c51e4af4c2d0726036d3d0e089a0aa7d935b8b79056abfc0f027c3``. | **NO confirmed redistribution permission; local/private only.** |
+| ``models/label100.json`` | 1,279 | 100-class S3D vocabulary. SHA-256 ``741dd6a632c485ab7b85d7c3e54dee02a106f9d058765dfc20d45c29de30c4e2``. | Follows the S3D weights; not separately licensed for redistribution. |
+
+Nothing in this repository establishes that any row marked above may be
+published, bundled for public distribution, or relicensed. Treat every such
+artifact as local/private until written authorization is recorded here.
+
+2a. Permission-request draft (copy, fill in, send; short by design)
+-------------------------------------------------------------------
+Send to: [rights holder for ASL Citizen — Microsoft Research; and the S3D /
+WLASL authors]. Subject: request to redistribute model weights derived from
+your data.
+
+    We trained a small sign-recognition model on data derived from ASL Citizen
+    (and, separately, WLASL). We would like to include the trained weight files
+    (SHA-256: <hash>) and their label vocabulary in a public hackathon
+    submission and repository release. Please confirm in writing whether (a)
+    redistribution of these derived weights is permitted, (b) any attribution
+    or licence text must accompany them, and (c) whether commercial use is
+    excluded. Until we have your written confirmation we are treating these
+    files as private and will not publish them.
+
+Record the reply, its date, and the exact scope it grants in this NOTICE
+before shipping any affected artifact.
+
+------------------------------------------------------------------------
+3. Datasets and derived data — non-redistributable
+------------------------------------------------------------------------
+* WLASL — C-UDA licence (academic / non-commercial). Clips, splits, and
+  landmark/array caches stay outside Git and outside any submission ZIP.
+* ASL Citizen (Microsoft Research licence, non-commercial, no redistribution).
+  Clips and any per-participant rows carry research-only context.
+
+The tracked per-participant evidence files
+(``evaluation/asl_citizen_predictions.csv`` with raw ``P15``-style participant
+IDs and the ``per_signer`` dicts in
+``evaluation/asl_citizen_{ptq,qat}_results.json``) are LOCAL RESEARCH INPUTS.
+Their removal or visibility is a separate owner decision, out of scope here.
+Publish-safe copies are generated only into
+``evaluation/device/compliance_final/publish/`` by
+``scripts/release/sanitize_export.py``, which drops or keyed-pseudonymises the
+participant linkage and refuses to emit anything still carrying a raw
+participant token or private path. The pseudonymisation key never ships.
+
+------------------------------------------------------------------------
+4. Python dependencies — each under its own licence
+------------------------------------------------------------------------
+Verified from installed package metadata in this environment:
+
+* ``numpy`` 2.4.6 — BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0
+  (licence expression from the distribution metadata; core text BSD-3-Clause).
+* ``opencv-python`` 5.0.0.93 — Apache-2.0 (classifier; wrapper is MIT).
+* ``ai-edge-litert`` 2.3.0 — Apache-2.0 (classifier and bundled LICENSE).
+* ``mediapipe`` 1.2.2 — Apache-2.0 (classifier and bundled LICENSE).
+
+No dependency is relicensed by the MIT grant over repo code.
+
+------------------------------------------------------------------------
+5. Assertions deliberately NOT made
+------------------------------------------------------------------------
+* No claim that this repository or any release is "MIT licensed" as a whole.
+* No claim that any model artifact is freely licensable or commercially
+  shippable, or that any dataset clip or per-participant row is
+  redistributable.
+* No claim of organizer approval or target-device certification.
+* Until the section 2 permission requests are answered in writing, the
+  accurate label for any release containing the reader-restricted artifacts is
+  NOT legally cleared for distribution.
+
+This is a project-internal compliance record, not legal advice.

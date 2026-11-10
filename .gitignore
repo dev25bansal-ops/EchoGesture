@@ -58,3 +58,59 @@ rerun/labels.parqet
 *.parqet
 eda/
 hoyso_tfr/
+
+# --- Model weights: redistribution NOT cleared (see NOTICE) -----------------
+# Trained weights are ASL Citizen / WLASL derived and are local-only until
+# written authorization is recorded in NOTICE. They must not be published by
+# a plain `git add`. Model LABELS and META are small interface files and are
+# intentionally published (see models/README).
+*.tflite
+*.task
+*.onnx
+*.pt
+*.pth
+*.ckpt
+
+# --- Large generated evaluation dumps (no source imports these) ------------
+evaluation/device/v7_tracking/results/
+evaluation/device/v7_robustness/results/
+evaluation/device/v7_int8/tflite_audit.json
+evaluation/device/v7_int8/results/predictions.json
+evaluation/device/v5_accuracy/data/
+evaluation/device/v5_accuracy/splits/
+
+# --- Historical QA snapshots embedding absolute host paths -----------------
+evaluation/device/qa_final/
+evaluation/device/qa_final2/
+
+# --- Model binaries duplicated from models/ (build copies them) ------------
+app/v7_android/src/main/assets/*.task
+app/v7_android/src/main/assets/*.tflite
+app/android_final/app/src/main/assets/*.task
+app/android_final/app/src/main/assets/*.tflite
+
+# --- Captured console output ----------------------------------------------
+*.stdout
+*.stderr
+
+# --- Superseded evaluation generations (v4/v5/v6 labs kept local only) -----
+# The current evidence lives in the root suites, performance_final,
+# quantization_final, compliance_final, release_final, and v7_*/v8_* suites.
+evaluation/device/v4_int8/
+evaluation/device/v4_performance/
+evaluation/device/v4_robustness/
+evaluation/device/v4_hardware/
+evaluation/device/v5_accuracy/
+evaluation/device/v5_int8/
+evaluation/device/v5_latency/
+evaluation/device/v5_release/
+evaluation/device/v6_integrity/
+evaluation/device/tracking_lab/
+evaluation/device/decoder_lab/
+evaluation/device/latency_lab/
+evaluation/device/streaming_lab/
+evaluation/device/robustness_lab/
+evaluation/device/accuracy_lab/
+evaluation/device/evidence_lab/
+evaluation/device/int8_lab/
+evaluation/device/benchmark_lab/

@@ -8,15 +8,24 @@ mixed:
   here only where explicitly stated. Carries their caveats.
 - **EXTRAPOLATION** — arithmetic on the above. Speculation, not evidence.
 
+> **Review status, 8 Nov 2026:** this is a research draft, not an executable
+> implementation plan. The Round-8 `_altbench`, `%TEMP%\egbench` and `.scratch`
+> artifacts are absent from this checkout, so their numerical results cannot be
+> independently reproduced here. Use `RESULTS.md` for reproducible baseline
+> evidence. The scripts in section 7 are placeholders until their owners add
+> them. The official vocabulary, evaluator manifest and allowed training sources
+> remain organizer inputs; do not replace them with a self-selected vocabulary.
+
 ---
 
 ## 1. The decisive constraint, restated correctly
 
-The hackathon's latency target is **50 ms per `predict()` call**, and the
-evaluator re-measures it on their own device. Our prior measurement is that
-**video decode dominates everything**: 83.4 ms p50 for full decode vs 2.1 ms for
-the model. Any architecture that decodes a whole file inside `predict()` cannot
-meet 50 ms. This is arithmetic, not opinion.
+The hackathon's results-sheet target is **end-to-end p95 < 50 ms**, and the
+evaluator re-measures `predict()` on its own device. Live streaming latency is a
+separate metric and does not replace the clip-path measurement. Our prior
+measurement is that **video decode dominates everything**: 83.4 ms p50 for full
+decode vs 2.1 ms for the model. Any architecture that decodes a whole file
+inside `predict()` must measure its full p95, not just classifier inference.
 
 **Corollary the team has not yet absorbed:** the front-end must also be cheap.
 MediaPipe at 18–35 ms/frame × 24 frames = 432–840 ms. A landmark pipeline and a
@@ -48,9 +57,11 @@ There is no free lunch from batching the front-end.
 
 ### The frame-count problem
 
-RESEARCH_STATUS.md §5 establishes that 12–16 frames costs real accuracy
-(16 frames = 78.7% of 24-frame accuracy, McNemar p=0.006). Combined with the
-latency table:
+RESEARCH_STATUS.md §5 measures **78.72% top-1 at 16 frames and 83.9%
+retention relative to its 24-frame run** (McNemar p=0.006). The 24-frame run
+has 100.6% retention relative to all frames. These are model-specific
+uniform-resampling results, not evidence for a different landmark model or for
+keeping only the beginning of a clip. Combined with the unverified table:
 
 | frames | TOTAL p50 | TOTAL p95 | accuracy retention (S3D measurement) |
 |---|---|---|---|
@@ -58,12 +69,12 @@ latency table:
 | 12 | 54.8 ms | 101.7 ms | 68.0% |
 | 16 | 57.9 ms | 111.9 ms | 83.9% |
 | 20 | 62.5 ms | 98.2 ms | 98.1% |
-| 24 | 70.2 ms | 105.7 ms | 100% (reference) |
+| 24 | 70.2 ms | 105.7 ms | 100.6% |
 
-**Honest conclusion: on this laptop, ≥20 frames costs ~62 ms p50, which misses
-the 50 ms target by ~25%.** Three levers close the gap and all must be measured
-on the actual target device, not this laptop (which the repo's own benchmark
-README documents as throttling 3–10× on unpinned runs):
+**On the unverified laptop measurements, every row above misses the 50 ms p95
+requirement, including 8 frames at 80.5 ms.** A p50 below 50 ms is not a pass.
+Three possible levers must be measured on the intended target device and
+complete path, not inferred from this laptop:
 
 1. **Target device is faster than this laptop's throttled state.** A Snapdragon
    8 Elite will beat a thermally-limited i7-14700HX on these tiny fixed-shape
@@ -74,15 +85,23 @@ README documents as throttling 3–10× on unpinned runs):
    Not yet done in this repo.
 3. **Streaming amortisation.** In a live conversation, decode and landmark
    extraction run continuously and `predict()` only reads a ring buffer. The
-   per-clip number then collapses to classifier time (~2–4 ms). This is the
-   architecturally correct answer and it is what the hackathon's "conversation
-   gap" framing actually asks for. It does not help if the evaluator times a
-   cold `predict(video_path)` — so ship **both**: a fast cold path and a
-   streaming demo path.
+   per-clip number then collapses to classifier time (~2–4 ms), but this does
+   **not** satisfy a cold `predict(video_path)` timing boundary. Report live
+   camera-to-caption latency separately and retain a separately measured cold
+   submission path.
 
 ---
 
 ## 3. The architecture
+
+### Architecture sketch, not the current implementation
+
+The following is an unvalidated proposal. Decode must sample across the full
+clip (or measure and disclose the truncation): stopping at the first N frames
+is not equivalent to the uniform sampling in the frame-count experiment. A
+single palm detection and fixed ROI also needs tracked reacquisition and
+missing-hand handling before use. Dev owns the actual two-hand extractor and
+feature contract.
 
 ```
 video_path
@@ -161,9 +180,10 @@ Verified from the primary write-ups in this repo:
 1. **Invariant coordinates** — root-centre, scale by a body measure, XY only.
 2. **Per-sequence normalisation** — mean/std computed over that clip, not a
    global constant. This is what makes a new signer's framing irrelevant.
-3. **Global max pooling** over time, not average. Important frames are sparse;
-   averaging dilutes them. 4th place measured a "significant performance drop"
-   switching to avg.
+3. **Pooling is architecture-specific.** Fourth place measured a "significant
+   performance drop" replacing global max with average pooling; first place
+   uses global **average** pooling in its Conv1D+Transformer. Do not transfer
+   either choice without an ablation.
 4. **Part-combination augmentation** — splice a hand from one sample onto lips
    from another with the same label. 3rd place called this a significant gain.
    It directly attacks signer-specific co-occurrence.
@@ -206,13 +226,14 @@ vocabulary and ~64% for WLASL-100 — but extrapolating from two third-party
 points with different caveats is speculation, not forecasting. State it as a
 hypothesis to test, never as a plan number.
 
-### Recommendation
-**Use the ASL Citizen best-100 vocabulary as the primary submission**, with the
-WLASL-100 subset as an auxiliary training set (98 overlapping classes) if time
-permits. Rationale: 4,604 videos vs 2,015, all reachable, official
-signer-disjoint split, and the vocabulary is chosen to maximise both training
-videos and signer diversity rather than inherited from a paper that never
-claimed signer independence.
+### Recommendation — provisional only
+
+Do not select a submission vocabulary until the official vocabulary and allowed
+training sources are confirmed. If the organizer permits a fixed project-defined
+vocabulary, Dev can evaluate ASL Citizen best-100 against the current 100-label
+reference on identical participant-disjoint splits. A published
+participant-disjoint dataset split does not itself prove that the candidate
+training vocabulary is accepted by the evaluator.
 
 ---
 
@@ -220,29 +241,39 @@ claimed signer independence.
 
 1. **Split**: use ASL Citizen's shipped split, never re-split randomly. Report
    only the 11 held-out test participants.
-2. **Input**: 32 frames is the sweet spot — decode cap 16 is a latency
-   compromise, so **train at 24–32 and evaluate at the same count you will
-   deploy**. Train/test frame-count mismatch is worth 16 points (83.9% vs 100%
-   retention in the S3D probe).
+2. **Input**: frame count is an experiment. Train and evaluate at the same
+   sampling configuration used for deployment. In the S3D probe, 16-frame
+   uniform resampling retained 83.9% of the 24-frame result; it did not isolate
+   a universal 16-point train/test mismatch penalty.
 3. **Features**: 126/frame (21 landmarks × 6). Optionally add 210 pairwise
    hand distances from the 2nd-place solution.
-4. **Augmentation** (all four had measured positive effect in the top-5):
+4. **Augmentation** (candidates to ablate, not universally proven settings):
    - global affine: rotate ±10°, shift ±0.1, scale 0.8–1.2, shear
    - random temporal resample 0.5–1.5×
    - **hand occlusion masking** (p≈0.3) — this doubles as the robustness defence
    - part-combination: splice hands from same-label sample (3rd place)
-5. **Loss**: label smoothing 0.5, stochastic depth 0.1–0.2, late dropout 0.8
-   after epoch 15. All three were "had a significant impact" for 1st place.
+5. **Loss/regularisation**: first place used label smoothing 0.1 or plain CCE,
+   DropPath 0.2, late dropout 0.8 and AWP 0.2 after epoch 15. DropPath, late
+   dropout and AWP were the three it reported as significant. Treat these as a
+   starting recipe, not a guarantee for a new corpus or feature representation.
 6. **Optimiser**: RAdam + Lookahead, cosine decay, 300–400 epochs.
-7. **QAT, not PTQ**: the S3D evidence shows QAT retained more (1.00% vs 1.47%,
-   though both failed). For a 1.8 M-param model, QAT costs half a day and buys
-   real quantisation robustness.
+7. **Quantisation**: compare INT8 PTQ against the float candidate on identical
+   signer-disjoint validation data. The S3D QAT result (1.00%) and PTQ result
+   (1.47%) are both near chance and cannot establish quantisation robustness.
+   Consider QAT only if the candidate shows a meaningful measured PTQ drop;
+   neither training-time cost nor benefit is established here.
 8. **Export**: INT8 TFLite with a representative dataset drawn from real
    landmark features.
 
 ---
 
-## 7. Day-1 build instructions
+## 7. Superseded Day-1 build sketch
+
+The commands below are retained only as a record of the proposal. None of
+`scripts/choose_vocab.py`, `scripts/extract_landmarks.py`, `scripts/train.py`,
+`scripts/convert_int8.py` or `lists/best100.csv` exists in this checkout; do not
+run these as if they were implemented. Follow `docs/hackathon/DEV.md` for data
+and training, and `docs/hackathon/ABHIJEET.md` for evaluator integration.
 
 ### Block 0 — registration (today, before anything else)
 Submit the Google Form before **8 Nov 23:59 IST**. If the college is not on the
@@ -287,26 +318,29 @@ python scripts/convert_int8.py --ckpt models/eg_r8 --rep cache/landmarks.npz \
   --out models/eg_r8_int8.tflite      # expect ~1.9 MB
 ```
 
-### Block 5 — rebuild `predict()` on the fast path
-Replace `src/main.py`'s OpenCV loop with PyAV + NONREF + reformat-to-224 +
-early-stop-16, then palm-once + landmark-per-frame + INT8 classifier. Target:
-**≤ 50 ms p50 at 8–12 frames, ≤ 65 ms at 16**. Measure and record honestly;
-if the target device does not reach 50 ms, report the real number and show the
-streaming path that does.
+### Block 5 — submission latency requirement
+The current predictor remains the pixel model until Dev hands off a versioned
+landmark candidate. Integrate that candidate with full-clip sampling and
+measured hand tracking/reacquisition, then run the complete `predict()` API
+through `evaluation/device/run_manifest.py`. Target **< 50 ms end-to-end p95**,
+with cold and warm calls reported separately. No row of the unverified table
+currently meets that requirement. Live camera-to-caption timing is separate
+and cannot be substituted for the clip-path result.
 
 ### Block 6 — robustness harness (half a day, worth 25% of marks)
 Five seeded corruptions on the held-out split: occlusion box, low light, motion
 blur, crop, frame drop. Paired clean-vs-corrupt delta. The occlusion-mask
 augmentation in Block 3 is what makes this pass.
 
-### What to verify on Day 1, in this order
-1. Does the best-100 vocabulary exist in ASL Citizen with ≥18 train participants?
-   **Verified yes: 100 classes qualify, median 19 participants.**
-2. Are the videos downloadable? **Verified yes: 4.5 videos/s, 0.54 MB each.**
-3. Does the classifier convert to INT8 under 20 MB at L=32? **Verified yes:
-   1.93 MB at L=96, smaller at L=32.**
-4. Does the front-end fit the budget? **Partially: 46 ms p50 at 8 frames,
-   62 ms at 20. Not yet verified after INT8-quantising MediaPipe.**
+### Claims requiring reproduction before use
+1. Best-100 vocabulary coverage and ≥18 train participants: **reported by an
+   unavailable external analysis; unverified in this checkout.**
+2. Download rate of 4.5 videos/s: **external measurement; dependent on network
+   and corpus selection.**
+3. Candidate INT8 size and latency: **external measurement; no candidate or
+   conversion script exists here.**
+4. Front-end latency: **external measurements show 80.5 ms p95 at 8 frames and
+   98.2 ms at 20; neither is a passing submission result.**
 
 ---
 
@@ -325,13 +359,14 @@ augmentation in Block 3 is what makes this pass.
 
 ## 9. One-paragraph summary
 
-Replace the pixel front-end with MediaPipe hand landmarks; keep only x,y; centre
-on the wrist and scale by hand size; add velocity and acceleration; classify
-with a 1.8 M-param Conv1D+Transformer that quantises to 1.9 MB and runs in
-1.3–4 ms; decode with PyAV NONREF and early-stop at 16 frames; train on ASL
-Citizen's official signer-disjoint split with a 100-word vocabulary chosen for
-signer diversity, not inherited from WLASL. That combination is the only one
-with both published evidence (every GISLR top-5 team) and local evidence (our
-own 1.47% collapse) pointing the same way. The latency number is the risk: the
-front-end, not the model, decides whether 50 ms is met, and the honest answer
-today is 46 ms at 8 frames and 62 ms at 20 on this laptop.
+A landmark model with participant-disjoint training is the next experiment;
+its representation and classifier are Dev's responsibility. The current
+shipped predictor still uses pixels and has not been replaced. For any future
+candidate, preserve two-hand presence/tracking and sample across the clip,
+train and evaluate at the same frame budget, and quantize only after comparing
+validation accuracy. The required integration measurement is **<50 ms
+end-to-end p95 on `predict(video_path)`**, including detector/model artifacts
+in the size accounting pending organizer clarification. The unavailable
+Round-8 evidence cannot establish that budget, recognition accuracy or target
+phone performance; measure the actual handed-off model with the manifest
+runner and report live streaming separately.

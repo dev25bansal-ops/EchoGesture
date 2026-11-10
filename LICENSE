@@ -1,0 +1,42 @@
+MIT License
+
+Copyright (c) 2026 EchoGesture contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software") in
+repo-authored code and harnesses under this repository (including ``src/``,
+``app/``, ``evaluation/device/`` harnesses, ``scripts/``), to deal in the
+Software without restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+Scope of this license (read with NOTICE — this grant is deliberately narrow)
+
+This MIT grant covers ONLY repo-authored source code and harnesses. It does
+NOT cover, and grants NO redistribution rights over:
+
+* model artifacts under ``models/`` — see NOTICE section 2. In particular the
+  ASL Citizen-derived landmark classifier weights and the WLASL-derived S3D
+  weights have NO confirmed redistribution permission and are local/private
+  only pending written authorization;
+* third-party datasets (WLASL, ASL Citizen) and anything derived from them;
+* third-party Python dependencies (numpy, opencv-python, ai-edge-litert,
+  mediapipe), each under its own license — see NOTICE section 4.
+
+This file does not upgrade, relicense, or claim commercial redistribution
+rights for any of the assets listed above. Do not describe a release that
+contains them as "MIT licensed" as a whole.

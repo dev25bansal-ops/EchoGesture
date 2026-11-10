@@ -13,7 +13,7 @@ state can be corrupted, and any consumer retaining the first ``predict``
 function observes the second module's globals.
 
 Run with the project venv (numpy/opencv importable):
-    /Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python reproduce_repeated_load.py
+    $REPO/.venv/bin/python reproduce_repeated_load.py
 Exit code 0 means the defect reproduces, 1 means behaviour is safe.
 """
 
@@ -21,7 +21,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-ROOT = Path("/tmp/echogesture-agents/A14")
+ROOT = Path("$TMP/echogesture-.../A14")
 sys.path.insert(0, str(ROOT / "evaluation" / "device"))
 import run_manifest
 

@@ -26,11 +26,11 @@ so `build_bundle.py` verification keeps working.
 Run (venv Python 3.11, ai-edge-litert):
 
 ```bash
-PYTHONPATH=/tmp/echogesture-agents/A12 /Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -c "
+PYTHONPATH=$TMP/echogesture-.../A12 $REPO/.venv/bin/python -c "
 from ai_edge_litert.interpreter import Interpreter
 import numpy as np
 for name in ['landmark_classifier_fp16.tflite','landmark_classifier_int8.tflite']:
-    it=Interpreter(model_path=f'/tmp/echogesture-agents/A12/models/{name}')
+    it=Interpreter(model_path=f'$TMP/echogesture-.../A12/models/{name}')
     it.allocate_tensors()
     x=np.zeros((1,24,255),dtype=np.float32)
     it.set_tensor(it.get_input_details()[0]['index'],x); it.invoke()
@@ -61,9 +61,9 @@ Tensor contract (same run):
 ## 3. Total artifact accounting (measured from disk)
 
 ```bash
-PYTHONPATH=/tmp/echogesture-agents/A12 /Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -c "
+PYTHONPATH=$TMP/echogesture-.../A12 $REPO/.venv/bin/python -c "
 import hashlib,pathlib
-base=pathlib.Path('/tmp/echogesture-agents/A12/models')
+base=pathlib.Path('$TMP/echogesture-.../A12/models')
 total=0
 for p in sorted(base.iterdir()):
     if p.is_file():
@@ -165,8 +165,8 @@ model exists in this copy.
 
 ```bash
 # Tests (39 pre-existing + 15 new = 54; all must pass)
-PYTHONPATH=/tmp/echogesture-agents/A12 \
-  /Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -m unittest \
+PYTHONPATH=$TMP/echogesture-.../A12 \
+  $REPO/.venv/bin/python -m unittest \
   discover -s evaluation/device -p 'test_*.py' -v
 
 # Generate a results CSV from a real benchmark.json (example; needs a real run)

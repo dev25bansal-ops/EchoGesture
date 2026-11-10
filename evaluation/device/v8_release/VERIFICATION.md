@@ -1,6 +1,6 @@
 # v8_release verification — provisional bundle, isolated copy only
 
-All work done in `/tmp/echogesture-v8-agents/release` (isolated copy,
+All work done in `$TMP/echogesture-.../release` (isolated copy,
 read-only w.r.t. original checkout). Original checkout and Dev model code
 were not edited. This ZIP is **provisional only**.
 
@@ -36,10 +36,10 @@ with `Unsafe bundle path: ../evil.py` (tested).
 ## Build / verify commands (actual)
 
 ```bash
-cd /tmp/echogesture-v8-agents/release
-/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I -c "<hash all artifacts>"  # FP16 hash matched
+cd $TMP/echogesture-.../release
+$REPO/.venv/bin/python -I -c "<hash all artifacts>"  # FP16 hash matched
 
-/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I scripts/release/build_bundle.py build \
+$REPO/.venv/bin/python -I scripts/release/build_bundle.py build \
   --source . \
   --model models/landmark_classifier_fp16.tflite \
   --labels models/landmark_labels.json \
@@ -54,12 +54,12 @@ cd /tmp/echogesture-v8-agents/release
   --extra src/landmark_frontend.py
 # -> {"model_sha256":"a012f2b5...7044a4","status":"structure_verified"} exit 0
 
-/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I scripts/release/build_bundle.py verify \
+$REPO/.venv/bin/python -I scripts/release/build_bundle.py verify \
   scripts/release/v8_release/provisional.zip \
   --model-sha a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4
 # -> {"model_sha256":"a012f2b5...7044a4","status":"structure_verified"} exit 0
 
-ECHOGESTURE_MODEL=landmark /Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I scripts/release/build_bundle.py verify \
+ECHOGESTURE_MODEL=landmark $REPO/.venv/bin/python -I scripts/release/build_bundle.py verify \
   scripts/release/v8_release/provisional.zip \
   --clip /tmp/v8work/DOG.mp4 \
   --model-sha a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4
@@ -82,7 +82,7 @@ Ran from the extracted tree on one real clip (ASL Citizen validation clip,
 already on disk, research-use, not organizer data):
 
 ```
-cp /tmp/echogesture-v8-agents/release/evaluation/device/v5_accuracy/data/val_346/clips/5579456931257181-DOG.mp4 /tmp/v8work/DOG.mp4
+cp $TMP/echogesture-.../release/evaluation/device/v5_accuracy/data/val_346/clips/5579456931257181-DOG.mp4 /tmp/v8work/DOG.mp4
 ECHOGESTURE_MODEL=landmark /Users/.../.venv/bin/python -I -c "
 import sys; sys.path.insert(0,'/tmp/v8extract/src');
 import main, json; print(json.dumps(main.predict('/tmp/v8work/DOG.mp4'), indent=2))"

@@ -1,6 +1,6 @@
 """A09 V7 host-side parity reference + environment/blocker verifier.
 
-Runs with:  /Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I \\
+Runs with:  $REPO/.venv/bin/python -I \\
              evaluation/device/v7_android/test_parity.py
 
 Verifies (a) Kotlin feature parity data is regenerated from src/features.py,
@@ -12,7 +12,7 @@ Verifies (a) Kotlin feature parity data is regenerated from src/features.py,
 import json, pathlib, sys
 import numpy as np
 
-B = pathlib.Path(__file__).resolve().parents[3]  # A09 root = /tmp/echogesture-v7-agents/A09
+B = pathlib.Path(__file__).resolve().parents[3]  # A09 root = $TMP/echogesture-.../A09
 sys.path.insert(0, str(B / "src"))
 sys.path.insert(0, str(B / "evaluation/device"))
 

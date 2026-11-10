@@ -1,6 +1,6 @@
 # EchoGesture V7 INT8 qualification (Agent A06)
 
-Owned path only: `evaluation/device/v7_int8/` in `/tmp/echogesture-v7-agents/A06`.
+Owned path only: `evaluation/device/v7_int8/` in `$TMP/echogesture-.../A06`.
 No original-checkout, Dev model/export, training, or default-path code was edited.
 No packages were installed and no nested agents were launched.
 
@@ -194,20 +194,20 @@ implementation in this bundle and no held-out re-quantization result.
 
 ## Reproduction (exact commands)
 
-From `/tmp/echogesture-v7-agents/A06`, using the retained validation clips
+From `$TMP/echogesture-.../A06`, using the retained validation clips
 and the pre-existing project venv (no installs):
 
 ```bash
-/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I \
+$REPO/.venv/bin/python -I \
   evaluation/device/v7_int8/audit_tflite.py
 
-/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I \
+$REPO/.venv/bin/python -I \
   evaluation/device/v7_int8/run_v7_int8.py
 
-/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I \
+$REPO/.venv/bin/python -I \
   evaluation/device/v7_int8/benchmark.py --repeats 300 --warmup 50
 
-/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I \
+$REPO/.venv/bin/python -I \
   evaluation/device/v7_int8/test_v7_int8.py -v
 ```
 

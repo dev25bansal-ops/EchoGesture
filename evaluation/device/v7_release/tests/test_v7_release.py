@@ -34,7 +34,7 @@ def test_zip_hashes_and_members():
             assert rows and {r["pass"] for r in rows} <= {"PASS", "FAIL", "NOT_MEASURED", "NOT_APPLICABLE"}
 
 def test_official_blocked_and_verify_real_clip():
-    root = Path("/Users/abhijeetmiskin/AppData/EchoGesture")
+    root = Path("$REPO")
     py = str(root / ".venv/bin/python")
     builder = str(root / "scripts/release/build_bundle.py")
     r = subprocess.run([py, "-I", builder, "build", "--source", str(root),

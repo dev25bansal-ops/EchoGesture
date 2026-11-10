@@ -4,52 +4,52 @@
     "fp16_model": {
       "bytes": 832888,
       "expected_sha256": "a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4",
-      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/models/landmark_classifier_fp16.tflite",
+      "path": "$REPO/models/landmark_classifier_fp16.tflite",
       "sha256": "a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4",
       "sha256_matches_expected": true
     },
     "int8_model": {
       "bytes": 509720,
       "expected_sha256": "9d24640a23244a3cd00c9fa62257733819f86ed1da5a10194c9b1cb64323700b",
-      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/models/landmark_classifier_int8.tflite",
+      "path": "$REPO/models/landmark_classifier_int8.tflite",
       "sha256": "9d24640a23244a3cd00c9fa62257733819f86ed1da5a10194c9b1cb64323700b",
       "sha256_matches_expected": true
     },
     "labels": {
       "bytes": 1492,
       "expected_sha256": "e78f5028e97e2eaf86aff65af403af65061eebef010f0fbd41012293e8019a4a",
-      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/models/landmark_labels.json",
+      "path": "$REPO/models/landmark_labels.json",
       "sha256": "e78f5028e97e2eaf86aff65af403af65061eebef010f0fbd41012293e8019a4a",
       "sha256_matches_expected": true
     },
     "manifest": {
       "bytes": 24631,
-      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/evaluation/device/v5_accuracy/data/val_346/manifest.csv",
+      "path": "$REPO/evaluation/device/v5_accuracy/data/val_346/manifest.csv",
       "sha256": "6b9a6a253a5d3edc55ca8bbb5ae138c832e8b0f5ac0f374fdc1df12085c3ab85"
     },
     "predictions30": {
       "bytes": 36376,
-      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/evaluation/device/v5_accuracy/results/val_30/predictions.json",
+      "path": "$REPO/evaluation/device/v5_accuracy/results/val_30/predictions.json",
       "sha256": "bc99dbbcc8db1f230970b9de17e50f239debeab0b8c4cd0a2ac2617e199d2c39"
     },
     "predictions346": {
       "bytes": 423658,
-      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/evaluation/device/v5_accuracy/results/val_346/predictions.json",
+      "path": "$REPO/evaluation/device/v5_accuracy/results/val_346/predictions.json",
       "sha256": "8d980fbe5ae41613b578f411855e0d1d96e4ac178ac5a84d9aae5f1a65546555"
     },
     "summary30": {
       "bytes": 12973,
-      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/evaluation/device/v5_accuracy/results/val_30/summary.json",
+      "path": "$REPO/evaluation/device/v5_accuracy/results/val_30/summary.json",
       "sha256": "0ec182301bef9a374158360272128085bfa0b60d1f08e0861525f4dc0c57ceb2"
     },
     "summary346": {
       "bytes": 50105,
-      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/evaluation/device/v5_accuracy/results/val_346/summary.json",
+      "path": "$REPO/evaluation/device/v5_accuracy/results/val_346/summary.json",
       "sha256": "1ef28344e0684c46dd2422df2e96f1f1f55e4c277bca73a8dda76eec54992657"
     },
     "v6_statistics": {
       "bytes": 543763,
-      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/evaluation/device/v6_integrity/statistics.json",
+      "path": "$REPO/evaluation/device/v6_integrity/statistics.json",
       "sha256": "42fbe77689926ea0e47b6c74d5f7a012191a5e218fab4347434c1589acb2d1ee"
     }
   },

@@ -1,6 +1,6 @@
 # V7 latency lab — persistent-pool parallel IMAGE tracking
 
-Owner: A01 (Latency Architect), working in `/tmp/echogesture-v7-agents/A01`.
+Owner: A01 (Latency Architect), working in `$TMP/echogesture-.../A01`.
 Only files under `evaluation/device/v7_latency/` were created.
 Original checkout, Dev feature code, `src/main.py`, and all `models/` are untouched.
 **No production default is changed.** No strategy is merged.
@@ -166,13 +166,13 @@ decode or use more workers (8 was not tested — see "not tested" below).
 
 ## Reproduction commands
 
-All from `/tmp/echogesture-v7-agents/A01`. Venv interpreter lives in the
+All from `$TMP/echogesture-.../A01`. Venv interpreter lives in the
 original checkout; nothing else in the original is touched.
 
 ### Contract tests
 
 ```bash
-/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I \
+$REPO/.venv/bin/python -I \
   -m unittest discover -s evaluation/device/v7_latency -p 'test_*.py' -v
 # Ran 4 tests ... OK
 ```
@@ -181,9 +181,9 @@ original checkout; nothing else in the original is touched.
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 \
-  /Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I \
+  $REPO/.venv/bin/python -I \
   evaluation/device/v7_latency/benchmark.py \
-  /tmp/echogesture-validation-30/manifest.csv \
+  $TMP/echogesture-.../manifest.csv \
   --output-dir evaluation/device/v7_latency/results/full_30x2 \
   --repeats 2 --warmup 1 \
   --strategies baseline,parallel_2,parallel_4,video_cached,video_fresh
@@ -193,23 +193,23 @@ PYTHONDONTWRITEBYTECODE=1 \
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 \
-  /Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I \
+  $REPO/.venv/bin/python -I \
   evaluation/device/v7_latency/benchmark.py \
-  /tmp/echogesture-validation-30/manifest.csv \
+  $TMP/echogesture-.../manifest.csv \
   --output-dir evaluation/device/v7_latency/results/baseline_only \
   --repeats 3 --warmup 1 --strategies baseline
 
 PYTHONDONTWRITEBYTECODE=1 \
-  /Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I \
+  $REPO/.venv/bin/python -I \
   evaluation/device/v7_latency/benchmark.py \
-  /tmp/echogesture-validation-30/manifest.csv \
+  $TMP/echogesture-.../manifest.csv \
   --output-dir evaluation/device/v7_latency/results/parallel4_only \
   --repeats 3 --warmup 1 --strategies parallel_4
 
 PYTHONDONTWRITEBYTECODE=1 \
-  /Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I \
+  $REPO/.venv/bin/python -I \
   evaluation/device/v7_latency/benchmark.py \
-  /tmp/echogesture-validation-30/manifest.csv \
+  $TMP/echogesture-.../manifest.csv \
   --output-dir evaluation/device/v7_latency/results/parallel2_only \
   --repeats 3 --warmup 1 --strategies parallel_2
 ```
@@ -218,7 +218,7 @@ PYTHONDONTWRITEBYTECODE=1 \
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 \
-  /Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I \
+  $REPO/.venv/bin/python -I \
   evaluation/device/v7_latency/verify_landmark_parity.py
 # 30/30 clips bit-identical landmarks + present flags
 ```
@@ -227,9 +227,9 @@ PYTHONDONTWRITEBYTECODE=1 \
 
 ```bash
 ECHOGESTURE_MODEL=landmark \
-  /Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I \
+  $REPO/.venv/bin/python -I \
   evaluation/device/run_manifest.py \
-  /tmp/echogesture-validation-30/manifest.csv \
+  $TMP/echogesture-.../manifest.csv \
   --output-dir evaluation/device/v7_latency/results/run_manifest_profiled \
   --profile \
   --labels models/landmark_labels.json \
@@ -243,9 +243,9 @@ ECHOGESTURE_MODEL=landmark \
 ```bash
 V7_STRATEGY=parallel_4 \
   PYTHONPATH=evaluation/device/v7_latency \
-  /Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I \
+  $REPO/.venv/bin/python -I \
   evaluation/device/run_manifest.py \
-  /tmp/echogesture-validation-30/manifest.csv \
+  $TMP/echogesture-.../manifest.csv \
   --output-dir /tmp/v7-out \
   --predictor evaluation/device/v7_latency/v7_candidates.py \
   --labels models/landmark_labels.json \

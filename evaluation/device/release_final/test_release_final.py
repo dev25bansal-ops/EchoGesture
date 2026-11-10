@@ -30,7 +30,7 @@ sys.path.insert(0, str(REPO / "scripts" / "release"))
 import release_build as rb  # noqa: E402
 from build_bundle import safe_member  # noqa: E402
 
-PYTHON = "/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python"
+PYTHON = "$REPO/.venv/bin/python"
 CLIP = REPO / "evaluation/device/v5_accuracy/data/val_30/0283886564670357-WHAT FOR.mp4"
 
 

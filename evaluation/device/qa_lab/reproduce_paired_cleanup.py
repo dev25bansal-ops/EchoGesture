@@ -12,7 +12,7 @@ disk inside the run output.  A subsequent run in the same output directory
 then reuses the same ``work/`` paths.
 
 Run with the project venv (numpy/opencv importable):
-    /Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python reproduce_paired_cleanup.py
+    $REPO/.venv/bin/python reproduce_paired_cleanup.py
 Exit code 0 means the defect reproduces, 1 means work/ is cleaned up.
 """
 
@@ -22,7 +22,7 @@ from pathlib import Path
 
 import numpy as np
 
-ROOT = Path("/tmp/echogesture-agents/A14")
+ROOT = Path("$TMP/echogesture-.../A14")
 sys.path.insert(0, str(ROOT / "evaluation" / "device"))
 import corruptions
 import robustness

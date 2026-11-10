@@ -1,8 +1,8 @@
 {
   "selected": {
     "backend": "landmark",
-    "model": "/Users/abhijeetmiskin/AppData/EchoGesture/models/landmark_classifier_fp16.tflite",
-    "labels": "/Users/abhijeetmiskin/AppData/EchoGesture/models/landmark_labels.json",
+    "model": "$REPO/models/landmark_classifier_fp16.tflite",
+    "labels": "$REPO/models/landmark_labels.json",
     "model_sha256": "a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4"
   },
   "default_loader": {

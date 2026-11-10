@@ -1,7 +1,7 @@
 # EchoGesture robustness lab
 
 Owner: A08 (Robustness Engineer). Branch state: isolated copy of
-`hackathon/abhijeet-integration` at `/tmp/echogesture-agents/A08`
+`hackathon/abhijeet-integration` at `$TMP/echogesture-.../A08`
 (8 Nov 2026). Files here live under `evaluation/device/robustness_lab/`,
 with the paired runner in `../robustness.py` and corruptions in
 `../corruptions.py`.
@@ -71,8 +71,8 @@ target claims.
 ## CLI
 
 ```bash
-/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python \
-  evaluation/device/robustness.py /tmp/echogesture-validation-30/manifest.csv \
+$REPO/.venv/bin/python \
+  evaluation/device/robustness.py $TMP/echogesture-.../manifest.csv \
   --output-dir /tmp/<run> \
   --predictor src/main.py \
   --labels models/landmark_labels.json \
@@ -90,7 +90,7 @@ runner rejects ground truth outside the supplied vocab.
 ## Measured results shipped in this copy
 
 `runs/validation30_lowlight_s42/` — real paired run, 30-clip labelled
-validation batch (`/tmp/echogesture-validation-30/manifest.csv`, 5
+validation batch (`$TMP/echogesture-.../manifest.csv`, 5
 signers, all ground truths in the landmark vocabulary), FP16 landmark
 model `a012f2b5…7044a4`, `low_light` severity 0.5, seed 42,
 `--validation --split validation`.  Representative by the gate above.

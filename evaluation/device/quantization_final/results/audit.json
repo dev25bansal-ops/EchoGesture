@@ -9,47 +9,47 @@
   },
   "assets": {
     "fp16": {
-      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/models/landmark_classifier_fp16.tflite",
+      "path": "$REPO/models/landmark_classifier_fp16.tflite",
       "sha256": "a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4",
       "bytes": 832888
     },
     "int8": {
-      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/models/landmark_classifier_int8.tflite",
+      "path": "$REPO/models/landmark_classifier_int8.tflite",
       "sha256": "9d24640a23244a3cd00c9fa62257733819f86ed1da5a10194c9b1cb64323700b",
       "bytes": 509720
     },
     "detector": {
-      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/models/hand_landmarker.task",
+      "path": "$REPO/models/hand_landmarker.task",
       "sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1",
       "bytes": 7819105
     },
     "labels": {
-      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/models/landmark_labels.json",
+      "path": "$REPO/models/landmark_labels.json",
       "sha256": "e78f5028e97e2eaf86aff65af403af65061eebef010f0fbd41012293e8019a4a",
       "bytes": 1492
     },
     "meta": {
-      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/models/landmark_model_meta.json",
+      "path": "$REPO/models/landmark_model_meta.json",
       "sha256": "7f189a16f4d175042b5481afb973217fc21410832ebd14c5bacf2f516473947e",
       "bytes": 123
     },
     "features": {
-      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/src/features.py",
+      "path": "$REPO/src/features.py",
       "sha256": "baf28d05bbd36e2783ea7ef6f78e793b89ed832d0eaad5dffed23d35c775aa84",
       "bytes": 8312
     },
     "frontend": {
-      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/src/landmark_frontend.py",
+      "path": "$REPO/src/landmark_frontend.py",
       "sha256": "c73ef64b72f21a86638c4a126ad642b64c4ee29851cd2f8fd8ea4ed516fa97b0",
       "bytes": 6633
     },
     "exporter": {
-      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/scripts/ml/export_tflite_tf.py",
+      "path": "$REPO/scripts/ml/export_tflite_tf.py",
       "sha256": "8abdb6368748babdbf3a74351fe15b8fb8da3348de60dd1a387da51364e96e5f",
       "bytes": 5582
     },
     "runtime": {
-      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/src/main.py",
+      "path": "$REPO/src/main.py",
       "sha256": "c695d78b1b1980e3b95b5357e0549385638eda3274a76eba479c6f3dcddf8141",
       "bytes": 10154
     }
@@ -50496,17 +50496,17 @@
   "existing_paired_346": {
     "identities": {
       "summary": {
-        "path": "/Users/abhijeetmiskin/AppData/EchoGesture/evaluation/device/v5_accuracy/results/val_346/summary.json",
+        "path": "$REPO/evaluation/device/v5_accuracy/results/val_346/summary.json",
         "sha256": "1ef28344e0684c46dd2422df2e96f1f1f55e4c277bca73a8dda76eec54992657",
         "bytes": 50105
       },
       "predictions": {
-        "path": "/Users/abhijeetmiskin/AppData/EchoGesture/evaluation/device/v5_accuracy/results/val_346/predictions.json",
+        "path": "$REPO/evaluation/device/v5_accuracy/results/val_346/predictions.json",
         "sha256": "8d980fbe5ae41613b578f411855e0d1d96e4ac178ac5a84d9aae5f1a65546555",
         "bytes": 423658
       },
       "manifest": {
-        "path": "/Users/abhijeetmiskin/AppData/EchoGesture/evaluation/device/v5_accuracy/data/val_346/clips/fetched_manifest.csv",
+        "path": "$REPO/evaluation/device/v5_accuracy/data/val_346/clips/fetched_manifest.csv",
         "sha256": "3f06798af00e69314da87414bf0c39bb2ec49e578f560c111754fa00966f6c82",
         "bytes": 31020
       }

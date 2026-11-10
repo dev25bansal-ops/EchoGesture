@@ -42,12 +42,12 @@ For landmark replay, timestamps are external file metadata. `frame_processing_ms
 
 ## Validation
 
-Run from the isolated directory with the project interpreter installed at `/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python`:
+Run from the isolated directory with the project interpreter installed at `$REPO/.venv/bin/python`:
 
 ```bash
-/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I -m unittest discover -s . -p 'test_*.py' -v
-/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I run_streaming.py \
-  "/tmp/echogesture-real-fixture/0009701491968876486-PULL CONVINCE.mp4" \
+$REPO/.venv/bin/python -I -m unittest discover -s . -p 'test_*.py' -v
+$REPO/.venv/bin/python -I run_streaming.py \
+  "$TMP/echogesture-.../0009701491968876486-PULL CONVINCE.mp4" \
   --out results/file-result.json
 ```
 

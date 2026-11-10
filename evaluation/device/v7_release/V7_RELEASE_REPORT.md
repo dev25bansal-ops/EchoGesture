@@ -23,7 +23,7 @@ ZIP members: `Dockerfile`, `release.json` (`official_submission: false`),
 ## Verification (real, not simulated)
 
 1. **Build**: `.venv/bin/python -I scripts/release/build_bundle.py build --source
-   /Users/abhijeetmiskin/AppData/EchoGesture --model
+   $REPO --model
    models/landmark_classifier_fp16.tflite --labels models/landmark_labels.json
    --results <v7_release>/results.csv --output <v7_release>/provisional.zip
    --extra <fp16, labels, meta, hand_landmarker.task, export_tflite_tf.py,
@@ -90,8 +90,8 @@ ZIP members: `Dockerfile`, `release.json` (`official_submission: false`),
 ## Reproduce
 
 ```
-/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I \
-  /tmp/echogesture-v7-agents/A13/evaluation/device/v7_release/build_v7_bundle.py --rebuild
+$REPO/.venv/bin/python -I \
+  $TMP/echogesture-.../A13/evaluation/device/v7_release/build_v7_bundle.py --rebuild
 ```
 leaves `results.csv` and `provisional.zip` in this directory. Original checkout
 was read-only (build copies from it; nothing written there).

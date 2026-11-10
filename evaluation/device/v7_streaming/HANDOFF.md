@@ -2,12 +2,12 @@
 
 ## Verified scope
 
-- Directory: `/tmp/echogesture-v7-agents/A04/evaluation/device/v7_streaming/`
+- Directory: `$TMP/echogesture-.../A04/evaluation/device/v7_streaming/`
 - Host: macOS on arm64 (Apple Silicon)
 - Runtime: Python 3.11.18, existing EchoGesture virtual environment
 - Model: `landmark_classifier_fp16.tflite`
 - Model SHA-256: `a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4`
-- Fixture: `/tmp/echogesture-real-fixture/0009701491968876486-PULL CONVINCE.mp4`
+- Fixture: `$TMP/echogesture-.../0009701491968876486-PULL CONVINCE.mp4`
 
 ## Results
 
@@ -22,8 +22,8 @@ stale-result rejection after a reset during inference.
 Command:
 
 ```bash
-/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I -m unittest \
-  discover -s /tmp/echogesture-v7-agents/A04/evaluation/device/v7_streaming \
+$REPO/.venv/bin/python -I -m unittest \
+  discover -s $TMP/echogesture-.../A04/evaluation/device/v7_streaming \
   -p 'test_*.py' -v
 ```
 
@@ -34,10 +34,10 @@ Output: `results/tests.txt` (`Ran 18 tests ... OK`).
 Command:
 
 ```bash
-/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I \
-  /tmp/echogesture-v7-agents/A04/evaluation/device/v7_streaming/run_streaming.py \
-  "/tmp/echogesture-real-fixture/0009701491968876486-PULL CONVINCE.mp4" \
-  --out /tmp/echogesture-v7-agents/A04/evaluation/device/v7_streaming/results/file-result.json
+$REPO/.venv/bin/python -I \
+  $TMP/echogesture-.../A04/evaluation/device/v7_streaming/run_streaming.py \
+  "$TMP/echogesture-.../0009701491968876486-PULL CONVINCE.mp4" \
+  --out $TMP/echogesture-.../A04/evaluation/device/v7_streaming/results/file-result.json
 ```
 
 Final command completed with exit code 0 and emitted valid JSON at

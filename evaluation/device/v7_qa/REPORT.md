@@ -1,7 +1,7 @@
 # A14 V7 QA — regression expansion report
 
 ## Scope & constraints
-- Own only `/tmp/echogesture-v7-agents/A14/evaluation/device/v7_qa/`.
+- Own only `$TMP/echogesture-.../A14/evaluation/device/v7_qa/`.
 - No edits to original checkout or production code. No installs, no nested agents.
 - Existing suite: 161 tests (all passing via `.venv/bin/python -m unittest discover -s evaluation/device -p "test_*.py"`).
 
@@ -46,6 +46,6 @@ owner of `run_manifest.py`.
 
 ## Verification command
 ```
-cd /tmp && /Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I -m unittest discover -s /tmp/echogesture-v7-agents/A14/evaluation/device -p "test_*.py"
+cd /tmp && $REPO/.venv/bin/python -I -m unittest discover -s $TMP/echogesture-.../A14/evaluation/device -p "test_*.py"
 # Ran 204 tests in 0.812s — OK
 ```

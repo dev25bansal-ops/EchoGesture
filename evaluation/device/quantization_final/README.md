@@ -170,7 +170,7 @@ re-checks it against `build_features`:
 ## Reproduction
 
 ```bash
-P=/Users/abhijeetmiskin/AppData/EchoGesture
+P=$REPO
 $P/.venv/bin/python -I -m unittest discover -s evaluation/device/quantization_final -p 'test_*.py' -v
 $P/.venv/bin/python -I evaluation/device/quantization_final/audit_quantization.py \
   --output evaluation/device/quantization_final/results/audit.json

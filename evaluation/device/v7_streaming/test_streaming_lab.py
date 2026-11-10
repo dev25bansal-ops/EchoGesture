@@ -2,7 +2,7 @@
 
 Run with the project interpreter:
 
-    /Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I \
+    $REPO/.venv/bin/python -I \
       -m unittest discover -s . -p 'test_*.py' -v
 """
 
@@ -23,7 +23,7 @@ from ring_buffer import RingBuffer
 _HERE = Path(__file__).resolve().parent
 _PROJECT_ROOT = Path(__file__).resolve().parents[3]
 _MODEL_PATH = _PROJECT_ROOT / "models/landmark_classifier_fp16.tflite"
-_FIXTURE = Path("/tmp/echogesture-real-fixture/0009701491968876486-PULL CONVINCE.mp4")
+_FIXTURE = Path("$TMP/echogesture-.../0009701491968876486-PULL CONVINCE.mp4")
 
 
 def _frame(index, present_hand=True):

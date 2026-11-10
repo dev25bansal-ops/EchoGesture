@@ -12,7 +12,7 @@ import argparse, subprocess, sys, json
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-ROOT = Path("/Users/abhijeetmiskin/AppData/EchoGesture")
+ROOT = Path("$REPO")
 PY = str(ROOT / ".venv/bin/python")
 MODEL_SHA = "a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4"
 BENCH = ROOT / "evaluation/device/accuracy_lab/benchmark.json"

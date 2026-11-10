@@ -59,10 +59,10 @@ Keep FP16 default. INT8 stays opt-in experimental.
 ## Reproduction
 
 ```bash
-/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I evaluation/device/v7_int8/audit_tflite.py
-/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I evaluation/device/v7_int8/run_v7_int8.py
-/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I evaluation/device/v7_int8/benchmark.py --repeats 300 --warmup 50
-/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I evaluation/device/v7_int8/test_v7_int8.py -v
+$REPO/.venv/bin/python -I evaluation/device/v7_int8/audit_tflite.py
+$REPO/.venv/bin/python -I evaluation/device/v7_int8/run_v7_int8.py
+$REPO/.venv/bin/python -I evaluation/device/v7_int8/benchmark.py --repeats 300 --warmup 50
+$REPO/.venv/bin/python -I evaluation/device/v7_int8/test_v7_int8.py -v
 ```
 
 Pinned hashes: FP16 `a012f2b5...7044a4`, INT8 `9d24640a...23700b` (full

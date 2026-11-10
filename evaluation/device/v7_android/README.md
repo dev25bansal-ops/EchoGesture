@@ -18,7 +18,7 @@ Full raw log: `evaluation/device/v7_android/env_probe.txt`. Summary:
 | `~/Library/Android/sdk` | **does not exist** (no `platforms/`, no `build-tools/`) — Android Studio's internal `android.jar` is a Studio tooling jar, not an installable SDK tree |
 | USB Android device | `system_profiler SPUSBDataType` reports **no** Samsung/Pixel/Android device |
 | Camera probe (OpenCV `VideoCapture(0)`) | `opened False` — "not authorized to capture video"; no live frames obtainable headlessly |
-| Python host runtime | `/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python` with `ai-edge-litert`, `mediapipe`, `cv2`, `numpy` importable (this is what made the host verification below possible) |
+| Python host runtime | `$REPO/.venv/bin/python` with `ai-edge-litert`, `mediapipe`, `cv2`, `numpy` importable (this is what made the host verification below possible) |
 
 This matches the prior V4 finding (`evaluation/device/v4_hardware/README.md`):
 a shipping Android Studio does not imply a prepared SDK.
@@ -42,7 +42,7 @@ Classifier output: stable softmax + top-5, same as `src/main.py`.
 ## 3. Host verification actually executed
 
 ```bash
-/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I \
+$REPO/.venv/bin/python -I \
   evaluation/device/v7_android/test_parity.py
 ```
 
@@ -59,7 +59,7 @@ mkdir -p "$ANDROID_HOME/cmdline-tools"
 "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$ANDROID_HOME" \
   --install 'platform-tools' 'platforms;android-35' 'build-tools;35.0.0'
 "$ANDROID_HOME/platform-tools/adb" devices -l          # must show a real device/emulator
-cd /tmp/echogesture-v7-agents/A09/app/v7_android
+cd $TMP/echogesture-.../A09/app/v7_android
 # Gradle wrapper jar: download gradle-8.10.2 distribution (see
 # gradle/wrapper/gradle-wrapper.properties) and run the wrapper once, e.g.
 #   gradle wrapper --gradle-version 8.10.2   (with a Gradle on PATH), or

@@ -1,7 +1,7 @@
 # V7 tracking evaluation (A03)
 
 Date: 2026-11-09  
-Owner: A03, isolated `/tmp/echogesture-v7-agents/A03/evaluation/device/v7_tracking/` only.
+Owner: A03, isolated `$TMP/echogesture-.../A03/evaluation/device/v7_tracking/` only.
 
 ## Verdict
 
@@ -130,31 +130,31 @@ Run from the isolated A03 checkout. The existing Python 3.11.18 environment
 contains NumPy 2.4.6, OpenCV 5.0.0, MediaPipe 1.2.2, and ai-edge-litert.
 
 ```bash
-cd /tmp/echogesture-v7-agents/A03
-/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I -B \
+cd $TMP/echogesture-.../A03
+$REPO/.venv/bin/python -I -B \
   evaluation/device/v7_tracking/test_candidates.py
 
 # Clean 30 (results/clean_30_rerun)
-/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I -B \
+$REPO/.venv/bin/python -I -B \
   evaluation/device/v7_tracking/run_tracking.py \
-  /tmp/echogesture-validation-30/manifest.csv --arm clean \
+  $TMP/echogesture-.../manifest.csv --arm clean \
   --output-dir evaluation/device/v7_tracking/results/clean_30_rerun
 
 # Clean 346 (final verification)
-/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I -B \
+$REPO/.venv/bin/python -I -B \
   evaluation/device/v7_tracking/run_tracking.py \
-  /tmp/echogesture-v5-agents/B/evaluation/device/v5_accuracy/data/val_346/clips/fetched_manifest.csv \
+  $TMP/echogesture-.../B/evaluation/device/v5_accuracy/data/val_346/clips/fetched_manifest.csv \
   --arm clean --output-dir evaluation/device/v7_tracking/results/clean_346_verified
 
 # One corruption per process; replace kind as needed
-/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I -B \
+$REPO/.venv/bin/python -I -B \
   evaluation/device/v7_tracking/run_tracking.py \
-  /tmp/echogesture-v5-agents/B/evaluation/device/v5_accuracy/data/val_346/clips/fetched_manifest.csv \
+  $TMP/echogesture-.../B/evaluation/device/v5_accuracy/data/val_346/clips/fetched_manifest.csv \
   --arm corrupted --corruption occlusion --severity 0.5 --seed 42 \
   --output-dir evaluation/device/v7_tracking/results/corrupt_occlusion_346
 
 # Pair clean/corrupt and inspect FP16/INT8 parity
-/Users/abhijeetmiskin/AppData/EchoGesture/.venv/bin/python -I -B \
+$REPO/.venv/bin/python -I -B \
   evaluation/device/v7_tracking/compare_runs.py \
   --clean evaluation/device/v7_tracking/results/clean_346_verified/run.json \
   --corrupted evaluation/device/v7_tracking/results/corrupt_occlusion_346/run.json \

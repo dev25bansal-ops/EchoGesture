@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">EchoGesture</string>
+    <string name="offline_indicator">OFFLINE</string>
+    <string name="capture_action">Capture &amp; translate</string>
+    <string name="retry_action">Retry</string>
+    <string name="waiting_title">Waiting for hands</string>
+    <string name="waiting_detail">Show one or both hands. Capture needs at least one detected hand frame.</string>
+    <string name="processing_title">Processing…</string>
+    <string name="processing_detail">Running hand landmarks through the on-device classifier.</string>
+    <string name="no_hands_title">No hands detected</string>
+    <string name="no_hands_detail">Keep hands in frame and try again.</string>
+    <string name="error_title">Something went wrong</string>
+    <string name="permission_title">Camera permission required</string>
+    <string name="permission_detail">EchoGesture needs the camera to read hand landmarks. Nothing leaves this device.</string>
+    <string name="grant_camera">Grant camera</string>
+    <string name="model_identity">%1$s · SHA-256 %2$s…</string>
+    <string name="frame_status">%1$d/32 frames · %2$d with hands</string>
+    <string name="caption_confidence">Confidence %1$s%%</string>
+    <string name="top_alternatives">Also considered: %1$s</string>
+    <string name="latency_line">Inference %1$d ms · total %2$d ms</string>
+</resources>

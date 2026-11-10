@@ -226,6 +226,9 @@ class CameraSessionTest(unittest.TestCase):
 
 
 class IdentityTest(unittest.TestCase):
+    @unittest.skipUnless(
+        (Path(__file__).resolve().parents[3] / "models/landmark_classifier_fp16.tflite").is_file(),
+        "trained weights are not committed (see NOTICE)")
     def test_fp16_sha_matches_expected_candidate(self):
         result = check_model_identity()
         self.assertTrue(result["ok"], result["report"])

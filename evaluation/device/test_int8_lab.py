@@ -88,6 +88,8 @@ class TestRealArtifacts(unittest.TestCase):
         self.assertEqual(a, b)
 
 
+@unittest.skipUnless(INT8.is_file() and FP16.is_file(),
+                     "trained weights are not committed (see NOTICE)")
 class TestComparisonScript(unittest.TestCase):
     def test_compare_runs_and_reports_no_accuracy_on_synthetic(self):
         spec = importlib.util.spec_from_file_location("cmp", LAB / "compare_fp16_int8.py")
@@ -107,6 +109,8 @@ class TestComparisonScript(unittest.TestCase):
         self.assertIn("not accuracy", text)
 
 
+@unittest.skipUnless(FP16.is_file() and INT8.is_file() and DET.is_file(),
+                     "trained weights are not committed (see NOTICE)")
 class TestFootprint(unittest.TestCase):
     def test_combined_bytes_under_limit_and_int8_smaller(self):
         fp, i8, det = FP16.stat().st_size, INT8.stat().st_size, DET.stat().st_size

@@ -112,4 +112,4 @@ evaluation/device/streaming_lab/
 evaluation/device/robustness_lab/runs/
 evaluation/device/accuracy_lab/
 evaluation/device/int8_lab/
-evaluation/device/benchmark_lab/
+evaluation/device/benchmark_lab/results/

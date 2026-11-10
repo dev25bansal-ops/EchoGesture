@@ -1,0 +1,29 @@
+test_illegal_transition_raises (test_streaming_lab.CaptureSessionTest.test_illegal_transition_raises) ... ok
+test_new_signs_have_monotonic_ids (test_streaming_lab.CaptureSessionTest.test_new_signs_have_monotonic_ids) ... ok
+test_classifier_shape_and_timing_separation (test_streaming_lab.RealModelTest.test_classifier_shape_and_timing_separation) ... INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+ok
+test_real_fixture_landmark_replay_does_not_claim_live_latency (test_streaming_lab.RealModelTest.test_real_fixture_landmark_replay_does_not_claim_live_latency) ... I0000 00:00:1794168061.319544 3280379 init-domain.cc:133] Fiber init: default domain = pthread, concurrency = 19, prefix = pthread-default
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+W0000 00:00:1794168061.323026 3280382 inference_feedback_manager.cc:121] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794168061.324929 3280382 inference_feedback_manager.cc:121] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794168061.330252 3280394 landmark_projection_calculator.cc:81] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+ok
+test_bounded_drop_oldest_reports_counts (test_streaming_lab.RingBufferTest.test_bounded_drop_oldest_reports_counts) ... ok
+test_capacity_must_be_positive (test_streaming_lab.RingBufferTest.test_capacity_must_be_positive) ... ok
+test_backpressure_counts_dropped_frames (test_streaming_lab.StreamingSessionTest.test_backpressure_counts_dropped_frames) ... ok
+test_begin_sign_does_not_silently_discard_active_window (test_streaming_lab.StreamingSessionTest.test_begin_sign_does_not_silently_discard_active_window) ... ok
+test_caption_expires (test_streaming_lab.StreamingSessionTest.test_caption_expires) ... ok
+test_committed_caption_does_not_cross_signs (test_streaming_lab.StreamingSessionTest.test_committed_caption_does_not_cross_signs) ... ok
+test_empty_and_no_hand_flush_fail_without_caption_or_sign_increment (test_streaming_lab.StreamingSessionTest.test_empty_and_no_hand_flush_fail_without_caption_or_sign_increment) ... ok
+test_external_replay_requires_explicit_end_timestamp (test_streaming_lab.StreamingSessionTest.test_external_replay_requires_explicit_end_timestamp) ... ok
+test_failure_recovery_does_not_reuse_previous_timestamp (test_streaming_lab.StreamingSessionTest.test_failure_recovery_does_not_reuse_previous_timestamp) ... ok
+test_gap_can_be_flushed_then_next_sign_commits_independently (test_streaming_lab.StreamingSessionTest.test_gap_can_be_flushed_then_next_sign_commits_independently) ... ok
+test_out_of_order_and_duplicate_are_explicit (test_streaming_lab.StreamingSessionTest.test_out_of_order_and_duplicate_are_explicit) ... ok
+test_reset_discards_in_flight_classifier_result (test_streaming_lab.StreamingSessionTest.test_reset_discards_in_flight_classifier_result) ... ok
+test_stop_and_reset_clear_caption (test_streaming_lab.StreamingSessionTest.test_stop_and_reset_clear_caption) ... ok
+test_timestamp_gap_requires_disjoint_windows (test_streaming_lab.StreamingSessionTest.test_timestamp_gap_requires_disjoint_windows) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.556s
+
+OK

@@ -1,0 +1,46 @@
+--- a/scripts/release/generate_results.py
++++ b/scripts/release/generate_results.py
+@@ -23,6 +23,19 @@
+     per_signer_rows,
+ )
+ 
++# v8_privacy hardening: sanitise evidence before use; refuse to emit
++# CSV rows that still embed a hostname or private absolute path, and
++# refuse to emit raw participant IDs (per-signer rows use pseudonyms
++# only when ECHOGESTURE_SIGNER_SALT is set, otherwise aggregate-only).
++_V8_DEVICE_DIR = str(Path(__file__).resolve().parents[2] / "evaluation" / "device" / "v8_privacy")
++if _V8_DEVICE_DIR not in sys.path:
++    sys.path.insert(0, _V8_DEVICE_DIR)
++try:
++    from sanitize_evidence import assert_sanitized, sanitize_benchmark_dict  # noqa: E402
++except ImportError:  # v8_privacy tree not present (older checkout): no-op
++    assert_sanitized = None  # type: ignore
++    sanitize_benchmark_dict = None  # type: ignore
++
+ COLUMNS = ["metric", "target", "measured", "unit", "device", "runtime", "pass", "notes"]
+ 
+ # Representative gates (mirrors run_manifest / robustness): a PASS requires
+@@ -67,6 +80,12 @@
+              power_path=None, thermal_path=None, predictions_path=None,
+              extra_artifacts=(), output_semantics=None):
+     benchmark = load(benchmark_path)
++    if sanitize_benchmark_dict is not None:
++        benchmark = sanitize_benchmark_dict(benchmark, repo_root=Path(__file__).resolve().parents[2])
++    if assert_sanitized is not None:
++        leaks = assert_sanitized(benchmark)
++        if leaks:
++            raise ValueError(f"Benchmark still embeds private path/hostname after sanitisation: {leaks[0][:120]}")
+     required = ("artifacts", "environment", "accuracy", "latency", "manifest")
+     missing = [key for key in required if key not in benchmark]
+     if missing:
+@@ -198,6 +217,10 @@
+                         status(True, value <= limit),
+                         pprov.trace_string() + f"; method={data.get('method', 'unspecified')}"))
+ 
++    if assert_sanitized is not None:
++        leaks = assert_sanitized(rows)
++        if leaks:
++            raise ValueError(f"Refusing to write results still embedding private path/hostname: {leaks[0][:120]}")
+     output_path.parent.mkdir(parents=True, exist_ok=True)
+     with output_path.open("w", newline="", encoding="utf-8") as stream:
+         writer = csv.DictWriter(stream, fieldnames=COLUMNS)

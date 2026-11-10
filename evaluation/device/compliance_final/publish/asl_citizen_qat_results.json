@@ -1,0 +1,51 @@
+{
+  "top1": 0.00997067448680352,
+  "n": 1705,
+  "ok": 17,
+  "per_signer": {
+    "signer_redacted_00": [
+      1,
+      161
+    ],
+    "signer_redacted_01": [
+      2,
+      145
+    ],
+    "signer_redacted_02": [
+      1,
+      153
+    ],
+    "signer_redacted_03": [
+      2,
+      148
+    ],
+    "signer_redacted_04": [
+      3,
+      162
+    ],
+    "signer_redacted_05": [
+      0,
+      160
+    ],
+    "signer_redacted_06": [
+      2,
+      147
+    ],
+    "signer_redacted_07": [
+      3,
+      157
+    ],
+    "signer_redacted_08": [
+      1,
+      147
+    ],
+    "signer_redacted_09": [
+      1,
+      158
+    ],
+    "signer_redacted_10": [
+      1,
+      167
+    ]
+  }
+}

@@ -1,0 +1,4036 @@
+{
+  "generated_at": "2026-11-08T18:44:55.680467+00:00",
+  "task": "V7 latency lab: paired identical-clip full clip-to-JSON",
+  "manifest": {
+    "path": "/private/tmp/echogesture-validation-30/manifest.csv",
+    "sha256": "004e5effb7e6c19b515fdd00b048459fff236d8b35c6b7f7b49e91a1efa5d618"
+  },
+  "artifacts": {
+    "fp16_classifier": {
+      "path": "/private/tmp/echogesture-v7-agents/A01/models/landmark_classifier_fp16.tflite",
+      "sha256": "a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4"
+    },
+    "int8_classifier": {
+      "path": "/private/tmp/echogesture-v7-agents/A01/models/landmark_classifier_int8.tflite",
+      "sha256": "9d24640a23244a3cd00c9fa62257733819f86ed1da5a10194c9b1cb64323700b"
+    },
+    "hand_landmarker": {
+      "path": "/private/tmp/echogesture-v7-agents/A01/models/hand_landmarker.task",
+      "sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1"
+    },
+    "labels": {
+      "path": "/private/tmp/echogesture-v7-agents/A01/models/landmark_labels.json",
+      "sha256": "e78f5028e97e2eaf86aff65af403af65061eebef010f0fbd41012293e8019a4a"
+    },
+    "frontend": {
+      "path": "/private/tmp/echogesture-v7-agents/A01/src/landmark_frontend.py",
+      "sha256": "c73ef64b72f21a86638c4a126ad642b64c4ee29851cd2f8fd8ea4ed516fa97b0"
+    },
+    "features": {
+      "path": "/private/tmp/echogesture-v7-agents/A01/src/features.py",
+      "sha256": "baf28d05bbd36e2783ea7ef6f78e793b89ed832d0eaad5dffed23d35c775aa84"
+    },
+    "main": {
+      "path": "/private/tmp/echogesture-v7-agents/A01/src/main.py",
+      "sha256": "c695d78b1b1980e3b95b5357e0549385638eda3274a76eba479c6f3dcddf8141"
+    },
+    "v7_candidates": {
+      "path": "/private/tmp/echogesture-v7-agents/A01/evaluation/device/v7_latency/v7_candidates.py",
+      "sha256": "fc8974968527bf5da5fefc32ebcbf71a6e4b171910f8b435ba90452f6b89762b"
+    },
+    "benchmark": {
+      "path": "/private/tmp/echogesture-v7-agents/A01/evaluation/device/v7_latency/benchmark.py",
+      "sha256": "64c25991bddae545c11b050ff2bec50ca23bfb468ed2c1145ef5337182e2c89d"
+    }
+  },
+  "environment": {
+    "python": "3.11.18 (main, Oct 25 2026, 19:41:29) [Clang 21.0.0 (clang-2100.3.34.2)]",
+    "platform": "macOS-26.3-arm64-arm-64bit",
+    "machine": "arm64",
+    "cpu": "Mac.lan",
+    "mediapipe": "1.2.2",
+    "litert": "2.3.0",
+    "opencv": "5.0.0",
+    "numpy": "2.4.6",
+    "code_commit": null
+  },
+  "hardware": {
+    "brand": "Apple M5 Pro",
+    "cpus": 18,
+    "ram_bytes": 25769803776
+  },
+  "model_contract": {
+    "input_shape": [
+      1,
+      24,
+      255
+    ],
+    "input_dtype": "float32",
+    "model_file_sha256": "a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4",
+    "sampled_frames": 32,
+    "frame_size": 256,
+    "frame_budget_changed": false
+  },
+  "configuration": {
+    "repeats": 3,
+    "warmup_calls_per_strategy": 1,
+    "strategies": [
+      "parallel_2"
+    ],
+    "serialized": true,
+    "one_classifier_process": true,
+    "state_lifecycle": "baseline=singleton IMAGE landmarker; parallel_2/parallel_4=persistent IMAGE tracker pools in threads with round-robin frame distribution; video_fresh=fresh VIDEO per clip ts=0,33,...; video_cached=singleton VIDEO monotonic timestamps across clips"
+  },
+  "aggregate": {
+    "parallel_2": {
+      "runs": 90,
+      "successful": 90,
+      "decode": {
+        "count": 90,
+        "mean_ms": 16.878072244444443,
+        "p50_ms": 15.3185,
+        "p90_ms": 21.193792,
+        "p95_ms": 23.53625,
+        "p99_ms": 30.982708,
+        "min_ms": 13.118625,
+        "max_ms": 30.982708
+      },
+      "tracking": {
+        "count": 90,
+        "mean_ms": 119.39421617777776,
+        "p50_ms": 118.386375,
+        "p90_ms": 144.508459,
+        "p95_ms": 147.030125,
+        "p99_ms": 157.129375,
+        "min_ms": 95.718417,
+        "max_ms": 157.129375
+      },
+      "features": {
+        "count": 90,
+        "mean_ms": 0.1940463,
+        "p50_ms": 0.18225,
+        "p90_ms": 0.251291,
+        "p95_ms": 0.259125,
+        "p99_ms": 0.281042,
+        "min_ms": 0.135875,
+        "max_ms": 0.281042
+      },
+      "classifier": {
+        "count": 90,
+        "mean_ms": 0.09608103333333333,
+        "p50_ms": 0.09525,
+        "p90_ms": 0.101417,
+        "p95_ms": 0.103625,
+        "p99_ms": 0.11525,
+        "min_ms": 0.088584,
+        "max_ms": 0.11525
+      },
+      "postprocess": {
+        "count": 90,
+        "mean_ms": 0.024550444444444444,
+        "p50_ms": 0.02375,
+        "p90_ms": 0.026667,
+        "p95_ms": 0.029083,
+        "p99_ms": 0.033375,
+        "min_ms": 0.020916,
+        "max_ms": 0.033375
+      },
+      "total": {
+        "count": 90,
+        "mean_ms": 136.61795043333333,
+        "p50_ms": 133.190708,
+        "p90_ms": 160.411959,
+        "p95_ms": 162.387667,
+        "p99_ms": 186.831792,
+        "min_ms": 116.692041,
+        "max_ms": 186.831792
+      },
+      "wall": {
+        "count": 90,
+        "mean_ms": 136.72157034444444,
+        "p50_ms": 133.308292,
+        "p90_ms": 160.5145,
+        "p95_ms": 162.497708,
+        "p99_ms": 186.94025,
+        "min_ms": 116.800667,
+        "max_ms": 186.94025
+      },
+      "correct": 66,
+      "labelled": 90,
+      "top1": 0.7333333333333333
+    }
+  },
+  "paired_vs_baseline": [],
+  "records": [
+    {
+      "clip_id": "6523145816470133-WHAT FOR",
+      "ground_truth": "WHATFOR1",
+      "signer_id": "signer_2f68a231",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:43.373913+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "6523145816470133-WHAT FOR",
+        "prediction": "WHATFOR1",
+        "top5": [
+          "WHATFOR1",
+          "KNIGHT1",
+          "OFFEND",
+          "DEAF1",
+          "RAZOR2"
+        ],
+        "confidence": 0.2138,
+        "latency_ms": 119.31
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.056959,
+        "decode_ms": 23.254875,
+        "decoded_frames": 32,
+        "tracking_ms": 95.718417,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 7,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.17475,
+        "classifier_ms": 0.101833,
+        "postprocess_ms": 0.02775,
+        "total_ms": 119.313041,
+        "wall_ms": 119.416
+      }
+    },
+    {
+      "clip_id": "6961575623504714-SHAVE",
+      "ground_truth": "SHAVE1",
+      "signer_id": "signer_9123b627",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:43.493533+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "6961575623504714-SHAVE",
+        "prediction": "APPLE",
+        "top5": [
+          "APPLE",
+          "RAZOR2",
+          "SHAVE1",
+          "DRAG1",
+          "MYSELF"
+        ],
+        "confidence": 0.2664,
+        "latency_ms": 134.93
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.05925,
+        "decode_ms": 14.736792,
+        "decoded_frames": 32,
+        "tracking_ms": 119.82,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 19,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.2105,
+        "classifier_ms": 0.095875,
+        "postprocess_ms": 0.026667,
+        "total_ms": 134.928,
+        "wall_ms": 135.03375
+      }
+    },
+    {
+      "clip_id": "15347326711184706-NOON",
+      "ground_truth": "NOON1",
+      "signer_id": "signer_9123b627",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:43.628588+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "15347326711184706-NOON",
+        "prediction": "NOON1",
+        "top5": [
+          "NOON1",
+          "BEE1",
+          "GUESS1",
+          "BREAKFAST1",
+          "UNDERWEAR1"
+        ],
+        "confidence": 0.1201,
+        "latency_ms": 124.46
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.064166,
+        "decode_ms": 15.122292,
+        "decoded_frames": 32,
+        "tracking_ms": 109.031167,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 9,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.149791,
+        "classifier_ms": 0.096,
+        "postprocess_ms": 0.026583,
+        "total_ms": 124.458417,
+        "wall_ms": 124.566083
+      }
+    },
+    {
+      "clip_id": "9990244640190733-BACKPACK",
+      "ground_truth": "BACKPACK1",
+      "signer_id": "signer_2f68a231",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:43.753171+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "9990244640190733-BACKPACK",
+        "prediction": "CHEER",
+        "top5": [
+          "CHEER",
+          "BACKPACK1",
+          "PARTY1",
+          "GRAMMAR",
+          "PULLCONVINCE"
+        ],
+        "confidence": 0.2762,
+        "latency_ms": 165.17
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.058084,
+        "decode_ms": 17.430625,
+        "decoded_frames": 32,
+        "tracking_ms": 147.31925,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 15,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.250667,
+        "classifier_ms": 0.11525,
+        "postprocess_ms": 0.026333,
+        "total_ms": 165.174791,
+        "wall_ms": 165.279917
+      }
+    },
+    {
+      "clip_id": "7629092396207264-MAPLE",
+      "ground_truth": "MAPLE",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:43.918463+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "7629092396207264-MAPLE",
+        "prediction": "AXE1",
+        "top5": [
+          "AXE1",
+          "BASEBALLCAP",
+          "BABY2",
+          "IMPOSSIBLE",
+          "SOCCER2"
+        ],
+        "confidence": 0.1635,
+        "latency_ms": 121.27
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.066041,
+        "decode_ms": 15.988167,
+        "decoded_frames": 32,
+        "tracking_ms": 104.950209,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 14,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.175083,
+        "classifier_ms": 0.099292,
+        "postprocess_ms": 0.023916,
+        "total_ms": 121.267917,
+        "wall_ms": 121.374208
+      }
+    },
+    {
+      "clip_id": "5784034175717614-EASY",
+      "ground_truth": "EASY",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:44.039851+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "5784034175717614-EASY",
+        "prediction": "EASY",
+        "top5": [
+          "EASY",
+          "DARK1",
+          "HOW1",
+          "CHEESEGRATER",
+          "JEWELRY"
+        ],
+        "confidence": 0.8579,
+        "latency_ms": 162.3
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.069417,
+        "decode_ms": 14.824959,
+        "decoded_frames": 32,
+        "tracking_ms": 147.030125,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 17,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.281042,
+        "classifier_ms": 0.101041,
+        "postprocess_ms": 0.030083,
+        "total_ms": 162.304833,
+        "wall_ms": 162.419125
+      }
+    },
+    {
+      "clip_id": "4254167262351618-CHEW 2",
+      "ground_truth": "CHEW1",
+      "signer_id": "signer_feb2f4a2",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:44.202289+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "4254167262351618-CHEW 2",
+        "prediction": "CHEW1",
+        "top5": [
+          "CHEW1",
+          "BASEBALLCAP",
+          "PATIENT2",
+          "ANYONE",
+          "IMPOSSIBLE"
+        ],
+        "confidence": 0.5149,
+        "latency_ms": 136.52
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.060458,
+        "decode_ms": 23.289625,
+        "decoded_frames": 32,
+        "tracking_ms": 112.888792,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 16,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.180167,
+        "classifier_ms": 0.100709,
+        "postprocess_ms": 0.025708,
+        "total_ms": 136.519084,
+        "wall_ms": 136.628417
+      }
+    },
+    {
+      "clip_id": "6142521746642153-WHAT FOR",
+      "ground_truth": "WHATFOR1",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:44.338933+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "6142521746642153-WHAT FOR",
+        "prediction": "WHATFOR1",
+        "top5": [
+          "WHATFOR1",
+          "DEAF1",
+          "PENNY",
+          "ZEBRA",
+          "DECIDE1"
+        ],
+        "confidence": 0.5483,
+        "latency_ms": 135.73
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.060792,
+        "decode_ms": 14.144208,
+        "decoded_frames": 32,
+        "tracking_ms": 121.250292,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 20,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.1875,
+        "classifier_ms": 0.093625,
+        "postprocess_ms": 0.023417,
+        "total_ms": 135.7305,
+        "wall_ms": 135.833833
+      }
+    },
+    {
+      "clip_id": "5004269948712425-SOCCER 2",
+      "ground_truth": "SOCCER2",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:44.474782+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "5004269948712425-SOCCER 2",
+        "prediction": "SOCCER2",
+        "top5": [
+          "SOCCER2",
+          "GOODYGOODYSHOEOPPOSITE",
+          "MAPLE",
+          "8HOUR",
+          "ADVERTISE"
+        ],
+        "confidence": 0.1762,
+        "latency_ms": 128.12
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.060125,
+        "decode_ms": 14.051459,
+        "decoded_frames": 32,
+        "tracking_ms": 113.744041,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 16,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.178625,
+        "classifier_ms": 0.092083,
+        "postprocess_ms": 0.023291,
+        "total_ms": 128.122833,
+        "wall_ms": 128.225042
+      }
+    },
+    {
+      "clip_id": "7713194149900888-CEMETERY",
+      "ground_truth": "CEMETERY",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:44.603020+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "7713194149900888-CEMETERY",
+        "prediction": "CEMETERY",
+        "top5": [
+          "CEMETERY",
+          "SHAVE1",
+          "DECIDE1",
+          "DEAF1",
+          "SOCIETY"
+        ],
+        "confidence": 0.2936,
+        "latency_ms": 128.26
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.055917,
+        "decode_ms": 13.353583,
+        "decoded_frames": 32,
+        "tracking_ms": 114.5595,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 14,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.203167,
+        "classifier_ms": 0.092208,
+        "postprocess_ms": 0.022792,
+        "total_ms": 128.260834,
+        "wall_ms": 128.357459
+      }
+    },
+    {
+      "clip_id": "9336391016353045-FLIP",
+      "ground_truth": "FLIP",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:44.731391+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "9336391016353045-FLIP",
+        "prediction": "FINE1",
+        "top5": [
+          "FINE1",
+          "EAT1",
+          "BEE1",
+          "DOG1",
+          "IMPOSSIBLE"
+        ],
+        "confidence": 0.0902,
+        "latency_ms": 130.89
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.0625,
+        "decode_ms": 13.696125,
+        "decoded_frames": 32,
+        "tracking_ms": 116.847583,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 21,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.190833,
+        "classifier_ms": 0.100625,
+        "postprocess_ms": 0.023,
+        "total_ms": 130.886,
+        "wall_ms": 130.990125
+      }
+    },
+    {
+      "clip_id": "3191470037860531-8 HOUR",
+      "ground_truth": "8HOUR",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:44.862396+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "3191470037860531-8 HOUR",
+        "prediction": "8HOUR",
+        "top5": [
+          "8HOUR",
+          "PATIENT2",
+          "MAPLE",
+          "IMPOSSIBLE",
+          "DEVELOP1"
+        ],
+        "confidence": 0.3794,
+        "latency_ms": 146.81
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.057708,
+        "decode_ms": 14.231542,
+        "decoded_frames": 32,
+        "tracking_ms": 132.238167,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 16,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.18225,
+        "classifier_ms": 0.095792,
+        "postprocess_ms": 0.028416,
+        "total_ms": 146.805042,
+        "wall_ms": 146.903042
+      }
+    },
+    {
+      "clip_id": "647818976594698-BABY 2",
+      "ground_truth": "BABY2",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:45.009312+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "647818976594698-BABY 2",
+        "prediction": "BABY2",
+        "top5": [
+          "BABY2",
+          "TAIL1",
+          "HOSPITAL1",
+          "EASY",
+          "PULLCONVINCE"
+        ],
+        "confidence": 0.7061,
+        "latency_ms": 121.55
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.057958,
+        "decode_ms": 13.675125,
+        "decoded_frames": 32,
+        "tracking_ms": 107.561084,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 14,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.173292,
+        "classifier_ms": 0.09025,
+        "postprocess_ms": 0.023625,
+        "total_ms": 121.551125,
+        "wall_ms": 121.649125
+      }
+    },
+    {
+      "clip_id": "7355641552290353-MECHANIC",
+      "ground_truth": "MECHANIC1",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:45.130975+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "7355641552290353-MECHANIC",
+        "prediction": "MECHANIC1",
+        "top5": [
+          "MECHANIC1",
+          "SPECIAL1",
+          "JEWELRY",
+          "HALLOWEEN1",
+          "FAIL"
+        ],
+        "confidence": 0.7838,
+        "latency_ms": 137.45
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.057833,
+        "decode_ms": 14.282166,
+        "decoded_frames": 32,
+        "tracking_ms": 122.766,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 14,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.24575,
+        "classifier_ms": 0.101417,
+        "postprocess_ms": 0.023458,
+        "total_ms": 137.447125,
+        "wall_ms": 137.54675
+      }
+    },
+    {
+      "clip_id": "6987156871330971-BEE",
+      "ground_truth": "BEE1",
+      "signer_id": "signer_feb2f4a2",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:45.268534+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "6987156871330971-BEE",
+        "prediction": "BREAKFAST1",
+        "top5": [
+          "BREAKFAST1",
+          "KNIGHT1",
+          "AUTISM1",
+          "TAIL1",
+          "HOSPITAL1"
+        ],
+        "confidence": 0.2081,
+        "latency_ms": 185.0
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.056416,
+        "decode_ms": 29.614875,
+        "decoded_frames": 32,
+        "tracking_ms": 155.096,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 5,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.137792,
+        "classifier_ms": 0.095625,
+        "postprocess_ms": 0.023166,
+        "total_ms": 185.000333,
+        "wall_ms": 185.096291
+      }
+    },
+    {
+      "clip_id": "7873618416168222-TICKLE",
+      "ground_truth": "TICKLE",
+      "signer_id": "signer_feb2f4a2",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:45.453645+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "7873618416168222-TICKLE",
+        "prediction": "TICKLE",
+        "top5": [
+          "TICKLE",
+          "COMB2",
+          "RABBIT2",
+          "TAIL1",
+          "RIVER1"
+        ],
+        "confidence": 0.3914,
+        "latency_ms": 128.02
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.054583,
+        "decode_ms": 19.350709,
+        "decoded_frames": 32,
+        "tracking_ms": 108.288917,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 10,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.221125,
+        "classifier_ms": 0.103083,
+        "postprocess_ms": 0.023416,
+        "total_ms": 128.022083,
+        "wall_ms": 128.12125
+      }
+    },
+    {
+      "clip_id": "0283886564670357-WHAT FOR",
+      "ground_truth": "WHATFOR1",
+      "signer_id": "signer_feb2f4a2",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:45.581780+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "0283886564670357-WHAT FOR",
+        "prediction": "WHATFOR1",
+        "top5": [
+          "WHATFOR1",
+          "DEAF1",
+          "OFFEND",
+          "SLIDE2",
+          "SCROLLDOWN"
+        ],
+        "confidence": 0.8415,
+        "latency_ms": 121.14
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.061875,
+        "decode_ms": 20.113375,
+        "decoded_frames": 32,
+        "tracking_ms": 100.718958,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 11,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.162792,
+        "classifier_ms": 0.090208,
+        "postprocess_ms": 0.024667,
+        "total_ms": 121.139166,
+        "wall_ms": 121.241333
+      }
+    },
+    {
+      "clip_id": "4481998873282871-PONDER",
+      "ground_truth": "PONDER",
+      "signer_id": "signer_feb2f4a2",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:45.703039+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "4481998873282871-PONDER",
+        "prediction": "PONDER",
+        "top5": [
+          "PONDER",
+          "CHEER",
+          "PULLCONVINCE",
+          "SOCIETY",
+          "AXE1"
+        ],
+        "confidence": 0.2431,
+        "latency_ms": 146.31
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.057917,
+        "decode_ms": 20.717541,
+        "decoded_frames": 32,
+        "tracking_ms": 125.210625,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 14,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.231,
+        "classifier_ms": 0.0935,
+        "postprocess_ms": 0.025417,
+        "total_ms": 146.307625,
+        "wall_ms": 146.413
+      }
+    },
+    {
+      "clip_id": "697572736827275-COMB",
+      "ground_truth": "COMB2",
+      "signer_id": "signer_feb2f4a2",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:45.849466+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "697572736827275-COMB",
+        "prediction": "COMB2",
+        "top5": [
+          "COMB2",
+          "PATIENT2",
+          "TAIL1",
+          "DRAG1",
+          "DARK1"
+        ],
+        "confidence": 0.8746,
+        "latency_ms": 122.59
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.061875,
+        "decode_ms": 19.685459,
+        "decoded_frames": 32,
+        "tracking_ms": 102.598041,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 12,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.163416,
+        "classifier_ms": 0.094458,
+        "postprocess_ms": 0.022791,
+        "total_ms": 122.594833,
+        "wall_ms": 122.697958
+      }
+    },
+    {
+      "clip_id": "5008852988399453-MYSELF",
+      "ground_truth": "MYSELF",
+      "signer_id": "signer_feb2f4a2",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:45.972178+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "5008852988399453-MYSELF",
+        "prediction": "PATIENT2",
+        "top5": [
+          "PATIENT2",
+          "MYSELF",
+          "COMB2",
+          "CHEEK",
+          "KNIGHT1"
+        ],
+        "confidence": 0.5136,
+        "latency_ms": 121.28
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.0595,
+        "decode_ms": 19.68125,
+        "decoded_frames": 32,
+        "tracking_ms": 101.254875,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 11,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.178208,
+        "classifier_ms": 0.099541,
+        "postprocess_ms": 0.026417,
+        "total_ms": 121.275125,
+        "wall_ms": 121.380917
+      }
+    },
+    {
+      "clip_id": "6495415212975224-UNDERWEAR",
+      "ground_truth": "UNDERWEAR1",
+      "signer_id": "signer_feb2f4a2",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:46.093573+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "6495415212975224-UNDERWEAR",
+        "prediction": "UNDERWEAR1",
+        "top5": [
+          "UNDERWEAR1",
+          "INTUITIVE",
+          "BELT1",
+          "SWEATER2",
+          "FLIP"
+        ],
+        "confidence": 0.288,
+        "latency_ms": 152.43
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.057666,
+        "decode_ms": 18.574042,
+        "decoded_frames": 32,
+        "tracking_ms": 133.45725,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 18,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.255375,
+        "classifier_ms": 0.088584,
+        "postprocess_ms": 0.022791,
+        "total_ms": 152.428,
+        "wall_ms": 152.526416
+      }
+    },
+    {
+      "clip_id": "25500869855740893-ANYONE",
+      "ground_truth": "ANYONE",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:46.246115+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "25500869855740893-ANYONE",
+        "prediction": "ANYONE",
+        "top5": [
+          "ANYONE",
+          "OFFEND",
+          "ALLOFSUDDEN",
+          "UNDERWEAR1",
+          "SOCIETY"
+        ],
+        "confidence": 0.7749,
+        "latency_ms": 120.9
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.05525,
+        "decode_ms": 17.416875,
+        "decoded_frames": 32,
+        "tracking_ms": 103.171583,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 12,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.165958,
+        "classifier_ms": 0.091583,
+        "postprocess_ms": 0.02525,
+        "total_ms": 120.899875,
+        "wall_ms": 120.997167
+      }
+    },
+    {
+      "clip_id": "8213787748653953-PENNY",
+      "ground_truth": "PENNY",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:46.367126+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "8213787748653953-PENNY",
+        "prediction": "PENNY",
+        "top5": [
+          "PENNY",
+          "NOON1",
+          "DEAF1",
+          "CHEEK",
+          "ALLOFSUDDEN"
+        ],
+        "confidence": 0.8272,
+        "latency_ms": 118.63
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.058208,
+        "decode_ms": 13.313375,
+        "decoded_frames": 32,
+        "tracking_ms": 104.995125,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 14,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.175625,
+        "classifier_ms": 0.098375,
+        "postprocess_ms": 0.022958,
+        "total_ms": 118.633916,
+        "wall_ms": 118.73075
+      }
+    },
+    {
+      "clip_id": "3738312466703404-TEACH",
+      "ground_truth": "TEACH1",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:46.485870+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "3738312466703404-TEACH",
+        "prediction": "TEACH1",
+        "top5": [
+          "TEACH1",
+          "PARTY1",
+          "CHEER",
+          "DECIDE1",
+          "AUTISM1"
+        ],
+        "confidence": 0.2405,
+        "latency_ms": 133.51
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.061583,
+        "decode_ms": 14.441333,
+        "decoded_frames": 32,
+        "tracking_ms": 118.689458,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 15,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.236625,
+        "classifier_ms": 0.093084,
+        "postprocess_ms": 0.023458,
+        "total_ms": 133.511959,
+        "wall_ms": 133.6145
+      }
+    },
+    {
+      "clip_id": "8581142177964065-AXE",
+      "ground_truth": "AXE1",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:46.619497+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "8581142177964065-AXE",
+        "prediction": "AXE1",
+        "top5": [
+          "AXE1",
+          "INTUITIVE",
+          "SCARF2",
+          "FOREIGNER1",
+          "SOCCER2"
+        ],
+        "confidence": 0.2102,
+        "latency_ms": 133.04
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.054917,
+        "decode_ms": 15.3185,
+        "decoded_frames": 32,
+        "tracking_ms": 117.42225,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 9,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.156792,
+        "classifier_ms": 0.094791,
+        "postprocess_ms": 0.02375,
+        "total_ms": 133.0435,
+        "wall_ms": 133.139958
+      }
+    },
+    {
+      "clip_id": "6416983573445294-SHAVE",
+      "ground_truth": "SHAVE1",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:46.752651+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "6416983573445294-SHAVE",
+        "prediction": "UNDERWEAR1",
+        "top5": [
+          "UNDERWEAR1",
+          "TAIL1",
+          "RAZOR2",
+          "INTUITIVE",
+          "DRAG1"
+        ],
+        "confidence": 0.1535,
+        "latency_ms": 155.55
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.054458,
+        "decode_ms": 16.181166,
+        "decoded_frames": 32,
+        "tracking_ms": 138.997208,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 17,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.2125,
+        "classifier_ms": 0.097667,
+        "postprocess_ms": 0.023583,
+        "total_ms": 155.54575,
+        "wall_ms": 155.640916
+      }
+    },
+    {
+      "clip_id": "032677896012150764-WHAT FOR",
+      "ground_truth": "WHATFOR1",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:46.908305+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "032677896012150764-WHAT FOR",
+        "prediction": "WHATFOR1",
+        "top5": [
+          "WHATFOR1",
+          "OFFEND",
+          "KNIGHT1",
+          "TAIL1",
+          "DEAF1"
+        ],
+        "confidence": 0.2412,
+        "latency_ms": 138.32
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.063542,
+        "decode_ms": 15.454459,
+        "decoded_frames": 32,
+        "tracking_ms": 122.550375,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 11,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.165041,
+        "classifier_ms": 0.095584,
+        "postprocess_ms": 0.025167,
+        "total_ms": 138.32125,
+        "wall_ms": 138.428292
+      }
+    },
+    {
+      "clip_id": "17092802473126545-SQUEEZE",
+      "ground_truth": "SQUEEZE",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:47.046748+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "17092802473126545-SQUEEZE",
+        "prediction": "SQUEEZE",
+        "top5": [
+          "SQUEEZE",
+          "CHEESEGRATER",
+          "SCARF2",
+          "SOCCER2",
+          "DRAG1"
+        ],
+        "confidence": 0.0531,
+        "latency_ms": 132.0
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.05825,
+        "decode_ms": 14.097709,
+        "decoded_frames": 32,
+        "tracking_ms": 117.550625,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 20,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.206375,
+        "classifier_ms": 0.097625,
+        "postprocess_ms": 0.023417,
+        "total_ms": 132.0045,
+        "wall_ms": 132.103667
+      }
+    },
+    {
+      "clip_id": "8166700420399404-CHEEK",
+      "ground_truth": "CHEEK",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:47.178866+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "8166700420399404-CHEEK",
+        "prediction": "OFFEND",
+        "top5": [
+          "OFFEND",
+          "KNIGHT1",
+          "BREAKFAST1",
+          "ANYONE",
+          "TAIL1"
+        ],
+        "confidence": 0.1095,
+        "latency_ms": 146.28
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.059917,
+        "decode_ms": 13.670375,
+        "decoded_frames": 32,
+        "tracking_ms": 132.316958,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 3,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.141709,
+        "classifier_ms": 0.090042,
+        "postprocess_ms": 0.026041,
+        "total_ms": 146.276167,
+        "wall_ms": 146.379958
+      }
+    },
+    {
+      "clip_id": "9474917526716478-BASKETBALL",
+      "ground_truth": "BASKETBALL1",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:44:47.325263+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "9474917526716478-BASKETBALL",
+        "prediction": "BASKETBALL1",
+        "top5": [
+          "BASKETBALL1",
+          "TEACH1",
+          "CHEER",
+          "COPY",
+          "SHOCKED"
+        ],
+        "confidence": 0.7367,
+        "latency_ms": 151.6
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.061334,
+        "decode_ms": 13.499583,
+        "decoded_frames": 32,
+        "tracking_ms": 137.678083,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 16,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.263583,
+        "classifier_ms": 0.094792,
+        "postprocess_ms": 0.026125,
+        "total_ms": 151.598333,
+        "wall_ms": 151.702042
+      }
+    },
+    {
+      "clip_id": "6523145816470133-WHAT FOR",
+      "ground_truth": "WHATFOR1",
+      "signer_id": "signer_2f68a231",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:47.476979+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "6523145816470133-WHAT FOR",
+        "prediction": "WHATFOR1",
+        "top5": [
+          "WHATFOR1",
+          "KNIGHT1",
+          "OFFEND",
+          "DEAF1",
+          "RAZOR2"
+        ],
+        "confidence": 0.2138,
+        "latency_ms": 120.18
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.062667,
+        "decode_ms": 22.06575,
+        "decoded_frames": 32,
+        "tracking_ms": 97.817208,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 7,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.1485,
+        "classifier_ms": 0.090541,
+        "postprocess_ms": 0.024375,
+        "total_ms": 120.1765,
+        "wall_ms": 120.282125
+      }
+    },
+    {
+      "clip_id": "6961575623504714-SHAVE",
+      "ground_truth": "SHAVE1",
+      "signer_id": "signer_9123b627",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:47.597274+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "6961575623504714-SHAVE",
+        "prediction": "APPLE",
+        "top5": [
+          "APPLE",
+          "RAZOR2",
+          "SHAVE1",
+          "DRAG1",
+          "MYSELF"
+        ],
+        "confidence": 0.2664,
+        "latency_ms": 134.38
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.059334,
+        "decode_ms": 14.446375,
+        "decoded_frames": 32,
+        "tracking_ms": 119.584791,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 19,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.193333,
+        "classifier_ms": 0.095667,
+        "postprocess_ms": 0.024375,
+        "total_ms": 134.376875,
+        "wall_ms": 134.480791
+      }
+    },
+    {
+      "clip_id": "15347326711184706-NOON",
+      "ground_truth": "NOON1",
+      "signer_id": "signer_9123b627",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:47.731768+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "15347326711184706-NOON",
+        "prediction": "NOON1",
+        "top5": [
+          "NOON1",
+          "BEE1",
+          "GUESS1",
+          "BREAKFAST1",
+          "UNDERWEAR1"
+        ],
+        "confidence": 0.1201,
+        "latency_ms": 124.51
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.063,
+        "decode_ms": 14.327875,
+        "decoded_frames": 32,
+        "tracking_ms": 109.874333,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 9,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.157167,
+        "classifier_ms": 0.093583,
+        "postprocess_ms": 0.029083,
+        "total_ms": 124.511958,
+        "wall_ms": 124.62025
+      }
+    },
+    {
+      "clip_id": "9990244640190733-BACKPACK",
+      "ground_truth": "BACKPACK1",
+      "signer_id": "signer_2f68a231",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:47.856403+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "9990244640190733-BACKPACK",
+        "prediction": "CHEER",
+        "top5": [
+          "CHEER",
+          "BACKPACK1",
+          "PARTY1",
+          "GRAMMAR",
+          "PULLCONVINCE"
+        ],
+        "confidence": 0.2762,
+        "latency_ms": 162.39
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.064541,
+        "decode_ms": 17.494958,
+        "decoded_frames": 32,
+        "tracking_ms": 144.508459,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 15,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.237292,
+        "classifier_ms": 0.092625,
+        "postprocess_ms": 0.026458,
+        "total_ms": 162.387667,
+        "wall_ms": 162.497708
+      }
+    },
+    {
+      "clip_id": "7629092396207264-MAPLE",
+      "ground_truth": "MAPLE",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:48.018916+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "7629092396207264-MAPLE",
+        "prediction": "AXE1",
+        "top5": [
+          "AXE1",
+          "BASEBALLCAP",
+          "BABY2",
+          "IMPOSSIBLE",
+          "SOCCER2"
+        ],
+        "confidence": 0.1635,
+        "latency_ms": 119.89
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.060792,
+        "decode_ms": 16.12325,
+        "decoded_frames": 32,
+        "tracking_ms": 103.4385,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 14,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.175583,
+        "classifier_ms": 0.09825,
+        "postprocess_ms": 0.023209,
+        "total_ms": 119.886875,
+        "wall_ms": 119.991042
+      }
+    },
+    {
+      "clip_id": "5784034175717614-EASY",
+      "ground_truth": "EASY",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:48.138920+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "5784034175717614-EASY",
+        "prediction": "EASY",
+        "top5": [
+          "EASY",
+          "DARK1",
+          "HOW1",
+          "CHEESEGRATER",
+          "JEWELRY"
+        ],
+        "confidence": 0.8579,
+        "latency_ms": 161.28
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.057625,
+        "decode_ms": 14.9085,
+        "decoded_frames": 32,
+        "tracking_ms": 145.951,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 17,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.2685,
+        "classifier_ms": 0.102792,
+        "postprocess_ms": 0.023667,
+        "total_ms": 161.28425,
+        "wall_ms": 161.383542
+      }
+    },
+    {
+      "clip_id": "4254167262351618-CHEW 2",
+      "ground_truth": "CHEW1",
+      "signer_id": "signer_feb2f4a2",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:48.300317+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "4254167262351618-CHEW 2",
+        "prediction": "CHEW1",
+        "top5": [
+          "CHEW1",
+          "BASEBALLCAP",
+          "PATIENT2",
+          "ANYONE",
+          "IMPOSSIBLE"
+        ],
+        "confidence": 0.5149,
+        "latency_ms": 135.98
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.061959,
+        "decode_ms": 23.611625,
+        "decoded_frames": 32,
+        "tracking_ms": 112.048541,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 16,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.174625,
+        "classifier_ms": 0.093333,
+        "postprocess_ms": 0.022417,
+        "total_ms": 135.976916,
+        "wall_ms": 136.08175
+      }
+    },
+    {
+      "clip_id": "6142521746642153-WHAT FOR",
+      "ground_truth": "WHATFOR1",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:48.436413+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "6142521746642153-WHAT FOR",
+        "prediction": "WHATFOR1",
+        "top5": [
+          "WHATFOR1",
+          "DEAF1",
+          "PENNY",
+          "ZEBRA",
+          "DECIDE1"
+        ],
+        "confidence": 0.5483,
+        "latency_ms": 137.68
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.052125,
+        "decode_ms": 16.733959,
+        "decoded_frames": 32,
+        "tracking_ms": 120.607042,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 20,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.190208,
+        "classifier_ms": 0.093875,
+        "postprocess_ms": 0.023375,
+        "total_ms": 137.67825,
+        "wall_ms": 137.774666
+      }
+    },
+    {
+      "clip_id": "5004269948712425-SOCCER 2",
+      "ground_truth": "SOCCER2",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:48.574200+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "5004269948712425-SOCCER 2",
+        "prediction": "SOCCER2",
+        "top5": [
+          "SOCCER2",
+          "GOODYGOODYSHOEOPPOSITE",
+          "MAPLE",
+          "8HOUR",
+          "ADVERTISE"
+        ],
+        "confidence": 0.1762,
+        "latency_ms": 126.85
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.061917,
+        "decode_ms": 13.781083,
+        "decoded_frames": 32,
+        "tracking_ms": 112.743125,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 16,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.177375,
+        "classifier_ms": 0.092875,
+        "postprocess_ms": 0.023167,
+        "total_ms": 126.850083,
+        "wall_ms": 126.954417
+      }
+    },
+    {
+      "clip_id": "7713194149900888-CEMETERY",
+      "ground_truth": "CEMETERY",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:48.701171+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "7713194149900888-CEMETERY",
+        "prediction": "CEMETERY",
+        "top5": [
+          "CEMETERY",
+          "SHAVE1",
+          "DECIDE1",
+          "DEAF1",
+          "SOCIETY"
+        ],
+        "confidence": 0.2936,
+        "latency_ms": 128.56
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.061542,
+        "decode_ms": 13.118625,
+        "decoded_frames": 32,
+        "tracking_ms": 115.072541,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 14,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.213417,
+        "classifier_ms": 0.100708,
+        "postprocess_ms": 0.022959,
+        "total_ms": 128.558875,
+        "wall_ms": 128.666916
+      }
+    },
+    {
+      "clip_id": "9336391016353045-FLIP",
+      "ground_truth": "FLIP",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:48.829853+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "9336391016353045-FLIP",
+        "prediction": "FINE1",
+        "top5": [
+          "FINE1",
+          "EAT1",
+          "BEE1",
+          "DOG1",
+          "IMPOSSIBLE"
+        ],
+        "confidence": 0.0902,
+        "latency_ms": 130.02
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.057542,
+        "decode_ms": 14.229042,
+        "decoded_frames": 32,
+        "tracking_ms": 115.448417,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 21,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.193375,
+        "classifier_ms": 0.094083,
+        "postprocess_ms": 0.022459,
+        "total_ms": 130.015125,
+        "wall_ms": 130.113625
+      }
+    },
+    {
+      "clip_id": "3191470037860531-8 HOUR",
+      "ground_truth": "8HOUR",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:48.959980+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "3191470037860531-8 HOUR",
+        "prediction": "8HOUR",
+        "top5": [
+          "8HOUR",
+          "PATIENT2",
+          "MAPLE",
+          "IMPOSSIBLE",
+          "DEVELOP1"
+        ],
+        "confidence": 0.3794,
+        "latency_ms": 146.98
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.053792,
+        "decode_ms": 14.308583,
+        "decoded_frames": 32,
+        "tracking_ms": 132.345625,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 16,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.186208,
+        "classifier_ms": 0.091042,
+        "postprocess_ms": 0.023666,
+        "total_ms": 146.983375,
+        "wall_ms": 147.081708
+      }
+    },
+    {
+      "clip_id": "647818976594698-BABY 2",
+      "ground_truth": "BABY2",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:49.107075+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "647818976594698-BABY 2",
+        "prediction": "BABY2",
+        "top5": [
+          "BABY2",
+          "TAIL1",
+          "HOSPITAL1",
+          "EASY",
+          "PULLCONVINCE"
+        ],
+        "confidence": 0.7061,
+        "latency_ms": 117.96
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.05175,
+        "decode_ms": 14.080083,
+        "decoded_frames": 32,
+        "tracking_ms": 103.54325,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 14,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.178625,
+        "classifier_ms": 0.105875,
+        "postprocess_ms": 0.02525,
+        "total_ms": 117.963041,
+        "wall_ms": 118.057458
+      }
+    },
+    {
+      "clip_id": "7355641552290353-MECHANIC",
+      "ground_truth": "MECHANIC1",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:49.225145+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "7355641552290353-MECHANIC",
+        "prediction": "MECHANIC1",
+        "top5": [
+          "MECHANIC1",
+          "SPECIAL1",
+          "JEWELRY",
+          "HALLOWEEN1",
+          "FAIL"
+        ],
+        "confidence": 0.7838,
+        "latency_ms": 139.33
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.068667,
+        "decode_ms": 14.490791,
+        "decoded_frames": 32,
+        "tracking_ms": 124.46025,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 14,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.241042,
+        "classifier_ms": 0.093459,
+        "postprocess_ms": 0.021209,
+        "total_ms": 139.33,
+        "wall_ms": 139.437458
+      }
+    },
+    {
+      "clip_id": "6987156871330971-BEE",
+      "ground_truth": "BEE1",
+      "signer_id": "signer_feb2f4a2",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:49.364598+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "6987156871330971-BEE",
+        "prediction": "BREAKFAST1",
+        "top5": [
+          "BREAKFAST1",
+          "KNIGHT1",
+          "AUTISM1",
+          "TAIL1",
+          "HOSPITAL1"
+        ],
+        "confidence": 0.2081,
+        "latency_ms": 184.47
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.057792,
+        "decode_ms": 30.982708,
+        "decoded_frames": 32,
+        "tracking_ms": 153.189958,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 5,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.145708,
+        "classifier_ms": 0.0945,
+        "postprocess_ms": 0.022875,
+        "total_ms": 184.467375,
+        "wall_ms": 184.566667
+      }
+    },
+    {
+      "clip_id": "7873618416168222-TICKLE",
+      "ground_truth": "TICKLE",
+      "signer_id": "signer_feb2f4a2",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:49.549180+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "7873618416168222-TICKLE",
+        "prediction": "TICKLE",
+        "top5": [
+          "TICKLE",
+          "COMB2",
+          "RABBIT2",
+          "TAIL1",
+          "RIVER1"
+        ],
+        "confidence": 0.3914,
+        "latency_ms": 127.39
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.059583,
+        "decode_ms": 19.411,
+        "decoded_frames": 32,
+        "tracking_ms": 107.607417,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 10,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.224959,
+        "classifier_ms": 0.093709,
+        "postprocess_ms": 0.023292,
+        "total_ms": 127.390042,
+        "wall_ms": 127.496458
+      }
+    },
+    {
+      "clip_id": "0283886564670357-WHAT FOR",
+      "ground_truth": "WHATFOR1",
+      "signer_id": "signer_feb2f4a2",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:49.676689+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "0283886564670357-WHAT FOR",
+        "prediction": "WHATFOR1",
+        "top5": [
+          "WHATFOR1",
+          "DEAF1",
+          "OFFEND",
+          "SLIDE2",
+          "SCROLLDOWN"
+        ],
+        "confidence": 0.8415,
+        "latency_ms": 128.83
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.06075,
+        "decode_ms": 20.535417,
+        "decoded_frames": 32,
+        "tracking_ms": 107.976542,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 11,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.160209,
+        "classifier_ms": 0.095667,
+        "postprocess_ms": 0.022917,
+        "total_ms": 128.825083,
+        "wall_ms": 128.926625
+      }
+    },
+    {
+      "clip_id": "4481998873282871-PONDER",
+      "ground_truth": "PONDER",
+      "signer_id": "signer_feb2f4a2",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:49.805629+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "4481998873282871-PONDER",
+        "prediction": "PONDER",
+        "top5": [
+          "PONDER",
+          "CHEER",
+          "PULLCONVINCE",
+          "SOCIETY",
+          "AXE1"
+        ],
+        "confidence": 0.2431,
+        "latency_ms": 147.12
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.056208,
+        "decode_ms": 21.193792,
+        "decoded_frames": 32,
+        "tracking_ms": 125.535583,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 14,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.234167,
+        "classifier_ms": 0.097375,
+        "postprocess_ms": 0.023625,
+        "total_ms": 147.120709,
+        "wall_ms": 147.2235
+      }
+    },
+    {
+      "clip_id": "697572736827275-COMB",
+      "ground_truth": "COMB2",
+      "signer_id": "signer_feb2f4a2",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:49.952866+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "697572736827275-COMB",
+        "prediction": "COMB2",
+        "top5": [
+          "COMB2",
+          "PATIENT2",
+          "TAIL1",
+          "DRAG1",
+          "DARK1"
+        ],
+        "confidence": 0.8746,
+        "latency_ms": 121.95
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.063958,
+        "decode_ms": 19.515417,
+        "decoded_frames": 32,
+        "tracking_ms": 102.110917,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 12,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.173833,
+        "classifier_ms": 0.094125,
+        "postprocess_ms": 0.024292,
+        "total_ms": 121.954209,
+        "wall_ms": 122.060209
+      }
+    },
+    {
+      "clip_id": "5008852988399453-MYSELF",
+      "ground_truth": "MYSELF",
+      "signer_id": "signer_feb2f4a2",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:50.074940+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "5008852988399453-MYSELF",
+        "prediction": "PATIENT2",
+        "top5": [
+          "PATIENT2",
+          "MYSELF",
+          "COMB2",
+          "CHEEK",
+          "KNIGHT1"
+        ],
+        "confidence": 0.5136,
+        "latency_ms": 122.08
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.057958,
+        "decode_ms": 20.753541,
+        "decoded_frames": 32,
+        "tracking_ms": 100.995291,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 11,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.166583,
+        "classifier_ms": 0.107667,
+        "postprocess_ms": 0.02625,
+        "total_ms": 122.084875,
+        "wall_ms": 122.19325
+      }
+    },
+    {
+      "clip_id": "6495415212975224-UNDERWEAR",
+      "ground_truth": "UNDERWEAR1",
+      "signer_id": "signer_feb2f4a2",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:50.197147+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "6495415212975224-UNDERWEAR",
+        "prediction": "UNDERWEAR1",
+        "top5": [
+          "UNDERWEAR1",
+          "INTUITIVE",
+          "BELT1",
+          "SWEATER2",
+          "FLIP"
+        ],
+        "confidence": 0.288,
+        "latency_ms": 149.18
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.069042,
+        "decode_ms": 18.7305,
+        "decoded_frames": 32,
+        "tracking_ms": 130.047667,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 18,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.250458,
+        "classifier_ms": 0.094208,
+        "postprocess_ms": 0.024584,
+        "total_ms": 149.181083,
+        "wall_ms": 149.295834
+      }
+    },
+    {
+      "clip_id": "25500869855740893-ANYONE",
+      "ground_truth": "ANYONE",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:50.346459+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "25500869855740893-ANYONE",
+        "prediction": "ANYONE",
+        "top5": [
+          "ANYONE",
+          "OFFEND",
+          "ALLOFSUDDEN",
+          "UNDERWEAR1",
+          "SOCIETY"
+        ],
+        "confidence": 0.7749,
+        "latency_ms": 119.59
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.057209,
+        "decode_ms": 17.040958,
+        "decoded_frames": 32,
+        "tracking_ms": 102.225083,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 12,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.169625,
+        "classifier_ms": 0.095667,
+        "postprocess_ms": 0.024833,
+        "total_ms": 119.589125,
+        "wall_ms": 119.694625
+      }
+    },
+    {
+      "clip_id": "8213787748653953-PENNY",
+      "ground_truth": "PENNY",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:50.466167+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "8213787748653953-PENNY",
+        "prediction": "PENNY",
+        "top5": [
+          "PENNY",
+          "NOON1",
+          "DEAF1",
+          "CHEEK",
+          "ALLOFSUDDEN"
+        ],
+        "confidence": 0.8272,
+        "latency_ms": 116.69
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.066833,
+        "decode_ms": 13.645584,
+        "decoded_frames": 32,
+        "tracking_ms": 102.737917,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 14,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.166375,
+        "classifier_ms": 0.089458,
+        "postprocess_ms": 0.023125,
+        "total_ms": 116.692041,
+        "wall_ms": 116.800667
+      }
+    },
+    {
+      "clip_id": "3738312466703404-TEACH",
+      "ground_truth": "TEACH1",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:50.582986+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "3738312466703404-TEACH",
+        "prediction": "TEACH1",
+        "top5": [
+          "TEACH1",
+          "PARTY1",
+          "CHEER",
+          "DECIDE1",
+          "AUTISM1"
+        ],
+        "confidence": 0.2405,
+        "latency_ms": 132.46
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.05825,
+        "decode_ms": 13.663375,
+        "decoded_frames": 32,
+        "tracking_ms": 118.386375,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 15,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.250209,
+        "classifier_ms": 0.093166,
+        "postprocess_ms": 0.024291,
+        "total_ms": 132.456667,
+        "wall_ms": 132.565583
+      }
+    },
+    {
+      "clip_id": "8581142177964065-AXE",
+      "ground_truth": "AXE1",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:50.715565+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "8581142177964065-AXE",
+        "prediction": "AXE1",
+        "top5": [
+          "AXE1",
+          "INTUITIVE",
+          "SCARF2",
+          "FOREIGNER1",
+          "SOCCER2"
+        ],
+        "confidence": 0.2102,
+        "latency_ms": 134.44
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.067625,
+        "decode_ms": 15.265958,
+        "decoded_frames": 32,
+        "tracking_ms": 118.88725,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 9,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.150667,
+        "classifier_ms": 0.092041,
+        "postprocess_ms": 0.023792,
+        "total_ms": 134.443917,
+        "wall_ms": 134.549417
+      }
+    },
+    {
+      "clip_id": "6416983573445294-SHAVE",
+      "ground_truth": "SHAVE1",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:50.850128+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "6416983573445294-SHAVE",
+        "prediction": "UNDERWEAR1",
+        "top5": [
+          "UNDERWEAR1",
+          "TAIL1",
+          "RAZOR2",
+          "INTUITIVE",
+          "DRAG1"
+        ],
+        "confidence": 0.1535,
+        "latency_ms": 156.75
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.049166,
+        "decode_ms": 17.518583,
+        "decoded_frames": 32,
+        "tracking_ms": 138.877167,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 17,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.206875,
+        "classifier_ms": 0.094291,
+        "postprocess_ms": 0.022875,
+        "total_ms": 156.747875,
+        "wall_ms": 156.837333
+      }
+    },
+    {
+      "clip_id": "032677896012150764-WHAT FOR",
+      "ground_truth": "WHATFOR1",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:51.006981+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "032677896012150764-WHAT FOR",
+        "prediction": "WHATFOR1",
+        "top5": [
+          "WHATFOR1",
+          "OFFEND",
+          "KNIGHT1",
+          "TAIL1",
+          "DEAF1"
+        ],
+        "confidence": 0.2412,
+        "latency_ms": 142.1
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.064917,
+        "decode_ms": 15.331084,
+        "decoded_frames": 32,
+        "tracking_ms": 126.461042,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 11,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.157375,
+        "classifier_ms": 0.094375,
+        "postprocess_ms": 0.02325,
+        "total_ms": 142.095041,
+        "wall_ms": 142.201417
+      }
+    },
+    {
+      "clip_id": "17092802473126545-SQUEEZE",
+      "ground_truth": "SQUEEZE",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:51.149197+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "17092802473126545-SQUEEZE",
+        "prediction": "SQUEEZE",
+        "top5": [
+          "SQUEEZE",
+          "CHEESEGRATER",
+          "SCARF2",
+          "SOCCER2",
+          "DRAG1"
+        ],
+        "confidence": 0.0531,
+        "latency_ms": 133.12
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.061542,
+        "decode_ms": 13.936416,
+        "decoded_frames": 32,
+        "tracking_ms": 118.843833,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 20,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.199166,
+        "classifier_ms": 0.089458,
+        "postprocess_ms": 0.024375,
+        "total_ms": 133.123667,
+        "wall_ms": 133.230458
+      }
+    },
+    {
+      "clip_id": "8166700420399404-CHEEK",
+      "ground_truth": "CHEEK",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:51.282444+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "8166700420399404-CHEEK",
+        "prediction": "OFFEND",
+        "top5": [
+          "OFFEND",
+          "KNIGHT1",
+          "BREAKFAST1",
+          "ANYONE",
+          "TAIL1"
+        ],
+        "confidence": 0.1095,
+        "latency_ms": 143.6
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.063875,
+        "decode_ms": 13.8795,
+        "decoded_frames": 32,
+        "tracking_ms": 129.435875,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 3,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.135875,
+        "classifier_ms": 0.090958,
+        "postprocess_ms": 0.029542,
+        "total_ms": 143.599792,
+        "wall_ms": 143.706208
+      }
+    },
+    {
+      "clip_id": "9474917526716478-BASKETBALL",
+      "ground_truth": "BASKETBALL1",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 1,
+      "started_at": "2026-11-08T18:44:51.426170+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "9474917526716478-BASKETBALL",
+        "prediction": "BASKETBALL1",
+        "top5": [
+          "BASKETBALL1",
+          "TEACH1",
+          "CHEER",
+          "COPY",
+          "SHOCKED"
+        ],
+        "confidence": 0.7367,
+        "latency_ms": 150.46
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.05825,
+        "decode_ms": 13.447666,
+        "decoded_frames": 32,
+        "tracking_ms": 136.603042,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 16,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.252834,
+        "classifier_ms": 0.097875,
+        "postprocess_ms": 0.023375,
+        "total_ms": 150.4585,
+        "wall_ms": 150.55975
+      }
+    },
+    {
+      "clip_id": "6523145816470133-WHAT FOR",
+      "ground_truth": "WHATFOR1",
+      "signer_id": "signer_2f68a231",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:51.576746+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "6523145816470133-WHAT FOR",
+        "prediction": "WHATFOR1",
+        "top5": [
+          "WHATFOR1",
+          "KNIGHT1",
+          "OFFEND",
+          "DEAF1",
+          "RAZOR2"
+        ],
+        "confidence": 0.2138,
+        "latency_ms": 121.09
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.063042,
+        "decode_ms": 23.275041,
+        "decoded_frames": 32,
+        "tracking_ms": 97.514209,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 7,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.151208,
+        "classifier_ms": 0.098333,
+        "postprocess_ms": 0.023583,
+        "total_ms": 121.093667,
+        "wall_ms": 121.207375
+      }
+    },
+    {
+      "clip_id": "6961575623504714-SHAVE",
+      "ground_truth": "SHAVE1",
+      "signer_id": "signer_9123b627",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:51.697967+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "6961575623504714-SHAVE",
+        "prediction": "APPLE",
+        "top5": [
+          "APPLE",
+          "RAZOR2",
+          "SHAVE1",
+          "DRAG1",
+          "MYSELF"
+        ],
+        "confidence": 0.2664,
+        "latency_ms": 133.19
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.07425,
+        "decode_ms": 14.524792,
+        "decoded_frames": 32,
+        "tracking_ms": 118.332209,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 19,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.187417,
+        "classifier_ms": 0.094458,
+        "postprocess_ms": 0.02325,
+        "total_ms": 133.190708,
+        "wall_ms": 133.308292
+      }
+    },
+    {
+      "clip_id": "15347326711184706-NOON",
+      "ground_truth": "NOON1",
+      "signer_id": "signer_9123b627",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:51.831289+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "15347326711184706-NOON",
+        "prediction": "NOON1",
+        "top5": [
+          "NOON1",
+          "BEE1",
+          "GUESS1",
+          "BREAKFAST1",
+          "UNDERWEAR1"
+        ],
+        "confidence": 0.1201,
+        "latency_ms": 129.0
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.059375,
+        "decode_ms": 16.482,
+        "decoded_frames": 32,
+        "tracking_ms": 112.207667,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 9,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.155334,
+        "classifier_ms": 0.094084,
+        "postprocess_ms": 0.023542,
+        "total_ms": 128.996625,
+        "wall_ms": 129.0985
+      }
+    },
+    {
+      "clip_id": "9990244640190733-BACKPACK",
+      "ground_truth": "BACKPACK1",
+      "signer_id": "signer_2f68a231",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:51.960409+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "9990244640190733-BACKPACK",
+        "prediction": "CHEER",
+        "top5": [
+          "CHEER",
+          "BACKPACK1",
+          "PARTY1",
+          "GRAMMAR",
+          "PULLCONVINCE"
+        ],
+        "confidence": 0.2762,
+        "latency_ms": 162.16
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.056916,
+        "decode_ms": 17.198333,
+        "decoded_frames": 32,
+        "tracking_ms": 144.550417,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 15,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.251291,
+        "classifier_ms": 0.09525,
+        "postprocess_ms": 0.033375,
+        "total_ms": 162.16125,
+        "wall_ms": 162.270542
+      }
+    },
+    {
+      "clip_id": "7629092396207264-MAPLE",
+      "ground_truth": "MAPLE",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:52.122693+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "7629092396207264-MAPLE",
+        "prediction": "AXE1",
+        "top5": [
+          "AXE1",
+          "BASEBALLCAP",
+          "BABY2",
+          "IMPOSSIBLE",
+          "SOCCER2"
+        ],
+        "confidence": 0.1635,
+        "latency_ms": 119.65
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.059,
+        "decode_ms": 16.312916,
+        "decoded_frames": 32,
+        "tracking_ms": 103.025708,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 14,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.164791,
+        "classifier_ms": 0.097125,
+        "postprocess_ms": 0.023291,
+        "total_ms": 119.653625,
+        "wall_ms": 119.756166
+      }
+    },
+    {
+      "clip_id": "5784034175717614-EASY",
+      "ground_truth": "EASY",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:52.242468+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "5784034175717614-EASY",
+        "prediction": "EASY",
+        "top5": [
+          "EASY",
+          "DARK1",
+          "HOW1",
+          "CHEESEGRATER",
+          "JEWELRY"
+        ],
+        "confidence": 0.8579,
+        "latency_ms": 160.41
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.058167,
+        "decode_ms": 14.766834,
+        "decoded_frames": 32,
+        "tracking_ms": 145.220291,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 17,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.267042,
+        "classifier_ms": 0.0995,
+        "postprocess_ms": 0.024792,
+        "total_ms": 160.411959,
+        "wall_ms": 160.5145
+      }
+    },
+    {
+      "clip_id": "4254167262351618-CHEW 2",
+      "ground_truth": "CHEW1",
+      "signer_id": "signer_feb2f4a2",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:52.402995+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "4254167262351618-CHEW 2",
+        "prediction": "CHEW1",
+        "top5": [
+          "CHEW1",
+          "BASEBALLCAP",
+          "PATIENT2",
+          "ANYONE",
+          "IMPOSSIBLE"
+        ],
+        "confidence": 0.5149,
+        "latency_ms": 136.3
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.062083,
+        "decode_ms": 23.53625,
+        "decoded_frames": 32,
+        "tracking_ms": 112.417666,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 16,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.188959,
+        "classifier_ms": 0.096625,
+        "postprocess_ms": 0.027083,
+        "total_ms": 136.30225,
+        "wall_ms": 136.410125
+      }
+    },
+    {
+      "clip_id": "6142521746642153-WHAT FOR",
+      "ground_truth": "WHATFOR1",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:52.539420+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "6142521746642153-WHAT FOR",
+        "prediction": "WHATFOR1",
+        "top5": [
+          "WHATFOR1",
+          "DEAF1",
+          "PENNY",
+          "ZEBRA",
+          "DECIDE1"
+        ],
+        "confidence": 0.5483,
+        "latency_ms": 134.43
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.057291,
+        "decode_ms": 13.957667,
+        "decoded_frames": 32,
+        "tracking_ms": 120.114708,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 20,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.1985,
+        "classifier_ms": 0.106417,
+        "postprocess_ms": 0.0245,
+        "total_ms": 134.430666,
+        "wall_ms": 134.529625
+      }
+    },
+    {
+      "clip_id": "5004269948712425-SOCCER 2",
+      "ground_truth": "SOCCER2",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:52.673964+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "5004269948712425-SOCCER 2",
+        "prediction": "SOCCER2",
+        "top5": [
+          "SOCCER2",
+          "GOODYGOODYSHOEOPPOSITE",
+          "MAPLE",
+          "8HOUR",
+          "ADVERTISE"
+        ],
+        "confidence": 0.1762,
+        "latency_ms": 127.56
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.060375,
+        "decode_ms": 13.969875,
+        "decoded_frames": 32,
+        "tracking_ms": 113.2605,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 16,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.18125,
+        "classifier_ms": 0.093417,
+        "postprocess_ms": 0.025084,
+        "total_ms": 127.56025,
+        "wall_ms": 127.660583
+      }
+    },
+    {
+      "clip_id": "7713194149900888-CEMETERY",
+      "ground_truth": "CEMETERY",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:52.801640+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "7713194149900888-CEMETERY",
+        "prediction": "CEMETERY",
+        "top5": [
+          "CEMETERY",
+          "SHAVE1",
+          "DECIDE1",
+          "DEAF1",
+          "SOCIETY"
+        ],
+        "confidence": 0.2936,
+        "latency_ms": 127.84
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.053167,
+        "decode_ms": 13.347417,
+        "decoded_frames": 32,
+        "tracking_ms": 114.121833,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 14,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.205541,
+        "classifier_ms": 0.100625,
+        "postprocess_ms": 0.031417,
+        "total_ms": 127.836542,
+        "wall_ms": 127.934666
+      }
+    },
+    {
+      "clip_id": "9336391016353045-FLIP",
+      "ground_truth": "FLIP",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:52.929588+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "9336391016353045-FLIP",
+        "prediction": "FINE1",
+        "top5": [
+          "FINE1",
+          "EAT1",
+          "BEE1",
+          "DOG1",
+          "IMPOSSIBLE"
+        ],
+        "confidence": 0.0902,
+        "latency_ms": 132.87
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.06175,
+        "decode_ms": 14.028541,
+        "decoded_frames": 32,
+        "tracking_ms": 118.487292,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 21,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.198167,
+        "classifier_ms": 0.094667,
+        "postprocess_ms": 0.025209,
+        "total_ms": 132.865208,
+        "wall_ms": 132.968542
+      }
+    },
+    {
+      "clip_id": "3191470037860531-8 HOUR",
+      "ground_truth": "8HOUR",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:53.062569+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "3191470037860531-8 HOUR",
+        "prediction": "8HOUR",
+        "top5": [
+          "8HOUR",
+          "PATIENT2",
+          "MAPLE",
+          "IMPOSSIBLE",
+          "DEVELOP1"
+        ],
+        "confidence": 0.3794,
+        "latency_ms": 148.77
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.062875,
+        "decode_ms": 14.219542,
+        "decoded_frames": 32,
+        "tracking_ms": 134.207666,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 16,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.188917,
+        "classifier_ms": 0.093042,
+        "postprocess_ms": 0.025584,
+        "total_ms": 148.765042,
+        "wall_ms": 148.870583
+      }
+    },
+    {
+      "clip_id": "647818976594698-BABY 2",
+      "ground_truth": "BABY2",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:53.211453+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "647818976594698-BABY 2",
+        "prediction": "BABY2",
+        "top5": [
+          "BABY2",
+          "TAIL1",
+          "HOSPITAL1",
+          "EASY",
+          "PULLCONVINCE"
+        ],
+        "confidence": 0.7061,
+        "latency_ms": 120.94
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.057792,
+        "decode_ms": 13.866625,
+        "decoded_frames": 32,
+        "tracking_ms": 106.735083,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 14,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.177333,
+        "classifier_ms": 0.101041,
+        "postprocess_ms": 0.025291,
+        "total_ms": 120.938792,
+        "wall_ms": 121.039041
+      }
+    },
+    {
+      "clip_id": "7355641552290353-MECHANIC",
+      "ground_truth": "MECHANIC1",
+      "signer_id": "signer_8c1eb12a",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:53.332509+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "7355641552290353-MECHANIC",
+        "prediction": "MECHANIC1",
+        "top5": [
+          "MECHANIC1",
+          "SPECIAL1",
+          "JEWELRY",
+          "HALLOWEEN1",
+          "FAIL"
+        ],
+        "confidence": 0.7838,
+        "latency_ms": 138.57
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.068875,
+        "decode_ms": 14.284,
+        "decoded_frames": 32,
+        "tracking_ms": 123.873416,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 14,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.252542,
+        "classifier_ms": 0.101708,
+        "postprocess_ms": 0.025708,
+        "total_ms": 138.569666,
+        "wall_ms": 138.68525
+      }
+    },
+    {
+      "clip_id": "6987156871330971-BEE",
+      "ground_truth": "BEE1",
+      "signer_id": "signer_feb2f4a2",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:53.471208+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "6987156871330971-BEE",
+        "prediction": "BREAKFAST1",
+        "top5": [
+          "BREAKFAST1",
+          "KNIGHT1",
+          "AUTISM1",
+          "TAIL1",
+          "HOSPITAL1"
+        ],
+        "confidence": 0.2081,
+        "latency_ms": 186.83
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.064458,
+        "decode_ms": 29.41075,
+        "decoded_frames": 32,
+        "tracking_ms": 157.129375,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 5,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.141375,
+        "classifier_ms": 0.096,
+        "postprocess_ms": 0.023375,
+        "total_ms": 186.831792,
+        "wall_ms": 186.94025
+      }
+    },
+    {
+      "clip_id": "7873618416168222-TICKLE",
+      "ground_truth": "TICKLE",
+      "signer_id": "signer_feb2f4a2",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:53.658163+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "7873618416168222-TICKLE",
+        "prediction": "TICKLE",
+        "top5": [
+          "TICKLE",
+          "COMB2",
+          "RABBIT2",
+          "TAIL1",
+          "RIVER1"
+        ],
+        "confidence": 0.3914,
+        "latency_ms": 126.76
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.05875,
+        "decode_ms": 19.378542,
+        "decoded_frames": 32,
+        "tracking_ms": 107.01125,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 10,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.217541,
+        "classifier_ms": 0.099666,
+        "postprocess_ms": 0.023167,
+        "total_ms": 126.760792,
+        "wall_ms": 126.863667
+      }
+    },
+    {
+      "clip_id": "0283886564670357-WHAT FOR",
+      "ground_truth": "WHATFOR1",
+      "signer_id": "signer_feb2f4a2",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:53.785040+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "0283886564670357-WHAT FOR",
+        "prediction": "WHATFOR1",
+        "top5": [
+          "WHATFOR1",
+          "DEAF1",
+          "OFFEND",
+          "SLIDE2",
+          "SCROLLDOWN"
+        ],
+        "confidence": 0.8415,
+        "latency_ms": 122.17
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.059125,
+        "decode_ms": 19.855,
+        "decoded_frames": 32,
+        "tracking_ms": 101.991209,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 11,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.175125,
+        "classifier_ms": 0.093709,
+        "postprocess_ms": 0.025,
+        "total_ms": 122.17025,
+        "wall_ms": 122.2775
+      }
+    },
+    {
+      "clip_id": "4481998873282871-PONDER",
+      "ground_truth": "PONDER",
+      "signer_id": "signer_feb2f4a2",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:53.907330+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "4481998873282871-PONDER",
+        "prediction": "PONDER",
+        "top5": [
+          "PONDER",
+          "CHEER",
+          "PULLCONVINCE",
+          "SOCIETY",
+          "AXE1"
+        ],
+        "confidence": 0.2431,
+        "latency_ms": 145.59
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.059292,
+        "decode_ms": 20.82325,
+        "decoded_frames": 32,
+        "tracking_ms": 124.399875,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 14,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.225041,
+        "classifier_ms": 0.092584,
+        "postprocess_ms": 0.023209,
+        "total_ms": 145.592041,
+        "wall_ms": 145.696292
+      }
+    },
+    {
+      "clip_id": "697572736827275-COMB",
+      "ground_truth": "COMB2",
+      "signer_id": "signer_feb2f4a2",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:54.053040+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "697572736827275-COMB",
+        "prediction": "COMB2",
+        "top5": [
+          "COMB2",
+          "PATIENT2",
+          "TAIL1",
+          "DRAG1",
+          "DARK1"
+        ],
+        "confidence": 0.8746,
+        "latency_ms": 124.99
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.054833,
+        "decode_ms": 20.888459,
+        "decoded_frames": 32,
+        "tracking_ms": 103.767208,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 12,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.175875,
+        "classifier_ms": 0.098375,
+        "postprocess_ms": 0.024916,
+        "total_ms": 124.985083,
+        "wall_ms": 125.084166
+      }
+    },
+    {
+      "clip_id": "5008852988399453-MYSELF",
+      "ground_truth": "MYSELF",
+      "signer_id": "signer_feb2f4a2",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:54.178137+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "5008852988399453-MYSELF",
+        "prediction": "PATIENT2",
+        "top5": [
+          "PATIENT2",
+          "MYSELF",
+          "COMB2",
+          "CHEEK",
+          "KNIGHT1"
+        ],
+        "confidence": 0.5136,
+        "latency_ms": 120.1
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.061959,
+        "decode_ms": 19.901583,
+        "decoded_frames": 32,
+        "tracking_ms": 99.883917,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 11,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.163042,
+        "classifier_ms": 0.095375,
+        "postprocess_ms": 0.027041,
+        "total_ms": 120.101833,
+        "wall_ms": 120.208667
+      }
+    },
+    {
+      "clip_id": "6495415212975224-UNDERWEAR",
+      "ground_truth": "UNDERWEAR1",
+      "signer_id": "signer_feb2f4a2",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:54.298360+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "6495415212975224-UNDERWEAR",
+        "prediction": "UNDERWEAR1",
+        "top5": [
+          "UNDERWEAR1",
+          "INTUITIVE",
+          "BELT1",
+          "SWEATER2",
+          "FLIP"
+        ],
+        "confidence": 0.288,
+        "latency_ms": 149.73
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.059459,
+        "decode_ms": 18.712125,
+        "decoded_frames": 32,
+        "tracking_ms": 130.602833,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 18,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.259125,
+        "classifier_ms": 0.103625,
+        "postprocess_ms": 0.025125,
+        "total_ms": 149.7305,
+        "wall_ms": 149.836958
+      }
+    },
+    {
+      "clip_id": "25500869855740893-ANYONE",
+      "ground_truth": "ANYONE",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:54.448211+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "25500869855740893-ANYONE",
+        "prediction": "ANYONE",
+        "top5": [
+          "ANYONE",
+          "OFFEND",
+          "ALLOFSUDDEN",
+          "UNDERWEAR1",
+          "SOCIETY"
+        ],
+        "confidence": 0.7749,
+        "latency_ms": 117.08
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.05525,
+        "decode_ms": 16.778375,
+        "decoded_frames": 32,
+        "tracking_ms": 99.987125,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 12,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.167,
+        "classifier_ms": 0.095875,
+        "postprocess_ms": 0.022916,
+        "total_ms": 117.080792,
+        "wall_ms": 117.178084
+      }
+    },
+    {
+      "clip_id": "8213787748653953-PENNY",
+      "ground_truth": "PENNY",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:54.565405+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "8213787748653953-PENNY",
+        "prediction": "PENNY",
+        "top5": [
+          "PENNY",
+          "NOON1",
+          "DEAF1",
+          "CHEEK",
+          "ALLOFSUDDEN"
+        ],
+        "confidence": 0.8272,
+        "latency_ms": 116.98
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.05575,
+        "decode_ms": 13.403917,
+        "decoded_frames": 32,
+        "tracking_ms": 103.255417,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 14,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.170291,
+        "classifier_ms": 0.096166,
+        "postprocess_ms": 0.023167,
+        "total_ms": 116.977459,
+        "wall_ms": 117.073542
+      }
+    },
+    {
+      "clip_id": "3738312466703404-TEACH",
+      "ground_truth": "TEACH1",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:54.682491+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "3738312466703404-TEACH",
+        "prediction": "TEACH1",
+        "top5": [
+          "TEACH1",
+          "PARTY1",
+          "CHEER",
+          "DECIDE1",
+          "AUTISM1"
+        ],
+        "confidence": 0.2405,
+        "latency_ms": 132.99
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.061875,
+        "decode_ms": 13.832583,
+        "decoded_frames": 32,
+        "tracking_ms": 118.798291,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 15,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.222917,
+        "classifier_ms": 0.090792,
+        "postprocess_ms": 0.020916,
+        "total_ms": 132.991083,
+        "wall_ms": 133.093875
+      }
+    },
+    {
+      "clip_id": "8581142177964065-AXE",
+      "ground_truth": "AXE1",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:54.815598+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "8581142177964065-AXE",
+        "prediction": "AXE1",
+        "top5": [
+          "AXE1",
+          "INTUITIVE",
+          "SCARF2",
+          "FOREIGNER1",
+          "SOCCER2"
+        ],
+        "confidence": 0.2102,
+        "latency_ms": 136.01
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.044167,
+        "decode_ms": 16.194333,
+        "decoded_frames": 32,
+        "tracking_ms": 119.512875,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 9,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.155875,
+        "classifier_ms": 0.094084,
+        "postprocess_ms": 0.02275,
+        "total_ms": 136.00925,
+        "wall_ms": 136.095709
+      }
+    },
+    {
+      "clip_id": "6416983573445294-SHAVE",
+      "ground_truth": "SHAVE1",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:54.951707+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "6416983573445294-SHAVE",
+        "prediction": "UNDERWEAR1",
+        "top5": [
+          "UNDERWEAR1",
+          "TAIL1",
+          "RAZOR2",
+          "INTUITIVE",
+          "DRAG1"
+        ],
+        "confidence": 0.1535,
+        "latency_ms": 161.38
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.062792,
+        "decode_ms": 16.451625,
+        "decoded_frames": 32,
+        "tracking_ms": 144.565833,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 17,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.2145,
+        "classifier_ms": 0.094709,
+        "postprocess_ms": 0.023334,
+        "total_ms": 161.383125,
+        "wall_ms": 161.4905
+      }
+    },
+    {
+      "clip_id": "032677896012150764-WHAT FOR",
+      "ground_truth": "WHATFOR1",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:55.113210+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "032677896012150764-WHAT FOR",
+        "prediction": "WHATFOR1",
+        "top5": [
+          "WHATFOR1",
+          "OFFEND",
+          "KNIGHT1",
+          "TAIL1",
+          "DEAF1"
+        ],
+        "confidence": 0.2412,
+        "latency_ms": 138.28
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.06025,
+        "decode_ms": 16.0455,
+        "decoded_frames": 32,
+        "tracking_ms": 121.915084,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 11,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.170667,
+        "classifier_ms": 0.090708,
+        "postprocess_ms": 0.023958,
+        "total_ms": 138.279667,
+        "wall_ms": 138.384333
+      }
+    },
+    {
+      "clip_id": "17092802473126545-SQUEEZE",
+      "ground_truth": "SQUEEZE",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:55.251611+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "17092802473126545-SQUEEZE",
+        "prediction": "SQUEEZE",
+        "top5": [
+          "SQUEEZE",
+          "CHEESEGRATER",
+          "SCARF2",
+          "SOCCER2",
+          "DRAG1"
+        ],
+        "confidence": 0.0531,
+        "latency_ms": 133.28
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.0655,
+        "decode_ms": 13.970709,
+        "decoded_frames": 32,
+        "tracking_ms": 118.950458,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 20,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.2085,
+        "classifier_ms": 0.096334,
+        "postprocess_ms": 0.02475,
+        "total_ms": 133.284958,
+        "wall_ms": 133.400042
+      }
+    },
+    {
+      "clip_id": "8166700420399404-CHEEK",
+      "ground_truth": "CHEEK",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:55.385025+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "8166700420399404-CHEEK",
+        "prediction": "OFFEND",
+        "top5": [
+          "OFFEND",
+          "KNIGHT1",
+          "BREAKFAST1",
+          "ANYONE",
+          "TAIL1"
+        ],
+        "confidence": 0.1095,
+        "latency_ms": 142.12
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.066041,
+        "decode_ms": 14.089959,
+        "decoded_frames": 32,
+        "tracking_ms": 127.739042,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 3,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.137458,
+        "classifier_ms": 0.096667,
+        "postprocess_ms": 0.024292,
+        "total_ms": 142.116833,
+        "wall_ms": 142.230583
+      }
+    },
+    {
+      "clip_id": "9474917526716478-BASKETBALL",
+      "ground_truth": "BASKETBALL1",
+      "signer_id": "signer_1393dac4",
+      "strategy": "parallel_2",
+      "repeat": 2,
+      "started_at": "2026-11-08T18:44:55.527272+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "9474917526716478-BASKETBALL",
+        "prediction": "BASKETBALL1",
+        "top5": [
+          "BASKETBALL1",
+          "TEACH1",
+          "CHEER",
+          "COPY",
+          "SHOCKED"
+        ],
+        "confidence": 0.7367,
+        "latency_ms": 152.96
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.058125,
+        "decode_ms": 13.735792,
+        "decoded_frames": 32,
+        "tracking_ms": 138.816,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 16,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.254042,
+        "classifier_ms": 0.098542,
+        "postprocess_ms": 0.0235,
+        "total_ms": 152.962083,
+        "wall_ms": 153.064625
+      }
+    }
+  ]
+}

@@ -1,0 +1,510 @@
+{
+  "status": "completed",
+  "scope": "classifier-only measured repeated fixed-input benchmark; no target-device extrapolation",
+  "fixed_input": {
+    "clip": "/tmp/echogesture-v7-agents/A06/evaluation/device/v5_accuracy/data/val_346/clips/844429155260962-BEE.mp4",
+    "clip_sha256": "8e90ac2e68a579c173fe6fd3cbb8ed917816641b1e09c0f1f0d43c7371bfc816",
+    "feature_shape": [
+      1,
+      24,
+      255
+    ],
+    "feature_dtype": "float32",
+    "feature_sha256": "2ef6a7d3f27f790891f86b1a59b801984eb28820a18c3859dd9b77edb5f48a01",
+    "frontend": "existing landmark_frontend.py + features.py; identical tensor reused for every config"
+  },
+  "models": {
+    "fp16": {
+      "path": "/private/tmp/echogesture-v7-agents/A06/models/landmark_classifier_fp16.tflite",
+      "sha256": "a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4",
+      "bytes": 832888,
+      "input_dtype": "<class 'numpy.float32'>",
+      "output_dtype": "<class 'numpy.float32'>"
+    },
+    "int8": {
+      "path": "/private/tmp/echogesture-v7-agents/A06/models/landmark_classifier_int8.tflite",
+      "sha256": "9d24640a23244a3cd00c9fa62257733819f86ed1da5a10194c9b1cb64323700b",
+      "bytes": 509720,
+      "input_dtype": "<class 'numpy.float32'>",
+      "output_dtype": "<class 'numpy.float32'>"
+    },
+    "detector": {
+      "path": "/private/tmp/echogesture-v7-agents/A06/models/hand_landmarker.task",
+      "sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1",
+      "bytes": 7819105
+    }
+  },
+  "environment": {
+    "python": "3.11.18 (main, Oct 25 2026, 19:41:29) [Clang 21.0.0 (clang-2100.3.34.2)]",
+    "platform": "macOS-26.3-arm64-arm-64bit",
+    "machine": "arm64",
+    "versions": {
+      "numpy": "2.4.6",
+      "ai-edge-litert": "2.3.0",
+      "opencv-python": "5.0.0.93",
+      "mediapipe": "1.2.2"
+    },
+    "host_note": "measured on the current validation host; no target-device claim"
+  },
+  "configuration": {
+    "repeats": 300,
+    "warmup": 50,
+    "serialized": true,
+    "fixed_input_reused": true,
+    "timing_boundary": "set_tensor + invoke + get_tensor only; excludes decode, tracking, feature preparation, and softmax",
+    "delegate_note": "AUTO is the normal LiteRT path and emits XNNPACK delegate logs; BUILTIN_WITHOUT_DEFAULT_DELEGATES is a resolver-only comparison and may still have runtime-specific behavior."
+  },
+  "configs": {
+    "fp16_threads1_AUTO": {
+      "model": "fp16",
+      "num_threads": 1,
+      "op_resolver": "AUTO",
+      "input": {
+        "shape": [
+          1,
+          24,
+          255
+        ],
+        "dtype": "<class 'numpy.float32'>",
+        "scale": 0.0,
+        "zero_point": 0
+      },
+      "output": {
+        "shape": [
+          1,
+          100
+        ],
+        "dtype": "<class 'numpy.float32'>",
+        "scale": 0.0,
+        "zero_point": 0
+      },
+      "times_set_invoke_get_tensor": {
+        "n": 300,
+        "mean_ms": 0.05657433666666667,
+        "p50_ms": 0.0561455,
+        "p90_ms": 0.057583,
+        "p95_ms": 0.058667,
+        "p99_ms": 0.064084,
+        "min_ms": 0.051083,
+        "max_ms": 0.114125
+      },
+      "output_logits_sha256": "6b39e0d252864bbb9b50f50105b7eb92a2536d5878df299522faa9326c0dc784",
+      "output_top1_argmax": 15,
+      "output_logits_abs_max": 6.8813910484313965
+    },
+    "fp16_threads1_BUILTIN_WITHOUT_DEFAULT_DELEGATES": {
+      "model": "fp16",
+      "num_threads": 1,
+      "op_resolver": "BUILTIN_WITHOUT_DEFAULT_DELEGATES",
+      "input": {
+        "shape": [
+          1,
+          24,
+          255
+        ],
+        "dtype": "<class 'numpy.float32'>",
+        "scale": 0.0,
+        "zero_point": 0
+      },
+      "output": {
+        "shape": [
+          1,
+          100
+        ],
+        "dtype": "<class 'numpy.float32'>",
+        "scale": 0.0,
+        "zero_point": 0
+      },
+      "times_set_invoke_get_tensor": {
+        "n": 300,
+        "mean_ms": 0.1585031533333333,
+        "p50_ms": 0.157208,
+        "p90_ms": 0.161417,
+        "p95_ms": 0.163375,
+        "p99_ms": 0.188792,
+        "min_ms": 0.154,
+        "max_ms": 0.233625
+      },
+      "output_logits_sha256": "bda511c35b552f46c55a4e1204f8c4958ffa97ba35dddc95b150a9e520cbdbaa",
+      "output_top1_argmax": 15,
+      "output_logits_abs_max": 6.8813886642456055
+    },
+    "int8_threads1_AUTO": {
+      "model": "int8",
+      "num_threads": 1,
+      "op_resolver": "AUTO",
+      "input": {
+        "shape": [
+          1,
+          24,
+          255
+        ],
+        "dtype": "<class 'numpy.float32'>",
+        "scale": 0.0,
+        "zero_point": 0
+      },
+      "output": {
+        "shape": [
+          1,
+          100
+        ],
+        "dtype": "<class 'numpy.float32'>",
+        "scale": 0.0,
+        "zero_point": 0
+      },
+      "times_set_invoke_get_tensor": {
+        "n": 300,
+        "mean_ms": 0.03566925666666667,
+        "p50_ms": 0.0361045,
+        "p90_ms": 0.036833,
+        "p95_ms": 0.038208,
+        "p99_ms": 0.043958,
+        "min_ms": 0.030208,
+        "max_ms": 0.057917
+      },
+      "output_logits_sha256": "2ace7d93e0a3ae0e62c03c9bdfe47727465426c46a98b2f2d5eabd83adee0572",
+      "output_top1_argmax": 15,
+      "output_logits_abs_max": 3.7311277389526367
+    },
+    "int8_threads1_BUILTIN_WITHOUT_DEFAULT_DELEGATES": {
+      "model": "int8",
+      "num_threads": 1,
+      "op_resolver": "BUILTIN_WITHOUT_DEFAULT_DELEGATES",
+      "input": {
+        "shape": [
+          1,
+          24,
+          255
+        ],
+        "dtype": "<class 'numpy.float32'>",
+        "scale": 0.0,
+        "zero_point": 0
+      },
+      "output": {
+        "shape": [
+          1,
+          100
+        ],
+        "dtype": "<class 'numpy.float32'>",
+        "scale": 0.0,
+        "zero_point": 0
+      },
+      "times_set_invoke_get_tensor": {
+        "n": 300,
+        "mean_ms": 0.11037736333333333,
+        "p50_ms": 0.109667,
+        "p90_ms": 0.112541,
+        "p95_ms": 0.113583,
+        "p99_ms": 0.119084,
+        "min_ms": 0.107792,
+        "max_ms": 0.148083
+      },
+      "output_logits_sha256": "5e7c3d43711e8dd39f23184500ac1cbe87fadac9d8d1c5f48e972d73543216cc",
+      "output_top1_argmax": 15,
+      "output_logits_abs_max": 3.6709482669830322
+    },
+    "fp16_threads2_AUTO": {
+      "model": "fp16",
+      "num_threads": 2,
+      "op_resolver": "AUTO",
+      "input": {
+        "shape": [
+          1,
+          24,
+          255
+        ],
+        "dtype": "<class 'numpy.float32'>",
+        "scale": 0.0,
+        "zero_point": 0
+      },
+      "output": {
+        "shape": [
+          1,
+          100
+        ],
+        "dtype": "<class 'numpy.float32'>",
+        "scale": 0.0,
+        "zero_point": 0
+      },
+      "times_set_invoke_get_tensor": {
+        "n": 300,
+        "mean_ms": 0.08561946,
+        "p50_ms": 0.084292,
+        "p90_ms": 0.095666,
+        "p95_ms": 0.100208,
+        "p99_ms": 0.133542,
+        "min_ms": 0.063459,
+        "max_ms": 0.144084
+      },
+      "output_logits_sha256": "6b39e0d252864bbb9b50f50105b7eb92a2536d5878df299522faa9326c0dc784",
+      "output_top1_argmax": 15,
+      "output_logits_abs_max": 6.8813910484313965
+    },
+    "fp16_threads2_BUILTIN_WITHOUT_DEFAULT_DELEGATES": {
+      "model": "fp16",
+      "num_threads": 2,
+      "op_resolver": "BUILTIN_WITHOUT_DEFAULT_DELEGATES",
+      "input": {
+        "shape": [
+          1,
+          24,
+          255
+        ],
+        "dtype": "<class 'numpy.float32'>",
+        "scale": 0.0,
+        "zero_point": 0
+      },
+      "output": {
+        "shape": [
+          1,
+          100
+        ],
+        "dtype": "<class 'numpy.float32'>",
+        "scale": 0.0,
+        "zero_point": 0
+      },
+      "times_set_invoke_get_tensor": {
+        "n": 300,
+        "mean_ms": 0.12535259999999998,
+        "p50_ms": 0.124542,
+        "p90_ms": 0.128583,
+        "p95_ms": 0.130292,
+        "p99_ms": 0.140959,
+        "min_ms": 0.119458,
+        "max_ms": 0.168791
+      },
+      "output_logits_sha256": "bda511c35b552f46c55a4e1204f8c4958ffa97ba35dddc95b150a9e520cbdbaa",
+      "output_top1_argmax": 15,
+      "output_logits_abs_max": 6.8813886642456055
+    },
+    "int8_threads2_AUTO": {
+      "model": "int8",
+      "num_threads": 2,
+      "op_resolver": "AUTO",
+      "input": {
+        "shape": [
+          1,
+          24,
+          255
+        ],
+        "dtype": "<class 'numpy.float32'>",
+        "scale": 0.0,
+        "zero_point": 0
+      },
+      "output": {
+        "shape": [
+          1,
+          100
+        ],
+        "dtype": "<class 'numpy.float32'>",
+        "scale": 0.0,
+        "zero_point": 0
+      },
+      "times_set_invoke_get_tensor": {
+        "n": 300,
+        "mean_ms": 0.052763286666666666,
+        "p50_ms": 0.0472085,
+        "p90_ms": 0.070458,
+        "p95_ms": 0.088416,
+        "p99_ms": 0.127,
+        "min_ms": 0.0385,
+        "max_ms": 0.160666
+      },
+      "output_logits_sha256": "2ace7d93e0a3ae0e62c03c9bdfe47727465426c46a98b2f2d5eabd83adee0572",
+      "output_top1_argmax": 15,
+      "output_logits_abs_max": 3.7311277389526367
+    },
+    "int8_threads2_BUILTIN_WITHOUT_DEFAULT_DELEGATES": {
+      "model": "int8",
+      "num_threads": 2,
+      "op_resolver": "BUILTIN_WITHOUT_DEFAULT_DELEGATES",
+      "input": {
+        "shape": [
+          1,
+          24,
+          255
+        ],
+        "dtype": "<class 'numpy.float32'>",
+        "scale": 0.0,
+        "zero_point": 0
+      },
+      "output": {
+        "shape": [
+          1,
+          100
+        ],
+        "dtype": "<class 'numpy.float32'>",
+        "scale": 0.0,
+        "zero_point": 0
+      },
+      "times_set_invoke_get_tensor": {
+        "n": 300,
+        "mean_ms": 0.10122465333333333,
+        "p50_ms": 0.100542,
+        "p90_ms": 0.10325,
+        "p95_ms": 0.105042,
+        "p99_ms": 0.111833,
+        "min_ms": 0.098042,
+        "max_ms": 0.138917
+      },
+      "output_logits_sha256": "5e7c3d43711e8dd39f23184500ac1cbe87fadac9d8d1c5f48e972d73543216cc",
+      "output_top1_argmax": 15,
+      "output_logits_abs_max": 3.6709482669830322
+    },
+    "fp16_threads4_AUTO": {
+      "model": "fp16",
+      "num_threads": 4,
+      "op_resolver": "AUTO",
+      "input": {
+        "shape": [
+          1,
+          24,
+          255
+        ],
+        "dtype": "<class 'numpy.float32'>",
+        "scale": 0.0,
+        "zero_point": 0
+      },
+      "output": {
+        "shape": [
+          1,
+          100
+        ],
+        "dtype": "<class 'numpy.float32'>",
+        "scale": 0.0,
+        "zero_point": 0
+      },
+      "times_set_invoke_get_tensor": {
+        "n": 300,
+        "mean_ms": 0.13576706,
+        "p50_ms": 0.13518750000000002,
+        "p90_ms": 0.156958,
+        "p95_ms": 0.164333,
+        "p99_ms": 0.201583,
+        "min_ms": 0.078209,
+        "max_ms": 0.235708
+      },
+      "output_logits_sha256": "6b39e0d252864bbb9b50f50105b7eb92a2536d5878df299522faa9326c0dc784",
+      "output_top1_argmax": 15,
+      "output_logits_abs_max": 6.8813910484313965
+    },
+    "fp16_threads4_BUILTIN_WITHOUT_DEFAULT_DELEGATES": {
+      "model": "fp16",
+      "num_threads": 4,
+      "op_resolver": "BUILTIN_WITHOUT_DEFAULT_DELEGATES",
+      "input": {
+        "shape": [
+          1,
+          24,
+          255
+        ],
+        "dtype": "<class 'numpy.float32'>",
+        "scale": 0.0,
+        "zero_point": 0
+      },
+      "output": {
+        "shape": [
+          1,
+          100
+        ],
+        "dtype": "<class 'numpy.float32'>",
+        "scale": 0.0,
+        "zero_point": 0
+      },
+      "times_set_invoke_get_tensor": {
+        "n": 300,
+        "mean_ms": 0.10023972333333334,
+        "p50_ms": 0.09975,
+        "p90_ms": 0.1025,
+        "p95_ms": 0.103458,
+        "p99_ms": 0.107167,
+        "min_ms": 0.097209,
+        "max_ms": 0.117
+      },
+      "output_logits_sha256": "bda511c35b552f46c55a4e1204f8c4958ffa97ba35dddc95b150a9e520cbdbaa",
+      "output_top1_argmax": 15,
+      "output_logits_abs_max": 6.8813886642456055
+    },
+    "int8_threads4_AUTO": {
+      "model": "int8",
+      "num_threads": 4,
+      "op_resolver": "AUTO",
+      "input": {
+        "shape": [
+          1,
+          24,
+          255
+        ],
+        "dtype": "<class 'numpy.float32'>",
+        "scale": 0.0,
+        "zero_point": 0
+      },
+      "output": {
+        "shape": [
+          1,
+          100
+        ],
+        "dtype": "<class 'numpy.float32'>",
+        "scale": 0.0,
+        "zero_point": 0
+      },
+      "times_set_invoke_get_tensor": {
+        "n": 300,
+        "mean_ms": 0.061877753333333334,
+        "p50_ms": 0.0594585,
+        "p90_ms": 0.073459,
+        "p95_ms": 0.080875,
+        "p99_ms": 0.115834,
+        "min_ms": 0.044,
+        "max_ms": 0.170958
+      },
+      "output_logits_sha256": "2ace7d93e0a3ae0e62c03c9bdfe47727465426c46a98b2f2d5eabd83adee0572",
+      "output_top1_argmax": 15,
+      "output_logits_abs_max": 3.7311277389526367
+    },
+    "int8_threads4_BUILTIN_WITHOUT_DEFAULT_DELEGATES": {
+      "model": "int8",
+      "num_threads": 4,
+      "op_resolver": "BUILTIN_WITHOUT_DEFAULT_DELEGATES",
+      "input": {
+        "shape": [
+          1,
+          24,
+          255
+        ],
+        "dtype": "<class 'numpy.float32'>",
+        "scale": 0.0,
+        "zero_point": 0
+      },
+      "output": {
+        "shape": [
+          1,
+          100
+        ],
+        "dtype": "<class 'numpy.float32'>",
+        "scale": 0.0,
+        "zero_point": 0
+      },
+      "times_set_invoke_get_tensor": {
+        "n": 300,
+        "mean_ms": 0.10211293,
+        "p50_ms": 0.10185449999999999,
+        "p90_ms": 0.103792,
+        "p95_ms": 0.104792,
+        "p99_ms": 0.10625,
+        "min_ms": 0.099833,
+        "max_ms": 0.115209
+      },
+      "output_logits_sha256": "5e7c3d43711e8dd39f23184500ac1cbe87fadac9d8d1c5f48e972d73543216cc",
+      "output_top1_argmax": 15,
+      "output_logits_abs_max": 3.6709482669830322
+    }
+  },
+  "footprint": {
+    "classifier_saving_bytes": 323168,
+    "classifier_saving_percent": 38.80089519839402,
+    "fp16_plus_detector_bytes": 8651993,
+    "int8_plus_detector_bytes": 8328825
+  },
+  "recorded_at": "2026-11-08T18:48:36.306211+00:00"
+}

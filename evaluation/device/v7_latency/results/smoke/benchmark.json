@@ -1,0 +1,457 @@
+{
+  "generated_at": "2026-11-08T18:38:02.157340+00:00",
+  "task": "V7 latency lab: paired identical-clip full clip-to-JSON",
+  "manifest": {
+    "path": "/private/tmp/echogesture-validation-30/manifest.csv",
+    "sha256": "004e5effb7e6c19b515fdd00b048459fff236d8b35c6b7f7b49e91a1efa5d618"
+  },
+  "artifacts": {
+    "fp16_classifier": {
+      "path": "/private/tmp/echogesture-v7-agents/A01/models/landmark_classifier_fp16.tflite",
+      "sha256": "a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4"
+    },
+    "int8_classifier": {
+      "path": "/private/tmp/echogesture-v7-agents/A01/models/landmark_classifier_int8.tflite",
+      "sha256": "9d24640a23244a3cd00c9fa62257733819f86ed1da5a10194c9b1cb64323700b"
+    },
+    "hand_landmarker": {
+      "path": "/private/tmp/echogesture-v7-agents/A01/models/hand_landmarker.task",
+      "sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1"
+    },
+    "labels": {
+      "path": "/private/tmp/echogesture-v7-agents/A01/models/landmark_labels.json",
+      "sha256": "e78f5028e97e2eaf86aff65af403af65061eebef010f0fbd41012293e8019a4a"
+    },
+    "frontend": {
+      "path": "/private/tmp/echogesture-v7-agents/A01/src/landmark_frontend.py",
+      "sha256": "c73ef64b72f21a86638c4a126ad642b64c4ee29851cd2f8fd8ea4ed516fa97b0"
+    },
+    "features": {
+      "path": "/private/tmp/echogesture-v7-agents/A01/src/features.py",
+      "sha256": "baf28d05bbd36e2783ea7ef6f78e793b89ed832d0eaad5dffed23d35c775aa84"
+    },
+    "main": {
+      "path": "/private/tmp/echogesture-v7-agents/A01/src/main.py",
+      "sha256": "c695d78b1b1980e3b95b5357e0549385638eda3274a76eba479c6f3dcddf8141"
+    },
+    "v7_candidates": {
+      "path": "/private/tmp/echogesture-v7-agents/A01/evaluation/device/v7_latency/v7_candidates.py",
+      "sha256": "fc8974968527bf5da5fefc32ebcbf71a6e4b171910f8b435ba90452f6b89762b"
+    },
+    "benchmark": {
+      "path": "/private/tmp/echogesture-v7-agents/A01/evaluation/device/v7_latency/benchmark.py",
+      "sha256": "64c25991bddae545c11b050ff2bec50ca23bfb468ed2c1145ef5337182e2c89d"
+    }
+  },
+  "environment": {
+    "python": "3.11.18 (main, Oct 25 2026, 19:41:29) [Clang 21.0.0 (clang-2100.3.34.2)]",
+    "platform": "macOS-26.3-arm64-arm-64bit",
+    "machine": "arm64",
+    "cpu": "Mac.lan",
+    "mediapipe": "1.2.2",
+    "litert": "2.3.0",
+    "opencv": "5.0.0",
+    "numpy": "2.4.6",
+    "code_commit": null
+  },
+  "hardware": {
+    "brand": "Apple M5 Pro",
+    "cpus": 18,
+    "ram_bytes": 25769803776
+  },
+  "model_contract": {
+    "input_shape": [
+      1,
+      24,
+      255
+    ],
+    "input_dtype": "float32",
+    "model_file_sha256": "a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4",
+    "sampled_frames": 32,
+    "frame_size": 256,
+    "frame_budget_changed": false
+  },
+  "configuration": {
+    "repeats": 1,
+    "warmup_calls_per_strategy": 1,
+    "strategies": [
+      "baseline",
+      "parallel_2"
+    ],
+    "serialized": true,
+    "one_classifier_process": true,
+    "state_lifecycle": "baseline=singleton IMAGE landmarker; parallel_2/parallel_4=persistent IMAGE tracker pools in threads with round-robin frame distribution; video_fresh=fresh VIDEO per clip ts=0,33,...; video_cached=singleton VIDEO monotonic timestamps across clips"
+  },
+  "aggregate": {
+    "baseline": {
+      "runs": 2,
+      "successful": 2,
+      "decode": {
+        "count": 2,
+        "mean_ms": 18.385688,
+        "p50_ms": 13.858917,
+        "p90_ms": 22.912459,
+        "p95_ms": 22.912459,
+        "p99_ms": 22.912459,
+        "min_ms": 13.858917,
+        "max_ms": 22.912459
+      },
+      "tracking": {
+        "count": 2,
+        "mean_ms": 194.7830415,
+        "p50_ms": 172.273833,
+        "p90_ms": 217.29225,
+        "p95_ms": 217.29225,
+        "p99_ms": 217.29225,
+        "min_ms": 172.273833,
+        "max_ms": 217.29225
+      },
+      "features": {
+        "count": 2,
+        "mean_ms": 0.16435450000000001,
+        "p50_ms": 0.151625,
+        "p90_ms": 0.177084,
+        "p95_ms": 0.177084,
+        "p99_ms": 0.177084,
+        "min_ms": 0.151625,
+        "max_ms": 0.177084
+      },
+      "classifier": {
+        "count": 2,
+        "mean_ms": 0.099521,
+        "p50_ms": 0.098959,
+        "p90_ms": 0.100083,
+        "p95_ms": 0.100083,
+        "p99_ms": 0.100083,
+        "min_ms": 0.098959,
+        "max_ms": 0.100083
+      },
+      "postprocess": {
+        "count": 2,
+        "mean_ms": 0.025208500000000002,
+        "p50_ms": 0.025042,
+        "p90_ms": 0.025375,
+        "p95_ms": 0.025375,
+        "p99_ms": 0.025375,
+        "min_ms": 0.025042,
+        "max_ms": 0.025375
+      },
+      "total": {
+        "count": 2,
+        "mean_ms": 213.490729,
+        "p50_ms": 195.500666,
+        "p90_ms": 231.480792,
+        "p95_ms": 231.480792,
+        "p99_ms": 231.480792,
+        "min_ms": 195.500666,
+        "max_ms": 231.480792
+      },
+      "wall": {
+        "count": 2,
+        "mean_ms": 213.5956665,
+        "p50_ms": 195.607458,
+        "p90_ms": 231.583875,
+        "p95_ms": 231.583875,
+        "p99_ms": 231.583875,
+        "min_ms": 195.607458,
+        "max_ms": 231.583875
+      },
+      "correct": 1,
+      "labelled": 2,
+      "top1": 0.5
+    },
+    "parallel_2": {
+      "runs": 2,
+      "successful": 2,
+      "decode": {
+        "count": 2,
+        "mean_ms": 17.335853999999998,
+        "p50_ms": 13.30575,
+        "p90_ms": 21.365958,
+        "p95_ms": 21.365958,
+        "p99_ms": 21.365958,
+        "min_ms": 13.30575,
+        "max_ms": 21.365958
+      },
+      "tracking": {
+        "count": 2,
+        "mean_ms": 108.2736665,
+        "p50_ms": 96.330166,
+        "p90_ms": 120.217167,
+        "p95_ms": 120.217167,
+        "p99_ms": 120.217167,
+        "min_ms": 96.330166,
+        "max_ms": 120.217167
+      },
+      "features": {
+        "count": 2,
+        "mean_ms": 0.1635835,
+        "p50_ms": 0.145792,
+        "p90_ms": 0.181375,
+        "p95_ms": 0.181375,
+        "p99_ms": 0.181375,
+        "min_ms": 0.145792,
+        "max_ms": 0.181375
+      },
+      "classifier": {
+        "count": 2,
+        "mean_ms": 0.097583,
+        "p50_ms": 0.095791,
+        "p90_ms": 0.099375,
+        "p95_ms": 0.099375,
+        "p99_ms": 0.099375,
+        "min_ms": 0.095791,
+        "max_ms": 0.099375
+      },
+      "postprocess": {
+        "count": 2,
+        "mean_ms": 0.0246245,
+        "p50_ms": 0.024166,
+        "p90_ms": 0.025083,
+        "p95_ms": 0.025083,
+        "p99_ms": 0.025083,
+        "min_ms": 0.024166,
+        "max_ms": 0.025083
+      },
+      "total": {
+        "count": 2,
+        "mean_ms": 125.92887449999999,
+        "p50_ms": 117.993708,
+        "p90_ms": 133.864041,
+        "p95_ms": 133.864041,
+        "p99_ms": 133.864041,
+        "min_ms": 117.993708,
+        "max_ms": 133.864041
+      },
+      "wall": {
+        "count": 2,
+        "mean_ms": 126.0289795,
+        "p50_ms": 118.095292,
+        "p90_ms": 133.962667,
+        "p95_ms": 133.962667,
+        "p99_ms": 133.962667,
+        "min_ms": 118.095292,
+        "max_ms": 133.962667
+      },
+      "correct": 1,
+      "labelled": 2,
+      "top1": 0.5
+    }
+  },
+  "paired_vs_baseline": [
+    {
+      "candidate": "parallel_2",
+      "compared_pairs": 2,
+      "same_top1": 2,
+      "same_top5": 2,
+      "paired_total_delta": {
+        "count": 2,
+        "mean_ms": -87.56185450000001,
+        "p50_ms": -97.61675100000002,
+        "p90_ms": -77.506958,
+        "p95_ms": -77.506958,
+        "p99_ms": -77.506958,
+        "min_ms": -97.61675100000002,
+        "max_ms": -77.506958
+      },
+      "paired_tracking_delta": {
+        "count": 2,
+        "mean_ms": -86.50937499999999,
+        "p50_ms": -97.07508299999999,
+        "p90_ms": -75.94366699999999,
+        "p95_ms": -75.94366699999999,
+        "p99_ms": -75.94366699999999,
+        "min_ms": -97.07508299999999,
+        "max_ms": -75.94366699999999
+      },
+      "pairs": [
+        {
+          "clip_id": "6523145816470133-WHAT FOR",
+          "repeat": 0,
+          "candidate_minus_baseline_total_ms": -77.506958,
+          "candidate_minus_baseline_tracking_ms": -75.94366699999999,
+          "same_prediction": true,
+          "same_top5": true
+        },
+        {
+          "clip_id": "6961575623504714-SHAVE",
+          "repeat": 0,
+          "candidate_minus_baseline_total_ms": -97.61675100000002,
+          "candidate_minus_baseline_tracking_ms": -97.07508299999999,
+          "same_prediction": true,
+          "same_top5": true
+        }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "clip_id": "6523145816470133-WHAT FOR",
+      "ground_truth": "WHATFOR1",
+      "signer_id": "signer_2f68a231",
+      "strategy": "baseline",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:38:01.477827+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "6523145816470133-WHAT FOR",
+        "prediction": "WHATFOR1",
+        "top5": [
+          "WHATFOR1",
+          "KNIGHT1",
+          "OFFEND",
+          "DEAF1",
+          "RAZOR2"
+        ],
+        "confidence": 0.2138,
+        "latency_ms": 195.5
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.05775,
+        "decode_ms": 22.912459,
+        "decoded_frames": 32,
+        "tracking_ms": 172.273833,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 7,
+        "meta": {},
+        "features_ms": 0.151625,
+        "classifier_ms": 0.100083,
+        "postprocess_ms": 0.025375,
+        "total_ms": 195.500666,
+        "wall_ms": 195.607458
+      }
+    },
+    {
+      "clip_id": "6961575623504714-SHAVE",
+      "ground_truth": "SHAVE1",
+      "signer_id": "signer_9123b627",
+      "strategy": "baseline",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:38:01.673617+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "6961575623504714-SHAVE",
+        "prediction": "APPLE",
+        "top5": [
+          "APPLE",
+          "RAZOR2",
+          "SHAVE1",
+          "DRAG1",
+          "MYSELF"
+        ],
+        "confidence": 0.2664,
+        "latency_ms": 231.48
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.060417,
+        "decode_ms": 13.858917,
+        "decoded_frames": 32,
+        "tracking_ms": 217.29225,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 19,
+        "meta": {},
+        "features_ms": 0.177084,
+        "classifier_ms": 0.098959,
+        "postprocess_ms": 0.025042,
+        "total_ms": 231.480792,
+        "wall_ms": 231.583875
+      }
+    },
+    {
+      "clip_id": "6523145816470133-WHAT FOR",
+      "ground_truth": "WHATFOR1",
+      "signer_id": "signer_2f68a231",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:38:01.905216+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "6523145816470133-WHAT FOR",
+        "prediction": "WHATFOR1",
+        "top5": [
+          "WHATFOR1",
+          "KNIGHT1",
+          "OFFEND",
+          "DEAF1",
+          "RAZOR2"
+        ],
+        "confidence": 0.2138,
+        "latency_ms": 117.99
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.058792,
+        "decode_ms": 21.365958,
+        "decoded_frames": 32,
+        "tracking_ms": 96.330166,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 7,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.145792,
+        "classifier_ms": 0.095791,
+        "postprocess_ms": 0.024166,
+        "total_ms": 117.993708,
+        "wall_ms": 118.095292
+      }
+    },
+    {
+      "clip_id": "6961575623504714-SHAVE",
+      "ground_truth": "SHAVE1",
+      "signer_id": "signer_9123b627",
+      "strategy": "parallel_2",
+      "repeat": 0,
+      "started_at": "2026-11-08T18:38:02.023328+00:00",
+      "status": "ok",
+      "prediction": {
+        "clip_id": "6961575623504714-SHAVE",
+        "prediction": "APPLE",
+        "top5": [
+          "APPLE",
+          "RAZOR2",
+          "SHAVE1",
+          "DRAG1",
+          "MYSELF"
+        ],
+        "confidence": 0.2664,
+        "latency_ms": 133.86
+      },
+      "timing": {
+        "runtime_initialization_ms": 0.058209,
+        "decode_ms": 13.30575,
+        "decoded_frames": 32,
+        "tracking_ms": 120.217167,
+        "landmarks_shape": [
+          32,
+          2,
+          21,
+          3
+        ],
+        "frames_with_hands": 19,
+        "meta": {
+          "parallel_workers": 2
+        },
+        "features_ms": 0.181375,
+        "classifier_ms": 0.099375,
+        "postprocess_ms": 0.025083,
+        "total_ms": 133.864041,
+        "wall_ms": 133.962667
+      }
+    }
+  ]
+}

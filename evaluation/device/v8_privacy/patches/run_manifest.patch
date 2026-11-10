@@ -1,0 +1,151 @@
+--- a/evaluation/device/run_manifest.py
++++ b/evaluation/device/run_manifest.py
+@@ -1,7 +1,7 @@
+ """Run the submission predictor for every clip in a CSV manifest.
+ 
+ The manifest requires clip_id,path columns and may include ground_truth.
+-Relative clip paths are resolved from the manifest's directory.
++Relative clip paths are resolved from the manifest's directory and MUST stay inside an allowed input root (manifest directory by default; see --input-root / ECHOGESTURE_INPUT_ROOT for judge layouts). Paths escaping every allowed root are rejected.
+ """
+ 
+ import argparse
+@@ -23,7 +23,79 @@
+ REQUIRED_FIELDS = ("clip_id", "path")
+ OUTPUT_FIELDS = ("clip_id", "prediction", "confidence", "latency_ms")
+ 
++_ENV_INPUT_ROOT = "ECHOGESTURE_INPUT_ROOT"
++_GENERIC_DEVICE_MODEL = "generic-device"
+ 
++
++def _is_within(child, parent):
++    try:
++        child.relative_to(parent)
++        return True
++    except ValueError:
++        return False
++
++
++def _parse_allowed_roots(allowed_roots):
++    raw = []
++    if allowed_roots is None:
++        pass
++    elif isinstance(allowed_roots, (str, os.PathLike)):
++        raw.append(allowed_roots)
++    else:
++        raw.extend(allowed_roots)
++    env_value = os.environ.get(_ENV_INPUT_ROOT, "") or ""
++    if env_value.strip():
++        raw.extend(p for p in (p.strip() for p in env_value.split(os.pathsep)) if p)
++    seen = []
++    out = []
++    for entry in raw:
++        candidate = Path(entry).expanduser().resolve()
++        if candidate not in seen:
++            seen.append(candidate)
++            out.append(candidate)
++    return out
++
++
++def _effective_roots(manifest_path, allowed_roots=None):
++    manifest_dir = Path(manifest_path).expanduser().resolve().parent
++    roots = _parse_allowed_roots(allowed_roots)
++    if manifest_dir not in roots:
++        roots = [manifest_dir, *roots]
++    return roots
++
++
++def _resolve_clip(relpath, manifest_path, allowed_roots, line):
++    if "\x00" in relpath:
++        raise EvaluationError(f"Manifest line {line}: clip path contains NUL byte")
++    expanded = Path(relpath).expanduser()
++    manifest_dir = Path(manifest_path).expanduser().resolve().parent
++    candidate = expanded if expanded.is_absolute() else manifest_dir / expanded
++    resolved = candidate.resolve()
++    roots = _effective_roots(manifest_path, allowed_roots)
++    for root in roots:
++        if _is_within(resolved, root) and resolved != root:
++            return resolved
++    joined = ", ".join(str(r) for r in roots)
++    raise EvaluationError(
++        f"Manifest line {line}: clip path escapes allowed input root: {relpath!r} "
++        f"(resolved={resolved}; allowed roots: {joined})"
++    )
++
++
++def _sanitized_relative(path, root):
++    # Repo-relative only when the artifact genuinely lives under the
++    # repo; otherwise basename. _ABS_LEAK_RE-safe: no /private// /tmp/
++    # /Users/ segments, no drive prefix, no hostname.
++    try:
++        rel = Path(path).resolve().relative_to(Path(root).resolve()).as_posix()
++    except (ValueError, OSError):
++        return Path(str(path).replace(chr(92), "/")).name
++    first = rel.split("/", 1)[0] if rel else ""
++    if first in ("private", "tmp", "var", "Users", "home") or Path(rel).is_absolute():
++        return Path(str(path).replace(chr(92), "/")).name
++    return rel
++
++
+ class EvaluationError(Exception):
+     pass
+ 
+@@ -57,7 +129,7 @@
+     return labels
+ 
+ 
+-def read_manifest(path):
++def read_manifest(path, allowed_roots=None):
+     try:
+         with path.open(newline="", encoding="utf-8-sig") as stream:
+             reader = csv.DictReader(stream)
+@@ -79,9 +151,10 @@
+         if clip_id in seen:
+             raise EvaluationError(f"Manifest line {line}: duplicate clip_id {clip_id!r}")
+         seen.add(clip_id)
+-        clip_path = Path(relative_path).expanduser()
+-        if not clip_path.is_absolute():
+-            clip_path = path.parent / clip_path
++        try:
++            clip_path = _resolve_clip(relative_path, path, allowed_roots, line)
++        except EvaluationError:
++            raise
+         if not clip_path.is_file():
+             raise EvaluationError(f"Manifest line {line}: clip not found: {clip_path}")
+         signer = (row.get("signer_id") or "").strip()
+@@ -270,12 +343,14 @@
+     parser.add_argument("--model", type=Path, default=root / "models/s3d_conv1d_qat_int8.tflite")
+     parser.add_argument("--feature-config", type=Path)
+     parser.add_argument("--profile", action="store_true")
++    parser.add_argument("--input-root", action="append", default=[],
++                        help="Additional allowed input root for clip paths (repeatable); manifest directory is always allowed. Also via ECHOGESTURE_INPUT_ROOT.")
+     parser.add_argument("--fixture-type", choices=("real", "synthetic"), default="real")
+     parser.add_argument("--split", default="unspecified")
+     parser.add_argument("--dataset", default="unspecified")
+     args = parser.parse_args(argv)
+     try:
+-        items = read_manifest(args.manifest.resolve())
++        items = read_manifest(args.manifest.resolve(), allowed_roots=(args.input_root or None))
+         labels = load_labels(args.labels)
+         unknown = sorted({truth for _, _, truth, *_ in items if truth} - labels)
+         if unknown:
+@@ -321,17 +396,17 @@
+             },
+             "stage_profiles": details["profiles"],
+             "artifacts": {
+-                name: {"path": str(path.resolve()), "sha256": sha256(path), "bytes": path.stat().st_size}
++                name: {"path": _sanitized_relative(str(path), root), "sha256": sha256(path), "bytes": path.stat().st_size}
+                 for name, path in artifact_paths
+             },
+-            "manifest": {"path": str(args.manifest.resolve()), "sha256": sha256(args.manifest),
++            "manifest": {"path": _sanitized_relative(str(args.manifest), root), "sha256": sha256(args.manifest),
+                          "dataset": args.dataset, "split": args.split},
+             "code_commit": git_sha(root),
+             "environment": {
+                 "python": sys.version,
+                 "platform": platform.platform(),
+                 "machine": platform.machine(),
+-                "device_model": platform.node(),
++                "device_model": _GENERIC_DEVICE_MODEL,
+                 "inference_runtime": _runtime_version(),
+                 "delegate": "XNNPACK CPU (observed LiteRT log; current baseline)",
+                 "thread_count": "runtime default; not explicitly configured",

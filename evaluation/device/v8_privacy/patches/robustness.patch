@@ -1,0 +1,22 @@
+--- a/evaluation/device/robustness.py
++++ b/evaluation/device/robustness.py
+@@ -20,6 +20,10 @@
+ 
+ Outputs (in ``--output-dir``): ``robustness.json`` (summary + config +
+ artifact SHAs), ``pairs.jsonl``, ``pairs.csv``, ``report.md``.
++
++Public export note: ``pairs.jsonl``/summary carry ``signer_id`` entries.
++Sanitise with ``v8_privacy.sanitize_evidence.sanitize_pairs_jsonl`` /
++``sanitize_robustness_summary`` before any public redistribution.
+ """
+ 
+ import argparse
+@@ -118,6 +122,8 @@
+                     pair["corrupted_error"] = corrupted_output["error"]
+             pairs.append(pair)
+     finally:
++        # Pinned (D1): corrupted derivative clips must never outlive
++        # the run, even when a decode/write error aborts the loop.
+         shutil.rmtree(workdir, ignore_errors=True)
+ 
+     agg = aggregate_pairs(pairs)

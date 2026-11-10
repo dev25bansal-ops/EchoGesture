@@ -1,0 +1,35 @@
+{
+  "root": "/private/tmp/echogesture-agents/A15",
+  "reproductions": [
+    {
+      "id": "D1-robustness-workdir-leak",
+      "reproduced": true,
+      "evidence": "raised='ValueError: Could not open video: /var/folders/d5/ntnmmx2d13qf'; workdir survived=True"
+    },
+    {
+      "id": "D2-manifest-path-traversal",
+      "reproduced": true,
+      "evidence": "resolved=/var/folders/d5/ntnmmx2d13qfwk5xk4f7bnd40000gn/T/tmpgoe54mxn/sub/../outside.mp4"
+    },
+    {
+      "id": "D3-bundle-safe-member-colon",
+      "reproduced": true,
+      "evidence": "{\"data:file\": true, \"a:b\": true, \"ok/file\": true, \"../x\": false, \"C:/evil\": false}"
+    },
+    {
+      "id": "D4-temp-dir-shared",
+      "reproduced": true,
+      "evidence": "temp=/var/folders/d5/ntnmmx2d13qfwk5xk4f7bnd40000gn/T/echogesture-capture-lsm2smxz.mp4; shared=/var/folders/d5/ntnmmx2d13qfwk5xk4f7bnd40000gn/T"
+    },
+    {
+      "id": "D5-temp-deleted-on-exception (control)",
+      "reproduced": true,
+      "evidence": "kind=error; exists_after=False"
+    },
+    {
+      "id": "D6-hostname-in-benchmark",
+      "reproduced": true,
+      "evidence": "run_manifest.py summary writes platform.node() as device_model"
+    }
+  ]
+}

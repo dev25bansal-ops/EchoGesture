@@ -1,0 +1,960 @@
+{
+  "status": "passed_schema",
+  "representative_performance_measured": true,
+  "performance_qualification": "Real clips supplied; sample size still depends on coverage of the evaluation corpus.",
+  "clip_count": 30,
+  "successful_predictions": 30,
+  "failed_predictions": [],
+  "accuracy": {
+    "clips_with_ground_truth": 30,
+    "correct": 22,
+    "top1": 0.7333333333333333,
+    "representative_accuracy_measured": true,
+    "qualification": "Representative accuracy requires a documented validation split; this flag is only a completeness/size check"
+  },
+  "latency": {
+    "all_calls": {
+      "count": 30,
+      "p50_ms": 241.456708,
+      "p90_ms": 291.043292,
+      "p95_ms": 319.183583,
+      "p99_ms": 503.460167,
+      "min_ms": 211.206791,
+      "max_ms": 503.460167
+    },
+    "cold_call": {
+      "count": 1,
+      "p50_ms": 503.460167,
+      "p90_ms": 503.460167,
+      "p95_ms": 503.460167,
+      "p99_ms": 503.460167,
+      "min_ms": 503.460167,
+      "max_ms": 503.460167
+    },
+    "warm_calls": {
+      "count": 29,
+      "p50_ms": 241.456708,
+      "p90_ms": 291.043292,
+      "p95_ms": 294.484375,
+      "p99_ms": 319.183583,
+      "min_ms": 211.206791,
+      "max_ms": 319.183583
+    },
+    "method": "External wall time around each predict() call, perf_counter_ns; nearest-rank percentiles",
+    "included": "Video input through returned JSON; excludes manifest I/O and process startup",
+    "excluded_failures": 0
+  },
+  "stage_profiles": [
+    {
+      "clip_id": "6523145816470133-WHAT FOR",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 1.222875
+        },
+        "video_open_decode": {
+          "milliseconds": 31.460583,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 470.021917,
+          "frames_with_hands": 7
+        },
+        "feature_preparation": {
+          "milliseconds": 0.186,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001666
+        },
+        "model_inference": {
+          "milliseconds": 0.179917
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.035333
+        }
+      }
+    },
+    {
+      "clip_id": "6961575623504714-SHAVE",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.068584
+        },
+        "video_open_decode": {
+          "milliseconds": 16.729,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 228.3605,
+          "frames_with_hands": 19
+        },
+        "feature_preparation": {
+          "milliseconds": 0.215667,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001875
+        },
+        "model_inference": {
+          "milliseconds": 0.109041
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.030042
+        }
+      }
+    },
+    {
+      "clip_id": "15347326711184706-NOON",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.065917
+        },
+        "video_open_decode": {
+          "milliseconds": 15.893084,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 210.846333,
+          "frames_with_hands": 9
+        },
+        "feature_preparation": {
+          "milliseconds": 0.212917,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001459
+        },
+        "model_inference": {
+          "milliseconds": 0.110584
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.031542
+        }
+      }
+    },
+    {
+      "clip_id": "9990244640190733-BACKPACK",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.086584
+        },
+        "video_open_decode": {
+          "milliseconds": 18.770916,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 271.747917,
+          "frames_with_hands": 15
+        },
+        "feature_preparation": {
+          "milliseconds": 0.255625,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001292
+        },
+        "model_inference": {
+          "milliseconds": 0.097416
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.028375
+        }
+      }
+    },
+    {
+      "clip_id": "7629092396207264-MAPLE",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.077209
+        },
+        "video_open_decode": {
+          "milliseconds": 17.291709,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 199.259791,
+          "frames_with_hands": 14
+        },
+        "feature_preparation": {
+          "milliseconds": 0.178917,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001416
+        },
+        "model_inference": {
+          "milliseconds": 0.099083
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.02725
+        }
+      }
+    },
+    {
+      "clip_id": "5784034175717614-EASY",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.076
+        },
+        "video_open_decode": {
+          "milliseconds": 15.011583,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 278.948458,
+          "frames_with_hands": 17
+        },
+        "feature_preparation": {
+          "milliseconds": 0.274125,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001375
+        },
+        "model_inference": {
+          "milliseconds": 0.096375
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.029292
+        }
+      }
+    },
+    {
+      "clip_id": "4254167262351618-CHEW 2",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.062
+        },
+        "video_open_decode": {
+          "milliseconds": 25.210958,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 215.476459,
+          "frames_with_hands": 16
+        },
+        "feature_preparation": {
+          "milliseconds": 0.18625,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001416
+        },
+        "model_inference": {
+          "milliseconds": 0.098125
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.029125
+        }
+      }
+    },
+    {
+      "clip_id": "6142521746642153-WHAT FOR",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.073958
+        },
+        "video_open_decode": {
+          "milliseconds": 15.678292,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 220.834417,
+          "frames_with_hands": 20
+        },
+        "feature_preparation": {
+          "milliseconds": 0.201792,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001375
+        },
+        "model_inference": {
+          "milliseconds": 0.09825
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.0295
+        }
+      }
+    },
+    {
+      "clip_id": "5004269948712425-SOCCER 2",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.075292
+        },
+        "video_open_decode": {
+          "milliseconds": 15.802833,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 215.702084,
+          "frames_with_hands": 16
+        },
+        "feature_preparation": {
+          "milliseconds": 0.1885,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001333
+        },
+        "model_inference": {
+          "milliseconds": 0.099375
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.028958
+        }
+      }
+    },
+    {
+      "clip_id": "7713194149900888-CEMETERY",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.071958
+        },
+        "video_open_decode": {
+          "milliseconds": 14.345042,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 216.950875,
+          "frames_with_hands": 14
+        },
+        "feature_preparation": {
+          "milliseconds": 0.216792,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001167
+        },
+        "model_inference": {
+          "milliseconds": 0.098583
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.025208
+        }
+      }
+    },
+    {
+      "clip_id": "9336391016353045-FLIP",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.07175
+        },
+        "video_open_decode": {
+          "milliseconds": 14.201542,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 226.816458,
+          "frames_with_hands": 21
+        },
+        "feature_preparation": {
+          "milliseconds": 0.197875,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001334
+        },
+        "model_inference": {
+          "milliseconds": 0.096958
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.025167
+        }
+      }
+    },
+    {
+      "clip_id": "3191470037860531-8 HOUR",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.066125
+        },
+        "video_open_decode": {
+          "milliseconds": 17.480042,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 256.285084,
+          "frames_with_hands": 16
+        },
+        "feature_preparation": {
+          "milliseconds": 0.192542,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001334
+        },
+        "model_inference": {
+          "milliseconds": 0.097833
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.026375
+        }
+      }
+    },
+    {
+      "clip_id": "647818976594698-BABY 2",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.070417
+        },
+        "video_open_decode": {
+          "milliseconds": 15.843958,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 198.242875,
+          "frames_with_hands": 14
+        },
+        "feature_preparation": {
+          "milliseconds": 0.174208,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001583
+        },
+        "model_inference": {
+          "milliseconds": 0.097916
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.028875
+        }
+      }
+    },
+    {
+      "clip_id": "7355641552290353-MECHANIC",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.072958
+        },
+        "video_open_decode": {
+          "milliseconds": 16.269667,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 227.729583,
+          "frames_with_hands": 14
+        },
+        "feature_preparation": {
+          "milliseconds": 0.253042,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001334
+        },
+        "model_inference": {
+          "milliseconds": 0.096417
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.028167
+        }
+      }
+    },
+    {
+      "clip_id": "6987156871330971-BEE",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.0725
+        },
+        "video_open_decode": {
+          "milliseconds": 31.861875,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 286.940958,
+          "frames_with_hands": 5
+        },
+        "feature_preparation": {
+          "milliseconds": 0.139375,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001334
+        },
+        "model_inference": {
+          "milliseconds": 0.092083
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.026917
+        }
+      }
+    },
+    {
+      "clip_id": "7873618416168222-TICKLE",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.069
+        },
+        "video_open_decode": {
+          "milliseconds": 21.497167,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 206.493792,
+          "frames_with_hands": 10
+        },
+        "feature_preparation": {
+          "milliseconds": 0.228375,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001292
+        },
+        "model_inference": {
+          "milliseconds": 0.097334
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.02775
+        }
+      }
+    },
+    {
+      "clip_id": "0283886564670357-WHAT FOR",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.073167
+        },
+        "video_open_decode": {
+          "milliseconds": 21.8565,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 188.890792,
+          "frames_with_hands": 11
+        },
+        "feature_preparation": {
+          "milliseconds": 0.214708,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001334
+        },
+        "model_inference": {
+          "milliseconds": 0.0915
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.027417
+        }
+      }
+    },
+    {
+      "clip_id": "4481998873282871-PONDER",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.0645
+        },
+        "video_open_decode": {
+          "milliseconds": 22.498,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 244.659,
+          "frames_with_hands": 14
+        },
+        "feature_preparation": {
+          "milliseconds": 0.240458,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001333
+        },
+        "model_inference": {
+          "milliseconds": 0.097542
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.028292
+        }
+      }
+    },
+    {
+      "clip_id": "697572736827275-COMB",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.07625
+        },
+        "video_open_decode": {
+          "milliseconds": 20.903167,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 194.981833,
+          "frames_with_hands": 12
+        },
+        "feature_preparation": {
+          "milliseconds": 0.163167,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001292
+        },
+        "model_inference": {
+          "milliseconds": 0.097709
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.024458
+        }
+      }
+    },
+    {
+      "clip_id": "5008852988399453-MYSELF",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.066416
+        },
+        "video_open_decode": {
+          "milliseconds": 21.701375,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 194.553791,
+          "frames_with_hands": 11
+        },
+        "feature_preparation": {
+          "milliseconds": 0.167833,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001375
+        },
+        "model_inference": {
+          "milliseconds": 0.09725
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.028167
+        }
+      }
+    },
+    {
+      "clip_id": "6495415212975224-UNDERWEAR",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.069
+        },
+        "video_open_decode": {
+          "milliseconds": 19.922041,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 246.401625,
+          "frames_with_hands": 18
+        },
+        "feature_preparation": {
+          "milliseconds": 0.251208,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.00125
+        },
+        "model_inference": {
+          "milliseconds": 0.098
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.030041
+        }
+      }
+    },
+    {
+      "clip_id": "25500869855740893-ANYONE",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.065083
+        },
+        "video_open_decode": {
+          "milliseconds": 18.903583,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 194.6935,
+          "frames_with_hands": 12
+        },
+        "feature_preparation": {
+          "milliseconds": 0.267625,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001458
+        },
+        "model_inference": {
+          "milliseconds": 0.097375
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.028709
+        }
+      }
+    },
+    {
+      "clip_id": "8213787748653953-PENNY",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.069708
+        },
+        "video_open_decode": {
+          "milliseconds": 14.345125,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 199.815584,
+          "frames_with_hands": 14
+        },
+        "feature_preparation": {
+          "milliseconds": 0.169917,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001292
+        },
+        "model_inference": {
+          "milliseconds": 0.093875
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.027208
+        }
+      }
+    },
+    {
+      "clip_id": "3738312466703404-TEACH",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.069291
+        },
+        "video_open_decode": {
+          "milliseconds": 14.016208,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 227.987541,
+          "frames_with_hands": 15
+        },
+        "feature_preparation": {
+          "milliseconds": 0.244917,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001333
+        },
+        "model_inference": {
+          "milliseconds": 0.094667
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.027875
+        }
+      }
+    },
+    {
+      "clip_id": "8581142177964065-AXE",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.068
+        },
+        "video_open_decode": {
+          "milliseconds": 15.901334,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 225.155208,
+          "frames_with_hands": 9
+        },
+        "feature_preparation": {
+          "milliseconds": 0.161917,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001333
+        },
+        "model_inference": {
+          "milliseconds": 0.098291
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.026917
+        }
+      }
+    },
+    {
+      "clip_id": "6416983573445294-SHAVE",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.069208
+        },
+        "video_open_decode": {
+          "milliseconds": 17.9955,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 263.64675,
+          "frames_with_hands": 17
+        },
+        "feature_preparation": {
+          "milliseconds": 0.226875,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.0015
+        },
+        "model_inference": {
+          "milliseconds": 0.102875
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.030125
+        }
+      }
+    },
+    {
+      "clip_id": "032677896012150764-WHAT FOR",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.0655
+        },
+        "video_open_decode": {
+          "milliseconds": 16.208541,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 232.868083,
+          "frames_with_hands": 11
+        },
+        "feature_preparation": {
+          "milliseconds": 0.164291,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.00125
+        },
+        "model_inference": {
+          "milliseconds": 0.097458
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.025
+        }
+      }
+    },
+    {
+      "clip_id": "17092802473126545-SQUEEZE",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.068875
+        },
+        "video_open_decode": {
+          "milliseconds": 14.775167,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 218.764583,
+          "frames_with_hands": 20
+        },
+        "feature_preparation": {
+          "milliseconds": 0.202,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001291
+        },
+        "model_inference": {
+          "milliseconds": 0.093
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.026917
+        }
+      }
+    },
+    {
+      "clip_id": "8166700420399404-CHEEK",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.0675
+        },
+        "video_open_decode": {
+          "milliseconds": 14.937875,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 240.12425,
+          "frames_with_hands": 3
+        },
+        "feature_preparation": {
+          "milliseconds": 0.144208,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.001334
+        },
+        "model_inference": {
+          "milliseconds": 0.0955
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.02775
+        }
+      }
+    },
+    {
+      "clip_id": "9474917526716478-BASKETBALL",
+      "stages": {
+        "model_initialization": {
+          "milliseconds": 0.069166
+        },
+        "video_open_decode": {
+          "milliseconds": 14.861,
+          "sampled_frames": 32
+        },
+        "landmark_tracking": {
+          "milliseconds": 260.544583,
+          "frames_with_hands": 16
+        },
+        "feature_preparation": {
+          "milliseconds": 0.254208,
+          "processed_frames": 24
+        },
+        "input_quantization": {
+          "milliseconds": 0.00125
+        },
+        "model_inference": {
+          "milliseconds": 0.096583
+        },
+        "output_postprocessing": {
+          "milliseconds": 0.025667
+        }
+      }
+    }
+  ],
+  "artifacts": {
+    "predictor": {
+      "path": "/private/tmp/echogesture-v7-agents/A01/src/main.py",
+      "sha256": "c695d78b1b1980e3b95b5357e0549385638eda3274a76eba479c6f3dcddf8141",
+      "bytes": 10154
+    },
+    "labels": {
+      "path": "/private/tmp/echogesture-v7-agents/A01/models/landmark_labels.json",
+      "sha256": "e78f5028e97e2eaf86aff65af403af65061eebef010f0fbd41012293e8019a4a",
+      "bytes": 1492
+    },
+    "model": {
+      "path": "/private/tmp/echogesture-v7-agents/A01/models/landmark_classifier_fp16.tflite",
+      "sha256": "a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4",
+      "bytes": 832888
+    },
+    "feature_config": {
+      "path": "/private/tmp/echogesture-v7-agents/A01/models/landmark_model_meta.json",
+      "sha256": "7f189a16f4d175042b5481afb973217fc21410832ebd14c5bacf2f516473947e",
+      "bytes": 123
+    }
+  },
+  "manifest": {
+    "path": "/private/tmp/echogesture-validation-30/manifest.csv",
+    "sha256": "004e5effb7e6c19b515fdd00b048459fff236d8b35c6b7f7b49e91a1efa5d618",
+    "dataset": "unspecified",
+    "split": "unspecified"
+  },
+  "code_commit": null,
+  "environment": {
+    "python": "3.11.18 (main, Oct 25 2026, 19:41:29) [Clang 21.0.0 (clang-2100.3.34.2)]",
+    "platform": "macOS-26.3-arm64-arm-64bit",
+    "machine": "arm64",
+    "device_model": "Mac.lan",
+    "inference_runtime": "ai-edge-litert 2.3.0",
+    "delegate": "XNNPACK CPU (observed LiteRT log; current baseline)",
+    "thread_count": "runtime default; not explicitly configured"
+  },
+  "recorded_at": "2026-11-08T18:46:07.521523+00:00",
+  "fixture_type": "real",
+  "scope": "Runtime/interface measurement only unless complete ground_truth is supplied; not target-device evidence"
+}

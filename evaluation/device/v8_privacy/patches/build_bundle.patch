@@ -1,0 +1,25 @@
+--- a/scripts/release/build_bundle.py
++++ b/scripts/release/build_bundle.py
+@@ -55,14 +55,17 @@
+     stripped = name.rstrip("/")
+     if not stripped:
+         return False
+-    path = Path(stripped)
+-    if path.is_absolute() or name.startswith("/"):
++    if name.startswith("/"):
+         return False
+-    parts = path.parts
++    # Split on '/' manually: Path.parts normalises '.' and '//' away,
++    # hiding exactly the components this check must see.
++    parts = tuple(stripped.split("/"))
+     if not parts or ".." in parts or any(part in ("", ".") for part in parts):
+         return False
+-    # Reject drive/UNC-style first components such as "C:".
+-    if parts[0].endswith(":") or ":" in parts[0]:
++    # Reject colon in ANY component: drive/UNC-style ("C:") and NTFS
++    # alternate-data-stream forms ("file:stream", "dir/file.mp4:stream")
++    # are unsafe on Windows. Colon-free ZIP members are valid.
++    if any(part.endswith(":") or ":" in part for part in parts):
+         return False
+     return True
+ 

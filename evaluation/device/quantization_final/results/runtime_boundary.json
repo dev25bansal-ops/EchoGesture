@@ -1,0 +1,101 @@
+{
+  "selected": {
+    "backend": "landmark",
+    "model": "/Users/abhijeetmiskin/AppData/EchoGesture/models/landmark_classifier_fp16.tflite",
+    "labels": "/Users/abhijeetmiskin/AppData/EchoGesture/models/landmark_labels.json",
+    "model_sha256": "a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4"
+  },
+  "default_loader": {
+    "backend": "landmark",
+    "frames": 24,
+    "input": {
+      "shape": [
+        1,
+        24,
+        255
+      ],
+      "dtype": "float32",
+      "scale": 0.0,
+      "zero_point": 0
+    },
+    "output": {
+      "shape": [
+        1,
+        100
+      ],
+      "dtype": "float32",
+      "scale": 0.0,
+      "zero_point": 0
+    },
+    "labels": 100,
+    "probe": {
+      "finite": true,
+      "shape": [
+        100
+      ],
+      "min": -3.336505889892578,
+      "max": 3.628145456314087,
+      "sum": -6.808650016784668
+    }
+  },
+  "int8_loaded_without_changing_loader": {
+    "backend": "landmark",
+    "frames": 24,
+    "input": {
+      "shape": [
+        1,
+        24,
+        255
+      ],
+      "dtype": "float32",
+      "scale": 0.0,
+      "zero_point": 0
+    },
+    "output": {
+      "shape": [
+        1,
+        100
+      ],
+      "dtype": "float32",
+      "scale": 0.0,
+      "zero_point": 0
+    },
+    "labels": 100,
+    "probe": {
+      "finite": true,
+      "shape": [
+        100
+      ],
+      "min": -1.8655638694763184,
+      "max": 2.7682559490203857,
+      "sum": -3.2496907711029053
+    }
+  },
+  "int8_rejection": null,
+  "int8_io_is_drop_in": true,
+  "default_restored": {
+    "backend": "landmark",
+    "frames": 24,
+    "input": {
+      "shape": [
+        1,
+        24,
+        255
+      ],
+      "dtype": "float32",
+      "scale": 0.0,
+      "zero_point": 0
+    },
+    "output": {
+      "shape": [
+        1,
+        100
+      ],
+      "dtype": "float32",
+      "scale": 0.0,
+      "zero_point": 0
+    },
+    "labels": 100
+  },
+  "runtime_sha256": "c695d78b1b1980e3b95b5357e0549385638eda3274a76eba479c6f3dcddf8141"
+}

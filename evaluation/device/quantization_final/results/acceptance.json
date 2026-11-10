@@ -1,0 +1,19 @@
+{
+  "candidate": "/Users/abhijeetmiskin/AppData/EchoGesture/models/landmark_classifier_int8.tflite",
+  "candidate_sha256": "9d24640a23244a3cd00c9fa62257733819f86ed1da5a10194c9b1cb64323700b",
+  "baseline": "/Users/abhijeetmiskin/AppData/EchoGesture/models/landmark_classifier_fp16.tflite",
+  "baseline_sha256": "a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4",
+  "checks": {
+    "candidate_is_not_baseline": true,
+    "features_unchanged": true,
+    "labels_unchanged": true,
+    "audit_is_current": true,
+    "audit_candidate_is_reported_int8": true,
+    "candidate_io_matches_contract": true,
+    "paired_evidence_pinned": true,
+    "existing_int8_no_regression": false,
+    "whole_pipeline_int8_established": false,
+    "official_interpretation_resolved": false
+  },
+  "passed": false
+}

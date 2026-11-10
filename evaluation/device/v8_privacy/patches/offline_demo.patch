@@ -1,0 +1,126 @@
+--- a/app/offline_demo.py
++++ b/app/offline_demo.py
+@@ -1,9 +1,11 @@
+ """Offline tap-to-capture demo using the repository's real predictor.
+ 
+ SPACE: capture a sign; R: reopen camera / reset after an error; Q/ESC: quit.
+-No footage is retained or sent to a network: each camera capture is encoded to
+-one temporary clip inside a worker-owned temporary directory, predicted once,
+-then deleted before the result is surfaced.
++No footage is kept on disk after each capture and nothing is sent to a
++network: each camera capture is encoded to one temporary clip inside a
++worker-owned private temporary directory, predicted once, then deleted
++before the result is surfaced. Frames are held in memory only during
++inference.
+ 
+ The active model is read from ECHOGESTURE_MODEL (default: landmark candidate).
+ This integration is not a claim of meeting accuracy or latency targets.
+@@ -205,7 +207,14 @@
+     if height <= 0 or width <= 0:
+         raise ValueError("captured frame has zero area")
+     safe_id = "".join(c if c.isalnum() or c in "-_" else "_" for c in str(clip_id))[:40] or "demo"
+-    path = Path(tmpdir) / f"echogesture-capture-{safe_id}-{time.time_ns()}.mp4"
++    Path(tmpdir).chmod(0o700) if Path(tmpdir).exists() else None
++    _fd, _name = tempfile.mkstemp(prefix=f"echogesture-capture-{safe_id}-", suffix=".mp4", dir=str(tmpdir))
++    os.close(_fd)
++    path = Path(_name)
++    try:
++        path.chmod(0o600)
++    except OSError:
++        pass
+     writer = cv2.VideoWriter(str(path), cv2.VideoWriter_fourcc(*"mp4v"), float(fps), (width, height))
+     if not writer.isOpened():
+         try:
+@@ -220,6 +229,10 @@
+             writer.write(frame)
+     finally:
+         writer.release()
++    try:
++        path.chmod(0o600)
++    except OSError:
++        pass
+     if not path.exists() or path.stat().st_size == 0:
+         raise RuntimeError("Temporary clip encoder produced no data")
+     return path
+@@ -233,9 +246,18 @@
+         self.requests = queue.Queue(maxsize=1)
+         self.results = queue.Queue()
+         self.closed = threading.Event()
+-        self._owns_tmpdir = tmpdir is None
+-        self._tmpdir = tempfile.TemporaryDirectory(prefix="echogesture-capture-", dir=tmpdir) if tmpdir is None else None
+-        self.tmpdir = Path(self._tmpdir.name) if self._tmpdir is not None else Path(tmpdir)
++        self._owns_tmpdir = True
++        # A caller-supplied tmpdir is a parent hint, never the directory
++        # clips land in directly: captures stay in a fresh private child.
++        self._tmpdir = tempfile.TemporaryDirectory(
++            prefix="echogesture-capture-", dir=str(tmpdir) if tmpdir is not None else None
++        )
++        self.tmpdir = Path(self._tmpdir.name)
++        try:
++            self.tmpdir.chmod(0o700)
++        except OSError:
++            pass
++        self._close_timeout = 5.0
+         self._close_lock = threading.Lock()
+         self._closed_once = False
+         self.thread = threading.Thread(target=self._run, name="offline-inference", daemon=True)
+@@ -282,6 +304,15 @@
+                         path.unlink(missing_ok=True)
+                     except OSError:
+                         pass
++                try:
++                    for _f in frames:
++                        try:
++                            _f.fill(0)
++                        except Exception:
++                            pass
++                    frames.clear()
++                except Exception:
++                    pass
+ 
+     def close(self):
+         with self._close_lock:
+@@ -289,12 +320,33 @@
+                 return
+             self._closed_once = True
+         self.closed.set()
+-        self.thread.join(timeout=2)
++        _deadline = time.perf_counter() + getattr(self, "_close_timeout", 5.0)
++        while time.perf_counter() < _deadline:
++            if not self.thread.is_alive():
++                break
++            self.thread.join(timeout=0.05)
++        self.drained = not self.thread.is_alive()
++        try:
++            for _leftover in list(self.tmpdir.iterdir()):
++                try:
++                    _leftover.unlink(missing_ok=True)
++                except OSError:
++                    pass
++        except OSError:
++            pass
+         if self._tmpdir is not None:
+             try:
+                 self._tmpdir.cleanup()
+             except OSError:
+                 pass
++        try:
++            for _leftover in list(self.tmpdir.iterdir()):
++                try:
++                    _leftover.unlink(missing_ok=True)
++                except OSError:
++                    pass
++        except OSError:
++            pass
+ 
+ 
+ class CaptionState:
+@@ -403,7 +455,7 @@
+         cv2.putText(image, f"Capturing {buffer_count}/{buffer_target} frames | SPACE to cancel",
+                     (18, image.shape[0] - 18), cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 1, cv2.LINE_AA)
+     else:
+-        cv2.putText(image, "SPACE capture | R reopen/reset | Q quit | no footage retained", (18, image.shape[0] - 18),
++        cv2.putText(image, "SPACE capture | R reopen/reset | Q quit | no footage kept on disk after each capture", (18, image.shape[0] - 18),
+                     cv2.FONT_HERSHEY_SIMPLEX, 0.55, (255, 255, 255), 1, cv2.LINE_AA)
+     return image
+ 

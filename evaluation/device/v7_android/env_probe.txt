@@ -1,0 +1,37 @@
+=== A09 V7 re-probe 2026-11-08T18:47:56Z ===
+host: Darwin Mac.lan 25.3.0 Darwin Kernel Version 25.3.0: Wed Jan 28 20:54:38 PST 2026; root:xnu-12377.91.3~2/RELEASE_ARM64_T6050 arm64
+--- java ---
+openjdk version "25.0.4" 2026-07-21
+OpenJDK Runtime Environment (build 25.0.4+-16339643-b508.27)
+OpenJDK 64-Bit Server VM (build 25.0.4+-16339643-b508.27, mixed mode)
+The operation couldn’t be completed. Unable to locate a Java Runtime.
+Please visit http://www.java.com for information on installing Java.
+
+--- tools PATH ---
+adb: adb not found
+missing
+gradle: gradle not found
+missing
+sdkmanager: sdkmanager not found
+missing
+emulator: emulator not found
+missing
+kotlinc: kotlinc not found
+missing
+--- SDK dirs ---
+ls: /Users/abhijeetmiskin/Library/Android/sdk: No such file or directory
+-rw-r--r--@ 1 abhijeetmiskin  admin  70733766 Nov  5 18:56 /Applications/Android Studio.app/Contents/plugins/android/lib/android.jar
+--- USB android search ---
+0
+0
+--- camera headless probe (python cv2, timeout 20s) ---
+(eval):24: command not found: timeout
+exit=127
+--- gradle wrapper in owned dirs ---
+(none expected)
+--- camera probe (direct, no timeout cmd) ---
+OpenCV: not authorized to capture video (status 0), requesting...
+OpenCV: camera failed to properly initialize!
+[ WARN:0@0.132] global cap_ffmpeg_impl.hpp:1240 open VIDEOIO/FFMPEG: Failed list devices for backend avfoundation
+opened False
+exit=0

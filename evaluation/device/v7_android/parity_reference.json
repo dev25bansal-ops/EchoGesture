@@ -1,0 +1,7 @@
+{
+  "python": "src/features.py build_features + ai-edge-litert Interpreter (FP16, float32 IO)",
+  "fixtures": ["parity_synthetic.npz", "parity_chew2.npz"],
+  "features_shape": [24, 255],
+  "tolerance": {"features_abs": 1e-4, "logits_abs": 1e-3, "top1": "exact match required"},
+  "note": "Run test_parity.py on the host; the Kotlin unit test under app/v7_android/src/test must consume the SAME npz-derived JSON fixtures."
+}

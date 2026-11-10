@@ -1,0 +1,6808 @@
+{
+  "analysis": "V8 reconciliation of 346-clip validation accuracy evidence (frozen predictions, no inference, no test split)",
+  "artifacts": {
+    "fp16_model": {
+      "bytes": 832888,
+      "expected_sha256": "a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4",
+      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/models/landmark_classifier_fp16.tflite",
+      "sha256": "a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4",
+      "sha256_matches_expected": true
+    },
+    "int8_model": {
+      "bytes": 509720,
+      "expected_sha256": "9d24640a23244a3cd00c9fa62257733819f86ed1da5a10194c9b1cb64323700b",
+      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/models/landmark_classifier_int8.tflite",
+      "sha256": "9d24640a23244a3cd00c9fa62257733819f86ed1da5a10194c9b1cb64323700b",
+      "sha256_matches_expected": true
+    },
+    "labels": {
+      "bytes": 1492,
+      "expected_sha256": "e78f5028e97e2eaf86aff65af403af65061eebef010f0fbd41012293e8019a4a",
+      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/models/landmark_labels.json",
+      "sha256": "e78f5028e97e2eaf86aff65af403af65061eebef010f0fbd41012293e8019a4a",
+      "sha256_matches_expected": true
+    },
+    "manifest": {
+      "bytes": 24631,
+      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/evaluation/device/v5_accuracy/data/val_346/manifest.csv",
+      "sha256": "6b9a6a253a5d3edc55ca8bbb5ae138c832e8b0f5ac0f374fdc1df12085c3ab85"
+    },
+    "predictions30": {
+      "bytes": 36376,
+      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/evaluation/device/v5_accuracy/results/val_30/predictions.json",
+      "sha256": "bc99dbbcc8db1f230970b9de17e50f239debeab0b8c4cd0a2ac2617e199d2c39"
+    },
+    "predictions346": {
+      "bytes": 423658,
+      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/evaluation/device/v5_accuracy/results/val_346/predictions.json",
+      "sha256": "8d980fbe5ae41613b578f411855e0d1d96e4ac178ac5a84d9aae5f1a65546555"
+    },
+    "summary30": {
+      "bytes": 12973,
+      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/evaluation/device/v5_accuracy/results/val_30/summary.json",
+      "sha256": "0ec182301bef9a374158360272128085bfa0b60d1f08e0861525f4dc0c57ceb2"
+    },
+    "summary346": {
+      "bytes": 50105,
+      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/evaluation/device/v5_accuracy/results/val_346/summary.json",
+      "sha256": "1ef28344e0684c46dd2422df2e96f1f1f55e4c277bca73a8dda76eec54992657"
+    },
+    "v6_statistics": {
+      "bytes": 543763,
+      "path": "/Users/abhijeetmiskin/AppData/EchoGesture/evaluation/device/v6_integrity/statistics.json",
+      "sha256": "42fbe77689926ea0e47b6c74d5f7a012191a5e218fab4347434c1589acb2d1ee"
+    }
+  },
+  "clip_bootstrap_paired_difference": {
+    "lower_95": 0.017391304347826087,
+    "median": 0.05217391304347826,
+    "method": "nonparametric clip bootstrap, sorted percentile interval",
+    "reps": 20000,
+    "seed": 20261109,
+    "upper_95": 0.08985507246376812
+  },
+  "clip_ledger": [
+    {
+      "clip_id": "002040595117913435-SLIDE 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "SLIDE2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "006918970578539518-PARTY",
+      "fp16_top1_correct": true,
+      "ground_truth": "PARTY1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "006951411960890663-FINE",
+      "fp16_top1_correct": true,
+      "ground_truth": "FINE1",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_9123b627",
+      "status": "ok"
+    },
+    {
+      "clip_id": "009883456113471967-EAT",
+      "fp16_top1_correct": true,
+      "ground_truth": "EAT1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "011916793918304025-FINE",
+      "fp16_top1_correct": true,
+      "ground_truth": "FINE1",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "013975318087335875-SHARPEN 3",
+      "fp16_top1_correct": true,
+      "ground_truth": "SHARPEN2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "020001513874339905-HURDLE-TRIP",
+      "fp16_top1_correct": true,
+      "ground_truth": "HURDLE/TRIP1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "021193533049441937-SHAVE",
+      "fp16_top1_correct": true,
+      "ground_truth": "SHAVE1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "027532349402833-DOWNSIZE",
+      "fp16_top1_correct": true,
+      "ground_truth": "DOWNSIZE1",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_9123b627",
+      "status": "ok"
+    },
+    {
+      "clip_id": "0283886564670357-WHAT FOR",
+      "fp16_top1_correct": true,
+      "ground_truth": "WHATFOR1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "029833014387566248-SAIL 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "SAIL2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "032677896012150764-WHAT FOR",
+      "fp16_top1_correct": true,
+      "ground_truth": "WHATFOR1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "03617049378353854-HOSPITAL",
+      "fp16_top1_correct": true,
+      "ground_truth": "HOSPITAL1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_9123b627",
+      "status": "ok"
+    },
+    {
+      "clip_id": "0392835216734122-EAT",
+      "fp16_top1_correct": true,
+      "ground_truth": "EAT1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "03951129691638511-SQUEEZE",
+      "fp16_top1_correct": false,
+      "ground_truth": "SQUEEZE",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "04082737644135381-DUCK",
+      "fp16_top1_correct": true,
+      "ground_truth": "DUCK2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "04368064534534177-METAL",
+      "fp16_top1_correct": true,
+      "ground_truth": "METAL",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "051718892767815605-MECHANIC",
+      "fp16_top1_correct": true,
+      "ground_truth": "MECHANIC1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "05176661641171654-HALLOWEEN",
+      "fp16_top1_correct": true,
+      "ground_truth": "HALLOWEEN1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "05313536275990982-CEMETERY",
+      "fp16_top1_correct": false,
+      "ground_truth": "CEMETERY",
+      "int8_top1_correct": true,
+      "outcome": "INT8_ONLY",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "05472514438794285-CLOSE",
+      "fp16_top1_correct": true,
+      "ground_truth": "CLOSE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "05621288177415629-RIVER",
+      "fp16_top1_correct": true,
+      "ground_truth": "RIVER1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "06408604416165864-WHAT FOR",
+      "fp16_top1_correct": false,
+      "ground_truth": "WHATFOR1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_9123b627",
+      "status": "ok"
+    },
+    {
+      "clip_id": "06571173343741843-APPLE",
+      "fp16_top1_correct": true,
+      "ground_truth": "APPLE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "06585822033156608-PATIENT 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "PATIENT2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_9123b627",
+      "status": "ok"
+    },
+    {
+      "clip_id": "07130413211667141-MEA CULPA",
+      "fp16_top1_correct": false,
+      "ground_truth": "MEACULPA",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_2f68a231",
+      "status": "ok"
+    },
+    {
+      "clip_id": "08197479357139326-PATIENT 2",
+      "fp16_top1_correct": false,
+      "ground_truth": "PATIENT2",
+      "int8_top1_correct": true,
+      "outcome": "INT8_ONLY",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "08349310104991292-GUESS",
+      "fp16_top1_correct": true,
+      "ground_truth": "GUESS1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "08629381582280149-MOUTH",
+      "fp16_top1_correct": true,
+      "ground_truth": "MOUTH",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "08826631701153853-GRAMMAR",
+      "fp16_top1_correct": true,
+      "ground_truth": "GRAMMAR",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "08953386810820474-FOREIGNER",
+      "fp16_top1_correct": false,
+      "ground_truth": "FOREIGNER1",
+      "int8_top1_correct": true,
+      "outcome": "INT8_ONLY",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "09610249068216015-MYSELF",
+      "fp16_top1_correct": false,
+      "ground_truth": "MYSELF",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "09934450273931295-CHEEK",
+      "fp16_top1_correct": true,
+      "ground_truth": "CHEEK",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "1013355672311258-CLOSE",
+      "fp16_top1_correct": true,
+      "ground_truth": "CLOSE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "10542513580735968-HOW",
+      "fp16_top1_correct": false,
+      "ground_truth": "HOW1",
+      "int8_top1_correct": true,
+      "outcome": "INT8_ONLY",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "10557248501909733-MICROSCOPE",
+      "fp16_top1_correct": true,
+      "ground_truth": "MICROSCOPE1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_2f68a231",
+      "status": "ok"
+    },
+    {
+      "clip_id": "10913953302547807-DOWNSIZE",
+      "fp16_top1_correct": true,
+      "ground_truth": "DOWNSIZE1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "1141902422063672-COMB",
+      "fp16_top1_correct": true,
+      "ground_truth": "COMB2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "13539919271011525-SPECIAL",
+      "fp16_top1_correct": false,
+      "ground_truth": "SPECIAL1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_9123b627",
+      "status": "ok"
+    },
+    {
+      "clip_id": "1362215264165989-DEVELOP",
+      "fp16_top1_correct": true,
+      "ground_truth": "DEVELOP1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "13644697492397184-JOKE",
+      "fp16_top1_correct": true,
+      "ground_truth": "JOKE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "1378742805110198-COPY",
+      "fp16_top1_correct": true,
+      "ground_truth": "COPY",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "14217897516103073-SCROLL DOWN",
+      "fp16_top1_correct": true,
+      "ground_truth": "SCROLLDOWN",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "14432206279699766-BREAKFAST",
+      "fp16_top1_correct": true,
+      "ground_truth": "BREAKFAST1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "15011820658062458-DOG",
+      "fp16_top1_correct": true,
+      "ground_truth": "DOG1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "15347326711184706-NOON",
+      "fp16_top1_correct": true,
+      "ground_truth": "NOON1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_9123b627",
+      "status": "ok"
+    },
+    {
+      "clip_id": "15474555819828018-FLIP",
+      "fp16_top1_correct": false,
+      "ground_truth": "FLIP",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "1550944296003025-MICROSCOPE",
+      "fp16_top1_correct": true,
+      "ground_truth": "MICROSCOPE1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "1574579084805503-LONG LINE",
+      "fp16_top1_correct": true,
+      "ground_truth": "LONGLINE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "16633914121192128-VLOG",
+      "fp16_top1_correct": true,
+      "ground_truth": "VLOG",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "16945051524554744-DEVELOP",
+      "fp16_top1_correct": true,
+      "ground_truth": "DEVELOP1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "17005650435713515-PULL CONVINCE",
+      "fp16_top1_correct": false,
+      "ground_truth": "PULLCONVINCE",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "17011131896499232-PONDER",
+      "fp16_top1_correct": true,
+      "ground_truth": "PONDER",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "17092802473126545-SQUEEZE",
+      "fp16_top1_correct": true,
+      "ground_truth": "SQUEEZE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "1745452785017827-BASKETBALL",
+      "fp16_top1_correct": true,
+      "ground_truth": "BASKETBALL1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "17849995657443585-OFFEND",
+      "fp16_top1_correct": true,
+      "ground_truth": "OFFEND",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "1885338005619568-BASEBALL CAP",
+      "fp16_top1_correct": false,
+      "ground_truth": "BASEBALLCAP",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "19720668760111892-ANYONE",
+      "fp16_top1_correct": false,
+      "ground_truth": "ANYONE",
+      "int8_top1_correct": true,
+      "outcome": "INT8_ONLY",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "19778675091674147-AXE",
+      "fp16_top1_correct": true,
+      "ground_truth": "AXE1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "19884607898478812-SAIL 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "SAIL2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "20198961584817-BACKPACK",
+      "fp16_top1_correct": true,
+      "ground_truth": "BACKPACK1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "20458224320425433-HURDLE-TRIP",
+      "fp16_top1_correct": true,
+      "ground_truth": "HURDLE/TRIP1",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_9123b627",
+      "status": "ok"
+    },
+    {
+      "clip_id": "2147323352858992-ALL OF_SUDDEN",
+      "fp16_top1_correct": true,
+      "ground_truth": "ALLOFSUDDEN",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "22086947347372266-MEA CULPA",
+      "fp16_top1_correct": true,
+      "ground_truth": "MEACULPA",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "2252640115571123-ZEBRA",
+      "fp16_top1_correct": true,
+      "ground_truth": "ZEBRA",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "22650386685976165-DECIDE",
+      "fp16_top1_correct": true,
+      "ground_truth": "DECIDE1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "22732217637347518-NOON",
+      "fp16_top1_correct": true,
+      "ground_truth": "NOON1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "22806938606831628-FLIP",
+      "fp16_top1_correct": true,
+      "ground_truth": "FLIP",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "23447000304598498-MEAT",
+      "fp16_top1_correct": true,
+      "ground_truth": "MEAT1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "24018785560856104-SQUEEZE",
+      "fp16_top1_correct": true,
+      "ground_truth": "SQUEEZE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "2443637258460738-WALK-TIGHTROPE-CL",
+      "fp16_top1_correct": false,
+      "ground_truth": "WALK-TIGHTROPE-CL",
+      "int8_top1_correct": true,
+      "outcome": "INT8_ONLY",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "24688740242146956-VLOG",
+      "fp16_top1_correct": true,
+      "ground_truth": "VLOG",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "2518011428400748-FINE",
+      "fp16_top1_correct": true,
+      "ground_truth": "FINE1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "2542749088067966-SWEATER 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "SWEATER2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "25500869855740893-ANYONE",
+      "fp16_top1_correct": true,
+      "ground_truth": "ANYONE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "2553554139053429-BITE",
+      "fp16_top1_correct": true,
+      "ground_truth": "BITE1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "2560023931191153-MAPLE",
+      "fp16_top1_correct": true,
+      "ground_truth": "MAPLE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "2632949274164049-CHEESE GRATER",
+      "fp16_top1_correct": false,
+      "ground_truth": "CHEESEGRATER",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "2642023468678638-DEMAND",
+      "fp16_top1_correct": true,
+      "ground_truth": "DEMAND1",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_9123b627",
+      "status": "ok"
+    },
+    {
+      "clip_id": "2661502584826272-FAIL",
+      "fp16_top1_correct": false,
+      "ground_truth": "FAIL",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "2664208219859696-MYSELF",
+      "fp16_top1_correct": true,
+      "ground_truth": "MYSELF",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "270077213177649-DEMAND",
+      "fp16_top1_correct": true,
+      "ground_truth": "DEMAND1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "2710513815020268-RAZOR 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "RAZOR2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "28202328150486666-RAZOR 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "RAZOR2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "2838376949179944-MOVIE",
+      "fp16_top1_correct": true,
+      "ground_truth": "MOVIE1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "28791918942913153-HOSPITAL",
+      "fp16_top1_correct": false,
+      "ground_truth": "HOSPITAL1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "29398177566155903-PARTY",
+      "fp16_top1_correct": true,
+      "ground_truth": "PARTY1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "3006731850276776-CHEEK",
+      "fp16_top1_correct": true,
+      "ground_truth": "CHEEK",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "3049387689711547-GUESS",
+      "fp16_top1_correct": true,
+      "ground_truth": "GUESS1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_2f68a231",
+      "status": "ok"
+    },
+    {
+      "clip_id": "3054167723169219-RIVER",
+      "fp16_top1_correct": false,
+      "ground_truth": "RIVER1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_9123b627",
+      "status": "ok"
+    },
+    {
+      "clip_id": "30708690329373534-RIGHT 3",
+      "fp16_top1_correct": true,
+      "ground_truth": "RIGHT3",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "3108143937298642-MOUTH",
+      "fp16_top1_correct": true,
+      "ground_truth": "MOUTH",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "3111036230854072-KNIGHT",
+      "fp16_top1_correct": false,
+      "ground_truth": "KNIGHT1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "3159241677201454-SHAVE",
+      "fp16_top1_correct": true,
+      "ground_truth": "SHAVE1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "3191470037860531-8 HOUR",
+      "fp16_top1_correct": true,
+      "ground_truth": "8HOUR",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "32496216787069-HURDLE-TRIP",
+      "fp16_top1_correct": true,
+      "ground_truth": "HURDLE/TRIP1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "32588002483465517-SPECIAL",
+      "fp16_top1_correct": false,
+      "ground_truth": "SPECIAL1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_2f68a231",
+      "status": "ok"
+    },
+    {
+      "clip_id": "3288386389330409-CHEESE GRATER",
+      "fp16_top1_correct": true,
+      "ground_truth": "CHEESEGRATER",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "3366479979360135-BELT",
+      "fp16_top1_correct": true,
+      "ground_truth": "BELT1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "33793635075999173-SHOCKED",
+      "fp16_top1_correct": true,
+      "ground_truth": "SHOCKED",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "3410444103291186-BELT",
+      "fp16_top1_correct": true,
+      "ground_truth": "BELT1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "34122555816702826-CHEESE GRATER",
+      "fp16_top1_correct": false,
+      "ground_truth": "CHEESEGRATER",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "3423044704100937-SHAVE",
+      "fp16_top1_correct": true,
+      "ground_truth": "SHAVE1",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_9123b627",
+      "status": "ok"
+    },
+    {
+      "clip_id": "34333964280187357-GUESS",
+      "fp16_top1_correct": true,
+      "ground_truth": "GUESS1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "3460314877226609-TAIL",
+      "fp16_top1_correct": true,
+      "ground_truth": "TAIL1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "3460692217935548-GOODY GOODY_SHOE_OPPOSITE",
+      "fp16_top1_correct": true,
+      "ground_truth": "GOODYGOODYSHOEOPPOSITE",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "35242889021234824-SOCCER 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "SOCCER2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "35864673161352667-CHEESE GRATER",
+      "fp16_top1_correct": true,
+      "ground_truth": "CHEESEGRATER",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "36176458889227514-SINK",
+      "fp16_top1_correct": false,
+      "ground_truth": "SINK",
+      "int8_top1_correct": true,
+      "outcome": "INT8_ONLY",
+      "signer_id": "signer_9123b627",
+      "status": "ok"
+    },
+    {
+      "clip_id": "36751830509458006-CALENDAR",
+      "fp16_top1_correct": true,
+      "ground_truth": "CALENDAR1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "36886872128101555-SLIDE 2",
+      "fp16_top1_correct": false,
+      "ground_truth": "SLIDE2",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "37307316304694527-BASEBALL CAP",
+      "fp16_top1_correct": true,
+      "ground_truth": "BASEBALLCAP",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "3738312466703404-TEACH",
+      "fp16_top1_correct": true,
+      "ground_truth": "TEACH1",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "37669210387957475-GOODY GOODY_SHOE_OPPOSITE",
+      "fp16_top1_correct": true,
+      "ground_truth": "GOODYGOODYSHOEOPPOSITE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "3795971851328137-RABBIT 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "RABBIT2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "3796947997428477-MAPLE",
+      "fp16_top1_correct": true,
+      "ground_truth": "MAPLE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "38148520825309884-DEMAND",
+      "fp16_top1_correct": true,
+      "ground_truth": "DEMAND1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "38489622716415495-EASY",
+      "fp16_top1_correct": true,
+      "ground_truth": "EASY",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "38571484397842015-MOUTH",
+      "fp16_top1_correct": true,
+      "ground_truth": "MOUTH",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "38643119676336557-ELEVATOR",
+      "fp16_top1_correct": true,
+      "ground_truth": "ELEVATOR1",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "3877478645046861-AXE",
+      "fp16_top1_correct": true,
+      "ground_truth": "AXE1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "38795171322133193-FAIL",
+      "fp16_top1_correct": true,
+      "ground_truth": "FAIL",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "3926479921771886-AUTISM",
+      "fp16_top1_correct": true,
+      "ground_truth": "AUTISM1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "39474504957896217-MOVIE",
+      "fp16_top1_correct": false,
+      "ground_truth": "MOVIE1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_9123b627",
+      "status": "ok"
+    },
+    {
+      "clip_id": "3952172347699263-DEAF",
+      "fp16_top1_correct": true,
+      "ground_truth": "DEAF1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "40000406125135246-CHEER",
+      "fp16_top1_correct": true,
+      "ground_truth": "CHEER",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "4067481965556152-CHEW 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "CHEW1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "4072365644872067-DECIDE",
+      "fp16_top1_correct": true,
+      "ground_truth": "DECIDE1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "40736213240107166-PONDER",
+      "fp16_top1_correct": true,
+      "ground_truth": "PONDER",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "4095802504728605-DEAF",
+      "fp16_top1_correct": true,
+      "ground_truth": "DEAF1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_9123b627",
+      "status": "ok"
+    },
+    {
+      "clip_id": "41119821062785955-GRAMMAR",
+      "fp16_top1_correct": true,
+      "ground_truth": "GRAMMAR",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "4129170320860023-SPECIAL",
+      "fp16_top1_correct": true,
+      "ground_truth": "SPECIAL1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "41400174274886226-DUCK",
+      "fp16_top1_correct": true,
+      "ground_truth": "DUCK2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "424117143455232-MECHANIC",
+      "fp16_top1_correct": true,
+      "ground_truth": "MECHANIC1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "4254167262351618-CHEW 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "CHEW1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "43742087186225564-KNIGHT",
+      "fp16_top1_correct": true,
+      "ground_truth": "KNIGHT1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "4471857764890683-SCROLL DOWN",
+      "fp16_top1_correct": false,
+      "ground_truth": "SCROLLDOWN",
+      "int8_top1_correct": true,
+      "outcome": "INT8_ONLY",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "44788803801657195-SOCCER 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "SOCCER2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "4481998873282871-PONDER",
+      "fp16_top1_correct": true,
+      "ground_truth": "PONDER",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "45150943255202947-RABBIT 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "RABBIT2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "45428891715253683-EMPTY 2",
+      "fp16_top1_correct": false,
+      "ground_truth": "EMPTY2",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "45516937007036473-JEWELRY",
+      "fp16_top1_correct": true,
+      "ground_truth": "JEWELRY",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "4572108566423274-EMPTY 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "EMPTY2",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "45820068796551894-DECIDE",
+      "fp16_top1_correct": true,
+      "ground_truth": "DECIDE1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "45836221682944944-GOODY GOODY_SHOE_OPPOSITE",
+      "fp16_top1_correct": true,
+      "ground_truth": "GOODYGOODYSHOEOPPOSITE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "4596375275135087-BEE",
+      "fp16_top1_correct": false,
+      "ground_truth": "BEE1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "46170617189439445-MEAT",
+      "fp16_top1_correct": false,
+      "ground_truth": "MEAT1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "4619102582986805-CAPTURE",
+      "fp16_top1_correct": true,
+      "ground_truth": "CAPTURE",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "461949850206256-BASEBALL CAP",
+      "fp16_top1_correct": true,
+      "ground_truth": "BASEBALLCAP",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "46249808811047255-VLOG",
+      "fp16_top1_correct": true,
+      "ground_truth": "VLOG",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "46279340594521323-TEACH",
+      "fp16_top1_correct": true,
+      "ground_truth": "TEACH1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "4672262692116116-CHEEK",
+      "fp16_top1_correct": false,
+      "ground_truth": "CHEEK",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "4676918363461027-BITE",
+      "fp16_top1_correct": true,
+      "ground_truth": "BITE1",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "4781635605012422-ELEVATOR",
+      "fp16_top1_correct": false,
+      "ground_truth": "ELEVATOR1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "47947978638344724-SOCIETY",
+      "fp16_top1_correct": true,
+      "ground_truth": "SOCIETY",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "48097577259527013-DRAG",
+      "fp16_top1_correct": true,
+      "ground_truth": "DRAG1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "4854326686926205-FLOAT 3",
+      "fp16_top1_correct": true,
+      "ground_truth": "FLOAT1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "4888664874797979-SHARPEN 3",
+      "fp16_top1_correct": true,
+      "ground_truth": "SHARPEN2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "48933001953207-ADVERTISE",
+      "fp16_top1_correct": true,
+      "ground_truth": "ADVERTISE",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "4939295276537865-IMPOSSIBLE",
+      "fp16_top1_correct": true,
+      "ground_truth": "IMPOSSIBLE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "4974799671016843-LOCK",
+      "fp16_top1_correct": false,
+      "ground_truth": "LOCK1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_2f68a231",
+      "status": "ok"
+    },
+    {
+      "clip_id": "4985293038019454-BACKPACK",
+      "fp16_top1_correct": true,
+      "ground_truth": "BACKPACK1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5000642478362116-BITE",
+      "fp16_top1_correct": true,
+      "ground_truth": "BITE1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5004269948712425-SOCCER 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "SOCCER2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5008852988399453-MYSELF",
+      "fp16_top1_correct": false,
+      "ground_truth": "MYSELF",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5026388790646275-CHEER",
+      "fp16_top1_correct": false,
+      "ground_truth": "CHEER",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5072688386926076-COMB",
+      "fp16_top1_correct": true,
+      "ground_truth": "COMB2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5123454423358422-LOCK",
+      "fp16_top1_correct": false,
+      "ground_truth": "LOCK1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5147041918881023-PULL CONVINCE",
+      "fp16_top1_correct": false,
+      "ground_truth": "PULLCONVINCE",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5153555196709101-OFFEND",
+      "fp16_top1_correct": true,
+      "ground_truth": "OFFEND",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5158284296267106-BEE",
+      "fp16_top1_correct": true,
+      "ground_truth": "BEE1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "517119656141747-ZEBRA",
+      "fp16_top1_correct": false,
+      "ground_truth": "ZEBRA",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_9123b627",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5208069588201667-DOG",
+      "fp16_top1_correct": true,
+      "ground_truth": "DOG1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5240169854170185-LONG LINE",
+      "fp16_top1_correct": true,
+      "ground_truth": "LONGLINE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5259510122646855-HALLOWEEN",
+      "fp16_top1_correct": true,
+      "ground_truth": "HALLOWEEN1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "528682049477224-VOICE",
+      "fp16_top1_correct": true,
+      "ground_truth": "VOICE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5348408299826362-VOICE",
+      "fp16_top1_correct": true,
+      "ground_truth": "VOICE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5360738598037762-JEWELRY",
+      "fp16_top1_correct": true,
+      "ground_truth": "JEWELRY",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5420413789790421-WALK-TIGHTROPE-CL",
+      "fp16_top1_correct": true,
+      "ground_truth": "WALK-TIGHTROPE-CL",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5426366957483852-ALL OF_SUDDEN",
+      "fp16_top1_correct": true,
+      "ground_truth": "ALLOFSUDDEN",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5467156859776472-BITE",
+      "fp16_top1_correct": true,
+      "ground_truth": "BITE1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5535338426456671-MOVIE",
+      "fp16_top1_correct": true,
+      "ground_truth": "MOVIE1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5537545794516361-CHEW 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "CHEW1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5547731542068628-MICROSCOPE",
+      "fp16_top1_correct": true,
+      "ground_truth": "MICROSCOPE1",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5579456931257181-DOG",
+      "fp16_top1_correct": false,
+      "ground_truth": "DOG1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5601659028098682-DEAF",
+      "fp16_top1_correct": true,
+      "ground_truth": "DEAF1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5640844255086905-SOCIETY",
+      "fp16_top1_correct": false,
+      "ground_truth": "SOCIETY",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5648692132481579-SHOCKED",
+      "fp16_top1_correct": true,
+      "ground_truth": "SHOCKED",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5658562793078117-CLOSE",
+      "fp16_top1_correct": true,
+      "ground_truth": "CLOSE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5673060607110498-CHEER",
+      "fp16_top1_correct": true,
+      "ground_truth": "CHEER",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5773958570762612-BABY 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "BABY2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5784034175717614-EASY",
+      "fp16_top1_correct": true,
+      "ground_truth": "EASY",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5803218002565746-DOWNSIZE",
+      "fp16_top1_correct": true,
+      "ground_truth": "DOWNSIZE1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5851960225980641-HOSPITAL",
+      "fp16_top1_correct": true,
+      "ground_truth": "HOSPITAL1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5927941339600333-SWEATER 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "SWEATER2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5929429678299929-8 HOUR",
+      "fp16_top1_correct": true,
+      "ground_truth": "8HOUR",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5962378845845178-RIVER",
+      "fp16_top1_correct": true,
+      "ground_truth": "RIVER1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5970349085112403-COPY",
+      "fp16_top1_correct": true,
+      "ground_truth": "COPY",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5972673726198154-DUCK",
+      "fp16_top1_correct": true,
+      "ground_truth": "DUCK2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "5989539775823847-INTUITIVE",
+      "fp16_top1_correct": false,
+      "ground_truth": "INTUITIVE",
+      "int8_top1_correct": false,
+      "outcome": "FAILED",
+      "signer_id": "signer_2f68a231",
+      "status": "failed"
+    },
+    {
+      "clip_id": "6017960076513276-ELEVATOR",
+      "fp16_top1_correct": true,
+      "ground_truth": "ELEVATOR1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6050297960065525-ROCKING CHAIR",
+      "fp16_top1_correct": true,
+      "ground_truth": "ROCKINGCHAIR1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_9123b627",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6065657762917056-AUTISM",
+      "fp16_top1_correct": true,
+      "ground_truth": "AUTISM1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6142521746642153-WHAT FOR",
+      "fp16_top1_correct": true,
+      "ground_truth": "WHATFOR1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6148470977348326-METAL",
+      "fp16_top1_correct": true,
+      "ground_truth": "METAL",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6152714959604932-BASKETBALL",
+      "fp16_top1_correct": true,
+      "ground_truth": "BASKETBALL1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6198098191835406-AUTISM",
+      "fp16_top1_correct": true,
+      "ground_truth": "AUTISM1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6251993314243527-BASKETBALL",
+      "fp16_top1_correct": true,
+      "ground_truth": "BASKETBALL1",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6263592697582419-LOCK",
+      "fp16_top1_correct": true,
+      "ground_truth": "LOCK1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6271713081961889-HOW",
+      "fp16_top1_correct": true,
+      "ground_truth": "HOW1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6277946208350784-EASY",
+      "fp16_top1_correct": true,
+      "ground_truth": "EASY",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6306112428699353-AUTISM",
+      "fp16_top1_correct": true,
+      "ground_truth": "AUTISM1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6331495804836855-LOCK",
+      "fp16_top1_correct": false,
+      "ground_truth": "LOCK1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_9123b627",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6376722418151588-SINK",
+      "fp16_top1_correct": false,
+      "ground_truth": "SINK",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6414524542629407-ROCKING CHAIR",
+      "fp16_top1_correct": true,
+      "ground_truth": "ROCKINGCHAIR1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6416983573445294-SHAVE",
+      "fp16_top1_correct": false,
+      "ground_truth": "SHAVE1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6440242014287687-FINE",
+      "fp16_top1_correct": false,
+      "ground_truth": "FINE1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "647818976594698-BABY 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "BABY2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6489487311042188-ALL OF_SUDDEN",
+      "fp16_top1_correct": true,
+      "ground_truth": "ALLOFSUDDEN",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6495415212975224-UNDERWEAR",
+      "fp16_top1_correct": true,
+      "ground_truth": "UNDERWEAR1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6495857433033319-SWEATER 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "SWEATER2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6496108914533325-PARTY",
+      "fp16_top1_correct": true,
+      "ground_truth": "PARTY1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6523145816470133-WHAT FOR",
+      "fp16_top1_correct": true,
+      "ground_truth": "WHATFOR1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_2f68a231",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6617551288076764-BASEBALL CAP",
+      "fp16_top1_correct": true,
+      "ground_truth": "BASEBALLCAP",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6651154954796614-SCARF 4",
+      "fp16_top1_correct": true,
+      "ground_truth": "SCARF2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6660795760839453-CALENDAR",
+      "fp16_top1_correct": true,
+      "ground_truth": "CALENDAR1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6671187735704913-APPLE",
+      "fp16_top1_correct": false,
+      "ground_truth": "APPLE",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "671764401941833-MOVIE",
+      "fp16_top1_correct": true,
+      "ground_truth": "MOVIE1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "682353770605032-ADVERTISE",
+      "fp16_top1_correct": true,
+      "ground_truth": "ADVERTISE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6898343982713611-RIGHT 3",
+      "fp16_top1_correct": true,
+      "ground_truth": "RIGHT3",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6919484550443733-FAIL",
+      "fp16_top1_correct": false,
+      "ground_truth": "FAIL",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6940052288653344-MEAT",
+      "fp16_top1_correct": true,
+      "ground_truth": "MEAT1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6961575623504714-SHAVE",
+      "fp16_top1_correct": false,
+      "ground_truth": "SHAVE1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_9123b627",
+      "status": "ok"
+    },
+    {
+      "clip_id": "697572736827275-COMB",
+      "fp16_top1_correct": true,
+      "ground_truth": "COMB2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "6987156871330971-BEE",
+      "fp16_top1_correct": false,
+      "ground_truth": "BEE1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7014710296796682-DARK",
+      "fp16_top1_correct": true,
+      "ground_truth": "DARK1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7019796297629999-CAPTURE",
+      "fp16_top1_correct": true,
+      "ground_truth": "CAPTURE",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7019844699330071-TICKLE",
+      "fp16_top1_correct": true,
+      "ground_truth": "TICKLE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7028620841319688-FOREIGNER",
+      "fp16_top1_correct": false,
+      "ground_truth": "FOREIGNER1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7070837631682403-SPECIAL",
+      "fp16_top1_correct": true,
+      "ground_truth": "SPECIAL1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7099544803482227-SINK",
+      "fp16_top1_correct": true,
+      "ground_truth": "SINK",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7124113884275678-METAL",
+      "fp16_top1_correct": true,
+      "ground_truth": "METAL",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7157550855204442-SOCIETY",
+      "fp16_top1_correct": true,
+      "ground_truth": "SOCIETY",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7166028187687812-SHOCKED",
+      "fp16_top1_correct": true,
+      "ground_truth": "SHOCKED",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "717958009426233-NOON",
+      "fp16_top1_correct": true,
+      "ground_truth": "NOON1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7227604144782054-PENNY",
+      "fp16_top1_correct": true,
+      "ground_truth": "PENNY",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7355641552290353-MECHANIC",
+      "fp16_top1_correct": true,
+      "ground_truth": "MECHANIC1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7371501507543785-DEAF",
+      "fp16_top1_correct": true,
+      "ground_truth": "DEAF1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7381539112820095-SHARPEN 3",
+      "fp16_top1_correct": true,
+      "ground_truth": "SHARPEN2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7414219351354367-GUESS",
+      "fp16_top1_correct": true,
+      "ground_truth": "GUESS1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "742862485879747-PATIENT 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "PATIENT2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "744008724339543-EAT",
+      "fp16_top1_correct": true,
+      "ground_truth": "EAT1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_2f68a231",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7445163687198764-PULL CONVINCE",
+      "fp16_top1_correct": true,
+      "ground_truth": "PULLCONVINCE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7516973642547613-HALLOWEEN",
+      "fp16_top1_correct": true,
+      "ground_truth": "HALLOWEEN1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7542420326328318-OFFEND",
+      "fp16_top1_correct": true,
+      "ground_truth": "OFFEND",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7629092396207264-MAPLE",
+      "fp16_top1_correct": false,
+      "ground_truth": "MAPLE",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7640741510643871-TEACH",
+      "fp16_top1_correct": true,
+      "ground_truth": "TEACH1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7684223825758543-AUTISM",
+      "fp16_top1_correct": false,
+      "ground_truth": "AUTISM1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7706511460115826-JOKE",
+      "fp16_top1_correct": true,
+      "ground_truth": "JOKE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7713194149900888-CEMETERY",
+      "fp16_top1_correct": true,
+      "ground_truth": "CEMETERY",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7713607971692202-NOON",
+      "fp16_top1_correct": true,
+      "ground_truth": "NOON1",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7766224338473211-JEWELRY",
+      "fp16_top1_correct": false,
+      "ground_truth": "JEWELRY",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7779283353983693-ELEVATOR",
+      "fp16_top1_correct": false,
+      "ground_truth": "ELEVATOR1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_9123b627",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7803719476282813-BABY 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "BABY2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7844699478897115-ANYONE",
+      "fp16_top1_correct": false,
+      "ground_truth": "ANYONE",
+      "int8_top1_correct": true,
+      "outcome": "INT8_ONLY",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7868401196600863-CAPTURE",
+      "fp16_top1_correct": true,
+      "ground_truth": "CAPTURE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7873618416168222-TICKLE",
+      "fp16_top1_correct": true,
+      "ground_truth": "TICKLE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7877312690929996-DEVELOP",
+      "fp16_top1_correct": true,
+      "ground_truth": "DEVELOP1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "7927387280867586-KNIGHT",
+      "fp16_top1_correct": false,
+      "ground_truth": "KNIGHT1",
+      "int8_top1_correct": true,
+      "outcome": "INT8_ONLY",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "799770954333842-DOG",
+      "fp16_top1_correct": false,
+      "ground_truth": "DOG1",
+      "int8_top1_correct": true,
+      "outcome": "INT8_ONLY",
+      "signer_id": "signer_2f68a231",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8020642832084848-SCARF 4",
+      "fp16_top1_correct": true,
+      "ground_truth": "SCARF2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8141449797127183-HALLOWEEN",
+      "fp16_top1_correct": true,
+      "ground_truth": "HALLOWEEN1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8152932257681471-CEMETERY",
+      "fp16_top1_correct": true,
+      "ground_truth": "CEMETERY",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8166700420399404-CHEEK",
+      "fp16_top1_correct": false,
+      "ground_truth": "CHEEK",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8168319957829147-FLOAT 3",
+      "fp16_top1_correct": true,
+      "ground_truth": "FLOAT1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8213787748653953-PENNY",
+      "fp16_top1_correct": true,
+      "ground_truth": "PENNY",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8217149151887577-INTUITIVE",
+      "fp16_top1_correct": true,
+      "ground_truth": "INTUITIVE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8230215745582212-BEE",
+      "fp16_top1_correct": false,
+      "ground_truth": "BEE1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_2f68a231",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8258719498159528-CLOSE",
+      "fp16_top1_correct": true,
+      "ground_truth": "CLOSE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8261637986943131-CALENDAR",
+      "fp16_top1_correct": false,
+      "ground_truth": "CALENDAR1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_9123b627",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8262882367477067-SLIDE 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "SLIDE2",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8287306995141455-SCROLL DOWN",
+      "fp16_top1_correct": false,
+      "ground_truth": "SCROLLDOWN",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8292464008083582-BASEBALL CAP",
+      "fp16_top1_correct": true,
+      "ground_truth": "BASEBALLCAP",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8423017864044668-BASKETBALL",
+      "fp16_top1_correct": false,
+      "ground_truth": "BASKETBALL1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_2f68a231",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8430075982280578-DARK",
+      "fp16_top1_correct": true,
+      "ground_truth": "DARK1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "844429155260962-BEE",
+      "fp16_top1_correct": true,
+      "ground_truth": "BEE1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_9123b627",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8455424901600392-CALENDAR",
+      "fp16_top1_correct": true,
+      "ground_truth": "CALENDAR1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8508098867612097-RABBIT 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "RABBIT2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8511226712327007-SAIL 2",
+      "fp16_top1_correct": false,
+      "ground_truth": "SAIL2",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8512964715294218-MEA CULPA",
+      "fp16_top1_correct": true,
+      "ground_truth": "MEACULPA",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8518294676142695-ZEBRA",
+      "fp16_top1_correct": false,
+      "ground_truth": "ZEBRA",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8521417940364975-AXE",
+      "fp16_top1_correct": true,
+      "ground_truth": "AXE1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8525896955242771-DRAG",
+      "fp16_top1_correct": false,
+      "ground_truth": "DRAG1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8563899734807414-ROCKING CHAIR",
+      "fp16_top1_correct": true,
+      "ground_truth": "ROCKINGCHAIR1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8576706430724641-TAIL",
+      "fp16_top1_correct": true,
+      "ground_truth": "TAIL1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8581142177964065-AXE",
+      "fp16_top1_correct": true,
+      "ground_truth": "AXE1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8639822229613423-RIGHT 3",
+      "fp16_top1_correct": true,
+      "ground_truth": "RIGHT3",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8656492779276159-CHEESE GRATER",
+      "fp16_top1_correct": false,
+      "ground_truth": "CHEESEGRATER",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8724951397222913-UNDERWEAR",
+      "fp16_top1_correct": false,
+      "ground_truth": "UNDERWEAR1",
+      "int8_top1_correct": true,
+      "outcome": "INT8_ONLY",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8779902440064791-EAT",
+      "fp16_top1_correct": true,
+      "ground_truth": "EAT1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "878457250310533-PARTY",
+      "fp16_top1_correct": false,
+      "ground_truth": "PARTY1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_9123b627",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8798038617966002-INTUITIVE",
+      "fp16_top1_correct": true,
+      "ground_truth": "INTUITIVE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8805101491562326-DRAG",
+      "fp16_top1_correct": true,
+      "ground_truth": "DRAG1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8819212316360505-BREAKFAST",
+      "fp16_top1_correct": true,
+      "ground_truth": "BREAKFAST1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8848488649886876-PENNY",
+      "fp16_top1_correct": true,
+      "ground_truth": "PENNY",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "885762769556494-RIVER",
+      "fp16_top1_correct": true,
+      "ground_truth": "RIVER1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8877316023603796-HOSPITAL",
+      "fp16_top1_correct": true,
+      "ground_truth": "HOSPITAL1",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8894617756348819-APPLE",
+      "fp16_top1_correct": true,
+      "ground_truth": "APPLE",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_2f68a231",
+      "status": "ok"
+    },
+    {
+      "clip_id": "8922394464987926-8 HOUR",
+      "fp16_top1_correct": false,
+      "ground_truth": "8HOUR",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "90673994826832-GRAMMAR",
+      "fp16_top1_correct": true,
+      "ground_truth": "GRAMMAR",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9071214192313297-JOKE",
+      "fp16_top1_correct": true,
+      "ground_truth": "JOKE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9075316768566033-DEMAND",
+      "fp16_top1_correct": true,
+      "ground_truth": "DEMAND1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9083142147831678-IMPOSSIBLE",
+      "fp16_top1_correct": false,
+      "ground_truth": "IMPOSSIBLE",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9129562550699237-EMPTY 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "EMPTY2",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9184610189564815-TICKLE",
+      "fp16_top1_correct": true,
+      "ground_truth": "TICKLE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9187403001004872-MICROSCOPE",
+      "fp16_top1_correct": false,
+      "ground_truth": "MICROSCOPE1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9193116349380914-MEA CULPA",
+      "fp16_top1_correct": true,
+      "ground_truth": "MEACULPA",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9250082720256219-ADVERTISE",
+      "fp16_top1_correct": true,
+      "ground_truth": "ADVERTISE",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9289275786008793-DARK",
+      "fp16_top1_correct": true,
+      "ground_truth": "DARK1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9336391016353045-FLIP",
+      "fp16_top1_correct": false,
+      "ground_truth": "FLIP",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9337717408768216-DOWNSIZE",
+      "fp16_top1_correct": true,
+      "ground_truth": "DOWNSIZE1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9365499601534879-LOCK",
+      "fp16_top1_correct": true,
+      "ground_truth": "LOCK1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9377718462347715-SINK",
+      "fp16_top1_correct": true,
+      "ground_truth": "SINK",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9418564246987629-IMPOSSIBLE",
+      "fp16_top1_correct": true,
+      "ground_truth": "IMPOSSIBLE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9428723784523505-SPECIAL",
+      "fp16_top1_correct": true,
+      "ground_truth": "SPECIAL1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9446123212310205-WALK-TIGHTROPE-CL",
+      "fp16_top1_correct": true,
+      "ground_truth": "WALK-TIGHTROPE-CL",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9457442522528487-BREAKFAST",
+      "fp16_top1_correct": true,
+      "ground_truth": "BREAKFAST1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "946511360551606-ELEVATOR",
+      "fp16_top1_correct": true,
+      "ground_truth": "ELEVATOR1",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_9123b627",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9465582990654366-BELT",
+      "fp16_top1_correct": true,
+      "ground_truth": "BELT1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9474917526716478-BASKETBALL",
+      "fp16_top1_correct": true,
+      "ground_truth": "BASKETBALL1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9502461846260466-RAZOR 2",
+      "fp16_top1_correct": true,
+      "ground_truth": "RAZOR2",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9536972605646363-FLOAT 3",
+      "fp16_top1_correct": false,
+      "ground_truth": "FLOAT1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "960100884395108-LONG LINE",
+      "fp16_top1_correct": true,
+      "ground_truth": "LONGLINE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "962016249461737-ZEBRA",
+      "fp16_top1_correct": true,
+      "ground_truth": "ZEBRA",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9643359504766531-BEE",
+      "fp16_top1_correct": true,
+      "ground_truth": "BEE1",
+      "int8_top1_correct": false,
+      "outcome": "FP16_ONLY",
+      "signer_id": "signer_2f68a231",
+      "status": "ok"
+    },
+    {
+      "clip_id": "971003020665846-HOW",
+      "fp16_top1_correct": true,
+      "ground_truth": "HOW1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9761845244833474-APPLE",
+      "fp16_top1_correct": true,
+      "ground_truth": "APPLE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9784053740622716-INTUITIVE",
+      "fp16_top1_correct": true,
+      "ground_truth": "INTUITIVE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "97908567239402-FOREIGNER",
+      "fp16_top1_correct": true,
+      "ground_truth": "FOREIGNER1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9807434252985743-FOREIGNER",
+      "fp16_top1_correct": true,
+      "ground_truth": "FOREIGNER1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_9123b627",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9818690699264243-VOICE",
+      "fp16_top1_correct": true,
+      "ground_truth": "VOICE",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9823042207619934-COPY",
+      "fp16_top1_correct": true,
+      "ground_truth": "COPY",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9826258167906428-ROCKING CHAIR",
+      "fp16_top1_correct": true,
+      "ground_truth": "ROCKINGCHAIR1",
+      "int8_top1_correct": true,
+      "outcome": "BOTH_CORRECT",
+      "signer_id": "signer_1393dac4",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9858541230690814-PATIENT 2",
+      "fp16_top1_correct": false,
+      "ground_truth": "PATIENT2",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_8c1eb12a",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9972608029677543-GUESS",
+      "fp16_top1_correct": false,
+      "ground_truth": "GUESS1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_feb2f4a2",
+      "status": "ok"
+    },
+    {
+      "clip_id": "9990244640190733-BACKPACK",
+      "fp16_top1_correct": false,
+      "ground_truth": "BACKPACK1",
+      "int8_top1_correct": false,
+      "outcome": "BOTH_WRONG",
+      "signer_id": "signer_2f68a231",
+      "status": "ok"
+    }
+  ],
+  "confusions": {
+    "fp16": [
+      {
+        "count": 2,
+        "prediction": "BREAKFAST1",
+        "truth": "BEE1"
+      },
+      {
+        "count": 2,
+        "prediction": "JEWELRY",
+        "truth": "ZEBRA"
+      },
+      {
+        "count": 1,
+        "prediction": "MAPLE",
+        "truth": "8HOUR"
+      },
+      {
+        "count": 1,
+        "prediction": "OFFEND",
+        "truth": "ANYONE"
+      },
+      {
+        "count": 1,
+        "prediction": "TAIL1",
+        "truth": "ANYONE"
+      },
+      {
+        "count": 1,
+        "prediction": "METAL",
+        "truth": "APPLE"
+      },
+      {
+        "count": 1,
+        "prediction": "HOSPITAL1",
+        "truth": "AUTISM1"
+      },
+      {
+        "count": 1,
+        "prediction": "CHEER",
+        "truth": "BACKPACK1"
+      },
+      {
+        "count": 1,
+        "prediction": "TAIL1",
+        "truth": "BASEBALLCAP"
+      },
+      {
+        "count": 1,
+        "prediction": "LONGLINE",
+        "truth": "BASKETBALL1"
+      },
+      {
+        "count": 1,
+        "prediction": "IMPOSSIBLE",
+        "truth": "BEE1"
+      },
+      {
+        "count": 1,
+        "prediction": "FINE1",
+        "truth": "CALENDAR1"
+      },
+      {
+        "count": 1,
+        "prediction": "8HOUR",
+        "truth": "CEMETERY"
+      },
+      {
+        "count": 1,
+        "prediction": "MYSELF",
+        "truth": "CHEEK"
+      },
+      {
+        "count": 1,
+        "prediction": "OFFEND",
+        "truth": "CHEEK"
+      },
+      {
+        "count": 1,
+        "prediction": "LOCK1",
+        "truth": "CHEER"
+      },
+      {
+        "count": 1,
+        "prediction": "APPLE",
+        "truth": "CHEESEGRATER"
+      },
+      {
+        "count": 1,
+        "prediction": "DRAG1",
+        "truth": "CHEESEGRATER"
+      },
+      {
+        "count": 1,
+        "prediction": "LOCK1",
+        "truth": "CHEESEGRATER"
+      },
+      {
+        "count": 1,
+        "prediction": "ALLOFSUDDEN",
+        "truth": "DOG1"
+      },
+      {
+        "count": 1,
+        "prediction": "INTUITIVE",
+        "truth": "DOG1"
+      },
+      {
+        "count": 1,
+        "prediction": "KNIGHT1",
+        "truth": "DRAG1"
+      },
+      {
+        "count": 1,
+        "prediction": "BACKPACK1",
+        "truth": "ELEVATOR1"
+      },
+      {
+        "count": 1,
+        "prediction": "CHEW1",
+        "truth": "ELEVATOR1"
+      },
+      {
+        "count": 1,
+        "prediction": "IMPOSSIBLE",
+        "truth": "EMPTY2"
+      },
+      {
+        "count": 1,
+        "prediction": "FLIP",
+        "truth": "FAIL"
+      },
+      {
+        "count": 1,
+        "prediction": "FOREIGNER1",
+        "truth": "FAIL"
+      },
+      {
+        "count": 1,
+        "prediction": "DRAG1",
+        "truth": "FINE1"
+      },
+      {
+        "count": 1,
+        "prediction": "DOG1",
+        "truth": "FLIP"
+      },
+      {
+        "count": 1,
+        "prediction": "FINE1",
+        "truth": "FLIP"
+      },
+      {
+        "count": 1,
+        "prediction": "SHOCKED",
+        "truth": "FLOAT1"
+      },
+      {
+        "count": 1,
+        "prediction": "CHEESEGRATER",
+        "truth": "FOREIGNER1"
+      },
+      {
+        "count": 1,
+        "prediction": "SCARF2",
+        "truth": "FOREIGNER1"
+      },
+      {
+        "count": 1,
+        "prediction": "RAZOR2",
+        "truth": "GUESS1"
+      },
+      {
+        "count": 1,
+        "prediction": "MEACULPA",
+        "truth": "HOSPITAL1"
+      },
+      {
+        "count": 1,
+        "prediction": "PULLCONVINCE",
+        "truth": "HOW1"
+      },
+      {
+        "count": 1,
+        "prediction": "DEMAND1",
+        "truth": "IMPOSSIBLE"
+      },
+      {
+        "count": 1,
+        "prediction": "<FAILED>",
+        "truth": "INTUITIVE"
+      },
+      {
+        "count": 1,
+        "prediction": "COPY",
+        "truth": "JEWELRY"
+      },
+      {
+        "count": 1,
+        "prediction": "METAL",
+        "truth": "KNIGHT1"
+      },
+      {
+        "count": 1,
+        "prediction": "MYSELF",
+        "truth": "KNIGHT1"
+      },
+      {
+        "count": 1,
+        "prediction": "CLOSE",
+        "truth": "LOCK1"
+      },
+      {
+        "count": 1,
+        "prediction": "DEMAND1",
+        "truth": "LOCK1"
+      },
+      {
+        "count": 1,
+        "prediction": "RAZOR2",
+        "truth": "LOCK1"
+      },
+      {
+        "count": 1,
+        "prediction": "AXE1",
+        "truth": "MAPLE"
+      },
+      {
+        "count": 1,
+        "prediction": "AXE1",
+        "truth": "MEACULPA"
+      },
+      {
+        "count": 1,
+        "prediction": "WHATFOR1",
+        "truth": "MEAT1"
+      },
+      {
+        "count": 1,
+        "prediction": "RABBIT2",
+        "truth": "MICROSCOPE1"
+      },
+      {
+        "count": 1,
+        "prediction": "AXE1",
+        "truth": "MOVIE1"
+      },
+      {
+        "count": 1,
+        "prediction": "KNIGHT1",
+        "truth": "MYSELF"
+      },
+      {
+        "count": 1,
+        "prediction": "PATIENT2",
+        "truth": "MYSELF"
+      },
+      {
+        "count": 1,
+        "prediction": "BACKPACK1",
+        "truth": "PARTY1"
+      },
+      {
+        "count": 1,
+        "prediction": "INTUITIVE",
+        "truth": "PATIENT2"
+      },
+      {
+        "count": 1,
+        "prediction": "MYSELF",
+        "truth": "PATIENT2"
+      },
+      {
+        "count": 1,
+        "prediction": "ANYONE",
+        "truth": "PULLCONVINCE"
+      },
+      {
+        "count": 1,
+        "prediction": "JEWELRY",
+        "truth": "PULLCONVINCE"
+      },
+      {
+        "count": 1,
+        "prediction": "SINK",
+        "truth": "RIVER1"
+      },
+      {
+        "count": 1,
+        "prediction": "DEMAND1",
+        "truth": "SAIL2"
+      },
+      {
+        "count": 1,
+        "prediction": "ANYONE",
+        "truth": "SCROLLDOWN"
+      },
+      {
+        "count": 1,
+        "prediction": "CALENDAR1",
+        "truth": "SCROLLDOWN"
+      },
+      {
+        "count": 1,
+        "prediction": "APPLE",
+        "truth": "SHAVE1"
+      },
+      {
+        "count": 1,
+        "prediction": "UNDERWEAR1",
+        "truth": "SHAVE1"
+      },
+      {
+        "count": 1,
+        "prediction": "CHEESEGRATER",
+        "truth": "SINK"
+      },
+      {
+        "count": 1,
+        "prediction": "ROCKINGCHAIR1",
+        "truth": "SINK"
+      },
+      {
+        "count": 1,
+        "prediction": "UNDERWEAR1",
+        "truth": "SLIDE2"
+      },
+      {
+        "count": 1,
+        "prediction": "FLIP",
+        "truth": "SOCIETY"
+      },
+      {
+        "count": 1,
+        "prediction": "JEWELRY",
+        "truth": "SPECIAL1"
+      },
+      {
+        "count": 1,
+        "prediction": "SAIL2",
+        "truth": "SPECIAL1"
+      },
+      {
+        "count": 1,
+        "prediction": "LOCK1",
+        "truth": "SQUEEZE"
+      },
+      {
+        "count": 1,
+        "prediction": "RAZOR2",
+        "truth": "UNDERWEAR1"
+      },
+      {
+        "count": 1,
+        "prediction": "DRAG1",
+        "truth": "WALK-TIGHTROPE-CL"
+      },
+      {
+        "count": 1,
+        "prediction": "PENNY",
+        "truth": "WHATFOR1"
+      }
+    ],
+    "int8": [
+      {
+        "count": 2,
+        "prediction": "RAZOR2",
+        "truth": "APPLE"
+      },
+      {
+        "count": 2,
+        "prediction": "DRAG1",
+        "truth": "CHEESEGRATER"
+      },
+      {
+        "count": 2,
+        "prediction": "CHEW1",
+        "truth": "ELEVATOR1"
+      },
+      {
+        "count": 2,
+        "prediction": "JEWELRY",
+        "truth": "ZEBRA"
+      },
+      {
+        "count": 1,
+        "prediction": "MAPLE",
+        "truth": "8HOUR"
+      },
+      {
+        "count": 1,
+        "prediction": "FINE1",
+        "truth": "ADVERTISE"
+      },
+      {
+        "count": 1,
+        "prediction": "SQUEEZE",
+        "truth": "ADVERTISE"
+      },
+      {
+        "count": 1,
+        "prediction": "HOSPITAL1",
+        "truth": "AUTISM1"
+      },
+      {
+        "count": 1,
+        "prediction": "CHEER",
+        "truth": "BACKPACK1"
+      },
+      {
+        "count": 1,
+        "prediction": "CHEW1",
+        "truth": "BASEBALLCAP"
+      },
+      {
+        "count": 1,
+        "prediction": "MYSELF",
+        "truth": "BASEBALLCAP"
+      },
+      {
+        "count": 1,
+        "prediction": "TAIL1",
+        "truth": "BASEBALLCAP"
+      },
+      {
+        "count": 1,
+        "prediction": "HALLOWEEN1",
+        "truth": "BASKETBALL1"
+      },
+      {
+        "count": 1,
+        "prediction": "LONGLINE",
+        "truth": "BASKETBALL1"
+      },
+      {
+        "count": 1,
+        "prediction": "BREAKFAST1",
+        "truth": "BEE1"
+      },
+      {
+        "count": 1,
+        "prediction": "IMPOSSIBLE",
+        "truth": "BEE1"
+      },
+      {
+        "count": 1,
+        "prediction": "KNIGHT1",
+        "truth": "BEE1"
+      },
+      {
+        "count": 1,
+        "prediction": "TICKLE",
+        "truth": "BEE1"
+      },
+      {
+        "count": 1,
+        "prediction": "DEVELOP1",
+        "truth": "BITE1"
+      },
+      {
+        "count": 1,
+        "prediction": "JEWELRY",
+        "truth": "CALENDAR1"
+      },
+      {
+        "count": 1,
+        "prediction": "MICROSCOPE1",
+        "truth": "CAPTURE"
+      },
+      {
+        "count": 1,
+        "prediction": "OFFEND",
+        "truth": "CAPTURE"
+      },
+      {
+        "count": 1,
+        "prediction": "IMPOSSIBLE",
+        "truth": "CHEEK"
+      },
+      {
+        "count": 1,
+        "prediction": "KNIGHT1",
+        "truth": "CHEEK"
+      },
+      {
+        "count": 1,
+        "prediction": "RABBIT2",
+        "truth": "CHEEK"
+      },
+      {
+        "count": 1,
+        "prediction": "TAIL1",
+        "truth": "CHEEK"
+      },
+      {
+        "count": 1,
+        "prediction": "SHAVE1",
+        "truth": "CHEER"
+      },
+      {
+        "count": 1,
+        "prediction": "SHAVE1",
+        "truth": "CHEESEGRATER"
+      },
+      {
+        "count": 1,
+        "prediction": "DECIDE1",
+        "truth": "COPY"
+      },
+      {
+        "count": 1,
+        "prediction": "SAIL2",
+        "truth": "DEMAND1"
+      },
+      {
+        "count": 1,
+        "prediction": "INTUITIVE",
+        "truth": "DOG1"
+      },
+      {
+        "count": 1,
+        "prediction": "TICKLE",
+        "truth": "DOWNSIZE1"
+      },
+      {
+        "count": 1,
+        "prediction": "TAIL1",
+        "truth": "DRAG1"
+      },
+      {
+        "count": 1,
+        "prediction": "8HOUR",
+        "truth": "ELEVATOR1"
+      },
+      {
+        "count": 1,
+        "prediction": "BACKPACK1",
+        "truth": "ELEVATOR1"
+      },
+      {
+        "count": 1,
+        "prediction": "COMB2",
+        "truth": "EMPTY2"
+      },
+      {
+        "count": 1,
+        "prediction": "DECIDE1",
+        "truth": "EMPTY2"
+      },
+      {
+        "count": 1,
+        "prediction": "IMPOSSIBLE",
+        "truth": "EMPTY2"
+      },
+      {
+        "count": 1,
+        "prediction": "FOREIGNER1",
+        "truth": "FAIL"
+      },
+      {
+        "count": 1,
+        "prediction": "TAIL1",
+        "truth": "FAIL"
+      },
+      {
+        "count": 1,
+        "prediction": "DRAG1",
+        "truth": "FINE1"
+      },
+      {
+        "count": 1,
+        "prediction": "MEAT1",
+        "truth": "FINE1"
+      },
+      {
+        "count": 1,
+        "prediction": "SCARF2",
+        "truth": "FINE1"
+      },
+      {
+        "count": 1,
+        "prediction": "FINE1",
+        "truth": "FLIP"
+      },
+      {
+        "count": 1,
+        "prediction": "SCARF2",
+        "truth": "FLIP"
+      },
+      {
+        "count": 1,
+        "prediction": "SHOCKED",
+        "truth": "FLOAT1"
+      },
+      {
+        "count": 1,
+        "prediction": "CHEESEGRATER",
+        "truth": "FOREIGNER1"
+      },
+      {
+        "count": 1,
+        "prediction": "CEMETERY",
+        "truth": "GOODYGOODYSHOEOPPOSITE"
+      },
+      {
+        "count": 1,
+        "prediction": "RAZOR2",
+        "truth": "GUESS1"
+      },
+      {
+        "count": 1,
+        "prediction": "FOREIGNER1",
+        "truth": "HOSPITAL1"
+      },
+      {
+        "count": 1,
+        "prediction": "RAZOR2",
+        "truth": "HOSPITAL1"
+      },
+      {
+        "count": 1,
+        "prediction": "SHARPEN2",
+        "truth": "HURDLE/TRIP1"
+      },
+      {
+        "count": 1,
+        "prediction": "DEMAND1",
+        "truth": "IMPOSSIBLE"
+      },
+      {
+        "count": 1,
+        "prediction": "<FAILED>",
+        "truth": "INTUITIVE"
+      },
+      {
+        "count": 1,
+        "prediction": "BELT1",
+        "truth": "JEWELRY"
+      },
+      {
+        "count": 1,
+        "prediction": "COPY",
+        "truth": "JEWELRY"
+      },
+      {
+        "count": 1,
+        "prediction": "HOW1",
+        "truth": "KNIGHT1"
+      },
+      {
+        "count": 1,
+        "prediction": "DEMAND1",
+        "truth": "LOCK1"
+      },
+      {
+        "count": 1,
+        "prediction": "EMPTY2",
+        "truth": "LOCK1"
+      },
+      {
+        "count": 1,
+        "prediction": "FOREIGNER1",
+        "truth": "LOCK1"
+      },
+      {
+        "count": 1,
+        "prediction": "IMPOSSIBLE",
+        "truth": "MAPLE"
+      },
+      {
+        "count": 1,
+        "prediction": "AXE1",
+        "truth": "MEACULPA"
+      },
+      {
+        "count": 1,
+        "prediction": "WHATFOR1",
+        "truth": "MEAT1"
+      },
+      {
+        "count": 1,
+        "prediction": "MEACULPA",
+        "truth": "MICROSCOPE1"
+      },
+      {
+        "count": 1,
+        "prediction": "RABBIT2",
+        "truth": "MICROSCOPE1"
+      },
+      {
+        "count": 1,
+        "prediction": "AXE1",
+        "truth": "MOVIE1"
+      },
+      {
+        "count": 1,
+        "prediction": "OFFEND",
+        "truth": "MYSELF"
+      },
+      {
+        "count": 1,
+        "prediction": "PATIENT2",
+        "truth": "MYSELF"
+      },
+      {
+        "count": 1,
+        "prediction": "AXE1",
+        "truth": "NOON1"
+      },
+      {
+        "count": 1,
+        "prediction": "BACKPACK1",
+        "truth": "PARTY1"
+      },
+      {
+        "count": 1,
+        "prediction": "INTUITIVE",
+        "truth": "PATIENT2"
+      },
+      {
+        "count": 1,
+        "prediction": "JEWELRY",
+        "truth": "PULLCONVINCE"
+      },
+      {
+        "count": 1,
+        "prediction": "OFFEND",
+        "truth": "PULLCONVINCE"
+      },
+      {
+        "count": 1,
+        "prediction": "SINK",
+        "truth": "RIVER1"
+      },
+      {
+        "count": 1,
+        "prediction": "DEMAND1",
+        "truth": "SAIL2"
+      },
+      {
+        "count": 1,
+        "prediction": "CALENDAR1",
+        "truth": "SCROLLDOWN"
+      },
+      {
+        "count": 1,
+        "prediction": "PATIENT2",
+        "truth": "SHAVE1"
+      },
+      {
+        "count": 1,
+        "prediction": "RAZOR2",
+        "truth": "SHAVE1"
+      },
+      {
+        "count": 1,
+        "prediction": "UNDERWEAR1",
+        "truth": "SHAVE1"
+      },
+      {
+        "count": 1,
+        "prediction": "CHEESEGRATER",
+        "truth": "SINK"
+      },
+      {
+        "count": 1,
+        "prediction": "APPLE",
+        "truth": "SLIDE2"
+      },
+      {
+        "count": 1,
+        "prediction": "UNDERWEAR1",
+        "truth": "SLIDE2"
+      },
+      {
+        "count": 1,
+        "prediction": "FLIP",
+        "truth": "SOCIETY"
+      },
+      {
+        "count": 1,
+        "prediction": "MEAT1",
+        "truth": "SPECIAL1"
+      },
+      {
+        "count": 1,
+        "prediction": "PARTY1",
+        "truth": "SPECIAL1"
+      },
+      {
+        "count": 1,
+        "prediction": "LOCK1",
+        "truth": "SQUEEZE"
+      },
+      {
+        "count": 1,
+        "prediction": "PARTY1",
+        "truth": "TEACH1"
+      },
+      {
+        "count": 1,
+        "prediction": "PENNY",
+        "truth": "WHATFOR1"
+      }
+    ]
+  },
+  "cross_checks": {
+    "model_hashes_match_expected": true,
+    "v5_summary30_matches": true,
+    "v5_summary346_matches": true,
+    "v6_statistics_matches": true
+  },
+  "failures": [
+    {
+      "clip_id": "5989539775823847-INTUITIVE",
+      "counted_incorrect_for_both": true,
+      "error": "No hand detected in any frame",
+      "error_type": "ValueError",
+      "ground_truth": "INTUITIVE",
+      "signer_id": "signer_2f68a231"
+    }
+  ],
+  "limitations": [
+    "Primary unit is the clip; clips are clustered within only 5 validation signers, so intervals do not support signer-population generalization.",
+    "One no-hand preprocessing failure counts as incorrect for both models in the primary analysis.",
+    "Test split untouched; no held-out test accuracy is reported or implied.",
+    "Near-duplicate content across splits cannot be ruled out from manifest/prediction data alone (see split integrity audit).",
+    "Per-class N is 2-6 clips; per-class rates are descriptive only.",
+    "Clip-level Wilson intervals ignore within-signer clustering; McNemar and signer bootstrap are the paired/cluster-aware evidence."
+  ],
+  "n_classes": 100,
+  "n_failed": 1,
+  "n_signers": 5,
+  "n_successful": 345,
+  "n_total": 346,
+  "paired": {
+    "argmax_agreement_rate": 0.8144927536231884,
+    "argmax_agreements": 281,
+    "both_correct": 242,
+    "both_wrong": 61,
+    "conditional_paired_difference_95": {
+      "lower": 0.12865007845508902,
+      "method": "conditional Wilson interval for b/(b+c), linearly transformed to paired accuracy difference",
+      "n_discordant": 42,
+      "upper": 0.6566628251084867
+    },
+    "discordant": 42,
+    "exact_mcnemar_method": "Binomial(b+c,0.5), doubled one-sided tail, capped at 1",
+    "exact_mcnemar_two_sided_p": 0.007915897334896727,
+    "fp16_only_correct": 30,
+    "int8_only_correct": 12,
+    "mean_fp16_top1_confidence": 0.467236518913853,
+    "mean_int8_top1_confidence": 0.26306914594294367,
+    "mean_logit_l2_diff": 5.354656462047411,
+    "mean_logit_maxabs_diff": 1.7423469248025314,
+    "mean_prob_l1_diff": 0.584138337360776,
+    "successful_n": 345
+  },
+  "per_class": {
+    "8HOUR": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "n": 3
+    },
+    "ADVERTISE": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 66.66666666666667,
+      "int8": {
+        "accuracy": 0.3333333333333333,
+        "correct": 1,
+        "errors": 2,
+        "total": 3,
+        "wilson_95": [
+          0.0614903152761605,
+          0.7923450448735121
+        ]
+      },
+      "n": 3
+    },
+    "ALLOFSUDDEN": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "ANYONE": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.3333333333333333,
+        "correct": 1,
+        "errors": 2,
+        "total": 3,
+        "wilson_95": [
+          0.0614903152761605,
+          0.7923450448735121
+        ]
+      },
+      "fp16_minus_int8_pp": -66.66666666666667,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "APPLE": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.75,
+        "correct": 3,
+        "errors": 1,
+        "total": 4,
+        "wilson_95": [
+          0.3006360524426366,
+          0.9544139373553637
+        ]
+      },
+      "fp16_minus_int8_pp": 25.0,
+      "int8": {
+        "accuracy": 0.5,
+        "correct": 2,
+        "errors": 2,
+        "total": 4,
+        "wilson_95": [
+          0.15003570882017148,
+          0.8499642911798285
+        ]
+      },
+      "n": 4
+    },
+    "AUTISM1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.8,
+        "correct": 4,
+        "errors": 1,
+        "total": 5,
+        "wilson_95": [
+          0.3755282641185388,
+          0.9637768390302125
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.8,
+        "correct": 4,
+        "errors": 1,
+        "total": 5,
+        "wilson_95": [
+          0.3755282641185388,
+          0.9637768390302125
+        ]
+      },
+      "n": 5
+    },
+    "AXE1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 4,
+        "errors": 0,
+        "total": 4,
+        "wilson_95": [
+          0.5100999795960008,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 4,
+        "errors": 0,
+        "total": 4,
+        "wilson_95": [
+          0.5100999795960008,
+          1.0
+        ]
+      },
+      "n": 4
+    },
+    "BABY2": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "BACKPACK1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "n": 3
+    },
+    "BASEBALLCAP": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.8,
+        "correct": 4,
+        "errors": 1,
+        "total": 5,
+        "wilson_95": [
+          0.3755282641185388,
+          0.9637768390302125
+        ]
+      },
+      "fp16_minus_int8_pp": 40.0,
+      "int8": {
+        "accuracy": 0.4,
+        "correct": 2,
+        "errors": 3,
+        "total": 5,
+        "wilson_95": [
+          0.1176182311592533,
+          0.769280067791163
+        ]
+      },
+      "n": 5
+    },
+    "BASKETBALL1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.8,
+        "correct": 4,
+        "errors": 1,
+        "total": 5,
+        "wilson_95": [
+          0.3755282641185388,
+          0.9637768390302125
+        ]
+      },
+      "fp16_minus_int8_pp": 20.000000000000007,
+      "int8": {
+        "accuracy": 0.6,
+        "correct": 3,
+        "errors": 2,
+        "total": 5,
+        "wilson_95": [
+          0.23071993220883708,
+          0.8823817688407467
+        ]
+      },
+      "n": 5
+    },
+    "BEE1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.5,
+        "correct": 3,
+        "errors": 3,
+        "total": 6,
+        "wilson_95": [
+          0.18761280689940868,
+          0.8123871931005913
+        ]
+      },
+      "fp16_minus_int8_pp": 16.666666666666668,
+      "int8": {
+        "accuracy": 0.3333333333333333,
+        "correct": 2,
+        "errors": 4,
+        "total": 6,
+        "wilson_95": [
+          0.09676933255921683,
+          0.7000116786584712
+        ]
+      },
+      "n": 6
+    },
+    "BELT1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "BITE1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 4,
+        "errors": 0,
+        "total": 4,
+        "wilson_95": [
+          0.5100999795960008,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 25.0,
+      "int8": {
+        "accuracy": 0.75,
+        "correct": 3,
+        "errors": 1,
+        "total": 4,
+        "wilson_95": [
+          0.3006360524426366,
+          0.9544139373553637
+        ]
+      },
+      "n": 4
+    },
+    "BREAKFAST1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "CALENDAR1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.75,
+        "correct": 3,
+        "errors": 1,
+        "total": 4,
+        "wilson_95": [
+          0.3006360524426366,
+          0.9544139373553637
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.75,
+        "correct": 3,
+        "errors": 1,
+        "total": 4,
+        "wilson_95": [
+          0.3006360524426366,
+          0.9544139373553637
+        ]
+      },
+      "n": 4
+    },
+    "CAPTURE": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 66.66666666666667,
+      "int8": {
+        "accuracy": 0.3333333333333333,
+        "correct": 1,
+        "errors": 2,
+        "total": 3,
+        "wilson_95": [
+          0.0614903152761605,
+          0.7923450448735121
+        ]
+      },
+      "n": 3
+    },
+    "CEMETERY": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "fp16_minus_int8_pp": -33.333333333333336,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "CHEEK": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.5,
+        "correct": 2,
+        "errors": 2,
+        "total": 4,
+        "wilson_95": [
+          0.15003570882017148,
+          0.8499642911798285
+        ]
+      },
+      "fp16_minus_int8_pp": 50.0,
+      "int8": {
+        "accuracy": 0.0,
+        "correct": 0,
+        "errors": 4,
+        "total": 4,
+        "wilson_95": [
+          0.0,
+          0.48990002040399916
+        ]
+      },
+      "n": 4
+    },
+    "CHEER": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "n": 3
+    },
+    "CHEESEGRATER": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.4,
+        "correct": 2,
+        "errors": 3,
+        "total": 5,
+        "wilson_95": [
+          0.1176182311592533,
+          0.769280067791163
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.4,
+        "correct": 2,
+        "errors": 3,
+        "total": 5,
+        "wilson_95": [
+          0.1176182311592533,
+          0.769280067791163
+        ]
+      },
+      "n": 5
+    },
+    "CHEW1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "CLOSE": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 4,
+        "errors": 0,
+        "total": 4,
+        "wilson_95": [
+          0.5100999795960008,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 4,
+        "errors": 0,
+        "total": 4,
+        "wilson_95": [
+          0.5100999795960008,
+          1.0
+        ]
+      },
+      "n": 4
+    },
+    "COMB2": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "COPY": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 33.333333333333336,
+      "int8": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "n": 3
+    },
+    "DARK1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "DEAF1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 4,
+        "errors": 0,
+        "total": 4,
+        "wilson_95": [
+          0.5100999795960008,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 4,
+        "errors": 0,
+        "total": 4,
+        "wilson_95": [
+          0.5100999795960008,
+          1.0
+        ]
+      },
+      "n": 4
+    },
+    "DECIDE1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "DEMAND1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 4,
+        "errors": 0,
+        "total": 4,
+        "wilson_95": [
+          0.5100999795960008,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 25.0,
+      "int8": {
+        "accuracy": 0.75,
+        "correct": 3,
+        "errors": 1,
+        "total": 4,
+        "wilson_95": [
+          0.3006360524426366,
+          0.9544139373553637
+        ]
+      },
+      "n": 4
+    },
+    "DEVELOP1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "DOG1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.5,
+        "correct": 2,
+        "errors": 2,
+        "total": 4,
+        "wilson_95": [
+          0.15003570882017148,
+          0.8499642911798285
+        ]
+      },
+      "fp16_minus_int8_pp": -25.0,
+      "int8": {
+        "accuracy": 0.75,
+        "correct": 3,
+        "errors": 1,
+        "total": 4,
+        "wilson_95": [
+          0.3006360524426366,
+          0.9544139373553637
+        ]
+      },
+      "n": 4
+    },
+    "DOWNSIZE1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 4,
+        "errors": 0,
+        "total": 4,
+        "wilson_95": [
+          0.5100999795960008,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 25.0,
+      "int8": {
+        "accuracy": 0.75,
+        "correct": 3,
+        "errors": 1,
+        "total": 4,
+        "wilson_95": [
+          0.3006360524426366,
+          0.9544139373553637
+        ]
+      },
+      "n": 4
+    },
+    "DRAG1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "n": 3
+    },
+    "DUCK2": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "EASY": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "EAT1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 4,
+        "errors": 0,
+        "total": 4,
+        "wilson_95": [
+          0.5100999795960008,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 4,
+        "errors": 0,
+        "total": 4,
+        "wilson_95": [
+          0.5100999795960008,
+          1.0
+        ]
+      },
+      "n": 4
+    },
+    "ELEVATOR1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.6,
+        "correct": 3,
+        "errors": 2,
+        "total": 5,
+        "wilson_95": [
+          0.23071993220883708,
+          0.8823817688407467
+        ]
+      },
+      "fp16_minus_int8_pp": 40.0,
+      "int8": {
+        "accuracy": 0.2,
+        "correct": 1,
+        "errors": 4,
+        "total": 5,
+        "wilson_95": [
+          0.03622316096978745,
+          0.6244717358814613
+        ]
+      },
+      "n": 5
+    },
+    "EMPTY2": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "fp16_minus_int8_pp": 66.66666666666666,
+      "int8": {
+        "accuracy": 0.0,
+        "correct": 0,
+        "errors": 3,
+        "total": 3,
+        "wilson_95": [
+          0.0,
+          0.5615060804490177
+        ]
+      },
+      "n": 3
+    },
+    "FAIL": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.3333333333333333,
+        "correct": 1,
+        "errors": 2,
+        "total": 3,
+        "wilson_95": [
+          0.0614903152761605,
+          0.7923450448735121
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.3333333333333333,
+        "correct": 1,
+        "errors": 2,
+        "total": 3,
+        "wilson_95": [
+          0.0614903152761605,
+          0.7923450448735121
+        ]
+      },
+      "n": 3
+    },
+    "FINE1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.75,
+        "correct": 3,
+        "errors": 1,
+        "total": 4,
+        "wilson_95": [
+          0.3006360524426366,
+          0.9544139373553637
+        ]
+      },
+      "fp16_minus_int8_pp": 50.0,
+      "int8": {
+        "accuracy": 0.25,
+        "correct": 1,
+        "errors": 3,
+        "total": 4,
+        "wilson_95": [
+          0.045586062644636216,
+          0.6993639475573634
+        ]
+      },
+      "n": 4
+    },
+    "FLIP": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.3333333333333333,
+        "correct": 1,
+        "errors": 2,
+        "total": 3,
+        "wilson_95": [
+          0.0614903152761605,
+          0.7923450448735121
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.3333333333333333,
+        "correct": 1,
+        "errors": 2,
+        "total": 3,
+        "wilson_95": [
+          0.0614903152761605,
+          0.7923450448735121
+        ]
+      },
+      "n": 3
+    },
+    "FLOAT1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "n": 3
+    },
+    "FOREIGNER1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.5,
+        "correct": 2,
+        "errors": 2,
+        "total": 4,
+        "wilson_95": [
+          0.15003570882017148,
+          0.8499642911798285
+        ]
+      },
+      "fp16_minus_int8_pp": -25.0,
+      "int8": {
+        "accuracy": 0.75,
+        "correct": 3,
+        "errors": 1,
+        "total": 4,
+        "wilson_95": [
+          0.3006360524426366,
+          0.9544139373553637
+        ]
+      },
+      "n": 4
+    },
+    "GOODYGOODYSHOEOPPOSITE": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 33.333333333333336,
+      "int8": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "n": 3
+    },
+    "GRAMMAR": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "GUESS1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.8,
+        "correct": 4,
+        "errors": 1,
+        "total": 5,
+        "wilson_95": [
+          0.3755282641185388,
+          0.9637768390302125
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.8,
+        "correct": 4,
+        "errors": 1,
+        "total": 5,
+        "wilson_95": [
+          0.3755282641185388,
+          0.9637768390302125
+        ]
+      },
+      "n": 5
+    },
+    "HALLOWEEN1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 4,
+        "errors": 0,
+        "total": 4,
+        "wilson_95": [
+          0.5100999795960008,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 4,
+        "errors": 0,
+        "total": 4,
+        "wilson_95": [
+          0.5100999795960008,
+          1.0
+        ]
+      },
+      "n": 4
+    },
+    "HOSPITAL1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.75,
+        "correct": 3,
+        "errors": 1,
+        "total": 4,
+        "wilson_95": [
+          0.3006360524426366,
+          0.9544139373553637
+        ]
+      },
+      "fp16_minus_int8_pp": 25.0,
+      "int8": {
+        "accuracy": 0.5,
+        "correct": 2,
+        "errors": 2,
+        "total": 4,
+        "wilson_95": [
+          0.15003570882017148,
+          0.8499642911798285
+        ]
+      },
+      "n": 4
+    },
+    "HOW1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "fp16_minus_int8_pp": -33.333333333333336,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "HURDLE/TRIP1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 33.333333333333336,
+      "int8": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "n": 3
+    },
+    "IMPOSSIBLE": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "n": 3
+    },
+    "INTUITIVE": {
+      "failed": 1,
+      "fp16": {
+        "accuracy": 0.75,
+        "correct": 3,
+        "errors": 1,
+        "total": 4,
+        "wilson_95": [
+          0.3006360524426366,
+          0.9544139373553637
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.75,
+        "correct": 3,
+        "errors": 1,
+        "total": 4,
+        "wilson_95": [
+          0.3006360524426366,
+          0.9544139373553637
+        ]
+      },
+      "n": 4
+    },
+    "JEWELRY": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "fp16_minus_int8_pp": 33.33333333333333,
+      "int8": {
+        "accuracy": 0.3333333333333333,
+        "correct": 1,
+        "errors": 2,
+        "total": 3,
+        "wilson_95": [
+          0.0614903152761605,
+          0.7923450448735121
+        ]
+      },
+      "n": 3
+    },
+    "JOKE": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "KNIGHT1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.3333333333333333,
+        "correct": 1,
+        "errors": 2,
+        "total": 3,
+        "wilson_95": [
+          0.0614903152761605,
+          0.7923450448735121
+        ]
+      },
+      "fp16_minus_int8_pp": -33.33333333333333,
+      "int8": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "n": 3
+    },
+    "LOCK1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.4,
+        "correct": 2,
+        "errors": 3,
+        "total": 5,
+        "wilson_95": [
+          0.1176182311592533,
+          0.769280067791163
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.4,
+        "correct": 2,
+        "errors": 3,
+        "total": 5,
+        "wilson_95": [
+          0.1176182311592533,
+          0.769280067791163
+        ]
+      },
+      "n": 5
+    },
+    "LONGLINE": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "MAPLE": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "n": 3
+    },
+    "MEACULPA": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.75,
+        "correct": 3,
+        "errors": 1,
+        "total": 4,
+        "wilson_95": [
+          0.3006360524426366,
+          0.9544139373553637
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.75,
+        "correct": 3,
+        "errors": 1,
+        "total": 4,
+        "wilson_95": [
+          0.3006360524426366,
+          0.9544139373553637
+        ]
+      },
+      "n": 4
+    },
+    "MEAT1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "n": 3
+    },
+    "MECHANIC1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "METAL": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "MICROSCOPE1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.75,
+        "correct": 3,
+        "errors": 1,
+        "total": 4,
+        "wilson_95": [
+          0.3006360524426366,
+          0.9544139373553637
+        ]
+      },
+      "fp16_minus_int8_pp": 25.0,
+      "int8": {
+        "accuracy": 0.5,
+        "correct": 2,
+        "errors": 2,
+        "total": 4,
+        "wilson_95": [
+          0.15003570882017148,
+          0.8499642911798285
+        ]
+      },
+      "n": 4
+    },
+    "MOUTH": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "MOVIE1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.75,
+        "correct": 3,
+        "errors": 1,
+        "total": 4,
+        "wilson_95": [
+          0.3006360524426366,
+          0.9544139373553637
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.75,
+        "correct": 3,
+        "errors": 1,
+        "total": 4,
+        "wilson_95": [
+          0.3006360524426366,
+          0.9544139373553637
+        ]
+      },
+      "n": 4
+    },
+    "MYSELF": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.3333333333333333,
+        "correct": 1,
+        "errors": 2,
+        "total": 3,
+        "wilson_95": [
+          0.0614903152761605,
+          0.7923450448735121
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.3333333333333333,
+        "correct": 1,
+        "errors": 2,
+        "total": 3,
+        "wilson_95": [
+          0.0614903152761605,
+          0.7923450448735121
+        ]
+      },
+      "n": 3
+    },
+    "NOON1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 4,
+        "errors": 0,
+        "total": 4,
+        "wilson_95": [
+          0.5100999795960008,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 25.0,
+      "int8": {
+        "accuracy": 0.75,
+        "correct": 3,
+        "errors": 1,
+        "total": 4,
+        "wilson_95": [
+          0.3006360524426366,
+          0.9544139373553637
+        ]
+      },
+      "n": 4
+    },
+    "OFFEND": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "PARTY1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.75,
+        "correct": 3,
+        "errors": 1,
+        "total": 4,
+        "wilson_95": [
+          0.3006360524426366,
+          0.9544139373553637
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.75,
+        "correct": 3,
+        "errors": 1,
+        "total": 4,
+        "wilson_95": [
+          0.3006360524426366,
+          0.9544139373553637
+        ]
+      },
+      "n": 4
+    },
+    "PATIENT2": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.5,
+        "correct": 2,
+        "errors": 2,
+        "total": 4,
+        "wilson_95": [
+          0.15003570882017148,
+          0.8499642911798285
+        ]
+      },
+      "fp16_minus_int8_pp": -25.0,
+      "int8": {
+        "accuracy": 0.75,
+        "correct": 3,
+        "errors": 1,
+        "total": 4,
+        "wilson_95": [
+          0.3006360524426366,
+          0.9544139373553637
+        ]
+      },
+      "n": 4
+    },
+    "PENNY": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "PONDER": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "PULLCONVINCE": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.3333333333333333,
+        "correct": 1,
+        "errors": 2,
+        "total": 3,
+        "wilson_95": [
+          0.0614903152761605,
+          0.7923450448735121
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.3333333333333333,
+        "correct": 1,
+        "errors": 2,
+        "total": 3,
+        "wilson_95": [
+          0.0614903152761605,
+          0.7923450448735121
+        ]
+      },
+      "n": 3
+    },
+    "RABBIT2": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "RAZOR2": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "RIGHT3": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "RIVER1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.75,
+        "correct": 3,
+        "errors": 1,
+        "total": 4,
+        "wilson_95": [
+          0.3006360524426366,
+          0.9544139373553637
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.75,
+        "correct": 3,
+        "errors": 1,
+        "total": 4,
+        "wilson_95": [
+          0.3006360524426366,
+          0.9544139373553637
+        ]
+      },
+      "n": 4
+    },
+    "ROCKINGCHAIR1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 4,
+        "errors": 0,
+        "total": 4,
+        "wilson_95": [
+          0.5100999795960008,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 4,
+        "errors": 0,
+        "total": 4,
+        "wilson_95": [
+          0.5100999795960008,
+          1.0
+        ]
+      },
+      "n": 4
+    },
+    "SAIL2": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "n": 3
+    },
+    "SCARF2": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 2,
+        "errors": 0,
+        "total": 2,
+        "wilson_95": [
+          0.34237195288961925,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 2,
+        "errors": 0,
+        "total": 2,
+        "wilson_95": [
+          0.34237195288961925,
+          1.0
+        ]
+      },
+      "n": 2
+    },
+    "SCROLLDOWN": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.3333333333333333,
+        "correct": 1,
+        "errors": 2,
+        "total": 3,
+        "wilson_95": [
+          0.0614903152761605,
+          0.7923450448735121
+        ]
+      },
+      "fp16_minus_int8_pp": -33.33333333333333,
+      "int8": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "n": 3
+    },
+    "SHARPEN2": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "SHAVE1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.6,
+        "correct": 3,
+        "errors": 2,
+        "total": 5,
+        "wilson_95": [
+          0.23071993220883708,
+          0.8823817688407467
+        ]
+      },
+      "fp16_minus_int8_pp": 19.999999999999996,
+      "int8": {
+        "accuracy": 0.4,
+        "correct": 2,
+        "errors": 3,
+        "total": 5,
+        "wilson_95": [
+          0.1176182311592533,
+          0.769280067791163
+        ]
+      },
+      "n": 5
+    },
+    "SHOCKED": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "SINK": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.5,
+        "correct": 2,
+        "errors": 2,
+        "total": 4,
+        "wilson_95": [
+          0.15003570882017148,
+          0.8499642911798285
+        ]
+      },
+      "fp16_minus_int8_pp": -25.0,
+      "int8": {
+        "accuracy": 0.75,
+        "correct": 3,
+        "errors": 1,
+        "total": 4,
+        "wilson_95": [
+          0.3006360524426366,
+          0.9544139373553637
+        ]
+      },
+      "n": 4
+    },
+    "SLIDE2": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "fp16_minus_int8_pp": 33.33333333333333,
+      "int8": {
+        "accuracy": 0.3333333333333333,
+        "correct": 1,
+        "errors": 2,
+        "total": 3,
+        "wilson_95": [
+          0.0614903152761605,
+          0.7923450448735121
+        ]
+      },
+      "n": 3
+    },
+    "SOCCER2": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "SOCIETY": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "n": 3
+    },
+    "SPECIAL1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.6,
+        "correct": 3,
+        "errors": 2,
+        "total": 5,
+        "wilson_95": [
+          0.23071993220883708,
+          0.8823817688407467
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.6,
+        "correct": 3,
+        "errors": 2,
+        "total": 5,
+        "wilson_95": [
+          0.23071993220883708,
+          0.8823817688407467
+        ]
+      },
+      "n": 5
+    },
+    "SQUEEZE": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "n": 3
+    },
+    "SWEATER2": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "TAIL1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 2,
+        "errors": 0,
+        "total": 2,
+        "wilson_95": [
+          0.34237195288961925,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 2,
+        "errors": 0,
+        "total": 2,
+        "wilson_95": [
+          0.34237195288961925,
+          1.0
+        ]
+      },
+      "n": 2
+    },
+    "TEACH1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 33.333333333333336,
+      "int8": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "n": 3
+    },
+    "TICKLE": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "UNDERWEAR1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.5,
+        "correct": 1,
+        "errors": 1,
+        "total": 2,
+        "wilson_95": [
+          0.09452865480086614,
+          0.9054713451991339
+        ]
+      },
+      "fp16_minus_int8_pp": -50.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 2,
+        "errors": 0,
+        "total": 2,
+        "wilson_95": [
+          0.34237195288961925,
+          1.0
+        ]
+      },
+      "n": 2
+    },
+    "VLOG": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "VOICE": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "WALK-TIGHTROPE-CL": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.6666666666666666,
+        "correct": 2,
+        "errors": 1,
+        "total": 3,
+        "wilson_95": [
+          0.2076549551264879,
+          0.9385096847238394
+        ]
+      },
+      "fp16_minus_int8_pp": -33.333333333333336,
+      "int8": {
+        "accuracy": 1.0,
+        "correct": 3,
+        "errors": 0,
+        "total": 3,
+        "wilson_95": [
+          0.43849391955098227,
+          1.0
+        ]
+      },
+      "n": 3
+    },
+    "WHATFOR1": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.8,
+        "correct": 4,
+        "errors": 1,
+        "total": 5,
+        "wilson_95": [
+          0.3755282641185388,
+          0.9637768390302125
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.8,
+        "correct": 4,
+        "errors": 1,
+        "total": 5,
+        "wilson_95": [
+          0.3755282641185388,
+          0.9637768390302125
+        ]
+      },
+      "n": 5
+    },
+    "ZEBRA": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.5,
+        "correct": 2,
+        "errors": 2,
+        "total": 4,
+        "wilson_95": [
+          0.15003570882017148,
+          0.8499642911798285
+        ]
+      },
+      "fp16_minus_int8_pp": 0.0,
+      "int8": {
+        "accuracy": 0.5,
+        "correct": 2,
+        "errors": 2,
+        "total": 4,
+        "wilson_95": [
+          0.15003570882017148,
+          0.8499642911798285
+        ]
+      },
+      "n": 4
+    }
+  },
+  "per_signer": {
+    "signer_9123b627": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.5416666666666666,
+        "correct": 13,
+        "errors": 11,
+        "total": 24,
+        "wilson_95": [
+          0.35074553553106635,
+          0.7210894164831857
+        ]
+      },
+      "fp16_minus_int8_pp": 20.833333333333332,
+      "int8": {
+        "accuracy": 0.3333333333333333,
+        "correct": 8,
+        "errors": 16,
+        "total": 24,
+        "wilson_95": [
+          0.17971978688379642,
+          0.5329404050591954
+        ]
+      },
+      "n": 24
+    },
+    "signer_8c1eb12a": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.7596153846153846,
+        "correct": 79,
+        "errors": 25,
+        "total": 104,
+        "wilson_95": [
+          0.6691870759313976,
+          0.8315473345372897
+        ]
+      },
+      "fp16_minus_int8_pp": 4.807692307692301,
+      "int8": {
+        "accuracy": 0.7115384615384616,
+        "correct": 74,
+        "errors": 30,
+        "total": 104,
+        "wilson_95": [
+          0.6181636431920521,
+          0.789842172745397
+        ]
+      },
+      "n": 104
+    },
+    "signer_1393dac4": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.8118811881188119,
+        "correct": 82,
+        "errors": 19,
+        "total": 101,
+        "wilson_95": [
+          0.7247767973823279,
+          0.8761297130104934
+        ]
+      },
+      "fp16_minus_int8_pp": 1.980198019801982,
+      "int8": {
+        "accuracy": 0.7920792079207921,
+        "correct": 80,
+        "errors": 21,
+        "total": 101,
+        "wilson_95": [
+          0.7029607096328665,
+          0.8597930064492993
+        ]
+      },
+      "n": 101
+    },
+    "signer_feb2f4a2": {
+      "failed": 0,
+      "fp16": {
+        "accuracy": 0.8932038834951457,
+        "correct": 92,
+        "errors": 11,
+        "total": 103,
+        "wilson_95": [
+          0.8188183774260698,
+          0.9393132866448541
+        ]
+      },
+      "fp16_minus_int8_pp": 4.8543689320388435,
+      "int8": {
+        "accuracy": 0.8446601941747572,
+        "correct": 87,
+        "errors": 16,
+        "total": 103,
+        "wilson_95": [
+          0.7624725635913214,
+          0.9020625987424511
+        ]
+      },
+      "n": 103
+    },
+    "signer_2f68a231": {
+      "failed": 1,
+      "fp16": {
+        "accuracy": 0.42857142857142855,
+        "correct": 6,
+        "errors": 8,
+        "total": 14,
+        "wilson_95": [
+          0.21380509930400526,
+          0.6740973309713064
+        ]
+      },
+      "fp16_minus_int8_pp": 7.14285714285714,
+      "int8": {
+        "accuracy": 0.35714285714285715,
+        "correct": 5,
+        "errors": 9,
+        "total": 14,
+        "wilson_95": [
+          0.16344490737202735,
+          0.6123599531785959
+        ]
+      },
+      "n": 14
+    }
+  },
+  "primary_all_346": {
+    "fp16": {
+      "accuracy": 0.7861271676300579,
+      "correct": 272,
+      "errors": 74,
+      "total": 346,
+      "wilson_95": [
+        0.7399025495676037,
+        0.8260678781917024
+      ]
+    },
+    "int8": {
+      "accuracy": 0.7341040462427746,
+      "correct": 254,
+      "errors": 92,
+      "total": 346,
+      "wilson_95": [
+        0.6851648107396099,
+        0.7779019028816404
+      ]
+    },
+    "paired_difference_pp": 5.202312138728327,
+    "paired_difference_proportion": 0.052023121387283267
+  },
+  "scope": "Official ASL Citizen validation split only (346 vocab-eligible clips, 5 signers). Test split untouched: no predictions, tuning, or model selection on test. Validation accuracy is NOT claimed as official held-out test performance.",
+  "sensitivity_successful_345": {
+    "fp16": {
+      "accuracy": 0.7884057971014493,
+      "correct": 272,
+      "errors": 73,
+      "total": 345,
+      "wilson_95": [
+        0.7422505972844806,
+        0.8282088891987829
+      ]
+    },
+    "int8": {
+      "accuracy": 0.736231884057971,
+      "correct": 254,
+      "errors": 91,
+      "total": 345,
+      "wilson_95": [
+        0.6873127441483922,
+        0.7799480412625222
+      ]
+    }
+  },
+  "signer_level_uncertainty": {
+    "leave_one_signer_out": [
+      {
+        "dropped_signer": "signer_9123b627",
+        "fp16_accuracy": 0.8043478260869565,
+        "int8_accuracy": 0.7639751552795031,
+        "n_remaining": 322
+      },
+      {
+        "dropped_signer": "signer_8c1eb12a",
+        "fp16_accuracy": 0.7975206611570248,
+        "int8_accuracy": 0.743801652892562,
+        "n_remaining": 242
+      },
+      {
+        "dropped_signer": "signer_1393dac4",
+        "fp16_accuracy": 0.7755102040816326,
+        "int8_accuracy": 0.710204081632653,
+        "n_remaining": 245
+      },
+      {
+        "dropped_signer": "signer_feb2f4a2",
+        "fp16_accuracy": 0.7407407407407407,
+        "int8_accuracy": 0.6872427983539094,
+        "n_remaining": 243
+      },
+      {
+        "dropped_signer": "signer_2f68a231",
+        "fp16_accuracy": 0.8012048192771084,
+        "int8_accuracy": 0.75,
+        "n_remaining": 332
+      }
+    ],
+    "limitation": "With only 5 validation signers, signer-population generalization cannot be estimated; bootstrap quantifies within-sample clip variation conditional on these 5 signers.",
+    "method": "stratified within-signer clip bootstrap (signers fixed, 5 signers); outer signer resampling omitted as uninformative with k=5",
+    "overall_fp16": {
+      "lower_95": 0.7427745664739884,
+      "median": 0.7861271676300579,
+      "upper_95": 0.8265895953757225
+    },
+    "overall_int8": {
+      "lower_95": 0.6907514450867052,
+      "median": 0.7341040462427746,
+      "upper_95": 0.7774566473988439
+    },
+    "reps": 20000,
+    "seed": 20261110,
+    "signer_count": 5,
+    "signer_mean_fp16": {
+      "lower_95": 0.6176409207121502,
+      "median": 0.6871404029339241,
+      "upper_95": 0.7579257304264514
+    },
+    "signer_mean_int8": {
+      "lower_95": 0.5411174890027144,
+      "median": 0.6072956202053578,
+      "upper_95": 0.6776159244005058
+    }
+  },
+  "signers": [
+    "P12",
+    "P21",
+    "P26",
+    "P39",
+    "P5"
+  ],
+  "top5": {
+    "fp16": {
+      "accuracy": 0.8930635838150289,
+      "correct": 309,
+      "errors": 37,
+      "total": 346,
+      "wilson_95": [
+        0.8560774465044514,
+        0.9214172825386355
+      ]
+    },
+    "int8": {
+      "accuracy": 0.861271676300578,
+      "correct": 298,
+      "errors": 48,
+      "total": 346,
+      "wilson_95": [
+        0.8208659196627441,
+        0.8937432062959754
+      ]
+    }
+  },
+  "val30_consistency": {
+    "all_30_predictions_match_val346": true,
+    "fp16_correct": 22,
+    "int8_correct": 21,
+    "n": 30
+  }
+}

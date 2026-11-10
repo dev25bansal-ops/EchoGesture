@@ -1,0 +1,21 @@
+{
+  "schema": "echogesture-v8-unresolved/1.0",
+  "confirmed_evidence_backed": [
+    "346-clip counts: FP16 272/346 (78.61% Wilson [73.99,82.61]), INT8 254/346 (73.41% [68.52,77.79]); top5 309/298; paired 242/30/12/61 on 345; 1 P5 failure counted incorrect in both",
+    "Hashes, label permutation 0-99, split eligible 1789/346/1255, exact overlaps empty, signer breakdown",
+    "v8_privacy modules present with tests passing: sanitize 17/17, bundle 6/6, manifest 22/22; run_manifest device_model already generic-device; build_bundle colon check already widened; offline_demo retention wording already updated; generate_results sanitize wiring present",
+    "v8_latency identical-input parity evidence exists on 30-clip manifest (laptop only)",
+    "v8_release provisional ZIP verified (structure_verified), FP16 selected, INT8 unselected, official build blocked by design"
+  ],
+  "blocked_or_unresolved_exact_actions": [
+    "1. Sanitize committed benchmark.json files: all v4-v8 results/**/benchmark.json still embed hostname (Mac.lan) and /private/tmp absolute paths (5-10 leaks each). Run sanitize_benchmark_file / regenerate with patched run_manifest so assert_sanitized==[] before any public copy. v8_latency/benchmark.py still writes \"cpu\": platform.node() (Mac.lan) — patch to generic-device.",
+    "2. Scrub participant IDs from public exports: evaluation/asl_citizen_predictions.csv has participant column; v5 val_30/val_346 predictions.csv/json carry signer_id. Run sanitize_predictions_csv (no salt) to produce public CSVs before redistribution; raw rows must not ship. Salt file must never ship.",
+    "3. LICENSE/NOTICE not yet at repo root (only in v8_privacy/). Promote v8_privacy/LICENSE+NOTICE to repo root per patches/README.md. README.md still says 'Our code and harnesses: MIT. S3D weights: MIT' — do not extend MIT to models/datasets; NOTICE §2 S3D WLASL C-UDA conflict and ASL Citizen research-only status remain NOT_CLEARED. All model weights (MediaPipe hand_landmarker, S3D INT8 incl. ptq_100_int8/s3d_conv1d_qat_int8, landmark FP16/INT8) and WLASL/ASL Citizen clips remain non-redistributable/commercially unshippable without written Dev+organizer confirmation. No licence clearance claimed.",
+    "4. Fix v8_privacy/secure_demo.py missing 'import sys' (NameError line 241 fallback path); test_secure_demo fails 4/11 under venv (queue timeout due to thread crash). Tests pass only when app.offline_demo importable AND sys present. Fix, rerun 11/11, then verify live app/offline_demo.py close-race cleanup (patched in-tree code present: _owns_tmpdir always True, 0700 child, purge sweeps — needs final live-device confirm).",
+    "5. Target-device claim gaps (no fabrication): laptop p50 231ms p95 282ms baseline (v8_latency) >> 50ms brief target; no Android/XR, no official predictions.jsonl, no power <=500mW / thermal <=20%, no robustness <=5pp drop measured on organizer harness. results/results.csv rows remain NOT_MEASURED. Do not claim targets met. Official build requires organizer starter kit + real predictions.jsonl + manifest.json exact clip_id match; filename predictions.jsonl vs predictions.json pending organizer confirmation.",
+    "6. Label/vocabulary: landmark_labels.json (DOG1:0..LONGLINE:99) is research 100-label set, not organizer vocabulary. Publication fallback per SUBMISSION.md: fixed vocabulary must be published with scope stated; organizer vocabulary/test-manifest/timing boundary/detector-byte-count still unconfirmed (5 research rounds found no public materials). Registration/college dropdown, demo video, deck, receipts still open per SUBMISSION.md."
+  ],
+  "limits_preserved": [
+    "Validation accuracy is NOT official held-out test performance. Test split untouched. Signer-population generalization not estimable (k=5). Per-class N=2-6 descriptive. Near-duplicate/re-encoded content and training provenance not verifiable from manifests. INT8 confidence not calibrated vs FP16."
+  ]
+}

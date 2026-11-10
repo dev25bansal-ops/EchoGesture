@@ -1,0 +1,1723 @@
+{
+  "status": "passed_schema",
+  "representative_performance_measured": true,
+  "performance_qualification": "N>=20 successful real clips per variant with zero failures on identical inputs; still NOT target-device evidence unless hardware_is_target_device is true and the target-device conditions in TARGET_DEVICE.md are recorded.",
+  "fixture_type": "real",
+  "split": "validation",
+  "dataset": "ASL Citizen (30-clip validation batch)",
+  "hardware_is_target_device": false,
+  "target_device_status": "blocked_not_target_hardware",
+  "device_model": null,
+  "hardware_note": "Mac laptop (Apple M5 Pro, macOS 26.3 arm64) — NOT target device",
+  "cells": [
+    {
+      "cell": "fresh_manifest_fp16",
+      "variant": "fp16",
+      "config": {
+        "repeats": 1,
+        "warmup": 1,
+        "same_clip_id": null,
+        "profile": true,
+        "repeat_mode": "fresh_manifest",
+        "note": "Each clip exactly once, manifest order; identical-clip repeats not used for p95."
+      },
+      "clip_count": 30,
+      "successful_predictions": 30,
+      "failures": [],
+      "failed_predictions": [],
+      "accuracy": {
+        "clips_with_ground_truth": 30,
+        "correct": 22,
+        "top1": 0.7333333333333333,
+        "representative_accuracy_measured": true,
+        "qualification": "Representative accuracy requires a documented validation split; flag is only completeness/size check",
+        "note": "Accuracy computed over 30 labelled successful calls"
+      },
+      "latency_all_calls": {
+        "count": 30,
+        "p50_ms": 254.004084,
+        "p90_ms": 292.333208,
+        "p95_ms": 320.978125,
+        "p99_ms": 333.476292,
+        "mean_ms": 258.5002695,
+        "median_ms": 254.01347950000002,
+        "min_ms": 220.57375,
+        "max_ms": 333.476292,
+        "iqr_ms": 41.26875000000001
+      },
+      "cold_call": {
+        "count": 1,
+        "p50_ms": 226.14275,
+        "p90_ms": 226.14275,
+        "p95_ms": 226.14275,
+        "p99_ms": 226.14275,
+        "mean_ms": 226.14275,
+        "median_ms": 226.14275,
+        "min_ms": 226.14275,
+        "max_ms": 226.14275,
+        "iqr_ms": null
+      },
+      "warm_calls": {
+        "count": 29,
+        "p50_ms": 254.022875,
+        "p90_ms": 312.13875,
+        "p95_ms": 320.978125,
+        "p99_ms": 333.476292,
+        "mean_ms": 259.61604603448274,
+        "median_ms": 254.022875,
+        "min_ms": 220.57375,
+        "max_ms": 333.476292,
+        "iqr_ms": 37.09050000000002
+      },
+      "stage_aggregates": {
+        "model_initialization": {
+          "count": 30,
+          "p50_ms": 0.067084,
+          "p90_ms": 0.073209,
+          "p95_ms": 0.079042,
+          "p99_ms": 0.08075,
+          "mean_ms": 0.06879583333333333,
+          "median_ms": 0.0674585,
+          "min_ms": 0.063541,
+          "max_ms": 0.08075,
+          "iqr_ms": 0.006374999999999992
+        },
+        "video_open_decode": {
+          "count": 30,
+          "p50_ms": 18.319042,
+          "p90_ms": 23.44275,
+          "p95_ms": 29.048125,
+          "p99_ms": 31.8455,
+          "mean_ms": 19.802937566666667,
+          "median_ms": 18.636771,
+          "min_ms": 14.193833,
+          "max_ms": 31.8455,
+          "iqr_ms": 4.092833000000002
+        },
+        "landmark_tracking": {
+          "count": 30,
+          "p50_ms": 232.787583,
+          "p90_ms": 271.810333,
+          "p95_ms": 301.239042,
+          "p99_ms": 301.487375,
+          "mean_ms": 238.2380958,
+          "median_ms": 234.75291650000003,
+          "min_ms": 198.250917,
+          "max_ms": 301.487375,
+          "iqr_ms": 38.199375
+        },
+        "feature_preparation": {
+          "count": 30,
+          "p50_ms": 0.195708,
+          "p90_ms": 0.2715,
+          "p95_ms": 0.278042,
+          "p99_ms": 0.353167,
+          "mean_ms": 0.20827500000000002,
+          "median_ms": 0.1978125,
+          "min_ms": 0.146125,
+          "max_ms": 0.353167,
+          "iqr_ms": 0.050458
+        },
+        "input_quantization": {
+          "count": 30,
+          "p50_ms": 0.001292,
+          "p90_ms": 0.001583,
+          "p95_ms": 0.001625,
+          "p99_ms": 0.006583,
+          "mean_ms": 0.0015166333333333332,
+          "median_ms": 0.001292,
+          "min_ms": 0.001167,
+          "max_ms": 0.006583,
+          "iqr_ms": 0.00016700000000000005
+        },
+        "model_inference": {
+          "count": 30,
+          "p50_ms": 0.099583,
+          "p90_ms": 0.10475,
+          "p95_ms": 0.105709,
+          "p99_ms": 0.110916,
+          "mean_ms": 0.09866243333333333,
+          "median_ms": 0.09972900000000001,
+          "min_ms": 0.08675,
+          "max_ms": 0.110916,
+          "iqr_ms": 0.007416999999999993
+        },
+        "output_postprocessing": {
+          "count": 30,
+          "p50_ms": 0.029833,
+          "p90_ms": 0.032834,
+          "p95_ms": 0.032958,
+          "p99_ms": 0.037,
+          "mean_ms": 0.0301237,
+          "median_ms": 0.029854,
+          "min_ms": 0.025666,
+          "max_ms": 0.037,
+          "iqr_ms": 0.0037079999999999995
+        }
+      },
+      "stage_extras": {
+        "video_open_decode.sampled_frames": [
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32
+        ],
+        "landmark_tracking.frames_with_hands": [
+          7,
+          19,
+          9,
+          15,
+          14,
+          17,
+          16,
+          20,
+          16,
+          14,
+          21,
+          16,
+          14,
+          14,
+          5,
+          10,
+          11,
+          14,
+          12,
+          11,
+          18,
+          12,
+          14,
+          15,
+          9,
+          17,
+          11,
+          20,
+          3,
+          16
+        ],
+        "feature_preparation.processed_frames": [
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24
+        ]
+      },
+      "profiles_count": 30,
+      "all_wall_ms": [
+        226.14275,
+        270.236708,
+        245.441084,
+        320.978125,
+        237.470708,
+        312.13875,
+        254.022875,
+        244.571792,
+        241.648958,
+        247.463167,
+        260.072959,
+        285.5755,
+        225.038833,
+        255.795875,
+        333.476292,
+        241.79725,
+        223.038083,
+        280.639208,
+        226.215292,
+        221.813209,
+        278.241125,
+        220.57375,
+        227.770209,
+        257.681291,
+        254.004084,
+        292.333208,
+        258.893625,
+        243.5765,
+        278.739458,
+        289.617417
+      ],
+      "per_clip": [
+        {
+          "clip_id": "6523145816470133-WHAT FOR",
+          "wall_ms": 226.14275,
+          "prediction": "WHATFOR1",
+          "confidence": 0.2138,
+          "top5": [
+            "WHATFOR1",
+            "KNIGHT1",
+            "OFFEND",
+            "DEAF1",
+            "RAZOR2"
+          ],
+          "ground_truth": "WHATFOR1"
+        },
+        {
+          "clip_id": "6961575623504714-SHAVE",
+          "wall_ms": 270.236708,
+          "prediction": "APPLE",
+          "confidence": 0.2664,
+          "top5": [
+            "APPLE",
+            "RAZOR2",
+            "SHAVE1",
+            "DRAG1",
+            "MYSELF"
+          ],
+          "ground_truth": "SHAVE1"
+        },
+        {
+          "clip_id": "15347326711184706-NOON",
+          "wall_ms": 245.441084,
+          "prediction": "NOON1",
+          "confidence": 0.1201,
+          "top5": [
+            "NOON1",
+            "BEE1",
+            "GUESS1",
+            "BREAKFAST1",
+            "UNDERWEAR1"
+          ],
+          "ground_truth": "NOON1"
+        },
+        {
+          "clip_id": "9990244640190733-BACKPACK",
+          "wall_ms": 320.978125,
+          "prediction": "CHEER",
+          "confidence": 0.2762,
+          "top5": [
+            "CHEER",
+            "BACKPACK1",
+            "PARTY1",
+            "GRAMMAR",
+            "PULLCONVINCE"
+          ],
+          "ground_truth": "BACKPACK1"
+        },
+        {
+          "clip_id": "7629092396207264-MAPLE",
+          "wall_ms": 237.470708,
+          "prediction": "AXE1",
+          "confidence": 0.1635,
+          "top5": [
+            "AXE1",
+            "BASEBALLCAP",
+            "BABY2",
+            "IMPOSSIBLE",
+            "SOCCER2"
+          ],
+          "ground_truth": "MAPLE"
+        },
+        {
+          "clip_id": "5784034175717614-EASY",
+          "wall_ms": 312.13875,
+          "prediction": "EASY",
+          "confidence": 0.8579,
+          "top5": [
+            "EASY",
+            "DARK1",
+            "HOW1",
+            "CHEESEGRATER",
+            "JEWELRY"
+          ],
+          "ground_truth": "EASY"
+        },
+        {
+          "clip_id": "4254167262351618-CHEW 2",
+          "wall_ms": 254.022875,
+          "prediction": "CHEW1",
+          "confidence": 0.5149,
+          "top5": [
+            "CHEW1",
+            "BASEBALLCAP",
+            "PATIENT2",
+            "ANYONE",
+            "IMPOSSIBLE"
+          ],
+          "ground_truth": "CHEW1"
+        },
+        {
+          "clip_id": "6142521746642153-WHAT FOR",
+          "wall_ms": 244.571792,
+          "prediction": "WHATFOR1",
+          "confidence": 0.5483,
+          "top5": [
+            "WHATFOR1",
+            "DEAF1",
+            "PENNY",
+            "ZEBRA",
+            "DECIDE1"
+          ],
+          "ground_truth": "WHATFOR1"
+        },
+        {
+          "clip_id": "5004269948712425-SOCCER 2",
+          "wall_ms": 241.648958,
+          "prediction": "SOCCER2",
+          "confidence": 0.1762,
+          "top5": [
+            "SOCCER2",
+            "GOODYGOODYSHOEOPPOSITE",
+            "MAPLE",
+            "8HOUR",
+            "ADVERTISE"
+          ],
+          "ground_truth": "SOCCER2"
+        },
+        {
+          "clip_id": "7713194149900888-CEMETERY",
+          "wall_ms": 247.463167,
+          "prediction": "CEMETERY",
+          "confidence": 0.2936,
+          "top5": [
+            "CEMETERY",
+            "SHAVE1",
+            "DECIDE1",
+            "DEAF1",
+            "SOCIETY"
+          ],
+          "ground_truth": "CEMETERY"
+        },
+        {
+          "clip_id": "9336391016353045-FLIP",
+          "wall_ms": 260.072959,
+          "prediction": "FINE1",
+          "confidence": 0.0902,
+          "top5": [
+            "FINE1",
+            "EAT1",
+            "BEE1",
+            "DOG1",
+            "IMPOSSIBLE"
+          ],
+          "ground_truth": "FLIP"
+        },
+        {
+          "clip_id": "3191470037860531-8 HOUR",
+          "wall_ms": 285.5755,
+          "prediction": "8HOUR",
+          "confidence": 0.3794,
+          "top5": [
+            "8HOUR",
+            "PATIENT2",
+            "MAPLE",
+            "IMPOSSIBLE",
+            "DEVELOP1"
+          ],
+          "ground_truth": "8HOUR"
+        },
+        {
+          "clip_id": "647818976594698-BABY 2",
+          "wall_ms": 225.038833,
+          "prediction": "BABY2",
+          "confidence": 0.7061,
+          "top5": [
+            "BABY2",
+            "TAIL1",
+            "HOSPITAL1",
+            "EASY",
+            "PULLCONVINCE"
+          ],
+          "ground_truth": "BABY2"
+        },
+        {
+          "clip_id": "7355641552290353-MECHANIC",
+          "wall_ms": 255.795875,
+          "prediction": "MECHANIC1",
+          "confidence": 0.7838,
+          "top5": [
+            "MECHANIC1",
+            "SPECIAL1",
+            "JEWELRY",
+            "HALLOWEEN1",
+            "FAIL"
+          ],
+          "ground_truth": "MECHANIC1"
+        },
+        {
+          "clip_id": "6987156871330971-BEE",
+          "wall_ms": 333.476292,
+          "prediction": "BREAKFAST1",
+          "confidence": 0.2081,
+          "top5": [
+            "BREAKFAST1",
+            "KNIGHT1",
+            "AUTISM1",
+            "TAIL1",
+            "HOSPITAL1"
+          ],
+          "ground_truth": "BEE1"
+        },
+        {
+          "clip_id": "7873618416168222-TICKLE",
+          "wall_ms": 241.79725,
+          "prediction": "TICKLE",
+          "confidence": 0.3914,
+          "top5": [
+            "TICKLE",
+            "COMB2",
+            "RABBIT2",
+            "TAIL1",
+            "RIVER1"
+          ],
+          "ground_truth": "TICKLE"
+        },
+        {
+          "clip_id": "0283886564670357-WHAT FOR",
+          "wall_ms": 223.038083,
+          "prediction": "WHATFOR1",
+          "confidence": 0.8415,
+          "top5": [
+            "WHATFOR1",
+            "DEAF1",
+            "OFFEND",
+            "SLIDE2",
+            "SCROLLDOWN"
+          ],
+          "ground_truth": "WHATFOR1"
+        },
+        {
+          "clip_id": "4481998873282871-PONDER",
+          "wall_ms": 280.639208,
+          "prediction": "PONDER",
+          "confidence": 0.2431,
+          "top5": [
+            "PONDER",
+            "CHEER",
+            "PULLCONVINCE",
+            "SOCIETY",
+            "AXE1"
+          ],
+          "ground_truth": "PONDER"
+        },
+        {
+          "clip_id": "697572736827275-COMB",
+          "wall_ms": 226.215292,
+          "prediction": "COMB2",
+          "confidence": 0.8746,
+          "top5": [
+            "COMB2",
+            "PATIENT2",
+            "TAIL1",
+            "DRAG1",
+            "DARK1"
+          ],
+          "ground_truth": "COMB2"
+        },
+        {
+          "clip_id": "5008852988399453-MYSELF",
+          "wall_ms": 221.813209,
+          "prediction": "PATIENT2",
+          "confidence": 0.5136,
+          "top5": [
+            "PATIENT2",
+            "MYSELF",
+            "COMB2",
+            "CHEEK",
+            "KNIGHT1"
+          ],
+          "ground_truth": "MYSELF"
+        },
+        {
+          "clip_id": "6495415212975224-UNDERWEAR",
+          "wall_ms": 278.241125,
+          "prediction": "UNDERWEAR1",
+          "confidence": 0.288,
+          "top5": [
+            "UNDERWEAR1",
+            "INTUITIVE",
+            "BELT1",
+            "SWEATER2",
+            "FLIP"
+          ],
+          "ground_truth": "UNDERWEAR1"
+        },
+        {
+          "clip_id": "25500869855740893-ANYONE",
+          "wall_ms": 220.57375,
+          "prediction": "ANYONE",
+          "confidence": 0.7749,
+          "top5": [
+            "ANYONE",
+            "OFFEND",
+            "ALLOFSUDDEN",
+            "UNDERWEAR1",
+            "SOCIETY"
+          ],
+          "ground_truth": "ANYONE"
+        },
+        {
+          "clip_id": "8213787748653953-PENNY",
+          "wall_ms": 227.770209,
+          "prediction": "PENNY",
+          "confidence": 0.8272,
+          "top5": [
+            "PENNY",
+            "NOON1",
+            "DEAF1",
+            "CHEEK",
+            "ALLOFSUDDEN"
+          ],
+          "ground_truth": "PENNY"
+        },
+        {
+          "clip_id": "3738312466703404-TEACH",
+          "wall_ms": 257.681291,
+          "prediction": "TEACH1",
+          "confidence": 0.2405,
+          "top5": [
+            "TEACH1",
+            "PARTY1",
+            "CHEER",
+            "DECIDE1",
+            "AUTISM1"
+          ],
+          "ground_truth": "TEACH1"
+        },
+        {
+          "clip_id": "8581142177964065-AXE",
+          "wall_ms": 254.004084,
+          "prediction": "AXE1",
+          "confidence": 0.2102,
+          "top5": [
+            "AXE1",
+            "INTUITIVE",
+            "SCARF2",
+            "FOREIGNER1",
+            "SOCCER2"
+          ],
+          "ground_truth": "AXE1"
+        },
+        {
+          "clip_id": "6416983573445294-SHAVE",
+          "wall_ms": 292.333208,
+          "prediction": "UNDERWEAR1",
+          "confidence": 0.1535,
+          "top5": [
+            "UNDERWEAR1",
+            "TAIL1",
+            "RAZOR2",
+            "INTUITIVE",
+            "DRAG1"
+          ],
+          "ground_truth": "SHAVE1"
+        },
+        {
+          "clip_id": "032677896012150764-WHAT FOR",
+          "wall_ms": 258.893625,
+          "prediction": "WHATFOR1",
+          "confidence": 0.2412,
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "KNIGHT1",
+            "TAIL1",
+            "DEAF1"
+          ],
+          "ground_truth": "WHATFOR1"
+        },
+        {
+          "clip_id": "17092802473126545-SQUEEZE",
+          "wall_ms": 243.5765,
+          "prediction": "SQUEEZE",
+          "confidence": 0.0531,
+          "top5": [
+            "SQUEEZE",
+            "CHEESEGRATER",
+            "SCARF2",
+            "SOCCER2",
+            "DRAG1"
+          ],
+          "ground_truth": "SQUEEZE"
+        },
+        {
+          "clip_id": "8166700420399404-CHEEK",
+          "wall_ms": 278.739458,
+          "prediction": "OFFEND",
+          "confidence": 0.1095,
+          "top5": [
+            "OFFEND",
+            "KNIGHT1",
+            "BREAKFAST1",
+            "ANYONE",
+            "TAIL1"
+          ],
+          "ground_truth": "CHEEK"
+        },
+        {
+          "clip_id": "9474917526716478-BASKETBALL",
+          "wall_ms": 289.617417,
+          "prediction": "BASKETBALL1",
+          "confidence": 0.7367,
+          "top5": [
+            "BASKETBALL1",
+            "TEACH1",
+            "CHEER",
+            "COPY",
+            "SHOCKED"
+          ],
+          "ground_truth": "BASKETBALL1"
+        }
+      ]
+    },
+    {
+      "cell": "fresh_manifest_int8",
+      "variant": "int8",
+      "config": {
+        "repeats": 1,
+        "warmup": 1,
+        "same_clip_id": null,
+        "profile": true,
+        "repeat_mode": "fresh_manifest",
+        "note": "Each clip exactly once, manifest order; identical-clip repeats not used for p95."
+      },
+      "clip_count": 30,
+      "successful_predictions": 30,
+      "failures": [],
+      "failed_predictions": [],
+      "accuracy": {
+        "clips_with_ground_truth": 30,
+        "correct": 21,
+        "top1": 0.7,
+        "representative_accuracy_measured": true,
+        "qualification": "Representative accuracy requires a documented validation split; flag is only completeness/size check",
+        "note": "Accuracy computed over 30 labelled successful calls"
+      },
+      "latency_all_calls": {
+        "count": 30,
+        "p50_ms": 247.705917,
+        "p90_ms": 287.065542,
+        "p95_ms": 308.73125,
+        "p99_ms": 336.722792,
+        "mean_ms": 253.26211126666666,
+        "median_ms": 247.721542,
+        "min_ms": 213.98225,
+        "max_ms": 336.722792,
+        "iqr_ms": 47.457749999999976
+      },
+      "cold_call": {
+        "count": 1,
+        "p50_ms": 213.98225,
+        "p90_ms": 213.98225,
+        "p95_ms": 213.98225,
+        "p99_ms": 213.98225,
+        "mean_ms": 213.98225,
+        "median_ms": 213.98225,
+        "min_ms": 213.98225,
+        "max_ms": 213.98225,
+        "iqr_ms": null
+      },
+      "warm_calls": {
+        "count": 29,
+        "p50_ms": 247.737167,
+        "p90_ms": 299.106417,
+        "p95_ms": 308.73125,
+        "p99_ms": 336.722792,
+        "mean_ms": 254.6165892413793,
+        "median_ms": 247.737167,
+        "min_ms": 218.65125,
+        "max_ms": 336.722792,
+        "iqr_ms": 38.22620899999998
+      },
+      "stage_aggregates": {
+        "model_initialization": {
+          "count": 30,
+          "p50_ms": 0.066083,
+          "p90_ms": 0.070375,
+          "p95_ms": 0.075875,
+          "p99_ms": 0.077208,
+          "mean_ms": 0.06606936666666667,
+          "median_ms": 0.0661245,
+          "min_ms": 0.054125,
+          "max_ms": 0.077208,
+          "iqr_ms": 0.0054580000000000045
+        },
+        "video_open_decode": {
+          "count": 30,
+          "p50_ms": 15.558,
+          "p90_ms": 22.206584,
+          "p95_ms": 24.855833,
+          "p99_ms": 31.250584,
+          "mean_ms": 17.836668,
+          "median_ms": 15.6819165,
+          "min_ms": 14.218083,
+          "max_ms": 31.250584,
+          "iqr_ms": 5.582126000000001
+        },
+        "landmark_tracking": {
+          "count": 30,
+          "p50_ms": 231.774459,
+          "p90_ms": 271.857292,
+          "p95_ms": 292.412625,
+          "p99_ms": 305.106375,
+          "mean_ms": 234.99621953333335,
+          "median_ms": 232.0597295,
+          "min_ms": 188.7245,
+          "max_ms": 305.106375,
+          "iqr_ms": 42.10695799999999
+        },
+        "feature_preparation": {
+          "count": 30,
+          "p50_ms": 0.190625,
+          "p90_ms": 0.274083,
+          "p95_ms": 0.277791,
+          "p99_ms": 0.349125,
+          "mean_ms": 0.2060958,
+          "median_ms": 0.193479,
+          "min_ms": 0.147791,
+          "max_ms": 0.349125,
+          "iqr_ms": 0.05770900000000001
+        },
+        "input_quantization": {
+          "count": 30,
+          "p50_ms": 0.001291,
+          "p90_ms": 0.0015,
+          "p95_ms": 0.001542,
+          "p99_ms": 0.001542,
+          "mean_ms": 0.0013208333333333334,
+          "median_ms": 0.0012915000000000001,
+          "min_ms": 0.001166,
+          "max_ms": 0.001542,
+          "iqr_ms": 0.0001249999999999999
+        },
+        "model_inference": {
+          "count": 30,
+          "p50_ms": 0.075458,
+          "p90_ms": 0.079833,
+          "p95_ms": 0.081084,
+          "p99_ms": 0.081833,
+          "mean_ms": 0.0750681,
+          "median_ms": 0.07568749999999999,
+          "min_ms": 0.066792,
+          "max_ms": 0.081833,
+          "iqr_ms": 0.006958000000000006
+        },
+        "output_postprocessing": {
+          "count": 30,
+          "p50_ms": 0.028541,
+          "p90_ms": 0.03225,
+          "p95_ms": 0.034042,
+          "p99_ms": 0.038917,
+          "mean_ms": 0.029105633333333332,
+          "median_ms": 0.0286665,
+          "min_ms": 0.025459,
+          "max_ms": 0.038917,
+          "iqr_ms": 0.003417
+        }
+      },
+      "stage_extras": {
+        "video_open_decode.sampled_frames": [
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32
+        ],
+        "landmark_tracking.frames_with_hands": [
+          7,
+          19,
+          9,
+          15,
+          14,
+          17,
+          16,
+          20,
+          16,
+          14,
+          21,
+          16,
+          14,
+          14,
+          5,
+          10,
+          11,
+          14,
+          12,
+          11,
+          18,
+          12,
+          14,
+          15,
+          9,
+          17,
+          11,
+          20,
+          3,
+          16
+        ],
+        "feature_preparation.processed_frames": [
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24,
+          24
+        ]
+      },
+      "profiles_count": 30,
+      "all_wall_ms": [
+        213.98225,
+        251.821458,
+        235.708708,
+        299.106417,
+        226.477167,
+        308.73125,
+        247.705917,
+        246.276208,
+        239.205042,
+        242.61275,
+        247.737167,
+        282.516416,
+        221.243125,
+        253.752667,
+        336.722792,
+        236.279583,
+        218.65125,
+        273.934917,
+        221.349459,
+        222.566542,
+        282.092084,
+        223.557375,
+        222.625709,
+        251.136208,
+        250.295334,
+        287.065542,
+        255.72975,
+        247.151709,
+        264.843125,
+        286.985417
+      ],
+      "per_clip": [
+        {
+          "clip_id": "6523145816470133-WHAT FOR",
+          "wall_ms": 213.98225,
+          "prediction": "WHATFOR1",
+          "confidence": 0.127,
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "RAZOR2",
+            "DEAF1",
+            "KNIGHT1"
+          ],
+          "ground_truth": "WHATFOR1"
+        },
+        {
+          "clip_id": "6961575623504714-SHAVE",
+          "wall_ms": 251.821458,
+          "prediction": "RAZOR2",
+          "confidence": 0.1112,
+          "top5": [
+            "RAZOR2",
+            "SHAVE1",
+            "APPLE",
+            "DRAG1",
+            "SLIDE2"
+          ],
+          "ground_truth": "SHAVE1"
+        },
+        {
+          "clip_id": "15347326711184706-NOON",
+          "wall_ms": 235.708708,
+          "prediction": "NOON1",
+          "confidence": 0.0827,
+          "top5": [
+            "NOON1",
+            "BREAKFAST1",
+            "AUTISM1",
+            "TAIL1",
+            "UNDERWEAR1"
+          ],
+          "ground_truth": "NOON1"
+        },
+        {
+          "clip_id": "9990244640190733-BACKPACK",
+          "wall_ms": 299.106417,
+          "prediction": "CHEER",
+          "confidence": 0.114,
+          "top5": [
+            "CHEER",
+            "BACKPACK1",
+            "GRAMMAR",
+            "PARTY1",
+            "PULLCONVINCE"
+          ],
+          "ground_truth": "BACKPACK1"
+        },
+        {
+          "clip_id": "7629092396207264-MAPLE",
+          "wall_ms": 226.477167,
+          "prediction": "IMPOSSIBLE",
+          "confidence": 0.1024,
+          "top5": [
+            "IMPOSSIBLE",
+            "AXE1",
+            "SOCCER2",
+            "8HOUR",
+            "BASEBALLCAP"
+          ],
+          "ground_truth": "MAPLE"
+        },
+        {
+          "clip_id": "5784034175717614-EASY",
+          "wall_ms": 308.73125,
+          "prediction": "EASY",
+          "confidence": 0.7366,
+          "top5": [
+            "EASY",
+            "DARK1",
+            "CHEESEGRATER",
+            "HOW1",
+            "KNIGHT1"
+          ],
+          "ground_truth": "EASY"
+        },
+        {
+          "clip_id": "4254167262351618-CHEW 2",
+          "wall_ms": 247.705917,
+          "prediction": "CHEW1",
+          "confidence": 0.0781,
+          "top5": [
+            "CHEW1",
+            "ANYONE",
+            "TAIL1",
+            "BASEBALLCAP",
+            "IMPOSSIBLE"
+          ],
+          "ground_truth": "CHEW1"
+        },
+        {
+          "clip_id": "6142521746642153-WHAT FOR",
+          "wall_ms": 246.276208,
+          "prediction": "WHATFOR1",
+          "confidence": 0.2881,
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "ZEBRA",
+            "ANYONE",
+            "DECIDE1"
+          ],
+          "ground_truth": "WHATFOR1"
+        },
+        {
+          "clip_id": "5004269948712425-SOCCER 2",
+          "wall_ms": 239.205042,
+          "prediction": "SOCCER2",
+          "confidence": 0.1294,
+          "top5": [
+            "SOCCER2",
+            "MAPLE",
+            "GOODYGOODYSHOEOPPOSITE",
+            "OFFEND",
+            "TAIL1"
+          ],
+          "ground_truth": "SOCCER2"
+        },
+        {
+          "clip_id": "7713194149900888-CEMETERY",
+          "wall_ms": 242.61275,
+          "prediction": "CEMETERY",
+          "confidence": 0.1468,
+          "top5": [
+            "CEMETERY",
+            "SHAVE1",
+            "DECIDE1",
+            "TEACH1",
+            "VLOG"
+          ],
+          "ground_truth": "CEMETERY"
+        },
+        {
+          "clip_id": "9336391016353045-FLIP",
+          "wall_ms": 247.737167,
+          "prediction": "FINE1",
+          "confidence": 0.0498,
+          "top5": [
+            "FINE1",
+            "IMPOSSIBLE",
+            "CHEESEGRATER",
+            "EAT1",
+            "OFFEND"
+          ],
+          "ground_truth": "FLIP"
+        },
+        {
+          "clip_id": "3191470037860531-8 HOUR",
+          "wall_ms": 282.516416,
+          "prediction": "8HOUR",
+          "confidence": 0.2081,
+          "top5": [
+            "8HOUR",
+            "MAPLE",
+            "PATIENT2",
+            "IMPOSSIBLE",
+            "AXE1"
+          ],
+          "ground_truth": "8HOUR"
+        },
+        {
+          "clip_id": "647818976594698-BABY 2",
+          "wall_ms": 221.243125,
+          "prediction": "BABY2",
+          "confidence": 0.3874,
+          "top5": [
+            "BABY2",
+            "EASY",
+            "SCARF2",
+            "TAIL1",
+            "GRAMMAR"
+          ],
+          "ground_truth": "BABY2"
+        },
+        {
+          "clip_id": "7355641552290353-MECHANIC",
+          "wall_ms": 253.752667,
+          "prediction": "MECHANIC1",
+          "confidence": 0.6742,
+          "top5": [
+            "MECHANIC1",
+            "SPECIAL1",
+            "JEWELRY",
+            "HALLOWEEN1",
+            "EMPTY2"
+          ],
+          "ground_truth": "MECHANIC1"
+        },
+        {
+          "clip_id": "6987156871330971-BEE",
+          "wall_ms": 336.722792,
+          "prediction": "KNIGHT1",
+          "confidence": 0.0473,
+          "top5": [
+            "KNIGHT1",
+            "TAIL1",
+            "BREAKFAST1",
+            "MAPLE",
+            "AUTISM1"
+          ],
+          "ground_truth": "BEE1"
+        },
+        {
+          "clip_id": "7873618416168222-TICKLE",
+          "wall_ms": 236.279583,
+          "prediction": "TICKLE",
+          "confidence": 0.2542,
+          "top5": [
+            "TICKLE",
+            "COMB2",
+            "WHATFOR1",
+            "GRAMMAR",
+            "RABBIT2"
+          ],
+          "ground_truth": "TICKLE"
+        },
+        {
+          "clip_id": "0283886564670357-WHAT FOR",
+          "wall_ms": 218.65125,
+          "prediction": "WHATFOR1",
+          "confidence": 0.3388,
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "SCROLLDOWN",
+            "DEAF1",
+            "SLIDE2"
+          ],
+          "ground_truth": "WHATFOR1"
+        },
+        {
+          "clip_id": "4481998873282871-PONDER",
+          "wall_ms": 273.934917,
+          "prediction": "PONDER",
+          "confidence": 0.1186,
+          "top5": [
+            "PONDER",
+            "PULLCONVINCE",
+            "AXE1",
+            "CHEER",
+            "SOCIETY"
+          ],
+          "ground_truth": "PONDER"
+        },
+        {
+          "clip_id": "697572736827275-COMB",
+          "wall_ms": 221.349459,
+          "prediction": "COMB2",
+          "confidence": 0.3764,
+          "top5": [
+            "COMB2",
+            "PATIENT2",
+            "DARK1",
+            "TAIL1",
+            "FOREIGNER1"
+          ],
+          "ground_truth": "COMB2"
+        },
+        {
+          "clip_id": "5008852988399453-MYSELF",
+          "wall_ms": 222.566542,
+          "prediction": "PATIENT2",
+          "confidence": 0.1215,
+          "top5": [
+            "PATIENT2",
+            "ANYONE",
+            "CHEEK",
+            "EAT1",
+            "OFFEND"
+          ],
+          "ground_truth": "MYSELF"
+        },
+        {
+          "clip_id": "6495415212975224-UNDERWEAR",
+          "wall_ms": 282.092084,
+          "prediction": "UNDERWEAR1",
+          "confidence": 0.2058,
+          "top5": [
+            "UNDERWEAR1",
+            "INTUITIVE",
+            "BELT1",
+            "SWEATER2",
+            "KNIGHT1"
+          ],
+          "ground_truth": "UNDERWEAR1"
+        },
+        {
+          "clip_id": "25500869855740893-ANYONE",
+          "wall_ms": 223.557375,
+          "prediction": "ANYONE",
+          "confidence": 0.2899,
+          "top5": [
+            "ANYONE",
+            "UNDERWEAR1",
+            "ALLOFSUDDEN",
+            "SCARF2",
+            "ROCKINGCHAIR1"
+          ],
+          "ground_truth": "ANYONE"
+        },
+        {
+          "clip_id": "8213787748653953-PENNY",
+          "wall_ms": 222.625709,
+          "prediction": "PENNY",
+          "confidence": 0.2084,
+          "top5": [
+            "PENNY",
+            "METAL",
+            "NOON1",
+            "PONDER",
+            "ANYONE"
+          ],
+          "ground_truth": "PENNY"
+        },
+        {
+          "clip_id": "3738312466703404-TEACH",
+          "wall_ms": 251.136208,
+          "prediction": "PARTY1",
+          "confidence": 0.1322,
+          "top5": [
+            "PARTY1",
+            "DECIDE1",
+            "TEACH1",
+            "HALLOWEEN1",
+            "CHEER"
+          ],
+          "ground_truth": "TEACH1"
+        },
+        {
+          "clip_id": "8581142177964065-AXE",
+          "wall_ms": 250.295334,
+          "prediction": "AXE1",
+          "confidence": 0.2006,
+          "top5": [
+            "AXE1",
+            "FOREIGNER1",
+            "INTUITIVE",
+            "SCARF2",
+            "SOCCER2"
+          ],
+          "ground_truth": "AXE1"
+        },
+        {
+          "clip_id": "6416983573445294-SHAVE",
+          "wall_ms": 287.065542,
+          "prediction": "UNDERWEAR1",
+          "confidence": 0.1637,
+          "top5": [
+            "UNDERWEAR1",
+            "TAIL1",
+            "INTUITIVE",
+            "OFFEND",
+            "FLIP"
+          ],
+          "ground_truth": "SHAVE1"
+        },
+        {
+          "clip_id": "032677896012150764-WHAT FOR",
+          "wall_ms": 255.72975,
+          "prediction": "WHATFOR1",
+          "confidence": 0.0874,
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "KNIGHT1",
+            "SCROLLDOWN",
+            "TAIL1"
+          ],
+          "ground_truth": "WHATFOR1"
+        },
+        {
+          "clip_id": "17092802473126545-SQUEEZE",
+          "wall_ms": 247.151709,
+          "prediction": "SQUEEZE",
+          "confidence": 0.0667,
+          "top5": [
+            "SQUEEZE",
+            "SOCCER2",
+            "CHEESEGRATER",
+            "JEWELRY",
+            "SCARF2"
+          ],
+          "ground_truth": "SQUEEZE"
+        },
+        {
+          "clip_id": "8166700420399404-CHEEK",
+          "wall_ms": 264.843125,
+          "prediction": "KNIGHT1",
+          "confidence": 0.0764,
+          "top5": [
+            "KNIGHT1",
+            "OFFEND",
+            "TAIL1",
+            "ANYONE",
+            "SCROLLDOWN"
+          ],
+          "ground_truth": "CHEEK"
+        },
+        {
+          "clip_id": "9474917526716478-BASKETBALL",
+          "wall_ms": 286.985417,
+          "prediction": "BASKETBALL1",
+          "confidence": 0.2172,
+          "top5": [
+            "BASKETBALL1",
+            "TEACH1",
+            "CHEER",
+            "COPY",
+            "EMPTY2"
+          ],
+          "ground_truth": "BASKETBALL1"
+        }
+      ]
+    }
+  ],
+  "paired": {
+    "n": 30,
+    "clip_ids": [
+      "0283886564670357-WHAT FOR",
+      "032677896012150764-WHAT FOR",
+      "15347326711184706-NOON",
+      "17092802473126545-SQUEEZE",
+      "25500869855740893-ANYONE",
+      "3191470037860531-8 HOUR",
+      "3738312466703404-TEACH",
+      "4254167262351618-CHEW 2",
+      "4481998873282871-PONDER",
+      "5004269948712425-SOCCER 2",
+      "5008852988399453-MYSELF",
+      "5784034175717614-EASY",
+      "6142521746642153-WHAT FOR",
+      "6416983573445294-SHAVE",
+      "647818976594698-BABY 2",
+      "6495415212975224-UNDERWEAR",
+      "6523145816470133-WHAT FOR",
+      "6961575623504714-SHAVE",
+      "697572736827275-COMB",
+      "6987156871330971-BEE",
+      "7355641552290353-MECHANIC",
+      "7629092396207264-MAPLE",
+      "7713194149900888-CEMETERY",
+      "7873618416168222-TICKLE",
+      "8166700420399404-CHEEK",
+      "8213787748653953-PENNY",
+      "8581142177964065-AXE",
+      "9336391016353045-FLIP",
+      "9474917526716478-BASKETBALL",
+      "9990244640190733-BACKPACK"
+    ],
+    "paired_wall_ms": [
+      {
+        "clip_id": "0283886564670357-WHAT FOR",
+        "first_ms": 223.038083,
+        "second_ms": 218.65125
+      },
+      {
+        "clip_id": "032677896012150764-WHAT FOR",
+        "first_ms": 258.893625,
+        "second_ms": 255.72975
+      },
+      {
+        "clip_id": "15347326711184706-NOON",
+        "first_ms": 245.441084,
+        "second_ms": 235.708708
+      },
+      {
+        "clip_id": "17092802473126545-SQUEEZE",
+        "first_ms": 243.5765,
+        "second_ms": 247.151709
+      },
+      {
+        "clip_id": "25500869855740893-ANYONE",
+        "first_ms": 220.57375,
+        "second_ms": 223.557375
+      },
+      {
+        "clip_id": "3191470037860531-8 HOUR",
+        "first_ms": 285.5755,
+        "second_ms": 282.516416
+      },
+      {
+        "clip_id": "3738312466703404-TEACH",
+        "first_ms": 257.681291,
+        "second_ms": 251.136208
+      },
+      {
+        "clip_id": "4254167262351618-CHEW 2",
+        "first_ms": 254.022875,
+        "second_ms": 247.705917
+      },
+      {
+        "clip_id": "4481998873282871-PONDER",
+        "first_ms": 280.639208,
+        "second_ms": 273.934917
+      },
+      {
+        "clip_id": "5004269948712425-SOCCER 2",
+        "first_ms": 241.648958,
+        "second_ms": 239.205042
+      },
+      {
+        "clip_id": "5008852988399453-MYSELF",
+        "first_ms": 221.813209,
+        "second_ms": 222.566542
+      },
+      {
+        "clip_id": "5784034175717614-EASY",
+        "first_ms": 312.13875,
+        "second_ms": 308.73125
+      },
+      {
+        "clip_id": "6142521746642153-WHAT FOR",
+        "first_ms": 244.571792,
+        "second_ms": 246.276208
+      },
+      {
+        "clip_id": "6416983573445294-SHAVE",
+        "first_ms": 292.333208,
+        "second_ms": 287.065542
+      },
+      {
+        "clip_id": "647818976594698-BABY 2",
+        "first_ms": 225.038833,
+        "second_ms": 221.243125
+      },
+      {
+        "clip_id": "6495415212975224-UNDERWEAR",
+        "first_ms": 278.241125,
+        "second_ms": 282.092084
+      },
+      {
+        "clip_id": "6523145816470133-WHAT FOR",
+        "first_ms": 226.14275,
+        "second_ms": 213.98225
+      },
+      {
+        "clip_id": "6961575623504714-SHAVE",
+        "first_ms": 270.236708,
+        "second_ms": 251.821458
+      },
+      {
+        "clip_id": "697572736827275-COMB",
+        "first_ms": 226.215292,
+        "second_ms": 221.349459
+      },
+      {
+        "clip_id": "6987156871330971-BEE",
+        "first_ms": 333.476292,
+        "second_ms": 336.722792
+      },
+      {
+        "clip_id": "7355641552290353-MECHANIC",
+        "first_ms": 255.795875,
+        "second_ms": 253.752667
+      },
+      {
+        "clip_id": "7629092396207264-MAPLE",
+        "first_ms": 237.470708,
+        "second_ms": 226.477167
+      },
+      {
+        "clip_id": "7713194149900888-CEMETERY",
+        "first_ms": 247.463167,
+        "second_ms": 242.61275
+      },
+      {
+        "clip_id": "7873618416168222-TICKLE",
+        "first_ms": 241.79725,
+        "second_ms": 236.279583
+      },
+      {
+        "clip_id": "8166700420399404-CHEEK",
+        "first_ms": 278.739458,
+        "second_ms": 264.843125
+      },
+      {
+        "clip_id": "8213787748653953-PENNY",
+        "first_ms": 227.770209,
+        "second_ms": 222.625709
+      },
+      {
+        "clip_id": "8581142177964065-AXE",
+        "first_ms": 254.004084,
+        "second_ms": 250.295334
+      },
+      {
+        "clip_id": "9336391016353045-FLIP",
+        "first_ms": 260.072959,
+        "second_ms": 247.737167
+      },
+      {
+        "clip_id": "9474917526716478-BASKETBALL",
+        "first_ms": 289.617417,
+        "second_ms": 286.985417
+      },
+      {
+        "clip_id": "9990244640190733-BACKPACK",
+        "first_ms": 320.978125,
+        "second_ms": 299.106417
+      }
+    ],
+    "prediction_agreement": 0.8333333333333334,
+    "top5_overlap_mean": 0.7466666666666667,
+    "wall_delta_ms": {
+      "p50": -4.850416999999993,
+      "p95": 3.575209000000001,
+      "mean": -5.238158233333333
+    },
+    "wall_delta_pct_of_first": {
+      "p50": -1.9600561403952261,
+      "p95": 1.384036597753114,
+      "mean": -2.0067139907922273
+    },
+    "per_variant_latency_all_calls": {
+      "first": {
+        "count": 30,
+        "p50_ms": 254.004084,
+        "p90_ms": 292.333208,
+        "p95_ms": 320.978125,
+        "p99_ms": 333.476292,
+        "mean_ms": 258.5002695,
+        "median_ms": 254.01347950000002,
+        "min_ms": 220.57375,
+        "max_ms": 333.476292,
+        "iqr_ms": 41.26875000000001
+      },
+      "second": {
+        "count": 30,
+        "p50_ms": 247.705917,
+        "p90_ms": 287.065542,
+        "p95_ms": 308.73125,
+        "p99_ms": 336.722792,
+        "mean_ms": 253.26211126666666,
+        "median_ms": 247.721542,
+        "min_ms": 213.98225,
+        "max_ms": 336.722792,
+        "iqr_ms": 47.457749999999976
+      }
+    },
+    "stage_aggregate_delta_ms": {
+      "feature_preparation": {
+        "first_mean": 0.20827500000000002,
+        "second_mean": 0.2060958
+      },
+      "input_quantization": {
+        "first_mean": 0.0015166333333333332,
+        "second_mean": 0.0013208333333333334
+      },
+      "landmark_tracking": {
+        "first_mean": 238.2380958,
+        "second_mean": 234.99621953333335
+      },
+      "model_inference": {
+        "first_mean": 0.09866243333333333,
+        "second_mean": 0.0750681
+      },
+      "model_initialization": {
+        "first_mean": 0.06879583333333333,
+        "second_mean": 0.06606936666666667
+      },
+      "output_postprocessing": {
+        "first_mean": 0.0301237,
+        "second_mean": 0.029105633333333332
+      },
+      "video_open_decode": {
+        "first_mean": 19.802937566666667,
+        "second_mean": 17.836668
+      }
+    }
+  },
+  "artifacts": {
+    "model_fp16": {
+      "path": "/private/tmp/echogesture-v7-agents/A11/models/landmark_classifier_fp16.tflite",
+      "sha256": "a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4",
+      "bytes": 832888
+    },
+    "model_int8": {
+      "path": "/private/tmp/echogesture-v7-agents/A11/models/landmark_classifier_int8.tflite",
+      "sha256": "9d24640a23244a3cd00c9fa62257733819f86ed1da5a10194c9b1cb64323700b",
+      "bytes": 509720
+    },
+    "labels": {
+      "path": "/private/tmp/echogesture-v7-agents/A11/models/landmark_labels.json",
+      "sha256": "e78f5028e97e2eaf86aff65af403af65061eebef010f0fbd41012293e8019a4a",
+      "bytes": 1492
+    },
+    "predictor": {
+      "path": "/private/tmp/echogesture-v7-agents/A11/src/main.py",
+      "sha256": "c695d78b1b1980e3b95b5357e0549385638eda3274a76eba479c6f3dcddf8141",
+      "bytes": 10154
+    },
+    "run_manifest": {
+      "path": "/private/tmp/echogesture-v7-agents/A11/evaluation/device/run_manifest.py",
+      "sha256": "00c509369b78f063f81f460d3de3b26b7ace478e5f6edd5f306f1713dfebc6ab",
+      "bytes": 15610
+    },
+    "matrix": {
+      "path": "/private/tmp/echogesture-v7-agents/A11/evaluation/device/benchmark_lab/matrix.py",
+      "sha256": "e4749b2f75ee2bdc74e1b2956b6dea25c3efb9bb4e1ab53ed22acdcfd90dfca4",
+      "bytes": 11418
+    },
+    "predict_model": {
+      "path": "/private/tmp/echogesture-v7-agents/A11/evaluation/device/v7_benchmark/predict_model.py",
+      "sha256": "10c271bc6ffe6fc47520bb2c89ade80bb6860e93891f7a33af51140ac2344e68",
+      "bytes": 3194
+    }
+  },
+  "manifest": {
+    "path": "/private/tmp/echogesture-validation-30/manifest.csv",
+    "sha256": "004e5effb7e6c19b515fdd00b048459fff236d8b35c6b7f7b49e91a1efa5d618"
+  },
+  "power": "NOT_MEASURED; requires a documented external meter or qualified platform method — do not infer from CPU",
+  "thermal": "NOT_MEASURED unless a sustained CSV (>=600s) analyzed by thermal_report.py is attached for this run",
+  "code_commit": null,
+  "environment": {
+    "python": "3.11.18 (main, Oct 25 2026, 19:41:29) [Clang 21.0.0 (clang-2100.3.34.2)]",
+    "platform": "macOS-26.3-arm64-arm-64bit",
+    "machine": "arm64",
+    "device_model": "Mac.lan",
+    "inference_runtime": "ai-edge-litert 2.3.0",
+    "delegate": "XNNPACK CPU (LiteRT)",
+    "thread_count": "runtime default; not explicitly configured"
+  },
+  "recorded_at": "2026-11-08T18:57:59.944488+00:00",
+  "scope": "Runtime/interface measurement on the recorded hardware only; not licensing/accuracy compliance evidence",
+  "comparison_ri_note": "FP16/INT8 deltas are paired by clip_id on identical inputs; they are latency/accuracy-delta measurements, not a requalification of either model."
+}

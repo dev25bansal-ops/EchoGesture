@@ -1,0 +1,139 @@
+EchoGesture submission NOTICE
+================================
+
+This NOTICE ships with the EchoGesture Track 2 submission bundle and
+with the v8_privacy patch tree (``evaluation/device/v8_privacy/``).
+It records licence and attribution provenance as it stands at audit
+time. It does NOT grant, claim, or upgrade any redistribution right.
+Where a right is unresolved, this file says so explicitly — do not
+treat inclusion of a binary and this note as a licence grant.
+
+Reading guide: §1 covers repo-authored code (MIT). §2 covers model
+assets under ``models/`` — the only place redistribution risk lives.
+§3 covers datasets and derived data. §4 covers Python dependencies.
+§5 lists assertions this project deliberately does NOT make.
+
+------------------------------------------------------------------------
+1. Repo-authored code and harnesses — MIT (see LICENSE)
+------------------------------------------------------------------------
+Covered: ``src/``, ``app/``, ``evaluation/device/`` harnesses
+(``run_manifest.py``, ``robustness.py``, ``evidence_lab/``,
+``privacy_lab/``, templates), ``scripts/release/``, ``scripts/ml/``
+export helpers, and the v8_privacy modules in this tree. Any other
+licence may be substituted by adding its text explicitly; until then
+the MIT text in ``LICENSE`` is the only licence text that binds this
+code. The prior claim "Our code and harnesses: MIT" (README) has no
+other file behind it and must not be extended to model or dataset
+assets.
+
+------------------------------------------------------------------------
+2. Model assets under ``models/`` — NOT MIT, not freely shippable
+------------------------------------------------------------------------
+Each asset below must be verified against its current licence/terms at
+submission time and carry its attribution in the submission. None is
+claimed as MIT or commercially shippable by this NOTICE.
+
+(a) ``models/hand_landmarker.task`` (Google MediaPipe)
+    - A Google MediaPipe model blob (hand-landmark detector).
+    - Also required by ``src/landmark_frontend.py`` at inference time.
+    - Licence context: Apache-2.0 per MediaPipe terms; the blob itself
+      must carry its provenance (source URL, version, SHA-256) in the
+      submission, and current MediaPipe terms must be re-verified at
+      submission time. Treat as NOT_CLEARED until that verification is
+      recorded.
+    - Byte accounting: whether the detector asset counts toward any
+      organizer total-model-bytes cap (e.g. the 20 MB gate enforced in
+      ``build_bundle.py``) is an organizer rule, not a licence
+      question — it does not change the asset's licence context.
+
+(b) ``models/s3d_conv1d_qat_int8.tflite`` and
+    ``models/ptq_100_int8.tflite`` (S3D-Conv1D INT8 weights)
+    - Architecture and shipped INT8 weights as published by
+      Kimpinde & Olukanmi, *Algorithms* 2026; README attributes an MIT
+      grant to those weights. The MIT attribution is recorded here as
+      claimed by the source; confirm at submission time that the grant
+      actually covers redistribution of these specific weight files.
+    - Training-data context: the weights were trained on WLASL, which
+      this project itself records as C-UDA (academic / non-commercial,
+      no commercial shipping). The WLASL C-UDA restriction therefore
+      reattaches to these weights for commercial purposes. This NOTICE
+      does NOT claim commercial shippability for either S3D weight,
+      and the weights MUST NOT be bundled into a commercially-advertised
+      release on the strength of the MIT paper attribution alone.
+    - Carry the paper citation alongside any evaluation use.
+
+(c) ``models/landmark_classifier_fp16.tflite`` and
+    ``models/landmark_classifier_int8.tflite`` plus
+    ``models/landmark_labels.json`` (Dev landmark candidate)
+    - A model trained on ASL Citizen-derived data (research-licence
+      context: evaluation is what the licence contemplates).
+    - Redistribution / shipping of trained weights and their vocabulary
+      is NOT claimed here and MUST NOT be relabelled as MIT / freely
+      licensable. Explicit Dev + organizer written confirmation is
+      required before including either weight in the submission ZIP.
+    - Vocabulary check: the packaged 100-label vocabulary
+      (``landmark_labels.json``) must match the trained model's output
+      semantics at submission time; a mismatched label file is a
+      correctness defect independent of licence.
+
+(d) ``models/label100.json`` (S3D vocabulary, 100 classes)
+    - Label map for the S3D backends in (b). Its redistribution status
+      follows the S3D weights; do not separate the vocabulary from the
+      weights it describes.
+
+------------------------------------------------------------------------
+3. Datasets and derived data — non-redistributable
+------------------------------------------------------------------------
+* WLASL — C-UDA licence (academic / non-commercial). Clips cannot be
+  redistributed or shipped commercially. Keep clips, splits, and any
+  landmark caches outside Git and outside the submission ZIP.
+* ASL Citizen (Microsoft Research licence, non-commercial, no
+  redistribution). Clips, per-participant result rows
+  (``evaluation/asl_citizen_predictions.csv`` — `participant` IDs
+  ``P15``-style — personal-adjacent metadata), and trained weights carry
+  the research-only context. Public exports strip participant IDs
+  (see ``v8_privacy/sanitize_evidence.py``); the salt file for any
+  pseudonymisation must never ship.
+* Neither dataset ships with this NOTICE, and no clip, split, or cache
+  derived from them is licensed by inclusion. ``fetch_*.py`` helpers
+  write only to operator-chosen output directories outside the repo —
+  keep that behaviour; any validation manifest containing private clip
+  paths likewise stays outside Git and outside the ZIP.
+
+------------------------------------------------------------------------
+4. Python dependencies — each under its own licence
+------------------------------------------------------------------------
+Declared in ``src/requirements.txt`` (floors shown; verify current
+versions at submission time):
+
+* ``numpy>=1.24.0`` — BSD-3-Clause.
+* ``opencv-python>=4.8.0`` — Apache-2.0 (OpenCV).
+* ``ai-edge-litert>=2.3.0`` (LiteRT / TFLite interpreter) — Apache-2.0.
+* ``mediapipe>=1.2.2`` — Apache-2.0.
+
+Their licence texts are NOT reproduced in this bundle; attribution is
+to the SPDX identifiers above and the upstream repositories. No
+dependency is relicensed by the MIT grant over repo code.
+
+Competitions / papers cited in analysis (hoyso48 and other Kaggle
+``Isolated Sign Language Recognition`` solutions, S3D paper) are
+referenced for provenance only; their code, weights and data are not
+redistributed here.
+
+------------------------------------------------------------------------
+5. Assertions deliberately NOT made
+------------------------------------------------------------------------
+* No claim that this bundle is "MIT-licensed" as a whole, that any
+  model weight is freely licensable or commercially shippable, or that
+  any dataset clip or per-participant row is redistributable.
+* No claim of organizer approval, target-device certification, or
+  competition compliance by this NOTICE alone.
+* No claim that the ASL Citizen-derived landmark weights or the
+  WLASL-derived S3D weights may ship in a commercial or public release
+  without the written confirmations noted in §2.
+* Until the §2 verifications are recorded, the accurate label for any
+  release containing these assets remains NOT release-certified.
+
+Verify current licence texts and organizer rules at submission time;
+this snapshot records project-internal context as audited, not legal
+advice.

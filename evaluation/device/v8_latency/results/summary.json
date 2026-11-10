@@ -1,0 +1,97 @@
+{
+  "task": "V8 latency: baseline IMAGE singleton vs persistent parallel_4, identical 30 permitted real clips",
+  "manifest": {
+    "path": "/tmp/echogesture-validation-30/manifest.csv",
+    "sha256": "004e5effb7e6c19b515fdd00b048459fff236d8b35c6b7f7b49e91a1efa5d618",
+    "n_clips": 30,
+    "repeats": 3,
+    "n_per_strategy": 90
+  },
+  "hardware": {
+    "brand": "Apple M5 Pro",
+    "cpus": 18,
+    "ram_bytes": 25769803776
+  },
+  "environment": {
+    "platform": "macOS-26.3-arm64-arm-64bit",
+    "mediapipe": "1.2.2",
+    "litert": "2.3.0",
+    "opencv": "5.0.0",
+    "numpy": "2.4.6"
+  },
+  "isolated_headline": {
+    "baseline": {
+      "successful": 90,
+      "runs": 90,
+      "total_p50": 231.56,
+      "total_p95": 281.67,
+      "total_p99": 310.52,
+      "total_mean": 234.08,
+      "tracking_p50": 215.66,
+      "tracking_p95": 267.14,
+      "decode_p50": 14.49,
+      "correct": 66,
+      "labelled": 90
+    },
+    "parallel_4": {
+      "successful": 90,
+      "runs": 90,
+      "total_p50": 79.78,
+      "total_p95": 96.09,
+      "total_p99": 115.9,
+      "total_mean": 81.85,
+      "tracking_p50": 65.0,
+      "tracking_p95": 80.64,
+      "decode_p50": 14.39,
+      "correct": 66,
+      "labelled": 90
+    },
+    "speedup_total_p50": 2.9,
+    "speedup_total_p95": 2.93,
+    "speedup_tracking_p50": 3.32
+  },
+  "paired_identical_input": {
+    "baseline": {
+      "successful": 90,
+      "runs": 90,
+      "total_p50": 231.83,
+      "total_p95": 285.17,
+      "total_p99": 311.79,
+      "total_mean": 234.88,
+      "tracking_p50": 215.49,
+      "tracking_p95": 270.11,
+      "decode_p50": 16.27,
+      "correct": 66,
+      "labelled": 90
+    },
+    "parallel_4": {
+      "successful": 90,
+      "runs": 90,
+      "total_p50": 79.38,
+      "total_p95": 97.56,
+      "total_p99": 116.63,
+      "total_mean": 82.15,
+      "tracking_p50": 64.71,
+      "tracking_p95": 82.71,
+      "decode_p50": 14.43,
+      "correct": 66,
+      "labelled": 90
+    },
+    "same_top1": 90,
+    "same_top5": 90,
+    "compared_pairs": 90,
+    "paired_total_delta_mean_ms": -152.73
+  },
+  "landmark_parity_parallel4_vs_baseline": {
+    "n_identical": 30,
+    "n_total": 30,
+    "max_abs_diff": 0.0
+  },
+  "peak_memory_ru_maxrss_bytes": {
+    "baseline_only_process": 269336576,
+    "parallel4_only_process": 407273472,
+    "paired_process_both_pools": 452050944,
+    "note": "macOS ru_maxrss in bytes, process-wide max RSS"
+  },
+  "default_strategy": "baseline (V7_STRATEGY defaults to baseline; parallel_4 is opt-in)"
+}

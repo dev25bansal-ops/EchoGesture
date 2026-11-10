@@ -1,0 +1,121 @@
+{
+  "root": "/private/tmp/echogesture-v7-agents/A15",
+  "checks": 14,
+  "pass": 7,
+  "fail": 6,
+  "not_cleared": 1,
+  "findings": [
+    {
+      "check": "V1-shipped-offline",
+      "status": "PASS",
+      "detail": "Network/cloud sinks in src+app: 0. src/main.py and app/offline_demo.py perform inference locally (TFLite/mediapipe); the only 'https' text in shipped code is the hand_landmarker download-hint string in src/landmark_frontend.py (error message, not a call). Research fetchers use urllib.request to download.microsoft.com (ASL Citizen) and are never imported by src/main.py, app/offline_demo.py or scripts/release/build_bundle.py.",
+      "where": []
+    },
+    {
+      "check": "V2-secrets",
+      "status": "PASS",
+      "detail": "Hardcoded credential patterns (excluding ASL gloss 'secretary').",
+      "where": []
+    },
+    {
+      "check": "V3-temp-clip-deletion",
+      "status": "PASS",
+      "detail": "app/offline_demo.py PredictionWorker: write_temp_clip() encodes one tmp clip, finally: path.unlink(missing_ok=True) deletes it on success AND on predictor exception. Temp dir is TemporaryDirectory (mkdtemp, mode 0700) — a private subdir inside the system temp dir, not files loose in shared /tmp. Residual: SIGKILL/machine-crash orphans the clip (no user-space cleanup possible); frames stay in RAM (deque+list copy) during inference, never scrubbed explicitly. Docstring 'No footage is retained' is true on-disk; recommend the 'no footage kept on disk; frames in memory only during inference' nuance in public copy.",
+      "where": [
+        "app/offline_demo.py:195-297"
+      ]
+    },
+    {
+      "check": "V3b-demo-lab-persistence",
+      "status": "FAIL",
+      "detail": "app/demo_lab/__init__.py writes HUD PNG + JSON report to /tmp/echogesture-demo-lab (default, gettempdir, no cleanup) and leaves them there. HUD PNG embeds a rendered video frame. Low: operator-run local demo, but persistent video-derived output in shared /tmp should be documented or the outdir default changed to a private TemporaryDirectory.",
+      "where": [
+        "app/demo_lab/__init__.py:167-183"
+      ]
+    },
+    {
+      "check": "V4-evaluator-no-retention",
+      "status": "PASS",
+      "detail": "src/main.py predict() opens video_path in place via cv2.VideoCapture, no copy, no temp clip, no write — nothing to delete. Offline_demo's worker is the only temp-clip path (V3).",
+      "where": []
+    },
+    {
+      "check": "V5-bundle-clean",
+      "status": "PASS",
+      "detail": "Provisional ZIPs ship src/, models/, one export script, results.csv, Dockerfile, release.json. No clips, no participant CSV, no fetch_/eval_ research code in the actual zips. Residual (process): build_bundle --extra allowlist still permits evaluation/ roots — a mis-passed --extra could copy research fetchers into a future ZIP. Exclude by process / trim allowlist.",
+      "where": [
+        "release_lab: 13 members",
+        "v5_release: 13 members"
+      ]
+    },
+    {
+      "check": "V6-robustness-temp-cleanup",
+      "status": "PASS",
+      "detail": "robustness.paired_evaluate wraps the per-clip loop in try/finally; workdir removed even when a clip fails. Prior D1 FAIL is CLOSED in live code (earlier privacy_lab findings are stale on this point).",
+      "where": [
+        "evaluation/device/robustness.py:82-121"
+      ]
+    },
+    {
+      "check": "V7-manifest-containment",
+      "status": "FAIL",
+      "detail": "run_manifest.read_manifest resolves clip paths relative to the manifest dir but accepts ../ and absolute paths anywhere (no containment). Low (local operator-supplied evaluator); still open. Add parents-check or document as deliberate operator capability.",
+      "where": [
+        "evaluation/device/run_manifest.py:read_manifest"
+      ]
+    },
+    {
+      "check": "V8-evidence-hostname-leak",
+      "status": "FAIL",
+      "detail": "run_manifest summary writes platform.node() as device_model plus absolute resolved artifact paths into benchmark.json. Redact (generic device label, repo-relative paths) before any evidence leaves the machine.",
+      "where": [
+        "evaluation/device/run_manifest.py:environment"
+      ]
+    },
+    {
+      "check": "V9-bundle-safe-member",
+      "status": "PASS",
+      "detail": "build_bundle.safe_member now rejects ':' in the first component (parts[0].endswith(':') or ':' in parts[0]), so prior D3 colon bypass ('data:file' → True) is CLOSED in live code. Also rejects absolute, '..', drive letters, backslashes; verify_zip rejects symlink members.",
+      "where": [
+        "scripts/release/build_bundle.py:safe_member"
+      ]
+    },
+    {
+      "check": "V10-license-file",
+      "status": "FAIL",
+      "detail": "No LICENSE/NOTICE in repo root while README claims 'Our code and harnesses: MIT'. Add MIT text for repo-authored code (only) or drop the claim; add per-asset provenance/attribution for hand_landmarker.task and the weights before submission.",
+      "where": []
+    },
+    {
+      "check": "V11-models-licensing",
+      "status": "NOT_CLEARED",
+      "detail": "models/: hand_landmarker.task (Google MediaPipe — Apache-2.0 per MediaPipe terms; needs attribution + provenance note); landmark_classifier_fp16/INT8 (ASL Citizen-derived — Microsoft research licence, non-commercial, no redistribution: trained weights inherit the research-only context, do NOT relabel MIT); S3D ptq/qat weights (README cites MIT for Kimpinde & Olukanmi but weights were trained on WLASL C-UDA non-commercial). Verify Organizer + licence-holder permission before shipping any weight; do not overclaim commercial shippability.",
+      "where": [
+        "models/hand_landmarker.task",
+        "models/landmark_classifier_fp16.tflite",
+        "models/landmark_classifier_int8.tflite",
+        "models/ptq_100_int8.tflite",
+        "models/s3d_conv1d_qat_int8.tflite"
+      ]
+    },
+    {
+      "check": "V12-participant-metadata",
+      "status": "FAIL",
+      "detail": "evaluation/asl_citizen_predictions.csv is in the tree with a 'participant' column (P15-style IDs) — personal-adjacent metadata from the ASL Citizen research dataset. Confirm redistribution terms allow per-participant result rows, else strip/hash the column before submission. Header: video,true_gloss,pred_gloss,participant,correct. Rows: 1705.",
+      "where": [
+        "evaluation/asl_citizen_predictions.csv"
+      ]
+    },
+    {
+      "check": "V13-research-absolute-paths",
+      "status": "FAIL",
+      "detail": "Absolute local paths remain in research-only scripts/docs (eval_wlasl_signers.py, eval_asl_citizen.py C:\\Users\\dev25\\…; various README venv paths). Shipped src/app use Path(__file__)-relative roots — PASS for evaluator. Must stay out of submission ZIP; gate any 'no absolute paths' check to src/+app/ or the prior privacy_lab JSONs self-flag. Stale findings.json/reproductions.json in privacy_lab still embed /private/tmp/… roots — regenerate or exclude from submission.",
+      "where": [
+        "evaluation/device/qa_lab/reproduce_repeated_load.py:16",
+        "evaluation/device/qa_lab/reproduce_paired_cleanup.py:15",
+        "evaluation/device/decoder_lab/benchmark.py:4",
+        "evaluation/device/decoder_lab/test_decoder_variants.py:4"
+      ]
+    }
+  ]
+}

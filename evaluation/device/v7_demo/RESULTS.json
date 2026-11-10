@@ -1,0 +1,42 @@
+{
+  "v7_tests": {
+    "returncode": 0,
+    "tail": [
+      "............",
+      "----------------------------------------------------------------------",
+      "Ran 16 tests in 6.662s",
+      "",
+      "OK"
+    ]
+  },
+  "shared_tests": {
+    "returncode": 0,
+    "tail": [
+      ".................",
+      "----------------------------------------------------------------------",
+      "Ran 17 tests in 0.344s",
+      "",
+      "OK"
+    ]
+  },
+  "real_file_prediction": {
+    "video": "/tmp/echogesture-validation-30/0283886564670357-WHAT FOR.mp4",
+    "exit_code": 0,
+    "captures": [
+      {
+        "seq": 1,
+        "state": "CAPTION",
+        "prediction": "WHATFOR1",
+        "confidence": 0.7966,
+        "latency_ms": 475.34,
+        "capture_to_result_ms": 524.026833
+      }
+    ],
+    "model_sha": "a012f2b5f7a1",
+    "live_camera_verified": false
+  },
+  "camera_cli": {
+    "returncode": 2,
+    "stderr_first_line": "OpenCV: not authorized to capture video (status 0), requesting..."
+  }
+}

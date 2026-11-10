@@ -149,7 +149,7 @@ class EvidenceAndManifestTests(unittest.TestCase):
 
     def test_evidence_flags_participant_and_abs_path(self):
         _write(self.repo / "results" / "results.csv",
-               "metric,notes\nx,/Users/abhijeet/clip.mp4\n")
+               "metric,notes\nx,/Users/example/clip.mp4\n")
         _write(self.repo / "evaluation" / "asl_citizen_predictions.csv",
                "video,participant,correct\na,P15,1\n")
         findings = {f["check"]: f for f in cf.run_checks(self.repo)["findings"]}
@@ -168,7 +168,7 @@ class EvidenceAndManifestTests(unittest.TestCase):
         _write(self.repo / "evaluation" / "asl_citizen_predictions.csv",
                "video,participant,correct\na,P15,1\n")
         _write(self.repo / "evaluation" / "asl_citizen_ptq_results.json",
-               json.dumps({"per_signer": {"signer_e0f4874f": [1, 2]}}))
+               json.dumps({"per_signer": {"P15": [1, 2]}}))
         # ...but the sanitised publish surface is what ships.
         _write_publish(self.repo)
         findings = {f["check"]: f for f in cf.run_checks(self.repo)["findings"]}
@@ -177,7 +177,7 @@ class EvidenceAndManifestTests(unittest.TestCase):
         self.assertTrue(findings["C09-restricted-data"]["raw_local_only"])
 
     def test_publish_surface_with_hostname_or_path_fails(self):
-        _write_publish(self.repo, poison="evil,/Users/abhijeet/x.mp4\n")
+        _write_publish(self.repo, poison="evil,/Users/example/x.mp4\n")
         findings = {f["check"]: f for f in cf.run_checks(self.repo)["findings"]}
         self.assertEqual(findings["C03-evidence-hygiene"]["status"], "FAIL")
         self.assertEqual(findings["C09-restricted-data"]["status"], "FAIL")
@@ -437,7 +437,7 @@ class SanitizeExportTests(unittest.TestCase):
 
     def test_benchmark_hostname_and_path_cleaned(self):
         doc = {"environment": {"device_model": "abhi-macbook.local"},
-               "artifacts": {"m": {"path": "/Users/abhi/x/model.tflite"}}}
+               "artifacts": {"m": {"path": "/Users/example/x/model.tflite"}}}
         clean = se.sanitize_document(doc)
         self.assertEqual(clean["environment"]["device_model"], "generic-device")
         self.assertEqual(clean["artifacts"]["m"]["path"], "model.tflite")
@@ -448,7 +448,7 @@ class SanitizeExportTests(unittest.TestCase):
         self.assertTrue(leaks)
 
     def test_absolute_path_leak_is_detected(self):
-        leaks = se.leaks_in_document({"notes": "/Users/abhi/clip.mp4"})
+        leaks = se.leaks_in_document({"notes": "/Users/example/clip.mp4"})
         self.assertTrue(any("absolute" in reason for reason in leaks))
 
     def test_participant_token_leak_is_detected(self):
@@ -463,7 +463,7 @@ class SanitizeExportTests(unittest.TestCase):
         se.sanitize_all(self.tmp, publish, sources=["preds.csv", "ptq.json"])
         self.assertTrue(se.scan_publish_dir(publish)["ok"])
         poison = publish / "leak.json"
-        poison.write_text('{"per_signer": {"signer_e0f4874f": [1, 2]}}', encoding="utf-8")
+        poison.write_text('{"per_signer": {"P15": [1, 2]}}', encoding="utf-8")
         scan = se.scan_publish_dir(publish)
         self.assertFalse(scan["ok"])
         self.assertTrue(scan["leaks"])

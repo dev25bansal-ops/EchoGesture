@@ -27,6 +27,9 @@ def _load(path):
     return fb, io, inspect_tflite.classify(fb, io)
 
 
+@unittest.skipUnless(
+    FP16.is_file() and INT8.is_file() and DET.is_file(),
+    "trained model weights are not committed (see NOTICE); supply them locally")
 class TestRealArtifacts(unittest.TestCase):
     """Acceptance: classify FP16 as non-INT8; INT8 alt as INT8; detector FP16."""
 

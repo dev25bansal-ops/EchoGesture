@@ -183,6 +183,9 @@ class DemoTest(unittest.TestCase):
                 open_camera(9)
             self.assertIn("not opened", str(ctx.exception))
 
+    @unittest.skipUnless(
+        (Path(__file__).resolve().parents[2] / "models/landmark_classifier_fp16.tflite").is_file(),
+        "trained weights are not committed (see NOTICE)")
     def test_model_identity_names_selected_artifact(self):
         identity = model_identity()
         label = model_label_from_identity(identity)

@@ -103,8 +103,16 @@ The table below is the **old S3D research baseline**, not the landmark model.
 
 ## The core empirical finding
 
-We downloaded the published S3D-Conv1D INT8 weights (MIT-licensed, shipped by
-Kimpinde & Olukanmi, *Algorithms* 2026) and evaluated them ourselves.
+We downloaded the published S3D-Conv1D INT8 weights (shipped by Kimpinde &
+Olukanmi, *Algorithms* 2026) and evaluated them ourselves.
+
+**On the licence:** the upstream authors describe the code as MIT, but the
+weights derive from WLASL, whose terms are academic / non-commercial. This repo
+holds **no documentary permission to redistribute the weight files**, which is
+why `NOTICE` marks them local/private only. An earlier revision of this line
+said "MIT-licensed", which overstated what we can prove. Two of those files
+nevertheless appear in this repository's history from an early commit — see
+[LICENSING_REVIEW.md](docs/submission/LICENSING_REVIEW.md).
 
 **Positive control — in-distribution:** 17/17 = **100%** on readable WLASL100
 clips from signers present in training. This proves the OpenCV preprocessing,

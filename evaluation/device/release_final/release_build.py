@@ -47,15 +47,43 @@ from build_bundle import sha256, safe_member  # noqa: E402  (reused, not modifie
 # --- The complete runtime closure for predict(video_path), landmark backend ---
 # Ordered so the manifest reads like a dependency list. Every entry is a
 # relative POSIX path rooted at the repository root.
+#
+# Ensemble members are declared by models/landmark_model_meta.json, not hardcoded
+# here: the runtime refuses to start when a declared member is absent, so a
+# closure that shipped only the single classifier staged a bundle that could not
+# predict. Derive them so the closure cannot drift from the metadata again.
+_META_REL = "models/landmark_model_meta.json"
+
+
+def _declared_members(repo=REPO):
+    """Member basenames declared by the model metadata, validated for safety."""
+    meta_path = Path(repo) / _META_REL
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    raw = meta.get("members")
+    if not isinstance(raw, list) or not raw:
+        raise ValueError(
+            f"{_META_REL} must declare a non-empty 'members' list for the ensemble runtime")
+    members = []
+    for name in raw:
+        if not isinstance(name, str) or not name or "/" in name or "\\" in name:
+            raise ValueError(f"Unsafe ensemble member name in {_META_REL}: {name!r}")
+        members.append(f"models/{name}")
+    return tuple(members)
+
+
 CLOSURE = (
     "src/main.py",
     "src/requirements.txt",
     "src/README.md",
     "src/features.py",
     "src/landmark_frontend.py",
+    # The opt-in parallel tracker. Omitting it made ECHOGESTURE_TRACKER=parallel
+    # silently fall back to the singleton engine inside this bundle.
+    "src/parallel_tracker.py",
     "models/landmark_classifier_fp16.tflite",
+    *_declared_members(),
     "models/landmark_labels.json",
-    "models/landmark_model_meta.json",
+    _META_REL,
     "models/hand_landmarker.task",
     "scripts/ml/export_tflite_tf.py",
     "results/results.csv",
@@ -116,11 +144,21 @@ def write_release_json(staging):
     return manifest
 
 
-def write_dockerfile(staging):
-    (staging / "Dockerfile").write_text(
-        "FROM python:3.11-slim\nWORKDIR /app\nCOPY . /app\n"
-        "RUN pip install --no-cache-dir -r src/requirements.txt\n"
-        'CMD ["python", "src/main.py"]\n', encoding="utf-8")
+def write_dockerfile(staging, repo=REPO):
+    """Stage the repository's Dockerfile, never a generated stub.
+
+    A stub here diverged from the image that was actually built and verified:
+    it had no apt-get for the X11/GL libraries opencv and mediapipe need, and no
+    ENTRYPOINT, so `docker run <image> --help` failed with
+    `exec: "--help": executable file not found in $PATH`.
+    """
+    source = Path(repo) / "Dockerfile"
+    if source.is_file() and source.read_text(encoding="utf-8").strip():
+        shutil.copy2(source, Path(staging) / "Dockerfile")
+        return
+    raise ValueError(
+        "No usable Dockerfile at the repository root; refusing to emit a stub "
+        "that will not run")
 
 
 def check_release_hash(staging):

@@ -1,7 +1,8 @@
 # Docker acceptance evidence — EchoGesture evaluator image
 
 Owner: Abhijeet (organizer requirements, evaluator entry point, packaging).
-Branch `hackathon/abhijeet-integration`, commit `e2b22af`.
+Branch `hackathon/abhijeet-integration`. Docker defects found against
+`e2b22af`; fixed and committed in `4fb24df`. Bundle re-run at `1e09b4b`.
 
 This document records what was **actually executed** against the container,
 with literal output. Anything not executed is stated as NOT VERIFIED.
@@ -21,9 +22,10 @@ with literal output. Anything not executed is stated as NOT VERIFIED.
 | No developer-checkout dependency | **YES** — imports resolve from `/app/src` |
 | `ECHOGESTURE_TRACKER=parallel` in-container | **YES** — `engine: parallel` |
 
-**As committed at `e2b22af`, the image builds but does not run.** Two defects
-were found and fixed in the working tree (`Dockerfile`, new `.dockerignore`).
-Both are described in §3 and are not yet committed.
+**At `e2b22af` the image builds but does not run.** Three defects were found
+and are fixed in `4fb24df` (`Dockerfile` amended, new `.dockerignore`).
+They are described in §3. The evidence below is from the fixed image, built
+twice from the committed Dockerfile (§2).
 
 ---
 
@@ -35,10 +37,16 @@ Both are described in §3 and are not yet committed.
 | Docker | Docker Desktop, server **29.9.2**, storage driver `overlayfs` |
 | Base image | `python:3.11-slim` (Python 3.11.18) |
 | Build command | `docker build -t echogesture:rc .` |
-| Image ID | `sha256:be65e2bf8a10…` |
+| Image ID | `sha256:be65e2bf8a10…` (tag `echogesture:rc`) |
+| Image ID (reproduced) | `sha256:73fec9048582…` (tag `echogesture:final`, independent build of the same committed Dockerfile) |
 | Image size | 1.25 GB (1,250,134,348 B) |
 | Reference clip | `evaluation/device/v5_accuracy/data/val_30/0283886564670357-WHAT FOR.mp4` |
 | Expected result | `WHATFOR1`, confidence 0.8821 (host, macOS) |
+
+Two independent builds of the committed Dockerfile produced the same
+behaviour: `--help` exit 0, prediction `WHATFOR1` @ 0.8818, parallel engine
+`parallel`, missing weights `FileNotFoundError`. Image IDs differ because
+BuildKit layer digests embed timestamps; the container behaviour does not.
 
 ---
 
@@ -324,20 +332,23 @@ Matches the expected 582 / 579 / 0 / 3.
 
 ```
 $ .venv/bin/python -I evaluation/device/release_final/release_build.py \
-    --output /var/tmp/eg-verify/provisional.zip
+    --output /var/tmp/eg-verify/provisional2.zip
 {
-  "zip": ".../provisional.zip",
-  "zip_sha256": "88cfb15f569c0f40d6ce974253771d3468b61ebd01c42fa681058911b56a51fe",
-  "zip_bytes": 9744380,
+  "zip": ".../provisional2.zip",
+  "zip_sha256": "c8d7f65e9da23c88a791dc4bf6c4fe67c7d95cb28ec655352819fdd2854a13e8",
+  "zip_bytes": 9744844,
   "extraction": {
     "prediction": {"clip_id": "0283886564670357-WHAT FOR", "prediction": "WHATFOR1",
                    "top5": ["WHATFOR1","OFFEND","KNIGHT1","SCROLLDOWN","DECIDE1"],
-                   "confidence": 0.8821, "latency_ms": 497.07}
+                   "confidence": 0.8821, "latency_ms": 665.26}
   }
 }
 ```
 
 Extraction into a fresh temporary directory and prediction both succeeded.
+Re-run at `1e09b4b`; an earlier run at `e2b22af` gave
+`88cfb15f…` / 9,744,380 B / 0.8821, so the result is stable across the two
+commits.
 
 ### 7.3 Two bundle defects found during this re-run
 
@@ -377,10 +388,24 @@ module), so the two suites disagree about what "complete" means.
 `release_build.write_dockerfile()` writes its own 5-line Dockerfile
 (`COPY . /app`, `CMD ["python", "src/main.py"]`) rather than copying the root
 `Dockerfile` (1,259 B as committed). The bundled one:
-- has no `ENTRYPOINT`, so `--help` is passed to the script as a filename and
-  is not handled as a flag;
+- has no `ENTRYPOINT`, so `--help` is passed to the *runtime* as a command;
 - installs no system libraries, so `import cv2` fails as in D1;
 - does not set `PYTHONDONTWRITEBYTECODE`.
+
+Built and run to confirm, rather than inferred. The build **succeeds**
+(linking is lazy), and both invocations then fail:
+
+```
+$ docker build -t eg-bundled-dockerfile-test .        # in the extracted ZIP
+#10 DONE 9.7s                                          # build succeeds
+
+$ docker run --rm eg-bundled-dockerfile-test
+ImportError: libxcb.so.1: cannot open shared object file: No such file or directory
+
+$ docker run --rm eg-bundled-dockerfile-test --help
+docker: Error response from daemon: failed to create task for container:
+  ... exec: "--help": executable file not found in $PATH
+```
 
 Anyone who unpacks the submission and builds the bundled Dockerfile gets a
 container that cannot start. The organizer's deck asks for "Docker files"; the
@@ -414,10 +439,9 @@ shipped one is not the one that was verified here.
 - **GPU / delegates.** CPU XNNPACK only; no GPU delegate tested.
 - **Latency as a device figure.** 750–830 ms in a Docker Desktop VM is not a
   device measurement and must not be quoted as one.
-- **The fixes in §3 are uncommitted.** A fresh clone at `e2b22af` still builds
-  a non-running image until `Dockerfile` and `.dockerignore` are committed.
-- **The bundled Dockerfile (B2) was not rebuilt here.** The repo-root
-  Dockerfile was fixed; the one `release_build.py` emits was not.
+- **The bundled Dockerfile (B2) was not fixed.** The repo-root Dockerfile was
+  fixed in `4fb24df`; the one `release_build.py` emits still omits `apt-get`
+  and `ENTRYPOINT`. Built and run to confirm it fails both ways (§7.3).
 
 ---
 

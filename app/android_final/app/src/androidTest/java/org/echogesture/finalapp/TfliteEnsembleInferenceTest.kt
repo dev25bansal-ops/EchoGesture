@@ -78,7 +78,7 @@ class TfliteEnsembleInferenceTest {
         val expectedTop = l[4 + members].trim().split(' ').map { it.toInt() }.toIntArray()
         val expectedLabels = l[5 + members].trim().split(' ')
         val expectedConfidence = l[6 + members].trim().toFloat()
-        val features = floats(l[7 + members + 1].removePrefix("features "), 24 * 255)
+        val features = floats(l[7 + 4 + 1].removePrefix("features "), 24 * 255)
 
         // 1) The real production loader validates and returns all four members.
         val loaded = ModelContract.load(assets)
@@ -146,7 +146,7 @@ class TfliteEnsembleInferenceTest {
         val l = fixture()
         val classes = l[0].split(' ')[1].toInt()
         val expectedLogits = Array(4) { floats(l[2 + it], classes) }
-        val features = floats(l[7 + 1 + 1].removePrefix("features "), 24 * 255)
+        val features = floats(l[7 + 4 + 1].removePrefix("features "), 24 * 255)
         LandmarkClassifier.create(ModelContract.load(assets)).use { classifier ->
             val real = classifier.memberLogits(features)
             for (i in 0 until 4) for (j in i + 1 until 4) {

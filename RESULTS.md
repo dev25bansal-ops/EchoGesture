@@ -35,6 +35,19 @@ video -> 32 frames sampled evenly across the clip (not the opening 32)
 Val is optimistic because ensemble members were selected on it. **Test is the
 honest number.**
 
+**Both splits are reproducible from the shipped artifacts.** A review flagged
+83.77% as unsupported, because the committed `results/predictions_val.jsonl`
+recomputed to 75.36% and `eval_summary_val.json` said 76.52%. Those two files
+are **stale single-model-era outputs that were never regenerated for the
+ensemble** — their latency profile gives it away (p50 0.55 ms for one model vs
+1.21 ms for four). Regenerating both prediction files from the four shipped
+FP16 members gives 289/345 = 83.77% on val and 909/1249 = 72.78% on test, which
+is exactly the headline. `results/predictions_val.jsonl` and
+`results/predictions_test.jsonl` are now the ensemble outputs, so this is
+checked by artifact rather than by memory.
+
+Reproduce: `scripts/ml/evaluate.py --split test` and `--split val`.
+
 ### The ensemble, member by member (test)
 
 | member | backbone | trained with | alone |

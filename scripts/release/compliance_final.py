@@ -233,7 +233,11 @@ def _iter_text_files(root: Path, dirs):
         for path in sorted(base.rglob("*")):
             if not path.is_file() or path.suffix not in SCAN_SUFFIXES:
                 continue
-            if any(part in SKIP_DIRS for part in path.parts):
+            # Only skip directories *inside* the scanned root. Absolute
+            # ancestors must not count: on Linux the temp dir is /tmp/...,
+            # so matching "tmp" against the whole path made every synthetic
+            # repo scan as empty and every finding pass.
+            if any(part in SKIP_DIRS for part in path.relative_to(root).parts):
                 continue
             if path.suffix in RAW_EXTENSIONS or path.suffix in SCREENSHOT_EXTENSIONS:
                 continue

@@ -4,5 +4,11 @@
   "classes": 100,
   "dim": 192,
   "backbone": "conv",
-  "quantization": "float16"
+  "quantization": "float16",
+  "members": [
+    "landmark_ens_tcn21_fp16.tflite",
+    "landmark_ens_tcnm61_fp16.tflite",
+    "landmark_ens_tcnm62_fp16.tflite",
+    "landmark_ens_rob71_fp16.tflite"
+  ]
 }

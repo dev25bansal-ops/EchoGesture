@@ -27,6 +27,32 @@ from pathlib import Path
 import numpy as np
 
 HERE = Path(__file__).resolve().parent
+
+def _has_weights() -> bool:
+    """True only when the *landmark ensemble* weights are actually present.
+
+    Checks the member list in the metadata rather than "any .tflite exists",
+    because older S3D artifacts may be present while the shipped ensemble is
+    absent (e.g. in a source-only clone). Untracked weights stay local.
+    """
+    import json as _json
+    for parent in Path(__file__).resolve().parents:
+        m = parent / "models"
+        meta = m / "landmark_model_meta.json"
+        if not meta.is_file():
+            continue
+        try:
+            members = _json.loads(meta.read_text(encoding="utf-8")).get("members")
+        except (OSError, ValueError):
+            members = None
+        if isinstance(members, list) and members:
+            return all((m / name).is_file() for name in members)
+        # no member list -> the single-classifier candidate
+        return (m / "landmark_classifier_fp16.tflite").is_file()
+    return False
+
+_weightless = unittest.skipUnless(_has_weights(), "trained model weights are not present")
+
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 ROOT = HERE.parents[2]
@@ -138,6 +164,7 @@ def real_clips() -> list[Path]:
 # Tests                                                                       #
 # --------------------------------------------------------------------------- #
 
+@_weightless
 class TestWorkerStartupAndReuse(unittest.TestCase):
     def test_builds_exactly_workers_landmarkers(self):
         orig = t._create_image_landmarker
@@ -175,6 +202,7 @@ class TestWorkerStartupAndReuse(unittest.TestCase):
             pool.close()
 
 
+@_weightless
 class TestOrderedResults(unittest.TestCase):
     """Use fake landmarkers tagged by pixel value to verify order restoration."""
 
@@ -220,6 +248,7 @@ class _TaggedLM:
         self.closed = True
 
 
+@_weightless
 class TestPerClipIsolation(unittest.TestCase):
     def test_two_detects_do_not_share_buffers(self):
         # Real implementation should return fresh arrays, not views.
@@ -252,6 +281,7 @@ class TestPerClipIsolation(unittest.TestCase):
             pool.close()
 
 
+@_weightless
 class TestWorkerRecovery(unittest.TestCase):
     """Exercise the worker-level recovery path.
 
@@ -334,6 +364,7 @@ def _always_raise():
     raise RuntimeError("persistent crash")
 
 
+@_weightless
 class TestTimeoutRecovery(unittest.TestCase):
     def test_timeout_recovers_then_propagates(self):
         made = []
@@ -375,6 +406,7 @@ def fake_frames4():
     return fake_frames(4)
 
 
+@_weightless
 class TestMalformedInputs(unittest.TestCase):
     def setUp(self):
         made = []
@@ -388,13 +420,26 @@ class TestMalformedInputs(unittest.TestCase):
                 self.closed = True
         orig = t._create_image_landmarker
         t._create_image_landmarker = lambda task_path: LM()
-        self.pool = t.ParallelImageTracker(workers=2,
-                                           task_path=MODELS / "hand_landmarker.task")
-        t._create_image_landmarker = orig
+        # The landmarker is fully mocked above, so the real detector is never
+        # read. ParallelImageTracker still requires task_path to exist on disk,
+        # which made every test in this class fail on a source-only clone.
+        # Give it an empty placeholder when the real asset is absent.
+        task_path = MODELS / "hand_landmarker.task"
+        self._placeholder = None
+        if not task_path.is_file():
+            MODELS.mkdir(parents=True, exist_ok=True)
+            task_path.write_bytes(b"")
+            self._placeholder = task_path
+        try:
+            self.pool = t.ParallelImageTracker(workers=2, task_path=task_path)
+        finally:
+            t._create_image_landmarker = orig
         self.made = made
 
     def tearDown(self):
         self.pool.close()
+        if self._placeholder is not None:
+            self._placeholder.unlink(missing_ok=True)
 
     def test_none_frames_rejected(self):
         with self.assertRaises(ValueError):
@@ -437,6 +482,7 @@ class TestMalformedInputs(unittest.TestCase):
             garbage.unlink()
 
 
+@_weightless
 class TestRepeatedCallsAndCleanup(unittest.TestCase):
     def test_repeated_calls_are_consistent(self):
         made = []

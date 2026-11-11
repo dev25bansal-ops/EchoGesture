@@ -38,16 +38,18 @@ class EnsembleInferenceTest {
         val top5: List<String>,
         val confidence: Float,
         val vocabulary: List<String>,
-        val averagedLogits: FloatArray
+        val averagedLogits: FloatArray,
+        val features: FloatArray
     )
 
     private fun loadFixture(): Fixture {
-        // The fixture is a unit-test resource; read it from the test APK's
-        // classpath, which instrumentation shares with the app under test.
+        // parity_ensemble_runtime.txt, not parity_ensemble_logits.txt: only the
+        // runtime fixture carries the real 24x255 feature vector that produced
+        // these logits, so it is the one a genuine inference test can replay.
         val text = instrumentation.context.classLoader
-            ?.getResourceAsStream("parity_ensemble_logits.txt")
+            ?.getResourceAsStream("parity_ensemble_runtime.txt")
             ?.bufferedReader()?.readText()
-            ?: error("parity_ensemble_logits.txt missing from the test classpath")
+            ?: error("parity_ensemble_runtime.txt missing from the test classpath")
         val lines = text.lineSequence().filter { it.isNotBlank() }.toList()
         val (memberCount, classes) = lines[0].split(' ').let { it[0].toInt() to it[1].toInt() }
         assertEquals("fixture must describe four members", 4, memberCount)
@@ -57,9 +59,12 @@ class EnsembleInferenceTest {
         val top5 = lines[5 + memberCount].trim().split(' ')
         val confidence = lines[6 + memberCount].trim().toFloat()
         val vocabulary = lines[7 + memberCount].trim().split(' ')
+        val features = lines[8 + memberCount].removePrefix("features ").trim()
+            .split(' ').filter { it.isNotEmpty() }.map { it.toFloat() }.toFloatArray()
+        assertEquals("feature vector length", 24 * 255, features.size)
         assertEquals("vocabulary size", classes, vocabulary.size)
         assertEquals("averaged logits length", classes, averaged.size)
-        return Fixture(members, classes, top5, confidence, vocabulary, averaged)
+        return Fixture(members, classes, top5, confidence, vocabulary, averaged, features)
     }
 
     private fun readAsset(name: String): ByteArray =
@@ -116,13 +121,10 @@ class EnsembleInferenceTest {
 
         val classifier = LandmarkClassifier.create(loaded)
         try {
-            // The feature tensor is not reconstructible without decoding the
-            // clip on-device, so drive the interpreter directly with the same
-            // member logits pipeline to prove per-member execution, then verify
-            // the aggregation the production path uses.
-            val memberLogits = fixture.members.map { name ->
-                averageLogitsMainShape(readAsset(name))
-            }
+            // Feed the fixture's real feature vector through every member.
+            // A zero tensor would run the interpreters but would not exercise
+            // the trained input, and would land on some unrelated class.
+            val memberLogits = classifier.memberLogits(fixture.features)
             assertEquals("per-member logits collected", 4, memberLogits.size)
 
             // Production aggregation on real per-member outputs must land on the

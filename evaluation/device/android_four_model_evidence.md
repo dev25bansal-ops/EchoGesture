@@ -70,11 +70,36 @@ is explicit about this — it verifies mean-logit → single softmax → top-5 a
 frozen logits produced by the Python reference. It is parity of *aggregation*,
 not proof the app runs four interpreters.
 
-`connectedDebugAndroidTest` — **NOT RUN.** No device is attached and no emulator
-or system image is installed on this machine. `EnsembleInferenceTest` is written
-and compiles into the test APK; it allocates all four real interpreters from the
-packaged assets, asserts each tensor contract, runs inference, and compares
-top-1, top-5 and confidence against the Python fixture. It requires a device.
+`connectedDebugAndroidTest` — **RUN AND PASSING** on an Android emulator.
+
+Device: Android 14 (API 34), arm64-v8a, AVD `eg34`, headless.
+`./gradlew connectedDebugAndroidTest` → **4 tests, 0 failures, 0 errors, 0 skipped, 0.659 s**.
+
+| Test | Time |
+| --- | --: |
+| `allFourMembersAllocateWithTheFrozenTensorContract` | 0.008 s |
+| `productionClassifierReproducesPythonOnFrozenFeatures` | 0.167 s |
+| `attentionToTensorIndexResolutionPerMember` | 0.091 s |
+| `fourRealInterpretersMatchThePythonReference` | 0.090 s |
+
+These allocate all four real `Interpreter` instances from the packaged assets,
+assert each member's tensor contract, run the fixture's real 24x255 feature
+vector through every member, and compare top-1, top-5 and confidence against the
+Python reference (`WHATFOR1`, 0.882111).
+
+Two defects in the instrumentation tests themselves were found and fixed by
+running them:
+
+- The feature vector was fed as an all-zero tensor, which runs the interpreters
+  but lands on `BREAKFAST1` — a meaningless result that a passing assertion
+  would have hidden. It now replays the fixture's real features.
+- The feature line index was hardcoded as `7 + 1 + 1` for a 4-member fixture, and
+  the logits fixture (12 lines, no features) was read instead of the runtime
+  fixture (16 lines, real features). Both corrected.
+
+An emulator is not target hardware: it validates that four interpreters allocate,
+execute and aggregate correctly under the Android runtime, but not camera
+capture, sensor behaviour or real-device latency.
 
 ## What is proven and what is not
 
@@ -124,11 +149,12 @@ quoted.
 - No network permission.
 - The app builds, signs, aligns, and its unit tests pass.
 
-**Not proven without hardware:**
-- That four interpreters allocate and run on device.
-- On-device camera latency, capture-to-caption time, memory, power, thermal.
+**Not proven without physical hardware:**
+- On-device camera latency, capture-to-caption time, power, thermal.
 - Real hand detection against a live camera.
+- Camera rotation and handedness on a physical sensor (code-derived only).
 
-This gap is why the verdict is `ANDROID_FOUR_MODEL_VERIFIED_IN_RUNTIME_TESTS_DEVICE_PENDING`
-at best, and not device-verified. See `ANDROID_DEVICE_TEST.md` for the procedure
-that closes it.
+Real inference is now verified on an Android runtime. What remains unverified is
+physical hardware specifically: real camera capture, sensor rotation and
+handedness on a device, and on-device latency, power and thermal. See
+`ANDROID_DEVICE_TEST.md`.

@@ -19,22 +19,41 @@ pip install -r requirements.txt
 
 ## 2. Model Files
 
-The default runtime is Dev's landmark candidate, selected with
+The default runtime is Dev's **four-member FP16 ensemble**, selected with
 `ECHOGESTURE_MODEL=landmark`:
 
-- `models/landmark_classifier_fp16.tflite` (832,888 bytes, float16 weights and
-  float32 IO; **not INT8**).
-- `models/landmark_labels.json`, `models/landmark_model_meta.json` and
-  `models/hand_landmarker.task` are required local assets.
-- `src/features.py` and `src/landmark_frontend.py` implement Dev's shared
+- `models/landmark_ens_tcn21_fp16.tflite` (939,152 B)
+- `models/landmark_ens_tcnm61_fp16.tflite` (832,888 B)
+- `models/landmark_ens_tcnm62_fp16.tflite` (832,888 B)
+- `models/landmark_ens_rob71_fp16.tflite` (939,152 B)
+
+3,544,080 B of weights, plus `models/hand_landmarker.task` (7,819,105 B) for
+landmarks — **11,363,185 B total**, under the 20 MB budget.
+
+`models/landmark_model_meta.json` lists the four members in order and pins
+`frames: 24`, `feature_dim: 255`, `classes: 100`, `quantization: "float16"`.
+Every member is loaded; a missing, unpinned or mismatched member raises
+`FileNotFoundError` naming it rather than running a smaller ensemble.
+
+The members are **float16 weights with float32 IO — not INT8.** The organizer
+deck says INT8 on p.9/p.10 while the scored rubric on p.11 says only
+`TFLite/ONNX <20MB`; that contradiction is stated plainly rather than papered
+over. See `docs/submission/INT8_CLARIFICATION.md`.
+
+- `models/landmark_labels.json` is the ordered 100-gloss vocabulary.
+- `src/features.py` and `src/landmark_frontend.py` implement the shared
   two-hand transform and frontend. Do not change them independently of the
   corresponding model/config handoff.
 
 `ECHOGESTURE_MODEL=s3d` retains the original pixel research baseline and its
 INT8 models. There is no silent fallback from a missing selected model.
 Classifier and detector files must both be included in final size accounting.
-The current default candidate does not establish INT8, accuracy or clip-p95
-compliance; see `evaluation/device/CANDIDATE_INTEGRATION.md`.
+
+**Measured, not asserted:** 72.78% top-1 on 1,249 scored clips from 11 unseen
+signers; full clip-to-JSON p95 274.2 ms singleton, 154.8 ms parallel-2,
+99.8 ms parallel-4. The 50 ms target is **not met** — hand tracking is ~90% of
+runtime and inference is 0.41 ms. See
+`evaluation/device/ensemble_evidence/RESULT.md`.
 
 ---
 
@@ -85,7 +104,7 @@ python evaluation/device/run_manifest.py /absolute/path/to/manifest.csv \
 The runner imports this file's real `predict()` function, validates every
 output against `models/label100.json` by default, and writes `predictions.jsonl`
 and `benchmark.json`. For the landmark candidate pass
-`--model models/landmark_classifier_fp16.tflite --labels models/landmark_labels.json
+`--model models/landmark_ens_rob71_fp16.tflite --labels models/landmark_labels.json
 --feature-config src/features.py`. The summary includes artifact SHA-256 values,
 runtime/device details, wall-clock p50/p90/p95/p99 using nearest-rank percentiles,
 and separate cold (first-call) and warm timings. `--profile` records actual
@@ -106,7 +125,7 @@ not representative robustness results.
 ```bash
 python evaluation/device/robustness.py /absolute/path/to/manifest.csv \
   --output-dir /tmp/robustness-low-light --corruption low_light \
-  --severity 0.5 --seed 42 --model models/landmark_classifier_fp16.tflite \
+  --severity 0.5 --seed 42 --model models/landmark_ens_rob71_fp16.tflite \
   --labels models/landmark_labels.json
 ```
 

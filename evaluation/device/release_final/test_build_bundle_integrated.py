@@ -25,6 +25,32 @@ import zipfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+
+def _has_weights() -> bool:
+    """True only when the *landmark ensemble* weights are actually present.
+
+    Checks the member list in the metadata rather than "any .tflite exists",
+    because older S3D artifacts may be present while the shipped ensemble is
+    absent (e.g. in a source-only clone). Untracked weights stay local.
+    """
+    import json as _json
+    for parent in Path(__file__).resolve().parents:
+        m = parent / "models"
+        meta = m / "landmark_model_meta.json"
+        if not meta.is_file():
+            continue
+        try:
+            members = _json.loads(meta.read_text(encoding="utf-8")).get("members")
+        except (OSError, ValueError):
+            members = None
+        if isinstance(members, list) and members:
+            return all((m / name).is_file() for name in members)
+        # no member list -> the single-classifier candidate
+        return (m / "landmark_classifier_fp16.tflite").is_file()
+    return False
+
+_weightless = unittest.skipUnless(_has_weights(), "trained model weights are not present")
+
 REPO = HERE.parents[2]
 sys.path.insert(0, str(REPO / "scripts" / "release"))
 
@@ -38,6 +64,7 @@ CONVERSION = "scripts/ml/export_tflite_tf.py"
 EXPECTED_CLOSURE = (
     "src/features.py",
     "src/landmark_frontend.py",
+    "src/parallel_tracker.py",
     "models/hand_landmarker.task",
     "models/landmark_model_meta.json",
 )
@@ -56,6 +83,7 @@ class BackendDetectionTest(unittest.TestCase):
             self.assertTrue(bb.safe_member(rel), f"unsafe closure path: {rel}")
 
 
+@_weightless
 class ResultsValidatorTest(unittest.TestCase):
     """The real results.csv uses PASS/FAIL/NOT_MEASURED and must be accepted."""
 
@@ -87,12 +115,13 @@ class ResultsValidatorTest(unittest.TestCase):
             (root / "results").mkdir()
             header = "metric,target,measured,unit,device,runtime,pass,notes\n"
             (root / "results/results.csv").write_text(
-                header + "m,1,1,u,d,r,PASS,/Users/someone/private.csv\n",
+                header + "m,1,1,u,d,r,PASS,/Users/example/private.csv\n",
                 encoding="utf-8")
             with self.assertRaises(ValueError):
                 bb._validate_results(root, digest)
 
 
+@_weightless
 class BuildClosureTest(unittest.TestCase):
     def _build(self, output):
         return bb.build(REPO, MODEL, LABELS, REPO / "results/results.csv",
@@ -162,7 +191,7 @@ class BuildClosureTest(unittest.TestCase):
                 bb.build(REPO, MODEL, LABELS, REPO / "results/results.csv",
                          Path(directory) / "bundle.zip",
                          official=True, extra=[REPO / CONVERSION])
-            self.assertIn("organizer-generated predictions", str(ctx.exception))
+            self.assertIn("does not fabricate", str(ctx.exception))
 
 
 class CleanExtractionIntegrationTest(unittest.TestCase):

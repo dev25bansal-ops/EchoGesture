@@ -1,29 +1,41 @@
+import java.security.MessageDigest
+
 plugins {
     id("com.android.application") version "8.5.2"
     id("org.jetbrains.kotlin.android") version "2.0.20"
 }
 
-// Copy the four named assets from the root models/ directory as documented in
+// Copy the named assets from the root models/ directory as documented in
 // README.md. Binary hashes are pinned so a classifier cannot be substituted.
+// Every ensemble member listed in landmark_model_meta.json is required.
+val memberHashes = mapOf(
+    "landmark_ens_tcn21_fp16.tflite" to
+        "112279bc86090470b82b20b510746a946220322c25ec84cb3706a538c73dc22a",
+    "landmark_ens_tcnm61_fp16.tflite" to
+        "01a261d8eb6c2c4d8b501f0ce1a36db338365d17fddabc63528a7941b1390f63",
+    "landmark_ens_tcnm62_fp16.tflite" to
+        "27058a85e032bee3af444fb1538ff0bf32fd38fa2b01ce01a2f25c3a428d20b3",
+    "landmark_ens_rob71_fp16.tflite" to
+        "08417e72da59150ac9adf749e6324c30fb001d4a401394e32f125d3276d1ab21"
+)
 val modelAssets = mapOf(
     "hand_landmarker.task" to
         "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1",
-    "landmark_classifier_fp16.tflite" to
-        "a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4",
     "landmark_labels.json" to null,
     "landmark_model_meta.json" to null
-)
+) + memberHashes
 
 modelAssets.forEach { (name, expectedHash) ->
     val asset = layout.projectDirectory.file("src/main/assets/$name").asFile
     if (!asset.isFile) {
         throw GradleException(
             "Missing model asset ${asset.absolutePath}. Copy it from the root " +
-                "models/ directory using the README.md prepare-assets commands."
+                "models/ directory using the README.md prepare-assets commands; " +
+                "all ${memberHashes.size} ensemble members are required."
         )
     }
     if (expectedHash != null) {
-        val digest = java.security.MessageDigest.getInstance("SHA-256")
+        val digest = MessageDigest.getInstance("SHA-256")
         asset.inputStream().buffered().use { input ->
             val buffer = ByteArray(64 * 1024)
             while (true) {
@@ -79,4 +91,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
 
     testImplementation("junit:junit:4.13.2")
+    // org.json is provided by the Android framework at runtime; the JVM unit
+    // tests need a real implementation. Test-scoped only, never in the APK.
+    testImplementation("org.json:json:20240303")
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test:runner:1.6.2")
 }

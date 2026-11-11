@@ -175,6 +175,7 @@ def run(verbose: bool = False) -> dict:
     skipped_ids: list[str] = []
     unrunnable: list[str] = []
     run_output: list[str] = []
+    failure_logs: dict[str, str] = {}
     tests_run = 0
 
     for path in files:
@@ -203,6 +204,8 @@ def run(verbose: bool = False) -> dict:
         skipped_ids += payload["skipped"]
         if verbose:
             run_output.append(payload.get("log", ""))
+        if payload["failures"] or payload["errors"]:
+            failure_logs[rel] = payload.get("log", "")
 
     passed = tests_run - len(failed_ids) - len(error_ids) - len(skipped_ids)
     return {
@@ -221,6 +224,7 @@ def run(verbose: bool = False) -> dict:
         "error_ids": error_ids,
         "skipped_ids": skipped_ids,
         "run_output": "".join(run_output),
+        "failure_logs": failure_logs,
     }
 
 
@@ -252,6 +256,14 @@ def main(argv=None) -> int:
     print(f"  failed                  {r['failed']}")
     print(f"  errors                  {r['errors']}")
     print(f"  skipped                 {r['skipped']}")
+
+    if r["failed_ids"] or r["error_ids"]:
+        print("-" * 66)
+        print("FAILURES (these are why the run is red):")
+        for t in r["failed_ids"]:
+            print(f"  FAIL  {t}")
+        for t in r["error_ids"]:
+            print(f"  ERROR {t}")
 
     if r["modules_unrunnable_by_design"]:
         print("-" * 66)

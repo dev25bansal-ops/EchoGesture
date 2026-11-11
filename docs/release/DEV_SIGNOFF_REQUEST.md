@@ -57,29 +57,41 @@ Please confirm 909/1249 reproduces on your machine from the shipped members.
 
 ## 6. Explain 83.77% validation vs 75.36% recomputed
 
-This is the largest unexplained discrepancy in the repo.
+**Resolved by audit — please confirm or correct.** The numbers are now accounted
+for, and none of them is 83.77% from a shipped artifact:
 
-- `RESULTS.md` quotes **83.77%** validation.
-- The committed `predictions_val.jsonl` recomputes to **260/345 = 75.36%**.
-- `eval_summary_val.json` says **76.52%**.
+| Number | What it is | Artifact |
+| --- | --- | --- |
+| 83.77% | 289/345. Claimed in `RESULTS.md`. **No artifact in the repo produces it.** | none |
+| 76.52% | `eval_summary_val.json`, blob `9ae0f3ba` | frozen at commit `226bd41` (DEV-03, single-model era) |
+| 75.36% | 260/345, recompute of the committed predictions | `results/predictions_val.jsonl`, blob `b770ec8`, frozen at `226bd41` |
 
-Three different numbers for one population. No artifact in the repo supports
-83.77%. Which is the number that should appear in the submission, and what
-produced the other two? If 83.77% came from a different split, a different
-model, or a per-class average rather than per-clip, say which.
+The 345 denominator is identical across all three, so this is **not** a
+denominator difference. The committed val predictions are byte-identical at
+every later commit including the tip of `hackathon/dev-model`, and their latency
+profile (p50 0.546 ms) is single-model, not ensemble (1.205 ms). The committed
+val evidence is a stale single-model file that was never regenerated for the
+ensemble.
 
-**We are currently shipping 72.78% test and do not cite 83.77% anywhere.** If it
-is legitimate I'd like to cite it; if not, it should be struck from `RESULTS.md`
-so it cannot leak into a submission.
+So: 83.77% has no supporting artifact; 76.52% and 75.36% describe the same
+single-model run. **We ship 72.78% test and cite 75.36% as the validation
+figure, never 83.77%.** Please either produce an artifact for 83.77% or confirm
+it should be struck from `RESULTS.md`.
 
 ## 7. Explain the 920 vs 909 robustness baseline
 
-The robustness harness reports a "clean" baseline of **920/1,249** correct, but
-the shipped predictions give **909/1,249** — an 11-clip gap on what should be the
-same condition. Is the robustness clean set a different 1,249 clips, a re-decode
-with different corruption seeding, or frames sampled differently from the
-evaluation path? This changes the reported percentage-point drops
-(crop −10.00, occlusion −6.67).
+**Resolved by audit — please confirm.** 920/1249 = 73.66%, which matches
+`clean.top1` in `results/robustness.json` exactly. That file was bundled at
+commit `4594bfa` but is absent from the current tree. Its harness
+(`scripts/ml/robustness.py`) runs **PyTorch checkpoints over cached landmarks**,
+not the FP16 TFLite members — a different inference path that would plausibly
+differ by a few clips.
+
+Separately: the robustness figures we actually publish (crop −10.00, occlusion
+−6.67 pp) come from the **newer video-level ensemble harness**
+(`robustness_ensemble/RESULTS.md`, clean 23/30 = 76.67%), not from
+`robustness.json`. Please confirm the 11-clip gap is the PyTorch-vs-TFLite path
+difference and not a bug in the shipped predictions.
 
 ## 8. Confirm the six no-hand failures
 

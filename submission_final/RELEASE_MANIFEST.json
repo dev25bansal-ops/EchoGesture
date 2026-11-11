@@ -26,7 +26,6 @@
         "file": "landmark_ens_tcn21_fp16.tflite",
         "bytes": 939152,
         "sha256": "112279bc86090470b82b20b510746a946220322c25ec84cb3706a538c73dc22a",
-        "architecture": "TCN",
         "in_idx": 0,
         "out_idx": 224
       },
@@ -34,7 +33,6 @@
         "file": "landmark_ens_tcnm61_fp16.tflite",
         "bytes": 832888,
         "sha256": "01a261d8eb6c2c4d8b501f0ce1a36db338365d17fddabc63528a7941b1390f63",
-        "architecture": "Conv1D",
         "in_idx": 0,
         "out_idx": 191
       },
@@ -42,7 +40,6 @@
         "file": "landmark_ens_tcnm62_fp16.tflite",
         "bytes": 832888,
         "sha256": "27058a85e032bee3af444fb1538ff0bf32fd38fa2b01ce01a2f25c3a428d20b3",
-        "architecture": "Conv1D",
         "in_idx": 0,
         "out_idx": 191
       },
@@ -50,7 +47,6 @@
         "file": "landmark_ens_rob71_fp16.tflite",
         "bytes": 939152,
         "sha256": "08417e72da59150ac9adf749e6324c30fb001d4a401394e32f125d3276d1ab21",
-        "architecture": "TCN",
         "in_idx": 0,
         "out_idx": 224
       }
@@ -62,7 +58,8 @@
       "sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1"
     },
     "deployed_bytes_including_detector": 11363185,
-    "deployed_mb_decimal": 11.3632
+    "deployed_mb_decimal": 11.3632,
+    "tensor_index_note": "Per-member indices are read from each interpreter at load in src/main.py and unpacked per member in _run_ensemble; nothing is hardcoded. Measured values: tcn21 and rob71 expose out_idx 224, tcnm61 and tcnm62 expose 191, in_idx 0 for all."
   },
   "input_contract": {
     "frames": 24,

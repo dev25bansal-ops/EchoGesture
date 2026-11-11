@@ -436,7 +436,7 @@ class SanitizeExportTests(unittest.TestCase):
             se.sanitize_predictions_csv(self.src_csv, self.src_csv)
 
     def test_benchmark_hostname_and_path_cleaned(self):
-        doc = {"environment": {"device_model": "example-host.local"},
+        doc = {"environment": {"device_model": "abhi-macbook.local"},
                "artifacts": {"m": {"path": "/Users/example/x/model.tflite"}}}
         clean = se.sanitize_document(doc)
         self.assertEqual(clean["environment"]["device_model"], "generic-device")
@@ -444,7 +444,7 @@ class SanitizeExportTests(unittest.TestCase):
         self.assertEqual(se.leaks_in_document(clean), [])
 
     def test_hostname_leak_is_detected(self):
-        leaks = se.leaks_in_document({"environment": {"hostname": "example-box.local"}})
+        leaks = se.leaks_in_document({"environment": {"hostname": "box.local"}})
         self.assertTrue(leaks)
 
     def test_absolute_path_leak_is_detected(self):

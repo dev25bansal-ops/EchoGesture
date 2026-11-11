@@ -113,4 +113,10 @@ evaluation/device/robustness_lab/runs/
 evaluation/device/accuracy_lab/
 evaluation/device/int8_lab/
 evaluation/device/benchmark_lab/results/
+
+# HUD frames render the participant's face from ASL Citizen / WLASL clips.
+# The datasets are not ours to republish, so no rendered frame is committed.
+# The JSON results beside them are kept: they carry model identity and numbers,
+# not imagery.
 evaluation/device/demo_final/*.png
+*.err

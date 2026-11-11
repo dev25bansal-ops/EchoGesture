@@ -16,32 +16,6 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
-
-def _has_weights() -> bool:
-    """True only when the *landmark ensemble* weights are actually present.
-
-    Checks the member list in the metadata rather than "any .tflite exists",
-    because older S3D artifacts may be present while the shipped ensemble is
-    absent (e.g. in a source-only clone). Untracked weights stay local.
-    """
-    import json as _json
-    for parent in Path(__file__).resolve().parents:
-        m = parent / "models"
-        meta = m / "landmark_model_meta.json"
-        if not meta.is_file():
-            continue
-        try:
-            members = _json.loads(meta.read_text(encoding="utf-8")).get("members")
-        except (OSError, ValueError):
-            members = None
-        if isinstance(members, list) and members:
-            return all((m / name).is_file() for name in members)
-        return (m / "landmark_classifier_fp16.tflite").is_file()
-    return False
-
-
-_weightless = unittest.skipUnless(_has_weights(), "trained model weights are not present")
-
 RUNNER = HERE / "run_v7_int8.py"
 AUDIT = HERE / "audit_tflite.py"
 RESULTS = HERE / "results"
@@ -60,7 +34,6 @@ def load_json(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-@_weightless
 class TestV7GraphAudit(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -197,7 +170,6 @@ class TestV7RunnerHelpers(unittest.TestCase):
             self.assertIn(expected_band, bands)
 
 
-@_weightless
 class TestV7PairedEvidence(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -234,14 +206,12 @@ class TestV7PairedEvidence(unittest.TestCase):
         failed = [row for row in self.records if row["status"] != "ok"]
         self.assertEqual(len(failed), 1)
         self.assertEqual(failed[0]["clip_id"], "5989539775823847-INTUITIVE")
-        self.assertTrue(failed[0]["signer_id"].startswith(("signer_", "P")))
+        self.assertEqual(failed[0]["signer_id"], "P5")
         self.assertIn("No hand detected", failed[0]["error"])
         self.assertTrue(self.summary["cross_check"]["all_predictions_and_top5_match_source"])
 
     def test_signer_and_gloss_keys_cover_all_observed_groups(self):
-        # Signer keys are pseudonymized (signer_<hash>) in published evidence.
-        self.assertEqual(len(self.summary["signer"]), 5)
-        self.assertTrue(all(k.startswith("signer_") for k in self.summary["signer"]))
+        self.assertEqual(set(self.summary["signer"]), {"P12", "P21", "P26", "P39", "P5"})
         self.assertEqual(sum(value["n"] for value in self.summary["gloss"].values()), 345)
         self.assertEqual(self.summary["gloss"]["CHEEK"]["fp16_only_correct"], 2)
         self.assertEqual(self.summary["gloss"]["CHEEK"]["int8_only_correct"], 0)

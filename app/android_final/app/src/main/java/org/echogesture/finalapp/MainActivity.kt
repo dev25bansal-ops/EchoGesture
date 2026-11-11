@@ -190,8 +190,7 @@ class MainActivity : AppCompatActivity() {
         try {
             val loaded = ModelContract.load(assets)
             val newTracker = HandTracker.create(this@MainActivity, ModelContract.DETECTOR_ASSET)
-            // Throws unless every listed member loads with its own interpreter.
-            val newClassifier = LandmarkClassifier.create(loaded)
+            val newClassifier = LandmarkClassifier(loaded.classifierModel, loaded.labels)
 
             tracker?.close()
             classifier?.close()
@@ -203,8 +202,7 @@ class MainActivity : AppCompatActivity() {
                 modelIdentity.text = getString(
                     R.string.model_identity,
                     loaded.identity.displayName,
-                    loaded.identity.shortSha,
-                    newClassifier.memberCount
+                    loaded.identity.shortSha
                 )
                 modelReady = true
                 if (state == State.INIT) render(State.WAITING)

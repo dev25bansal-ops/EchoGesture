@@ -35,7 +35,7 @@ A15_BENCH = {
     "successful_predictions": 30,
     "artifacts": {
         "model": {
-            "path": "/Users/example/projects/EchoGesture/models/s3d_conv1d_qat_int8.tflite",
+            "path": "/Users/dev25/projects/EchoGesture/models/s3d_conv1d_qat_int8.tflite",
             "sha256": "a" * 64,
             "bytes": 901200,
         },

@@ -23,8 +23,8 @@
     },
     "meta": {
       "path": "models/landmark_model_meta.json",
-      "sha256": "06f655bbec9c75181e89218d7ba284523a2ee02f5ac30f133e48cde48072ddbc",
-      "bytes": 296
+      "sha256": "7f189a16f4d175042b5481afb973217fc21410832ebd14c5bacf2f516473947e",
+      "bytes": 123
     },
     "features": {
       "path": "src/features.py",
@@ -68,16 +68,9 @@
     "5989539775823847-INTUITIVE"
   ],
   "frozen_contract": {
-    "input_shape": [
-      1,
-      24,
-      255
-    ],
+    "input_shape": [1, 24, 255],
     "input_dtype": "float32",
-    "output_shape": [
-      1,
-      100
-    ],
+    "output_shape": [1, 100],
     "output_dtype": "float32",
     "output_semantics": "logits; apply softmax for confidence",
     "frames": 24,

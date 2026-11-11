@@ -21,33 +21,35 @@ next action.
 | G4 Android APK | `DONE_VERIFIED` | 75,072,782 B, signed, 4 members embedded, 9/9 unit tests |
 | G5 Performance / robustness frozen | `DONE_VERIFIED` | p95 274.2 / 154.8 / 99.8 ms; robustness 3 PASS / 2 FAIL |
 | G6 Public-safe code committed | `DONE_PUBLISHED` | 7 commits on `hackathon/abhijeet-public` |
-| G7 Branch pushed, remote matches | `DONE_PUBLISHED` | remote `64ce03b` == local |
+| G7 Branch pushed, remote matches | `DONE_PUBLISHED` | remote `26b2990` == local |
 | G8 PR #1 updated | `DONE_PUBLISHED` | [PR #1](https://github.com/dev25bansal-ops/EchoGesture/pull/1), draft, Dev requested |
-| G9 Release package | `DONE_VERIFIED` | `echogesture_final2_ensemble.zip`, SHA `48a062f2…`, extracts → `WHATFOR1` |
+| G9 Release package | `DONE_VERIFIED` | `echogesture_final2_ensemble.zip`, 9,007,144 B, SHA `34a0e667…`, extracts → `WHATFOR1` @ 0.8821 |
 | G10 Public source-only distribution | `DONE_PUBLISHED` | weights, APK, ZIPs, signer screenshots all gitignored |
 | G11 Presentation | `DONE_VERIFIED` | `docs/submission/EchoGesture_Submission.pptx`, 11 slides |
 | G12 Demo materials | `READY_FOR_USER` | runbook + 2:50 shot list; **no video recorded** |
 | G13 Dev review request | `WAITING_FOR_DEV` | PR review requested; 9 specific questions in the PR body |
 | G14 Organizer clarification | `READY_FOR_USER` | draft below; requires your send |
-| G15 Registration | `WAITING_FOR_USER` | **no confirmation exists anywhere in the repo** |
+| G15 Registration | `REGISTRATION_USER_CONFIRMED` | confirmed by the team owner; the ID and exact college/team strings are held privately and are needed for the form and filenames |
 | G16 Model licensing | `WAITING_FOR_PERMISSION` | weights excluded; NOTICE records status |
 | G17 Device tooling | `WAITING_FOR_HARDWARE` | commands ready; no device attached |
-| G18 Submission performed | `WAITING_FOR_USER` | cannot happen without G15 and your approval |
+| G18 Submission performed | `WAITING_FOR_USER` | needs the recorded college/team strings, the demo video and your explicit approval |
 
 ---
 
-## The three things only you can do
+## The three things only a human can do
 
-### 1. Confirm registration — blocks everything
+### 1. Registration — confirmed by the team owner
 
-The slides say the final-submission link is **only** shared with teams that
-completed registration, and the registration deadline (8 Nov 2026) has passed.
-No confirmation exists in the repository.
+The team owner has confirmed the team completed registration. This is recorded
+as `REGISTRATION_USER_CONFIRMED` and is not an open question.
 
-**Action:** search your email for the registration confirmation from
-`prism@samsung.com`, and for the final-submission-link email. If neither
-exists, email the organizers to confirm your team's status. Do not submit a
-duplicate registration.
+What is still not in the repository: the confirmation ID and the exact
+registered college and team strings. Those drive form fields, the deck filename
+and the package filename (`CollegeName_TeamName`, per deck p.25), so they are
+needed at submission time even though registration itself is settled.
+
+**Action:** supply the exact registered college string, team string and team
+member details when filling the form. Do not submit a duplicate registration.
 
 ### 2. Send the INT8 clarification
 
@@ -100,5 +102,5 @@ only the hardware is missing.
 - Crop (−10.00 pp) and occlusion (−6.67 pp) exceed the 5 pp robustness budget.
 - The 1,249-clip test split was inspected during model selection; it is not a
   pristine blind evaluation.
-- No registration confirmation, no device, no redistribution permission for
-  the weights.
+- No physical device: on-device latency, power and thermal are unmeasured.
+- No redistribution permission confirmed for the weights.

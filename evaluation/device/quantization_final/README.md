@@ -21,7 +21,7 @@ NOT established and no improved artifact is selected.
 | `models/landmark_classifier_int8.tflite` (candidate) | 509,720 | `9d24640a23244a3cd00c9fa62257733819f86ed1da5a10194c9b1cb64323700b` |
 | `models/hand_landmarker.task` (detector) | 7,819,105 | `fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1` |
 | `models/landmark_labels.json` | 1,492 | `e78f5028e97e2eaf86aff65af403af65061eebef010f0fbd41012293e8019a4a` |
-| `models/landmark_model_meta.json` | 123 | `06f655bbec9c75181e89218d7ba284523a2ee02f5ac30f133e48cde48072ddbc` |
+| `models/landmark_model_meta.json` | 123 | `7f189a16f4d175042b5481afb973217fc21410832ebd14c5bacf2f516473947e` |
 | `src/features.py` (frozen) | 8,312 | `baf28d05bbd36e2783ea7ef6f78e793b89ed832d0eaad5dffed23d35c775aa84` |
 | `src/landmark_frontend.py` (frozen) | 6,633 | `c73ef64b72f21a86638c4a126ad642b64c4ee29851cd2f8fd8ea4ed516fa97b0` |
 | `src/main.py` (runtime) | 10,154 | `c695d78b1b1980e3b95b5357e0549385638eda3274a76eba479c6f3dcddf8141` |

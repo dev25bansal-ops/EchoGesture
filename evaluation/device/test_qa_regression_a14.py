@@ -553,9 +553,8 @@ class AtomicOutputTest(A14Base):
         lines = (output / "predictions.jsonl").read_text(encoding="utf-8").splitlines()
         self.assertEqual(json.loads(lines[0])["clip_id"], "sign-✋-01")
         self.assertTrue((output / "benchmark.json").exists())
-        # iterdir() order is filesystem-dependent; compare as a set.
-        self.assertEqual(sorted(p.name for p in output.iterdir()),
-                         ["benchmark.json", "predictions.jsonl"])
+        self.assertEqual([p.name for p in output.iterdir()],
+                         ["predictions.jsonl", "benchmark.json"])
 
     def test_failed_predictor_load_cleans_module_registry(self):
         bad = self.root / "bad.py"

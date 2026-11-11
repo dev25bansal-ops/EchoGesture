@@ -98,17 +98,20 @@ def model_identity(root=ROOT):
     """Describe the selected model without uploading or copying any artifact.
 
     Mirrors the backend selection in ``src/main.py`` (read-only) so the HUD
-    names what will actually run. The landmark backend is a 4-member FP16
-    ensemble listed in ``landmark_model_meta.json``; this reports the ordered
-    members and a combined identity so the HUD never names a single classifier
-    that is no longer loaded. SHA-256 is computed once per launch.
-
-    Display-only: this does not load or validate tensors. The predictor
-    (``src/main.py``) is the authority on what actually executes.
+    names the file that will actually run. The SHA-256 prefix is computed once
+    per launch, never per frame.
     """
     backend = os.environ.get("ECHOGESTURE_MODEL", "landmark")
     if backend not in ("s3d", "landmark"):
         backend = "landmark"
+    if backend == "landmark":
+        model_path = root / "models/landmark_classifier_fp16.tflite"
+        labels_path = root / "models/landmark_labels.json"
+    else:
+        model_path = root / "models/s3d_conv1d_qat_int8.tflite"
+        if not model_path.exists():
+            model_path = root / "models/ptq_100_int8.tflite"
+        labels_path = root / "models/label100.json"
 
     def _describe(path):
         try:
@@ -121,77 +124,23 @@ def model_identity(root=ROOT):
             "sha256_prefix": hashlib.sha256(data).hexdigest()[:12],
         }
 
-    label_path = root / ("models/landmark_labels.json" if backend == "landmark"
-                         else "models/label100.json")
-
-    if backend == "landmark":
-        member_names = _landmark_member_names(root)
-        members = [_describe(root / "models" / name) for name in member_names]
-        combined = _describe_combined(root, member_names)
-        return {
-            "backend": backend,
-            "model": combined,
-            "members": members,
-            "labels": _describe(label_path),
-            "label_count": _label_count(label_path),
-            "threshold": PROVISIONAL_THRESHOLD,
-            "threshold_status": "provisional, not validation-calibrated",
-        }
-
-    model_path = root / "models/s3d_conv1d_qat_int8.tflite"
-    if not model_path.exists():
-        model_path = root / "models/ptq_100_int8.tflite"
+    model = _describe(model_path)
+    labels = _describe(labels_path)
+    label_count = None
+    try:
+        parsed = json.loads((root / "models/landmark_labels.json" if backend == "landmark" else labels_path).read_text(encoding="utf-8"))
+        if isinstance(parsed, dict) and parsed:
+            label_count = len(parsed)
+    except (OSError, ValueError):
+        label_count = None
     return {
         "backend": backend,
-        "model": _describe(model_path),
-        "labels": _describe(label_path),
-        "label_count": _label_count(label_path),
+        "model": model,
+        "labels": labels,
+        "label_count": label_count,
         "threshold": PROVISIONAL_THRESHOLD,
         "threshold_status": "provisional, not validation-calibrated",
     }
-
-
-def _landmark_member_names(root):
-    """Ordered member basenames from the meta sidecar (single-model fallback)."""
-    try:
-        meta = json.loads((root / "models/landmark_model_meta.json").read_text(encoding="utf-8"))
-    except (OSError, ValueError):
-        meta = None
-    if isinstance(meta, dict) and isinstance(meta.get("members"), list):
-        names = [m for m in meta["members"] if isinstance(m, str) and m]
-        if names:
-            return names
-    return ["landmark_classifier_fp16.tflite"]
-
-
-def _describe_combined(root, member_names):
-    """One identity for the whole ensemble, hashed over members in meta order."""
-    digest = hashlib.sha256()
-    total = 0
-    readable = 0
-    try:
-        for name in member_names:
-            data = (root / "models" / name).read_bytes()
-            digest.update(data)
-            total += len(data)
-            readable += 1
-    except OSError:
-        pass
-    complete = readable == len(member_names)
-    return {
-        "name": f"{len(member_names)}-model ensemble" + ("" if complete else " (incomplete)"),
-        "members": list(member_names),
-        "bytes": total if complete else None,
-        "sha256_prefix": digest.hexdigest()[:12] if complete else None,
-    }
-
-
-def _label_count(labels_path):
-    try:
-        parsed = json.loads(Path(labels_path).read_text(encoding="utf-8"))
-    except (OSError, ValueError):
-        return None
-    return len(parsed) if isinstance(parsed, dict) and parsed else None
 
 
 def model_label_from_identity(identity):

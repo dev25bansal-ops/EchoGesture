@@ -36,18 +36,11 @@ except ImportError:
         except ImportError:
             Interpreter = None
 
-# Global model state (singleton pattern to avoid reloading per clip).
-# The landmark backend may be a single model or an ensemble: a list of
-# independently trained members whose logits are averaged before one softmax.
-# Landing the ensemble keeps the same public contract; the s3d backend still
-# uses exactly one interpreter.
-_INTERPRETERS = []          # one TFLite interpreter per landmark member
-_MEMBER_IO = []             # per-member (input_index, output_index, io tuple)
-_MEMBER_NAMES = []          # per-member basename for profiling/errors
-_INTERPRETER = None         # single-model interpreter (s3d, or 1-member fallback)
-_INPUT_DETAILS = None       # s3d only: single-model input details
-_OUTPUT_DETAILS = None      # s3d only: single-model output details
-_INPUT_SCALE = 1.0          # s3d single-model quantization
+# Global model state (singleton pattern to avoid reloading per clip)
+_INTERPRETER = None
+_INPUT_DETAILS = None
+_OUTPUT_DETAILS = None
+_INPUT_SCALE = 1.0
 _INPUT_ZP = 0
 _OUTPUT_SCALE = 1.0
 _OUTPUT_ZP = 0
@@ -55,7 +48,6 @@ _IDX_TO_LABEL = {}
 _LAST_PROFILE = None
 _ACTIVE_MODEL = None
 _FRAMES = 24
-_FEATURE_DIM = 255
 _MODEL_BACKEND = "s3d"
 
 # Opt-in parallel landmark tracking (default off; see ECHOGESTURE_TRACKER below).
@@ -81,48 +73,6 @@ def _model_paths():
     if not model_path.exists():
         model_path = base_dir / "models/ptq_100_int8.tflite"
     return backend, model_path, base_dir / "models/label100.json"
-
-
-def _landmark_config(model_dir: Path, frames_hint: int, feature_dim_hint: int):
-    """Return (members, frames, feature_dim) for the landmark backend.
-
-    Members come from the meta sidecar so adding or dropping one never needs a
-    code change.  The single-model artifact is used ONLY when the meta has no
-    "members" key at all; a listed member that is missing raises rather than
-    being silently dropped.
-    """
-    meta_path = model_dir / "landmark_model_meta.json"
-    if not meta_path.is_file():
-        raise FileNotFoundError(f"Missing landmark runtime asset: {meta_path}")
-    metadata = json.loads(meta_path.read_text(encoding="utf-8"))
-    if not isinstance(metadata, dict):
-        raise ValueError(f"{meta_path.name} must contain a JSON object")
-    frames = int(metadata.get("frames", frames_hint))
-    feature_dim = int(metadata.get("feature_dim", feature_dim_hint))
-
-    if "members" in metadata:
-        members = metadata["members"]
-        if not isinstance(members, list) or not members:
-            raise ValueError(
-                f"{meta_path.name} 'members' must be a non-empty list")
-        for name in members:
-            if not isinstance(name, str) or not name:
-                raise ValueError(
-                    f"{meta_path.name} 'members' entries must be non-empty strings "
-                    f"(got {name!r})")
-            if name != Path(name).name or "/" in name or "\\" in name or ".." in name:
-                raise ValueError(
-                    f"Unsafe ensemble member name in {meta_path.name}: {name!r} "
-                    "(must be a plain basename)")
-        return list(members), frames, feature_dim
-
-    # Explicit fallback: meta predates the ensemble and lists no members.
-    single = model_dir / "landmark_classifier_fp16.tflite"
-    if not single.is_file():
-        raise FileNotFoundError(
-            f"No landmark model found in {model_dir}: meta has no 'members' "
-            f"and {single.name} is missing")
-    return [single.name], frames, feature_dim
 
 
 def _record_stage(name, start_ns, **metadata):
@@ -237,11 +187,10 @@ def _set_interpreter_threads(interpreter):
 def _init_model():
     global _INTERPRETER, _INPUT_DETAILS, _OUTPUT_DETAILS
     global _INPUT_SCALE, _INPUT_ZP, _OUTPUT_SCALE, _OUTPUT_ZP, _IDX_TO_LABEL
-    global _ACTIVE_MODEL, _MODEL_BACKEND, _FRAMES, _FEATURE_DIM
-    global _INTERPRETERS, _MEMBER_IO, _MEMBER_NAMES
+    global _ACTIVE_MODEL, _MODEL_BACKEND, _FRAMES
 
     backend, model_path, label_path = _model_paths()
-    if _ACTIVE_MODEL == model_path:
+    if _INTERPRETER is not None and _ACTIVE_MODEL == model_path:
         return
 
     if Interpreter is None:
@@ -249,6 +198,8 @@ def _init_model():
             "No TFLite interpreter found. Please install ai-edge-litert: "
             "pip install ai-edge-litert"
         )
+    if not model_path.exists():
+        raise FileNotFoundError(f"Selected model file not found: {model_path}")
     if not label_path.exists():
         raise FileNotFoundError(f"Selected vocabulary file not found: {label_path}")
     if backend == "landmark":
@@ -260,106 +211,30 @@ def _init_model():
         labels_map = json.load(f)
     if not isinstance(labels_map, dict) or not labels_map:
         raise ValueError("Vocabulary must be a non-empty label-to-index object")
-    labels = {int(v): k.upper() for k, v in labels_map.items()}
-    if sorted(labels) != list(range(len(labels))):
+    _IDX_TO_LABEL = {int(v): k.upper() for k, v in labels_map.items()}
+    if sorted(_IDX_TO_LABEL) != list(range(len(_IDX_TO_LABEL))):
         raise ValueError("Vocabulary indices must be contiguous from zero")
 
-    # Build everything locally, then commit to the module globals only once
-    # the whole configuration validated. A partial load must never leave the
-    # process with half an ensemble.
-    new_interpreters = []
-    new_member_io = []
-    new_member_names = []
-    new_single = None
-    new_input_details = None
-    new_output_details = None
-    input_scale = input_zp = output_scale = output_zp = None
-    frames = _FRAMES
-    feature_dim = _FEATURE_DIM
-
-    if backend == "landmark":
-        from features import FEATURE_DIM
-        meta_path = model_path.parent / "landmark_model_meta.json"
-        names, frames, feature_dim = _landmark_config(
-            meta_path.parent, _FRAMES, int(FEATURE_DIM))
-        if feature_dim != int(FEATURE_DIM):
-            raise ValueError(
-                f"Feature implementation does not match landmark metadata: "
-                f"meta feature_dim={feature_dim}, implementation={int(FEATURE_DIM)}")
-
-        expected_shape = [1, frames, feature_dim]
-        expected_out = [1, len(labels)]
-        for name in names:
-            member_path = model_path.parent / name
-            if not member_path.is_file():
-                raise FileNotFoundError(
-                    f"Ensemble member listed in landmark_model_meta.json is missing: {name}")
-            interp = Interpreter(model_path=str(member_path))
-            interp.allocate_tensors()
-            in_details = interp.get_input_details()[0]
-            out_details = interp.get_output_details()[0]
-            if list(in_details["shape"]) != expected_shape:
-                raise ValueError(
-                    f"Ensemble member {name!r} input shape "
-                    f"{list(in_details['shape'])} != {expected_shape}")
-            if list(out_details["shape"]) != expected_out:
-                raise ValueError(
-                    f"Ensemble member {name!r} output shape "
-                    f"{list(out_details['shape'])} != {expected_out}")
-            in_scale, in_zp = in_details["quantization"]
-            out_scale, out_zp = out_details["quantization"]
-            for label, details in (("input", in_details), ("output", out_details)):
-                if details["dtype"] not in (np.float32, np.int8):
-                    raise ValueError(
-                        f"Ensemble member {name!r} {label} dtype "
-                        f"{details['dtype'].__name__} is not supported "
-                        "(expected float32 or int8)")
-            if in_details["dtype"] == np.int8 and in_scale == 0:
-                raise ValueError(
-                    f"Ensemble member {name!r} has int8 input with zero scale")
-            new_interpreters.append(interp)
-            new_member_names.append(name)
-            # Tensor indices are per-interpreter and differ between
-            # architectures; resolve and keep each member's own handles.
-            new_member_io.append((
-                in_details["index"], out_details["index"],
-                in_scale, in_zp, out_scale, out_zp,
-            ))
-            if new_single is None:
-                new_single = interp
-                new_input_details = in_details
-                new_output_details = out_details
-                input_scale, input_zp = in_scale, in_zp
-                output_scale, output_zp = out_scale, out_zp
-        if len(new_interpreters) != len(names):
-            raise ValueError("Ensemble member set was not fully loaded")
-    else:
-        if not model_path.exists():
-            raise FileNotFoundError(f"Selected model file not found: {model_path}")
-        new_single = Interpreter(model_path=str(model_path))
-        new_single.allocate_tensors()
-        new_input_details = new_single.get_input_details()[0]
-        new_output_details = new_single.get_output_details()[0]
-        if new_output_details["shape"][-1] != len(labels):
-            raise ValueError("Model output classes do not match the selected vocabulary")
-        input_scale, input_zp = new_input_details["quantization"]
-        output_scale, output_zp = new_output_details["quantization"]
-
-    # Commit.
-    _INTERPRETERS = new_interpreters
-    _MEMBER_IO = new_member_io
-    _MEMBER_NAMES = new_member_names
-    _INTERPRETER = new_single
-    _INPUT_DETAILS = new_input_details
-    _OUTPUT_DETAILS = new_output_details
-    _INPUT_SCALE = float(input_scale if input_scale is not None else 0.0)
-    _INPUT_ZP = int(input_zp or 0)
-    _OUTPUT_SCALE = float(output_scale if output_scale is not None else 0.0)
-    _OUTPUT_ZP = int(output_zp or 0)
-    _IDX_TO_LABEL = labels
+    _INTERPRETER = Interpreter(model_path=str(model_path))
+    _INTERPRETER.allocate_tensors()
+    _INPUT_DETAILS = _INTERPRETER.get_input_details()[0]
+    _OUTPUT_DETAILS = _INTERPRETER.get_output_details()[0]
+    if _OUTPUT_DETAILS["shape"][-1] != len(_IDX_TO_LABEL):
+        raise ValueError("Model output classes do not match the selected vocabulary")
+    _INPUT_SCALE, _INPUT_ZP = _INPUT_DETAILS["quantization"]
+    _OUTPUT_SCALE, _OUTPUT_ZP = _OUTPUT_DETAILS["quantization"]
     _MODEL_BACKEND = backend
-    _FRAMES = frames
-    _FEATURE_DIM = feature_dim
+    if backend == "landmark":
+        meta_path = model_path.parent / "landmark_model_meta.json"
+        metadata = json.loads(meta_path.read_text(encoding="utf-8"))
+        _FRAMES = int(metadata["frames"])
+        if list(_INPUT_DETAILS["shape"]) != [1, _FRAMES, int(metadata["feature_dim"])]:
+            raise ValueError("Model input shape does not match landmark metadata")
+        if _INPUT_DETAILS["dtype"] != np.float32 or _OUTPUT_DETAILS["dtype"] != np.float32:
+            raise ValueError("Dev FP16 classifier requires float32 input/output tensors")
+        from features import FEATURE_DIM
+        if FEATURE_DIM != int(metadata["feature_dim"]):
+            raise ValueError("Feature implementation does not match landmark metadata")
     _ACTIVE_MODEL = model_path
 
 
@@ -404,31 +279,6 @@ def _preprocess_video(video_path: str, target_frames: int = 24, target_size: int
         sampled = np.stack(processed + [processed[-1]] * (target_frames - n))
     _record_stage("frame_selection", started_ns, processed_frames=target_frames)
     return np.expand_dims(sampled, 0)
-
-
-def _run_ensemble(tensor):
-    """Invoke every member on `tensor` and average their logits.
-
-    Returns (averaged_logits, {member_name: milliseconds}). Each member's own
-    input/output indices and quantization are used; averaging happens on
-    logits, before any softmax.
-    """
-    member_logits = []
-    member_ms = {}
-    for name, interp, io in zip(_MEMBER_NAMES, _INTERPRETERS, _MEMBER_IO):
-        in_idx, out_idx, in_scale, in_zp, out_scale, out_zp = io
-        if in_scale > 0:
-            q_tensor = np.clip(
-                np.round(tensor / in_scale) + in_zp, -128, 127).astype(np.int8)
-        else:
-            q_tensor = tensor.astype(np.float32)
-        member_start_ns = time.perf_counter_ns()
-        interp.set_tensor(in_idx, q_tensor)
-        interp.invoke()
-        raw = interp.get_tensor(out_idx)[0].astype(np.float32)
-        member_ms[name] = (time.perf_counter_ns() - member_start_ns) / 1e6
-        member_logits.append((raw - out_zp) * out_scale if out_scale > 0 else raw)
-    return np.mean(member_logits, axis=0), member_ms
 
 
 def predict(video_path: str, *, clip_id: str | None = None, profile: bool = False) -> dict:
@@ -494,30 +344,25 @@ def predict(video_path: str, *, clip_id: str | None = None, profile: bool = Fals
     else:
         tensor = _preprocess_video(video_path, target_frames=24, target_size=64)
 
+    # Quantize input to int8
     started_ns = time.perf_counter_ns()
-    if _MEMBER_IO:
-        # Landmark ensemble: invoke every member, average logits, softmax once.
-        logits, member_ms = _run_ensemble(tensor)
-        _record_stage("model_inference", started_ns,
-                      members=len(_MEMBER_IO), member_ms=member_ms)
+    if _INPUT_SCALE > 0:
+        q_tensor = np.clip(np.round(tensor / _INPUT_SCALE) + _INPUT_ZP, -128, 127).astype(np.int8)
     else:
-        if _INPUT_SCALE > 0:
-            q_tensor = np.clip(np.round(tensor / _INPUT_SCALE) + _INPUT_ZP, -128, 127).astype(np.int8)
-        else:
-            q_tensor = tensor.astype(np.float32)
-        _record_stage("input_quantization", started_ns)
+        q_tensor = tensor.astype(np.float32)
+    _record_stage("input_quantization", started_ns)
 
-        started_ns = time.perf_counter_ns()
-        _INTERPRETER.set_tensor(_INPUT_DETAILS["index"], q_tensor)
-        _INTERPRETER.invoke()
-        _record_stage("model_inference", started_ns)
+    started_ns = time.perf_counter_ns()
+    _INTERPRETER.set_tensor(_INPUT_DETAILS["index"], q_tensor)
+    _INTERPRETER.invoke()
+    _record_stage("model_inference", started_ns)
 
-        started_ns = time.perf_counter_ns()
-        raw_output = _INTERPRETER.get_tensor(_OUTPUT_DETAILS["index"])[0].astype(np.float32)
-        if _OUTPUT_SCALE > 0:
-            logits = (raw_output - _OUTPUT_ZP) * _OUTPUT_SCALE
-        else:
-            logits = raw_output
+    started_ns = time.perf_counter_ns()
+    raw_output = _INTERPRETER.get_tensor(_OUTPUT_DETAILS["index"])[0].astype(np.float32)
+    if _OUTPUT_SCALE > 0:
+        logits = (raw_output - _OUTPUT_ZP) * _OUTPUT_SCALE
+    else:
+        logits = raw_output
 
     # Softmax for normalized confidence scores
     exp_logits = np.exp(logits - np.max(logits))

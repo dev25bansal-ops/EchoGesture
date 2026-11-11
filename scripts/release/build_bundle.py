@@ -521,13 +521,28 @@ def build(source, model, labels, results, output, official=False, extra=(), meta
         if conversion_rel is None:
             raise ValueError("Add a model conversion/export script with --extra")
         shutil.copy2(results, staging / "results/results.csv")
+        # p.12 puts predictions.json in the results/ folder, and p.11 requires a
+        # single predictions.jsonl. Stage a predictions file only when it can be
+        # validated against an organizer manifest: predictions without a
+        # manifest cannot be checked, and a fabricated manifest would defeat the
+        # ID check this builder exists to perform.
+        sibling_predictions = results.parent / "predictions.jsonl"
+        if sibling_predictions.is_file() and (source / "manifest.json").is_file():
+            shutil.copy2(sibling_predictions, staging / "results/predictions.jsonl")
         if official and not (staging / "results/predictions.jsonl").is_file():
             raise ValueError("Official bundle requires organizer-generated predictions.jsonl")
         _require_file(staging / conversion_rel, "Model conversion script")
-        (staging / "Dockerfile").write_text(
-            "FROM python:3.11-slim\nWORKDIR /app\nCOPY . /app\n"
-            "RUN pip install --no-cache-dir -r src/requirements.txt\n"
-            'CMD ["python", "src/main.py"]\n', encoding="utf-8")
+        # Use the repository's Dockerfile when it has content. A generated stub
+        # would silently ship a different image than the one the README
+        # documents.
+        root_dockerfile = source / "Dockerfile"
+        if root_dockerfile.is_file() and root_dockerfile.read_text(encoding="utf-8").strip():
+            shutil.copy2(root_dockerfile, staging / "Dockerfile")
+        else:
+            (staging / "Dockerfile").write_text(
+                "FROM python:3.11-slim\nWORKDIR /app\nCOPY . /app\n"
+                "RUN pip install --no-cache-dir -r src/requirements.txt\n"
+                'CMD ["python", "src/main.py"]\n', encoding="utf-8")
         manifest = {
             "model": model, "labels": labels,
             "model_sha256": sha256(out_model),

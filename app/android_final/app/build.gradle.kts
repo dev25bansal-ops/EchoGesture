@@ -1,3 +1,5 @@
+import java.security.MessageDigest
+
 plugins {
     id("com.android.application") version "8.5.2"
     id("org.jetbrains.kotlin.android") version "2.0.20"
@@ -33,7 +35,7 @@ modelAssets.forEach { (name, expectedHash) ->
         )
     }
     if (expectedHash != null) {
-        val digest = java.security.MessageDigest.getInstance("SHA-256")
+        val digest = MessageDigest.getInstance("SHA-256")
         asset.inputStream().buffered().use { input ->
             val buffer = ByteArray(64 * 1024)
             while (true) {

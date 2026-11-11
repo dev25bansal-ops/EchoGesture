@@ -21,6 +21,32 @@ import zipfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+
+def _has_weights() -> bool:
+    """True only when the *landmark ensemble* weights are actually present.
+
+    Checks the member list in the metadata rather than "any .tflite exists",
+    because older S3D artifacts may be present while the shipped ensemble is
+    absent (e.g. in a source-only clone). Untracked weights stay local.
+    """
+    import json as _json
+    for parent in Path(__file__).resolve().parents:
+        m = parent / "models"
+        meta = m / "landmark_model_meta.json"
+        if not meta.is_file():
+            continue
+        try:
+            members = _json.loads(meta.read_text(encoding="utf-8")).get("members")
+        except (OSError, ValueError):
+            members = None
+        if isinstance(members, list) and members:
+            return all((m / name).is_file() for name in members)
+        # no member list -> the single-classifier candidate
+        return (m / "landmark_classifier_fp16.tflite").is_file()
+    return False
+
+_weightless = unittest.skipUnless(_has_weights(), "trained model weights are not present")
+
 REPO = HERE.parents[2]
 sys.path.insert(0, str(REPO / "scripts" / "release"))
 
@@ -90,6 +116,7 @@ def _write_bundle(root, members=(), member_bytes=None, model_bytes=b"model",
     return root
 
 
+@_weightless
 class EnsembleStagingTest(unittest.TestCase):
     def test_build_stages_every_member(self):
         metadata = _meta(MEMBERS)
@@ -145,6 +172,7 @@ class EnsembleStagingTest(unittest.TestCase):
             self.assertIn("model_metadata", manifest)
 
 
+@_weightless
 class EnsembleVerificationTest(unittest.TestCase):
     def test_valid_ensemble_verifies(self):
         with tempfile.TemporaryDirectory() as directory:

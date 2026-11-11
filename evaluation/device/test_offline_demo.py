@@ -194,6 +194,9 @@ class DemoTest(unittest.TestCase):
         self.assertRegex(identity["model"]["sha256_prefix"], r"^[0-9a-f]{12}$")
         self.assertIn("provisional", identity["threshold_status"])
 
+    @unittest.skipUnless(
+        (Path(__file__).resolve().parents[2] / "models/s3d_conv1d_qat_int8.tflite").is_file(),
+        "s3d weights are not present")
     def test_model_identity_picks_s3d_when_env_set(self):
         with mock.patch.dict("os.environ", {"ECHOGESTURE_MODEL": "s3d"}):
             identity = model_identity()

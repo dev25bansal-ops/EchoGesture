@@ -7,7 +7,7 @@
     "landmark_ens_tcnm62_fp16.tflite": "27058a85e032bee3af444fb1538ff0bf32fd38fa2b01ce01a2f25c3a428d20b3",
     "landmark_ens_rob71_fp16.tflite": "08417e72da59150ac9adf749e6324c30fb001d4a401394e32f125d3276d1ab21"
   },
-  "member_bytes_total": 3543080,
+  "member_bytes_total": 3544080,
   "detector": {
     "path": "models/hand_landmarker.task",
     "sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1",

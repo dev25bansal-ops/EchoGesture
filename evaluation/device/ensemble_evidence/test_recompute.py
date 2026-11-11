@@ -65,5 +65,32 @@ class EnsembleAccuracyTest(unittest.TestCase):
         self.assertGreater(self.r["top1_pct_scored"], 62.61)
 
 
+@unittest.skipUnless((HERE / "predictions_ensemble_val.jsonl").is_file(),
+                     "frozen validation predictions not present")
+class EnsembleValidationAccuracyTest(unittest.TestCase):
+    """Pins the validation figure and the denominator used for it."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.r = score(HERE / "predictions_ensemble_val.jsonl",
+                      ROOT / "evaluation/device/v5_accuracy/splits/val.csv",
+                      LABELS)
+
+    def test_validation_top1_is_75_36(self):
+        self.assertEqual(self.r["top1_correct"], 260)
+        self.assertEqual(self.r["scored_clips"], 345)
+        self.assertEqual(self.r["top1_pct_scored"], 75.36)
+
+    def test_validation_top5(self):
+        self.assertEqual(self.r["top5_pct_scored"], 87.25)
+
+    def test_one_unscored_eligible_clip(self):
+        self.assertEqual(self.r["eligible_clips"], 346)
+        self.assertEqual(self.r["unscored_eligible_clips"], 1)
+
+    def test_validation_is_optimistic_vs_test(self):
+        # Members were selected on validation, so val must exceed test (72.78%).
+        self.assertGreater(self.r["top1_pct_scored"], 72.78)
+
 if __name__ == "__main__":
     unittest.main()

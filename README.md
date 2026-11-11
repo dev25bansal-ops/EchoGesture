@@ -75,7 +75,7 @@ Read [candidate integration](evaluation/device/CANDIDATE_INTEGRATION.md),
 | Representative accuracy/p95 | **not measured** | Requires a permitted validation batch and target device |
 | Live camera demo | **blocked locally** | Real worker/HUD implemented; macOS camera permission denied |
 | Android demo | **source present; build unverified** | `app/android_final/` (Kotlin, CameraX+MediaPipe+TFLite). No Gradle/SDK/device on this machine — no APK or on-device result claimed. |
-| INT8 compliance | **not established** | Shipped ensemble is FP16; the INT8 alternative scores 73.41% vs 78.61% and is not selected |
+| INT8 compliance | **AMBIGUOUS in organizer material** | Slides p.9/p.10 say "quantized model (INT8)"; the scored rubric p.11 says "Compilation to TFLite/ONNX <20MB" with no INT8 mention. Shipped ensemble is FP16 (11.37 MB). The INT8 single-model alternative scores 73.41% vs 78.61%. Treat as an open 20%-weight scoring risk pending written clarification |
 
 The table below is the **old S3D research baseline**, not the landmark model.
 

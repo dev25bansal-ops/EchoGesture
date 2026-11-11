@@ -26,7 +26,7 @@ code change.
 | `landmark_labels.json` | **yes** | ordered gloss → class index (100 entries) |
 | `landmark_model_meta.json` | **yes** | frames / feature dim / classes / `members` list |
 
-Total deployed model bytes: **11.37 MB** (3,543,080 B ensemble + 7,819,105 B detector).
+Total deployed model bytes: **11.37 MB** (3,544,080 B ensemble + 7,819,105 B detector).
 
 ## Interface contract
 

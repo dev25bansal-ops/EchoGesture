@@ -113,3 +113,4 @@ evaluation/device/robustness_lab/runs/
 evaluation/device/accuracy_lab/
 evaluation/device/int8_lab/
 evaluation/device/benchmark_lab/results/
+evaluation/device/demo_final/*.png

@@ -16,6 +16,32 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
+
+def _has_weights() -> bool:
+    """True only when the *landmark ensemble* weights are actually present.
+
+    Checks the member list in the metadata rather than "any .tflite exists",
+    because older S3D artifacts may be present while the shipped ensemble is
+    absent (e.g. in a source-only clone). Untracked weights stay local.
+    """
+    import json as _json
+    for parent in Path(__file__).resolve().parents:
+        m = parent / "models"
+        meta = m / "landmark_model_meta.json"
+        if not meta.is_file():
+            continue
+        try:
+            members = _json.loads(meta.read_text(encoding="utf-8")).get("members")
+        except (OSError, ValueError):
+            members = None
+        if isinstance(members, list) and members:
+            return all((m / name).is_file() for name in members)
+        return (m / "landmark_classifier_fp16.tflite").is_file()
+    return False
+
+
+_weightless = unittest.skipUnless(_has_weights(), "trained model weights are not present")
+
 RUNNER = HERE / "run_v7_int8.py"
 AUDIT = HERE / "audit_tflite.py"
 RESULTS = HERE / "results"
@@ -34,6 +60,7 @@ def load_json(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+@_weightless
 class TestV7GraphAudit(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -170,6 +197,7 @@ class TestV7RunnerHelpers(unittest.TestCase):
             self.assertIn(expected_band, bands)
 
 
+@_weightless
 class TestV7PairedEvidence(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

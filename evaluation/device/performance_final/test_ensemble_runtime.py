@@ -105,6 +105,7 @@ def _make_fixture(members=None, *, drop_member=None, meta_override=None,
     return root
 
 
+@unittest.skipUnless(_can_run(), "ensemble weights or the reference clip are not present")
 class EnsembleRuntimeTest(unittest.TestCase):
     """The shipped ensemble: loading, IO, aggregation and the public contract."""
 
@@ -236,6 +237,7 @@ class EnsembleRuntimeTest(unittest.TestCase):
             self.assertIn(key, stages)
 
 
+@unittest.skipUnless(_can_run(), "ensemble weights or the reference clip are not present")
 class EnsembleFailureTest(unittest.TestCase):
     """Misconfiguration must fail loudly and name the offender."""
 
@@ -308,6 +310,7 @@ class EnsembleFailureTest(unittest.TestCase):
         self.assertEqual(result["top5"][0], result["prediction"])
 
 
+@unittest.skipUnless(_can_run(), "weights are not present")
 class BackendSelectionTest(unittest.TestCase):
     """s3d selection and strict env validation are unchanged."""
 

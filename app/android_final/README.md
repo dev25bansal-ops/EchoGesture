@@ -61,7 +61,7 @@ cp models/hand_landmarker.task \
 ```
 
 That is 7 files in total: 4 ensemble members + labels + meta + detector
-(3,543,080 bytes of model). The Android asset names are fixed by
+(3,544,080 bytes of model). The Android asset names are fixed by
 `ModelContract.kt`. Gradle validates every copied file and all five binary
 SHA-256 hashes (four members + detector) before configuration or assembly.
 Model bytes stay in the root `models/` directory and are excluded by

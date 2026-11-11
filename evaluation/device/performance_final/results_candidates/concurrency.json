@@ -1,0 +1,365 @@
+{
+  "workers": 4,
+  "clip_workers": 4,
+  "samples": 3,
+  "clips": [
+    "0283886564670357-WHAT FOR.mp4",
+    "032677896012150764-WHAT FOR.mp4",
+    "15347326711184706-NOON.mp4",
+    "17092802473126545-SQUEEZE.mp4",
+    "25500869855740893-ANYONE.mp4",
+    "3191470037860531-8 HOUR.mp4",
+    "3738312466703404-TEACH.mp4",
+    "4254167262351618-CHEW 2.mp4",
+    "4481998873282871-PONDER.mp4",
+    "5004269948712425-SOCCER 2.mp4",
+    "5008852988399453-MYSELF.mp4",
+    "5784034175717614-EASY.mp4"
+  ],
+  "modes": {
+    "serial": {
+      "per_clip_p50": {
+        "0283886564670357-WHAT FOR.mp4": 87.9749579980853,
+        "032677896012150764-WHAT FOR.mp4": 159.2658340014168,
+        "15347326711184706-NOON.mp4": 291.17991700331913,
+        "17092802473126545-SQUEEZE.mp4": 226.1842500010971,
+        "25500869855740893-ANYONE.mp4": 265.21429199783597,
+        "3191470037860531-8 HOUR.mp4": 274.32804200361716,
+        "3738312466703404-TEACH.mp4": 279.00374999444466,
+        "4254167262351618-CHEW 2.mp4": 281.95583400520263,
+        "4481998873282871-PONDER.mp4": 295.0610410043737,
+        "5004269948712425-SOCCER 2.mp4": 280.20104199822526,
+        "5008852988399453-MYSELF.mp4": 265.0127919987426,
+        "5784034175717614-EASY.mp4": 280.67883400217397
+      },
+      "all_samples": {
+        "p50_ms": 274.9274170018907,
+        "p95_ms": 292.4076662493462,
+        "mean_ms": 248.73851400035267,
+        "min_ms": 87.36591700289864,
+        "max_ms": 300.4549170000246,
+        "count": 36
+      },
+      "records": {
+        "0283886564670357-WHAT FOR.mp4": {
+          "prediction": "WHATFOR1",
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "KNIGHT1",
+            "SCROLLDOWN",
+            "DECIDE1"
+          ],
+          "tensor_sha": "8c42643554db7973",
+          "landmarks_sha": "55195d1f57a9b734"
+        },
+        "032677896012150764-WHAT FOR.mp4": {
+          "prediction": "WHATFOR1",
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "DEAF1",
+            "TAIL1",
+            "ANYONE"
+          ],
+          "tensor_sha": "c3a1cb8908ff956e",
+          "landmarks_sha": "852d5b05ad11cca2"
+        },
+        "15347326711184706-NOON.mp4": {
+          "prediction": "BREAKFAST1",
+          "top5": [
+            "BREAKFAST1",
+            "NOON1",
+            "AUTISM1",
+            "BEE1",
+            "GUESS1"
+          ],
+          "tensor_sha": "94fe8234c8af4a55",
+          "landmarks_sha": "972ef27bd0344a20"
+        },
+        "17092802473126545-SQUEEZE.mp4": {
+          "prediction": "SQUEEZE",
+          "top5": [
+            "SQUEEZE",
+            "SOCCER2",
+            "SCROLLDOWN",
+            "CHEESEGRATER",
+            "ADVERTISE"
+          ],
+          "tensor_sha": "9909cc5cfddfb650",
+          "landmarks_sha": "8280418968ed98ad"
+        },
+        "25500869855740893-ANYONE.mp4": {
+          "prediction": "ANYONE",
+          "top5": [
+            "ANYONE",
+            "PATIENT2",
+            "SOCIETY",
+            "ALLOFSUDDEN",
+            "OFFEND"
+          ],
+          "tensor_sha": "81e770089479218e",
+          "landmarks_sha": "10abcac3be6ed96a"
+        },
+        "3191470037860531-8 HOUR.mp4": {
+          "prediction": "8HOUR",
+          "top5": [
+            "8HOUR",
+            "MAPLE",
+            "ELEVATOR1",
+            "BEE1",
+            "DOG1"
+          ],
+          "tensor_sha": "40215546670d2662",
+          "landmarks_sha": "d96ec748db63c97f"
+        },
+        "3738312466703404-TEACH.mp4": {
+          "prediction": "TEACH1",
+          "top5": [
+            "TEACH1",
+            "CHEER",
+            "HALLOWEEN1",
+            "DECIDE1",
+            "PARTY1"
+          ],
+          "tensor_sha": "0cf2df95e3431cff",
+          "landmarks_sha": "632e776167407096"
+        },
+        "4254167262351618-CHEW 2.mp4": {
+          "prediction": "CHEW1",
+          "top5": [
+            "CHEW1",
+            "PATIENT2",
+            "BASEBALLCAP",
+            "TAIL1",
+            "ANYONE"
+          ],
+          "tensor_sha": "080ee4906fdbc271",
+          "landmarks_sha": "903793725deff639"
+        },
+        "4481998873282871-PONDER.mp4": {
+          "prediction": "PONDER",
+          "top5": [
+            "PONDER",
+            "AXE1",
+            "BACKPACK1",
+            "DARK1",
+            "JEWELRY"
+          ],
+          "tensor_sha": "4faf079492d4525a",
+          "landmarks_sha": "e18cc7f3a14c040c"
+        },
+        "5004269948712425-SOCCER 2.mp4": {
+          "prediction": "SOCCER2",
+          "top5": [
+            "SOCCER2",
+            "DEAF1",
+            "GOODYGOODYSHOEOPPOSITE",
+            "DECIDE1",
+            "MOVIE1"
+          ],
+          "tensor_sha": "af39a1836578f26f",
+          "landmarks_sha": "543b9e26d2830cc2"
+        },
+        "5008852988399453-MYSELF.mp4": {
+          "prediction": "PATIENT2",
+          "top5": [
+            "PATIENT2",
+            "MYSELF",
+            "CHEEK",
+            "ANYONE",
+            "KNIGHT1"
+          ],
+          "tensor_sha": "20f8c938a7f1543e",
+          "landmarks_sha": "be5ce999f415d611"
+        },
+        "5784034175717614-EASY.mp4": {
+          "prediction": "EASY",
+          "top5": [
+            "EASY",
+            "DARK1",
+            "HOW1",
+            "KNIGHT1",
+            "CALENDAR1"
+          ],
+          "tensor_sha": "2c97489b2e168fcd",
+          "landmarks_sha": "0af7f8e0b3ee9e1e"
+        }
+      }
+    },
+    "split": {
+      "per_clip_p50": {
+        "0283886564670357-WHAT FOR.mp4": 88.45808299520286,
+        "032677896012150764-WHAT FOR.mp4": 159.3723330006469,
+        "15347326711184706-NOON.mp4": 290.908415998274,
+        "17092802473126545-SQUEEZE.mp4": 228.5391659970628,
+        "25500869855740893-ANYONE.mp4": 262.1781249981723,
+        "3191470037860531-8 HOUR.mp4": 271.8835420018877,
+        "3738312466703404-TEACH.mp4": 277.88941700418945,
+        "4254167262351618-CHEW 2.mp4": 280.8907500002533,
+        "4481998873282871-PONDER.mp4": 295.59929199604085,
+        "5004269948712425-SOCCER 2.mp4": 280.3838339968934,
+        "5008852988399453-MYSELF.mp4": 268.03195899992716,
+        "5784034175717614-EASY.mp4": 281.4692920001107
+      },
+      "all_samples": {
+        "p50_ms": 277.3518130015873,
+        "p95_ms": 296.91459399691666,
+        "mean_ms": 250.65514019398609,
+        "min_ms": 87.86320900253486,
+        "max_ms": 304.29150000418304,
+        "count": 36
+      },
+      "records": {
+        "0283886564670357-WHAT FOR.mp4": {
+          "prediction": "WHATFOR1",
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "KNIGHT1",
+            "SCROLLDOWN",
+            "DECIDE1"
+          ],
+          "tensor_sha": "8c42643554db7973",
+          "landmarks_sha": "55195d1f57a9b734"
+        },
+        "032677896012150764-WHAT FOR.mp4": {
+          "prediction": "WHATFOR1",
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "DEAF1",
+            "TAIL1",
+            "ANYONE"
+          ],
+          "tensor_sha": "c3a1cb8908ff956e",
+          "landmarks_sha": "852d5b05ad11cca2"
+        },
+        "15347326711184706-NOON.mp4": {
+          "prediction": "BREAKFAST1",
+          "top5": [
+            "BREAKFAST1",
+            "NOON1",
+            "AUTISM1",
+            "BEE1",
+            "GUESS1"
+          ],
+          "tensor_sha": "94fe8234c8af4a55",
+          "landmarks_sha": "972ef27bd0344a20"
+        },
+        "17092802473126545-SQUEEZE.mp4": {
+          "prediction": "SQUEEZE",
+          "top5": [
+            "SQUEEZE",
+            "SOCCER2",
+            "SCROLLDOWN",
+            "CHEESEGRATER",
+            "ADVERTISE"
+          ],
+          "tensor_sha": "9909cc5cfddfb650",
+          "landmarks_sha": "8280418968ed98ad"
+        },
+        "25500869855740893-ANYONE.mp4": {
+          "prediction": "ANYONE",
+          "top5": [
+            "ANYONE",
+            "PATIENT2",
+            "SOCIETY",
+            "ALLOFSUDDEN",
+            "OFFEND"
+          ],
+          "tensor_sha": "81e770089479218e",
+          "landmarks_sha": "10abcac3be6ed96a"
+        },
+        "3191470037860531-8 HOUR.mp4": {
+          "prediction": "8HOUR",
+          "top5": [
+            "8HOUR",
+            "MAPLE",
+            "ELEVATOR1",
+            "BEE1",
+            "DOG1"
+          ],
+          "tensor_sha": "40215546670d2662",
+          "landmarks_sha": "d96ec748db63c97f"
+        },
+        "3738312466703404-TEACH.mp4": {
+          "prediction": "TEACH1",
+          "top5": [
+            "TEACH1",
+            "CHEER",
+            "HALLOWEEN1",
+            "DECIDE1",
+            "PARTY1"
+          ],
+          "tensor_sha": "0cf2df95e3431cff",
+          "landmarks_sha": "632e776167407096"
+        },
+        "4254167262351618-CHEW 2.mp4": {
+          "prediction": "CHEW1",
+          "top5": [
+            "CHEW1",
+            "PATIENT2",
+            "BASEBALLCAP",
+            "TAIL1",
+            "ANYONE"
+          ],
+          "tensor_sha": "080ee4906fdbc271",
+          "landmarks_sha": "903793725deff639"
+        },
+        "4481998873282871-PONDER.mp4": {
+          "prediction": "PONDER",
+          "top5": [
+            "PONDER",
+            "AXE1",
+            "BACKPACK1",
+            "DARK1",
+            "JEWELRY"
+          ],
+          "tensor_sha": "4faf079492d4525a",
+          "landmarks_sha": "e18cc7f3a14c040c"
+        },
+        "5004269948712425-SOCCER 2.mp4": {
+          "prediction": "SOCCER2",
+          "top5": [
+            "SOCCER2",
+            "DEAF1",
+            "GOODYGOODYSHOEOPPOSITE",
+            "DECIDE1",
+            "MOVIE1"
+          ],
+          "tensor_sha": "af39a1836578f26f",
+          "landmarks_sha": "543b9e26d2830cc2"
+        },
+        "5008852988399453-MYSELF.mp4": {
+          "prediction": "PATIENT2",
+          "top5": [
+            "PATIENT2",
+            "MYSELF",
+            "CHEEK",
+            "ANYONE",
+            "KNIGHT1"
+          ],
+          "tensor_sha": "20f8c938a7f1543e",
+          "landmarks_sha": "be5ce999f415d611"
+        },
+        "5784034175717614-EASY.mp4": {
+          "prediction": "EASY",
+          "top5": [
+            "EASY",
+            "DARK1",
+            "HOW1",
+            "KNIGHT1",
+            "CALENDAR1"
+          ],
+          "tensor_sha": "2c97489b2e168fcd",
+          "landmarks_sha": "0af7f8e0b3ee9e1e"
+        }
+      }
+    }
+  },
+  "parity_serial_vs_split": {
+    "clips": 12,
+    "mismatches": []
+  }
+}

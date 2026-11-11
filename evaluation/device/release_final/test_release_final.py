@@ -23,6 +23,32 @@ import zipfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+
+def _has_weights() -> bool:
+    """True only when the *landmark ensemble* weights are actually present.
+
+    Checks the member list in the metadata rather than "any .tflite exists",
+    because older S3D artifacts may be present while the shipped ensemble is
+    absent (e.g. in a source-only clone). Untracked weights stay local.
+    """
+    import json as _json
+    for parent in Path(__file__).resolve().parents:
+        m = parent / "models"
+        meta = m / "landmark_model_meta.json"
+        if not meta.is_file():
+            continue
+        try:
+            members = _json.loads(meta.read_text(encoding="utf-8")).get("members")
+        except (OSError, ValueError):
+            members = None
+        if isinstance(members, list) and members:
+            return all((m / name).is_file() for name in members)
+        # no member list -> the single-classifier candidate
+        return (m / "landmark_classifier_fp16.tflite").is_file()
+    return False
+
+_weightless = unittest.skipUnless(_has_weights(), "trained model weights are not present")
+
 REPO = HERE.parents[2]
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(REPO / "scripts" / "release"))
@@ -34,6 +60,7 @@ PYTHON = "$REPO/.venv/bin/python"
 CLIP = REPO / "evaluation/device/v5_accuracy/data/val_30/0283886564670357-WHAT FOR.mp4"
 
 
+@_weightless
 class ClosureAssemblyTest(unittest.TestCase):
     def test_closure_is_complete_and_honest(self):
         self.assertEqual(len(rb.CLOSURE), 11)
@@ -76,6 +103,7 @@ class ClosureAssemblyTest(unittest.TestCase):
             self.assertTrue((staging / "models/landmark_model_meta.json").is_file())
 
 
+@_weightless
 class HashAndSizeTest(unittest.TestCase):
     def _stage_with_model_bytes(self, directory, payload):
         staging = Path(directory) / "bundle"
@@ -144,6 +172,7 @@ class SafeMemberTest(unittest.TestCase):
         for bad in ("src\\main.py", "a\x00b"):
             self.assertFalse(safe_member(bad), f"should be unsafe: {bad!r}")
 
+    @_weightless
     def test_symlink_member_rejected_on_extract(self):
         with tempfile.TemporaryDirectory() as directory:
             staging = Path(directory) / "bundle"

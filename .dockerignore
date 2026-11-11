@@ -1,0 +1,36 @@
+# Keep the build context to what the Dockerfile actually COPYs.
+#
+# Without this file the daemon uploads the whole checkout -- measured at 1.4 GB
+# here (.venv 466 MB, evaluation 598 MB, app 284 MB, .git 21 MB) -- and the
+# COPY src/ step also picked up src/__pycache__ with host .pyc files.
+
+.git/
+.venv/
+venv/
+**/__pycache__/
+**/*.py[cod]
+
+# Model weights are mounted at runtime, never baked in.
+models/
+
+# Research trees, datasets, clips and Android sources the image never uses.
+evaluation/
+app/
+clemchris/
+hengck/
+hoyso_infer/
+hoyso_train/
+submission_final/
+docs/
+results/research/
+.github/
+
+# Large media / archives present in the checkout.
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+*.zip
+*.pdf
+*.ipynb

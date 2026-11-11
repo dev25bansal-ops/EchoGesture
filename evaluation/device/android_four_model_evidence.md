@@ -121,25 +121,38 @@ confirming the build failed with the intended message:
 The final tree builds clean and the APK is byte-identical to the one measured
 above, so these checks add no artifact change — they only prevent a bad one.
 
-## Reproducibility
+## Reproducibility — corrected
 
-Built twice from independent trees — this working tree, and a fresh clone of
-`hackathon/abhijeet-public` — with the same weights copied in. Both produce a
-**bit-identical** APK:
+An earlier revision of this document claimed the APK reproduced **bit-for-bit**
+across independent trees. That claim is wrong and is withdrawn.
 
-```
-2ec087e543c2065d609ecea43056a390e9ce7248c7e2a52e8dc24e1282d44fcb
-75,072,706 B  ·  480 local headers / 480 central entries
-```
+Measured:
 
-An earlier build in this session reported 78,880,127 B. That artifact was
-defective: it carried 540 local headers (`PK\x03\x04`) for only 478 real
-entries, so roughly 3.8 MB of orphaned local headers had accumulated across
-incremental Gradle builds. `assembleDebug` was reusing a stale packaging state
-rather than rewriting the archive. Deleting `app/build/outputs/apk` and
-rebuilding produced the clean 480/480 archive above. The figures in this
-document come from the clean build; the earlier 78,880,127 B should not be
-quoted.
+| Check | Result |
+| --- | --- |
+| Two clean builds in the **same** tree | identical SHA-256 |
+| Clean builds in **two different** trees | **differ** (`e5ed0a3b…` vs `4ebe0774…`) |
+| Entries differing between trees | 1 of 480 — `classes3.dex` (90,344 vs 90,288 B) |
+| Model assets, detector, labels, metadata | **byte-identical** (CRC matches) |
+| Entry count / central directory | identical (480) |
+
+The variance is in D8's synthetic-lambda naming: the compiler derives
+identifiers from inputs that differ across build environments, so the dex bytes
+differ while `dexdump -d` disassembly and predictions are identical. Nothing in
+the shipped model varies.
+
+**What a reviewer should take from this:** the APK is reproducible in *content*,
+not bit-reproducible across machines. The identity guarantee that actually
+matters — four members, detector, labels, metadata — is enforced at load time by
+`ModelContract` against pinned SHA-256 values, so a substituted model cannot run
+whatever dex bytes were emitted. Quote the asset hashes, not a single APK
+SHA-256.
+
+An earlier build also reported 78,880,127 B. That artifact was defective: it
+carried 540 local headers for 478 real entries, so ~3.8 MB of orphaned local
+headers had accumulated across incremental Gradle builds. Deleting
+`app/build/outputs/apk` and rebuilding produces the clean 480/480 archive. The
+78,880,127 B figure should not be quoted.
 
 **Proven from the artifact:**
 - All four ensemble members are packaged, byte-identical to the pinned hashes.

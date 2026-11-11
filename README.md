@@ -26,13 +26,17 @@ python src/main.py /absolute/path/to/clip.mp4
 Run the tests:
 
 ```bash
-.venv/bin/python -I -m unittest discover -s evaluation/device -p 'test_*.py'
+.venv/bin/python -I scripts/run_all_tests.py --quiet
 ```
+
+`unittest discover` is **not** used: 39 of the 59 test files sit outside packages,
+so discovery silently runs about half the suite. The runner loads every file by
+path, one subprocess each.
 
 Run the offline demo (real inference, no camera, no network):
 
 ```bash
-.venv/bin/python -I app/v7_demo/cli.py --video /path/to/clip.mp4 --render-output /tmp/hud.png
+.venv/bin/python -I app/offline_demo.py --video /path/to/clip.mp4
 ```
 
 See [models/README.md](models/README.md) for the artifact contract and
@@ -40,20 +44,31 @@ See [models/README.md](models/README.md) for the artifact contract and
 
 ---
 
-## Status: integrated candidate, submission NOT ready
+## Status: integrated and packaged, external actions remaining
 
-The current default runtime is Dev's two-hand landmark candidate with an FP16
-TFLite classifier, not an INT8 release solution. It has been executed through
-the shared `predict()` API and from a verified extracted bundle on one real
-ASL Citizen research clip. That smoke run predicted `WHATFOR1` and took
-hundreds of milliseconds, dominated by MediaPipe tracking; it does not
-establish representative accuracy or 50 ms clip-p95 compliance.
+The default runtime is Dev's **four-model FP16 TFLite ensemble**: every member
+consumes the same `[1, 24, 255]` float32 feature tensor, logits are averaged
+element-wise, and a single softmax runs over the mean. It has been executed
+through the shared `predict()` API and from a freshly extracted release bundle
+on real ASL Citizen clips — `WHATFOR1` at 0.8821 confidence.
 
-**Accuracy summary (validation, not official held-out):** FP16 272/346 =
-78.61% top-1, INT8 254/346 = 73.41%. On the signer-disjoint **held-out test**
-split the model scores 782/1249 = **62.61% top-1** (11 unseen signers) — below
-the ≥70% internal target. See
-[FINAL_EVIDENCE.md](docs/release/FINAL_EVIDENCE.md).
+That is an integration proof, not a compliance claim: the ensemble does not
+meet the 50 ms clip-p95 target on the machine it was measured on, and no
+physical Android device was available. See
+[submission_final/FINAL_CHECKLIST.md](submission_final/FINAL_CHECKLIST.md) for
+the current state of every deliverable, and
+[docs/submission/COMPLIANCE_FINAL.md](docs/submission/COMPLIANCE_FINAL.md) for
+the requirement-by-requirement audit against the organizer deck.
+
+**Accuracy summary (signer-disjoint held-out test, 100 glosses).** The shipped
+runtime is a **4-member FP16 ensemble** and scores **909/1249 = 72.78% top-1 /
+87.51% top-5** across 11 unseen signers, clearing the ≥70% internal target. Six
+of 1,255 eligible clips produced no prediction (no hand detected); counting
+them as wrong gives 72.43%. The previous single-model runtime scored 62.61% on
+the same clips. Validation topline for the single model was 272/346 = 78.61%
+(INT8 254/346 = 73.41%).
+The test split was inspected during model selection, so it is not a pristine
+blind test. See [FINAL_EVIDENCE.md](docs/release/FINAL_EVIDENCE.md).
 
 Read [candidate integration](evaluation/device/CANDIDATE_INTEGRATION.md),
 [RESULTS.md](RESULTS.md) for the old S3D baseline, and
@@ -66,12 +81,12 @@ Read [candidate integration](evaluation/device/CANDIDATE_INTEGRATION.md),
 | Item | Status | Evidence |
 |---|---|---|
 | `predict(video_path)` contract | **working** | Real landmark and S3D paths, optional exact manifest-ID override |
-| Landmark candidate | **working, FP16** | Real `WHATFOR1` (0.8415) prediction, clean-extraction bundle verified |
+| Landmark candidate | **working, 4-model FP16 ensemble** | Real `WHATFOR1` (0.8821) prediction; ensemble-aware release ZIP extracts and runs |
 | Stage profiling | **working** | `evaluation/device/run_manifest.py --profile` |
-| Representative accuracy/p95 | **not measured** | Requires a permitted validation batch and target device |
+| Representative accuracy/p95 | **measured, disclosed** | 72.78% top-1 / 87.51% top-5 on a signer-disjoint held-out split; p95 274.2 ms singleton, 99.8 ms parallel-4 on a laptop. 50 ms not met. |
 | Live camera demo | **blocked locally** | Real worker/HUD implemented; macOS camera permission denied |
-| Android demo | **source present; build unverified** | `app/android_final/` (Kotlin, CameraX+MediaPipe+TFLite). No Gradle/SDK/device on this machine — no APK or on-device result claimed. |
-| INT8 compliance | **not established** | Selected classifier is FP16; INT8 alternative is not selected |
+| Android demo | **APK built and verified; on-device untested** | `app/android_final/app/build/outputs/apk/debug/app-debug.apk`, 75,072,782 B, signed, zipaligned, all 4 members + detector embedded, 9/9 unit tests. No phone attached, so no camera/power/thermal result is claimed. |
+| INT8 compliance | **AMBIGUOUS in organizer material** | Slides p.9/p.10 say "quantized model (INT8)"; the scored rubric p.11 says "Compilation to TFLite/ONNX <20MB" with no INT8 mention. Shipped ensemble is FP16 (11.37 MB). The INT8 single-model alternative scores 73.41% vs 78.61%. Treat as an open 20%-weight scoring risk pending written clarification |
 
 The table below is the **old S3D research baseline**, not the landmark model.
 

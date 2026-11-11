@@ -115,6 +115,39 @@ def _load_json(path, label):
         raise ValueError(f"{label} is not valid JSON: {exc}") from exc
 
 
+def declared_members(metadata, label):
+    """Validate and return an ensemble member list from model metadata.
+
+    Members are bare filenames that live next to the selected model. They are
+    checked with the same guards as ZIP members: no separators, no traversal,
+    no drive/UNC/ADS colon forms. An absent or empty ``members`` key means the
+    single-model layout, which keeps older bundles valid.
+    """
+    if not isinstance(metadata, dict):
+        raise ValueError(f"{label} must be a JSON object")
+    raw = metadata.get("members")
+    if raw is None or raw == []:
+        return []
+    if not isinstance(raw, list):
+        raise ValueError(f"{label} field 'members' must be a list")
+    members = []
+    seen = set()
+    for name in raw:
+        if not isinstance(name, str) or not name:
+            raise ValueError(f"{label} member names must be non-empty strings")
+        if "/" in name:
+            raise ValueError(f"Unsafe ensemble member name: {name!r}")
+        if not safe_member(name) or name in (".", ".."):
+            raise ValueError(f"Unsafe ensemble member name: {name!r}")
+        if not name.lower().endswith(".tflite"):
+            raise ValueError(f"Ensemble member must be a .tflite file: {name!r}")
+        if name in seen:
+            raise ValueError(f"Duplicate ensemble member: {name}")
+        seen.add(name)
+        members.append(name)
+    return members
+
+
 def _require_str(mapping, key, label):
     value = mapping.get(key) if isinstance(mapping, dict) else None
     if not isinstance(value, str) or not value:
@@ -294,6 +327,42 @@ def verify_directory(root, clip=None, model_sha=None, official=False):
     digest = sha256(model)
     if declared_sha != digest:
         raise ValueError("release.json model hash does not match the selected artifact")
+
+    # Ensemble members are declared in release.json by the builder and must
+    # agree with the shipped meta sidecar. Verification never trusts either
+    # list alone: both must match and every member must be present and hash-correct.
+    declared_member_hashes = manifest.get("members")
+    metad_rel = manifest.get("model_metadata")
+    meta_members = []
+    if metad_rel is not None:
+        metad_rel = _require_str(manifest, "model_metadata", "release.json")
+        metadata = safe_relative(root, metad_rel)
+        _require_file(metadata, "Model metadata")
+        meta_members = declared_members(_load_json(metadata, "Model metadata"), "Model metadata")
+    if declared_member_hashes is None:
+        declared_member_hashes = []
+    if not isinstance(declared_member_hashes, list):
+        raise ValueError("release.json 'members' must be a list")
+    if meta_members:
+        if len(meta_members) != len(declared_member_hashes) or any(
+                not isinstance(m, dict) or m.get("name") != name
+                for m, name in zip(declared_member_hashes, meta_members)):
+            raise ValueError("release.json members do not match the metadata members list")
+    verified_members = []
+    for entry in declared_member_hashes:
+        if not isinstance(entry, dict):
+            raise ValueError("release.json member entries must be objects")
+        name = _require_str(entry, "name", "release.json member")
+        member_sha = _require_str(entry, "sha256", "release.json member")
+        if "/" in name or not safe_member(name):
+            raise ValueError(f"Unsafe ensemble member path: {name!r}")
+        if not _SHA256_RE.match(member_sha):
+            raise ValueError(f"release.json member sha256 for {name!r} must be 64-char lowercase hex")
+        member_path = safe_relative(root, f"{Path(model_rel).parent.as_posix()}/{name}")
+        _require_file(member_path, f"Ensemble member {name}")
+        if sha256(member_path) != member_sha:
+            raise ValueError(f"Ensemble member hash mismatch: {name}")
+        verified_members.append({"name": name, "sha256": member_sha})
     models_dir = root / "models"
     if not models_dir.is_dir():
         raise ValueError("Bundle is missing models/ directory for total-size accounting")
@@ -323,7 +392,7 @@ def verify_directory(root, clip=None, model_sha=None, official=False):
         if prediction["clip_id"] != Path(clip).stem:
             raise ValueError("Extracted predictor returned an incorrect clip ID")
         return prediction
-    return {"model_sha256": digest, "status": "structure_verified"}
+    return {"model_sha256": digest, "members": verified_members, "status": "structure_verified"}
 
 
 def verify_zip(path, clip=None, model_sha=None, official=False):
@@ -355,7 +424,14 @@ def verify_zip(path, clip=None, model_sha=None, official=False):
         return verify_directory(dest_root, clip, model_sha, official)
 
 
-def build(source, model, labels, results, output, official=False, extra=()):
+def build(source, model, labels, results, output, official=False, extra=(), metadata=None):
+    """Stage, verify and ZIP one bundle; returns the clean-extraction result.
+
+    ``metadata`` optionally overrides the ``landmark_model_meta.json`` sidecar
+    shipped next to the model. The builder never edits source: a release that
+    declares ensemble ``members`` passes the intended sidecar here instead of
+    mutating a tracked file.
+    """
     source = Path(source).resolve()
     if not (source / "src/main.py").is_file():
         raise ValueError("Source must contain src/main.py")
@@ -369,6 +445,27 @@ def build(source, model, labels, results, output, official=False, extra=()):
         raise ValueError("Selected model is missing")
     if not selected_labels.is_file():
         raise ValueError("Selected labels are missing")
+    # The meta sidecar next to the model declares the ensemble (if any). It is
+    # the same file ``main.predict`` reads, so members are staged exactly where
+    # the runtime looks for them.
+    meta_rel = f"{Path(model).parent.as_posix()}/landmark_model_meta.json"
+    if not safe_member(meta_rel):
+        raise ValueError(f"Unsafe model metadata path: {meta_rel}")
+    if metadata is not None:
+        metadata = Path(metadata).resolve()
+        if not metadata.is_file():
+            raise ValueError("Model metadata override is missing")
+        members = declared_members(_load_json(metadata, "Model metadata"), "Model metadata")
+    else:
+        meta_path = selected_model.parent / "landmark_model_meta.json"
+        members = []
+        if meta_path.is_file():
+            members = declared_members(_load_json(meta_path, "Model metadata"), "Model metadata")
+    member_sources = []
+    for name in members:
+        member_src = safe_relative(source, f"{Path(model).parent.as_posix()}/{name}")
+        _require_file(member_src, f"Ensemble member {name}")
+        member_sources.append((name, member_src))
     model_sha = sha256(selected_model)
     results = Path(results)
     if not results.is_file() or results.stat().st_size == 0:
@@ -392,9 +489,17 @@ def build(source, model, labels, results, output, official=False, extra=()):
         out_labels.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(selected_model, out_model)
         shutil.copy2(selected_labels, out_labels)
+        staged_members = []
+        for name, member_src in member_sources:
+            out_member = out_model.parent / name
+            out_member.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(member_src, out_member)
+            staged_members.append({"name": name, "sha256": sha256(out_member)})
         for runtime_rel in _landmark_runtime_files(model, labels):
             runtime_src = safe_relative(source, runtime_rel)
             _require_file(runtime_src, f"Landmark runtime asset {runtime_rel}")
+            if metadata is not None and runtime_rel == meta_rel:
+                runtime_src = metadata
             out_runtime = staging / runtime_rel
             out_runtime.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(runtime_src, out_runtime)
@@ -416,20 +521,43 @@ def build(source, model, labels, results, output, official=False, extra=()):
         if conversion_rel is None:
             raise ValueError("Add a model conversion/export script with --extra")
         shutil.copy2(results, staging / "results/results.csv")
+        # p.12 puts predictions.json in the results/ folder, and p.11 requires a
+        # single predictions.jsonl. Stage a predictions file only when it can be
+        # validated against an organizer manifest: predictions without a
+        # manifest cannot be checked, and a fabricated manifest would defeat the
+        # ID check this builder exists to perform.
+        sibling_predictions = results.parent / "predictions.jsonl"
+        if sibling_predictions.is_file() and (source / "manifest.json").is_file():
+            shutil.copy2(sibling_predictions, staging / "results/predictions.jsonl")
         if official and not (staging / "results/predictions.jsonl").is_file():
             raise ValueError("Official bundle requires organizer-generated predictions.jsonl")
         _require_file(staging / conversion_rel, "Model conversion script")
-        (staging / "Dockerfile").write_text(
-            "FROM python:3.11-slim\nWORKDIR /app\nCOPY . /app\n"
-            "RUN pip install --no-cache-dir -r src/requirements.txt\n"
-            'CMD ["python", "src/main.py"]\n', encoding="utf-8")
-        (staging / "release.json").write_text(json.dumps({
+        # Use the repository's Dockerfile when it has content. A generated stub
+        # would silently ship a different image than the one the README
+        # documents.
+        root_dockerfile = source / "Dockerfile"
+        if root_dockerfile.is_file() and root_dockerfile.read_text(encoding="utf-8").strip():
+            shutil.copy2(root_dockerfile, staging / "Dockerfile")
+        else:
+            (staging / "Dockerfile").write_text(
+                "FROM python:3.11-slim\nWORKDIR /app\nCOPY . /app\n"
+                "RUN pip install --no-cache-dir -r src/requirements.txt\n"
+                'CMD ["python", "src/main.py"]\n', encoding="utf-8")
+        manifest = {
             "model": model, "labels": labels,
             "model_sha256": sha256(out_model),
             "conversion_script": conversion_rel,
             "official_submission": official,
             "layout": "provisional pending organizer starter kit",
-        }, indent=2) + "\n", encoding="utf-8")
+        }
+        # Only ensemble bundles gain these keys; single-model release.json keeps
+        # its exact previous shape.
+        if staged_members:
+            manifest["members"] = staged_members
+        if (staging / meta_rel).is_file():
+            manifest["model_metadata"] = meta_rel
+        (staging / "release.json").write_text(
+            json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
         verify_directory(staging, model_sha=sha256(out_model), official=official)
         output = Path(output)
         output.parent.mkdir(parents=True, exist_ok=True)
@@ -450,6 +578,8 @@ def main(argv=None):
     build_parser.add_argument("--results", type=Path, required=True)
     build_parser.add_argument("--output", type=Path, required=True)
     build_parser.add_argument("--extra", type=Path, action="append", default=[])
+    build_parser.add_argument("--metadata", type=Path,
+                              help="override the shipped landmark_model_meta.json sidecar")
     build_parser.add_argument("--official", action="store_true")
     verify_parser = subparsers.add_parser("verify")
     verify_parser.add_argument("bundle", type=Path)
@@ -459,7 +589,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
     try:
         if args.command == "build":
-            result = build(args.source, args.model, args.labels, args.results, args.output, args.official, args.extra)
+            result = build(args.source, args.model, args.labels, args.results, args.output, args.official, args.extra, args.metadata)
         else:
             result = verify_zip(args.bundle, args.clip, args.model_sha, args.official)
     except (OSError, ValueError, KeyError, TypeError, zipfile.BadZipFile, subprocess.SubprocessError) as exc:

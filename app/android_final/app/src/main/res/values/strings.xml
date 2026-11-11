@@ -14,7 +14,7 @@
     <string name="permission_title">Camera permission required</string>
     <string name="permission_detail">EchoGesture needs the camera to read hand landmarks. Nothing leaves this device.</string>
     <string name="grant_camera">Grant camera</string>
-    <string name="model_identity">%1$s · SHA-256 %2$s…</string>
+    <string name="model_identity">%1$s · SHA-256 %2$s… · %3$d members</string>
     <string name="frame_status">%1$d/32 frames · %2$d with hands</string>
     <string name="caption_confidence">Confidence %1$s%%</string>
     <string name="top_alternatives">Also considered: %1$s</string>

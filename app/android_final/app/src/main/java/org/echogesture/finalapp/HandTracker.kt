@@ -1,15 +1,17 @@
 package org.echogesture.finalapp
 
 import android.content.Context
-import android.graphics.Bitmap
+import android.util.Log
 import androidx.camera.core.ImageProxy
 import com.google.mediapipe.framework.image.BitmapImageBuilder
+import com.google.mediapipe.framework.image.MPImage
 import com.google.mediapipe.tasks.core.BaseOptions
 import com.google.mediapipe.tasks.vision.core.ImageProcessingOptions
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarker
 import com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarkerResult
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
 
 /**
@@ -26,12 +28,34 @@ class HandTracker private constructor(
     private val ring = ArrayDeque<Frame>()
     private val lock = Any()
 
-    /** One analysed frame: RGB bitmap + canonical hand slots with presence. */
+    /** Consecutive failed frames; reset to 0 on any successful analysis. */
+    private val consecutiveFailures = AtomicInteger(0)
+
+    /**
+     * One analysed frame: the canonical [Left=0, Right=1] hand slots for that
+     * instant. Frames with no detection carry an empty list so their temporal
+     * position is preserved (matching src/landmark_frontend.py, which appends a
+     * zero-landmark, zero-presence entry for every frame). The source bitmap is
+     * deliberately not retained: nothing after tracking needs it, and holding
+     * 32 ARGB_8888 buffers would be tens of MB.
+     */
     data class Hand(val slot: Int, val xyz: FloatArray)
-    data class Frame(val bitmap: Bitmap, val hands: List<Hand>)
+    data class Frame(val hands: List<Hand>)
 
     companion object {
+        private const val TAG = "HandTracker"
         private const val FRAME_INTERVAL_MS = 33L // ~30 fps, monotonic VIDEO timestamps
+
+        /** Capture window. Matches src/landmark_frontend.py's max_frames=32. */
+        const val RING_CAPACITY = 32
+
+        /**
+         * Consecutive frame failures after which the tracker is considered
+         * persistently broken (not a one-off bad frame). At ~30 fps this is
+         * ~1 s of continuous failure. Surfaced to the UI so a dead detector is
+         * reported rather than silently showing an empty preview forever.
+         */
+        const val FAILURE_THRESHOLD = 30
 
         fun create(context: Context, modelAssetPath: String): HandTracker {
             val options = HandLandmarker.HandLandmarkerOptions.builder()
@@ -50,16 +74,24 @@ class HandTracker private constructor(
 
     /**
      * Analyses one camera frame. Returns true if the frame was appended, false
-     * if the tracker is closed. Safe to call from the ImageAnalysis executor.
+     * otherwise. [ImageProxy.close] is guaranteed exactly once on every path,
+     * including a closed tracker. Safe to call from the ImageAnalysis executor.
      */
     fun analyse(imageProxy: ImageProxy): Boolean {
         if (closed.get()) {
             imageProxy.close()
             return false
         }
+        var mpImage: MPImage? = null
         return try {
+            // toBitmap() copies the YUV planes into a fresh ARGB_8888 bitmap
+            // and does NOT apply rotation; rotation is passed to MediaPipe via
+            // ImageProcessingOptions below, exactly once.
             val bitmap = imageProxy.toBitmap()
-            val mpImage = BitmapImageBuilder(bitmap).build()
+            mpImage = BitmapImageBuilder(bitmap).build()
+            // detectForVideo() is synchronous: by the time it returns MediaPipe
+            // has copied the pixels into its packet, so closing mpImage (which
+            // recycles `bitmap`) afterwards is safe.
             val result = landmarker.detectForVideo(
                 mpImage,
                 ImageProcessingOptions.builder()
@@ -67,39 +99,29 @@ class HandTracker private constructor(
                     .build(),
                 nextFrameTs.getAndAdd(FRAME_INTERVAL_MS)
             )
-            val frame = Frame(bitmap, toHands(result))
+            val frame = Frame(toHands(result))
             synchronized(lock) {
                 ring.addLast(frame)
-                while (ring.size > 32) ring.removeFirst()
+                while (ring.size > RING_CAPACITY) ring.removeFirst()
             }
-            mpImage.close()
+            consecutiveFailures.set(0)
             true
         } catch (t: Throwable) {
-            // A single bad frame must not stop the preview.
+            // A single bad frame must not stop the preview, but a run of them
+            // means the detector is broken. Count consecutive failures so the
+            // UI can surface a real error instead of a silently empty preview.
+            // Only the exception type is logged — never frame or image data.
+            consecutiveFailures.incrementAndGet()
+            Log.w(TAG, "Hand analysis failed (${t.javaClass.simpleName})")
             false
         } finally {
+            mpImage?.close()
             imageProxy.close()
         }
     }
 
-    fun renderLandmarks(frame: Frame, target: Bitmap): Bitmap {
-        val canvas = android.graphics.Canvas(target)
-        val paint = android.graphics.Paint().apply {
-            color = 0xFF00E676.toInt()
-            strokeWidth = 6f
-            style = android.graphics.Paint.Style.STROKE
-            isAntiAlias = true
-        }
-        val w = frame.bitmap.width.toFloat()
-        val h = frame.bitmap.height.toFloat()
-        for (hand in frame.hands) {
-            val pts = hand.xyz
-            for (i in 0 until 21) {
-                canvas.drawCircle(pts[i * 3] * w, pts[i * 3 + 1] * h, 4f, paint)
-            }
-        }
-        return target
-    }
+    /** Consecutive failed frames since the last successful analysis. */
+    fun consecutiveFailures(): Int = consecutiveFailures.get()
 
     /** Snapshot of the current capture window, oldest first. Empty if <1. */
     fun snapshot(): List<Frame> = synchronized(lock) { ring.toList() }

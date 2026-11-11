@@ -54,6 +54,8 @@ class MainActivity : AppCompatActivity() {
 
     @Volatile private var processing = false
     @Volatile private var modelReady = false
+    /** True once a continuously-failing tracker has been reported to the UI. */
+    @Volatile private var trackerFailureReported = false
 
     private enum class State { INIT, WAITING, PROCESSING, CAPTION, NO_HANDS, ERROR }
     private var state = State.INIT
@@ -103,6 +105,7 @@ class MainActivity : AppCompatActivity() {
 
         captureButton.setOnClickListener { captureAndPredict() }
         retryButton.setOnClickListener {
+            trackerFailureReported = false
             tracker?.clear()
             clearCaption()
             render(State.WAITING)
@@ -177,7 +180,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateFrameStatus(frames: Int, handFrames: Int) = runOnUiThread {
-        frameStatus.text = getString(R.string.frame_status, frames.coerceAtMost(32), handFrames)
+        frameStatus.text = getString(
+            R.string.frame_status,
+            frames.coerceAtMost(HandTracker.RING_CAPACITY),
+            handFrames
+        )
+    }
+
+    /**
+     * A run of consecutive per-frame failures means the detector is broken, not
+     * that one frame was bad. Surface it once, without interrupting an
+     * in-flight capture. Reset by Retry (which clears the flag) or by any
+     * subsequent successful frame.
+     */
+    private fun reportPersistentTrackerFailure() {
+        if (trackerFailureReported) return
+        trackerFailureReported = true
+        render(
+            State.ERROR,
+            detail = "Hand tracking failed repeatedly. Move the phone or restart the app."
+        )
     }
 
     // ---- Model and camera ---------------------------------------------------
@@ -190,7 +212,8 @@ class MainActivity : AppCompatActivity() {
         try {
             val loaded = ModelContract.load(assets)
             val newTracker = HandTracker.create(this@MainActivity, ModelContract.DETECTOR_ASSET)
-            val newClassifier = LandmarkClassifier(loaded.classifierModel, loaded.labels)
+            // Throws unless every listed member loads with its own interpreter.
+            val newClassifier = LandmarkClassifier.create(loaded)
 
             tracker?.close()
             classifier?.close()
@@ -202,7 +225,8 @@ class MainActivity : AppCompatActivity() {
                 modelIdentity.text = getString(
                     R.string.model_identity,
                     loaded.identity.displayName,
-                    loaded.identity.shortSha
+                    loaded.identity.shortSha,
+                    newClassifier.memberCount
                 )
                 modelReady = true
                 if (state == State.INIT) render(State.WAITING)
@@ -229,8 +253,11 @@ class MainActivity : AppCompatActivity() {
                             val t = tracker
                             if (t != null) {
                                 if (t.analyse(imageProxy)) {
+                                    trackerFailureReported = false
                                     val (frames, handFrames) = t.status()
                                     updateFrameStatus(frames, handFrames)
+                                } else if (t.consecutiveFailures() >= HandTracker.FAILURE_THRESHOLD) {
+                                    reportPersistentTrackerFailure()
                                 }
                             } else {
                                 imageProxy.close()
@@ -263,8 +290,16 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val frames = t.snapshot().filter { it.hands.isNotEmpty() }
-        if (frames.isEmpty()) {
+        // Keep every frame in the capture window, including frames where no
+        // hand was detected. The Python reference (src/landmark_frontend.py)
+        // appends a zero-landmark, zero-presence entry for those frames rather
+        // than dropping them, so the 24-frame sequence keeps its real temporal
+        // spacing. Dropping them here would compress the sign in time and feed
+        // the model a representation it was never trained on.
+        val frames = t.snapshot()
+        if (frames.none { it.hands.isNotEmpty() }) {
+            // Only a capture with no hand in any frame is a genuine no-hands
+            // result; a partially occluded sign still carries usable frames.
             render(State.NO_HANDS)
             return
         }

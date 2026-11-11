@@ -65,6 +65,13 @@ _TRACKER_LOCK = threading.Lock()
 _TRACKER_ATEXIT_REGISTERED = False
 _DEFAULT_WORKERS = 4
 _TRACKER_MODULE_PATH = (
+    Path(__file__).resolve().parent
+    / "parallel_tracker.py"
+)
+# Research-tree fallback: before the module was vendored into src/, it lived
+# under evaluation/. Keeping the fallback means an older checkout still runs
+# the opt-in path; the shipped location wins when both exist.
+_TRACKER_FALLBACK_PATH = (
     Path(__file__).resolve().parent.parent
     / "evaluation/device/performance_final/tracker.py"
 )
@@ -165,21 +172,30 @@ def _tracker_config():
 
 
 def _load_tracker_class():
-    """Import ParallelImageTracker from the evaluation package by path.
+    """Import ParallelImageTracker, preferring the module shipped in src/.
 
-    It lives outside `src/`, so it is not an importable module on the
-    evaluator's path by default; load it explicitly without touching sys.path.
+    The tracker now lives in `src/parallel_tracker.py`, so a release bundle
+    carries it and the opt-in fast path works after extraction. Older checkouts
+    kept it under evaluation/, which is why the fallback still exists: without
+    it, `ECHOGESTURE_TRACKER=parallel` would fail on a bundle that never
+    contained the research tree.
     """
-    if not _TRACKER_MODULE_PATH.is_file():
+    path = None
+    for candidate in (_TRACKER_MODULE_PATH, _TRACKER_FALLBACK_PATH):
+        if candidate.is_file():
+            path = candidate
+            break
+    if path is None:
         raise RuntimeError(
-            f"Parallel tracker not available at {_TRACKER_MODULE_PATH}; "
+            "Parallel tracker not available at "
+            f"{_TRACKER_MODULE_PATH} or {_TRACKER_FALLBACK_PATH}; "
             "unset ECHOGESTURE_TRACKER or restore the tracker module")
     if "echogesture_parallel_tracker" in sys.modules:
         return sys.modules["echogesture_parallel_tracker"].ParallelImageTracker
     spec = importlib.util.spec_from_file_location(
-        "echogesture_parallel_tracker", _TRACKER_MODULE_PATH)
+        "echogesture_parallel_tracker", path)
     if spec is None or spec.loader is None:
-        raise RuntimeError(f"Cannot load parallel tracker from {_TRACKER_MODULE_PATH}")
+        raise RuntimeError(f"Cannot load parallel tracker from {path}")
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
     try:
@@ -542,10 +558,30 @@ def predict(video_path: str, *, clip_id: str | None = None, profile: bool = Fals
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python main.py <path_to_video.mp4>")
-        sys.exit(1)
+    if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):
+        # The organizer contract (deck p.11) is a single function:
+        # predict(video_path) -> dict. There is no subcommand surface, so this
+        # prints the contract rather than pretending to be a CLI parser.
+        print(
+            "EchoGesture — on-device isolated sign recognition (100 glosses)\n"
+            "\n"
+            "Usage:\n"
+            "  python -m src.main <path_to_video.mp4> [clip_id]\n"
+            "\n"
+            "Prints the organizer prediction object:\n"
+            '  {"clip_id", "prediction", "top5", "confidence", "latency_ms"}\n'
+            "\n"
+            "Requires model weights under models/ (see models/README.md). They are\n"
+            "not redistributable, so a source-only checkout raises FileNotFoundError\n"
+            "naming the missing member rather than silently running fewer model.\n"
+            "\n"
+            "Environment:\n"
+            "  ECHOGESTURE_TRACKER=parallel   opt-in multi-worker hand tracking\n"
+            "  ECHOGESTURE_WORKERS=<n>        worker count (default 4)"
+        )
+        sys.exit(0 if len(sys.argv) > 1 else 1)
 
     video_arg = sys.argv[1]
-    res = predict(video_arg)
+    clip_id = sys.argv[2] if len(sys.argv) > 2 else None
+    res = predict(video_arg, clip_id=clip_id)
     print(json.dumps(res, indent=2))

@@ -64,6 +64,7 @@ CONVERSION = "scripts/ml/export_tflite_tf.py"
 EXPECTED_CLOSURE = (
     "src/features.py",
     "src/landmark_frontend.py",
+    "src/parallel_tracker.py",
     "models/hand_landmarker.task",
     "models/landmark_model_meta.json",
 )
@@ -190,7 +191,7 @@ class BuildClosureTest(unittest.TestCase):
                 bb.build(REPO, MODEL, LABELS, REPO / "results/results.csv",
                          Path(directory) / "bundle.zip",
                          official=True, extra=[REPO / CONVERSION])
-            self.assertIn("organizer-generated predictions", str(ctx.exception))
+            self.assertIn("does not fabricate", str(ctx.exception))
 
 
 class CleanExtractionIntegrationTest(unittest.TestCase):

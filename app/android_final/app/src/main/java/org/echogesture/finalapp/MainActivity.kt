@@ -270,7 +270,20 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 provider.unbindAll()
-                provider.bindToLifecycle(this, CameraSelector.DEFAULT_FRONT_CAMERA, preview, analysis)
+                // The organizer's scenario is an exocentric third-person view
+                // (deck p.10): someone films the signer. That is the rear
+                // camera. The front camera was chosen earlier for convenience
+                // and inverted the intended viewpoint, so the viewfinder showed
+                // the signer while the model received a mirrored close-up.
+                // No handedness swap is applied: the sensor image reaches
+                // MediaPipe unmirrored and its Left/Right labels are used
+                // as-is, matching src/landmark_frontend.py.
+                val selector = if (provider.hasCamera(CameraSelector.DEFAULT_BACK_CAMERA)) {
+                    CameraSelector.DEFAULT_BACK_CAMERA
+                } else {
+                    CameraSelector.DEFAULT_FRONT_CAMERA
+                }
+                provider.bindToLifecycle(this, selector, preview, analysis)
                 render(State.WAITING)
             } catch (t: Throwable) {
                 render(State.ERROR, detail = "Camera failed to start: ${t.message ?: t.javaClass.simpleName}")

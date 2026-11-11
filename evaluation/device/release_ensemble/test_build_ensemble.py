@@ -153,7 +153,7 @@ class EnsembleStagingTest(unittest.TestCase):
             (source / "results").mkdir()
             (source / "scripts/ml").mkdir(parents=True)
             for name in ("main.py", "requirements.txt", "README.md",
-                         "features.py", "landmark_frontend.py"):
+                         "features.py", "landmark_frontend.py", "parallel_tracker.py"):
                 (source / "src" / name).write_text("x", encoding="utf-8")
             (source / MODEL).write_bytes(b"single")
             (source / LABELS).write_text(json.dumps({"A": 0, "B": 1}), encoding="utf-8")

@@ -18,7 +18,6 @@
   "quantization": "float16 weights, float32 IO",
   "runtime": "ai-edge-litert 2.3.0, XNNPACK CPU",
   "device": "macOS arm64 laptop (not target hardware)",
-
   "accuracy": {
     "population": "ASL Citizen signer-disjoint test split, 100-gloss vocabulary",
     "eligible_clips": 1255,
@@ -39,19 +38,33 @@
     "qualification": "test split was previously inspected during model selection; not a pristine blind test",
     "evidence": "evaluation/device/ensemble_evidence/RESULT.md"
   },
-
   "latency": {
     "definition": "full clip-to-JSON through predict(), 12 permitted val_30 clips, 1 cold + 12 measured warm",
-    "singleton": {"p50_ms": 231.8, "p95_ms": 274.2, "peak_rss_mib": 255.3, "cold_ms": 468.0},
-    "parallel_2": {"p50_ms": 132.0, "p95_ms": 154.8, "peak_rss_mib": 300.0, "cold_ms": 393.0},
-    "parallel_4": {"p50_ms": 79.3, "p95_ms": 99.8, "peak_rss_mib": 393.8, "cold_ms": 352.5},
-    "parity": "identical prediction on 12/12 clips across all three configurations",
+    "singleton": {
+      "p50_ms": 235.6,
+      "p95_ms": 275.8,
+      "peak_rss_mib": 259.4,
+      "cold_ms": 463.8
+    },
+    "parallel_2": {
+      "p50_ms": 130.8,
+      "p95_ms": 152.5,
+      "peak_rss_mib": 299.3,
+      "cold_ms": 389.3
+    },
+    "parallel_4": {
+      "p50_ms": 78.2,
+      "p95_ms": 93.9,
+      "peak_rss_mib": 389.0,
+      "cold_ms": 359.9
+    },
+    "parity": "identical prediction on 12/12 clips across all three configurations (0 disagreements)",
     "ensemble_inference_mean_ms": 0.36,
     "tracks_are_bottleneck": true,
     "target_50ms_p95_met": false,
-    "evidence": "evaluation/device/performance_final/results_ensemble/benchmark.json"
+    "evidence": "evaluation/device/performance_final/results_ensemble/benchmark.json",
+    "remeasured": "2026-11-12 from src/parallel_tracker.py (the vendored module shipped in the bundle), git e2b22af"
   },
-
   "model_size_mb": 11.37,
   "power_thermal": "NOT_MEASURED (no target device)"
 }

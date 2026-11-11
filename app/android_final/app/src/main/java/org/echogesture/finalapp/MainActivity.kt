@@ -119,7 +119,12 @@ class MainActivity : AppCompatActivity() {
         runOnUiThread {
             this.state = state
             offlineIndicator.text = getString(R.string.offline_indicator)
-            captureButton.isEnabled = modelReady && state != State.PROCESSING
+            // Without CAMERA the analyser never runs, so the ring stays empty
+            // and a capture could only report "No hands detected" — a false
+            // result that also hides the Grant button. Keep Capture disabled
+            // until the camera can actually feed the ring.
+            captureButton.isEnabled =
+                modelReady && hasCameraPermission() && state != State.PROCESSING
             permissionButton.visibility =
                 if (permissionBlocked) android.view.View.VISIBLE else android.view.View.GONE
 
@@ -295,6 +300,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun captureAndPredict() {
         if (!modelReady || processing) return
+        // A capture with no permission can only see an empty ring; report the
+        // permission problem instead of a misleading "No hands detected".
+        if (!hasCameraPermission()) {
+            render(State.WAITING, permissionBlocked = true)
+            return
+        }
         val t = tracker
         val c = classifier
         val m = contract

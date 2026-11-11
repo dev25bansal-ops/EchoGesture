@@ -237,5 +237,50 @@
     },
     "video_recorded": false,
     "recording_guide": "docs/demo/DEMO_RECORDING_GUIDE.md"
+  },
+  "release_candidate": {
+    "generated": "2026-11-12",
+    "git_head": "932db68",
+    "latency_remeasured": {
+      "date": "2026-11-12",
+      "tracker_module": "src/parallel_tracker.py (vendored, shipped in the bundle)",
+      "host": "macOS arm64 laptop, ai-edge-litert 2.3.0, XNNPACK CPU",
+      "singleton": {
+        "p50_ms": 235.6,
+        "p95_ms": 275.8,
+        "cold_ms": 463.8,
+        "peak_rss_mib": 259.4
+      },
+      "parallel_2": {
+        "p50_ms": 130.8,
+        "p95_ms": 152.5,
+        "cold_ms": 389.3,
+        "peak_rss_mib": 299.3
+      },
+      "parallel_4": {
+        "p50_ms": 78.2,
+        "p95_ms": 93.9,
+        "cold_ms": 359.9,
+        "peak_rss_mib": 389.0
+      },
+      "parity": "0 disagreements across 12 clips, 3 configurations",
+      "target_50ms_p95_met": false,
+      "note": "the 99.8 ms figure reported earlier is superseded by 93.9 ms from a fresh run of the vendored module"
+    },
+    "shipped_closure_verified": {
+      "extracted_contains": "src/{main,features,landmark_frontend,parallel_tracker}.py, requirements.txt, README.md",
+      "evaluation_dir_present": false,
+      "parallel_mode_works_without_evaluation": true,
+      "reference_prediction": "WHATFOR1 @ 0.8821"
+    },
+    "gates": {
+      "source_only_ci": "PASS",
+      "local_suite": "582 run / 579 pass / 0 fail / 3 skip",
+      "official_builder": "implemented; blocked only on a real organizer manifest",
+      "docker": "see evaluation/device/DOCKER_ACCEPTANCE.md",
+      "android_emulator": "4 instrumentation tests pass (Android 14 arm64)",
+      "android_physical_device": "NOT_TESTED - no device attached",
+      "demo_video": "NOT_RECORDED"
+    }
   }
 }

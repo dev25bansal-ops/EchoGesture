@@ -206,12 +206,14 @@ class TestV7PairedEvidence(unittest.TestCase):
         failed = [row for row in self.records if row["status"] != "ok"]
         self.assertEqual(len(failed), 1)
         self.assertEqual(failed[0]["clip_id"], "5989539775823847-INTUITIVE")
-        self.assertEqual(failed[0]["signer_id"], "P5")
+        self.assertTrue(failed[0]["signer_id"].startswith(("signer_", "P")))
         self.assertIn("No hand detected", failed[0]["error"])
         self.assertTrue(self.summary["cross_check"]["all_predictions_and_top5_match_source"])
 
     def test_signer_and_gloss_keys_cover_all_observed_groups(self):
-        self.assertEqual(set(self.summary["signer"]), {"P12", "P21", "P26", "P39", "P5"})
+        # Signer keys are pseudonymized (signer_<hash>) in published evidence.
+        self.assertEqual(len(self.summary["signer"]), 5)
+        self.assertTrue(all(k.startswith("signer_") for k in self.summary["signer"]))
         self.assertEqual(sum(value["n"] for value in self.summary["gloss"].values()), 345)
         self.assertEqual(self.summary["gloss"]["CHEEK"]["fp16_only_correct"], 2)
         self.assertEqual(self.summary["gloss"]["CHEEK"]["int8_only_correct"], 0)

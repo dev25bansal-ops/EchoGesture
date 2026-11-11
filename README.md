@@ -49,11 +49,15 @@ ASL Citizen research clip. That smoke run predicted `WHATFOR1` and took
 hundreds of milliseconds, dominated by MediaPipe tracking; it does not
 establish representative accuracy or 50 ms clip-p95 compliance.
 
-**Accuracy summary (validation, not official held-out):** FP16 272/346 =
-78.61% top-1, INT8 254/346 = 73.41%. On the signer-disjoint **held-out test**
-split the model scores 782/1249 = **62.61% top-1** (11 unseen signers) — below
-the ≥70% internal target. See
-[FINAL_EVIDENCE.md](docs/release/FINAL_EVIDENCE.md).
+**Accuracy summary (signer-disjoint held-out test, 100 glosses).** The shipped
+runtime is a **4-member FP16 ensemble** and scores **909/1249 = 72.78% top-1 /
+87.51% top-5** across 11 unseen signers, clearing the ≥70% internal target. Six
+of 1,255 eligible clips produced no prediction (no hand detected); counting
+them as wrong gives 72.43%. The previous single-model runtime scored 62.61% on
+the same clips. Validation topline for the single model was 272/346 = 78.61%
+(INT8 254/346 = 73.41%).
+The test split was inspected during model selection, so it is not a pristine
+blind test. See [FINAL_EVIDENCE.md](docs/release/FINAL_EVIDENCE.md).
 
 Read [candidate integration](evaluation/device/CANDIDATE_INTEGRATION.md),
 [RESULTS.md](RESULTS.md) for the old S3D baseline, and
@@ -66,12 +70,12 @@ Read [candidate integration](evaluation/device/CANDIDATE_INTEGRATION.md),
 | Item | Status | Evidence |
 |---|---|---|
 | `predict(video_path)` contract | **working** | Real landmark and S3D paths, optional exact manifest-ID override |
-| Landmark candidate | **working, FP16** | Real `WHATFOR1` (0.8415) prediction, clean-extraction bundle verified |
+| Landmark candidate | **working, 4-model FP16 ensemble** | Real `WHATFOR1` (0.8821) prediction; ensemble-aware release ZIP extracts and runs |
 | Stage profiling | **working** | `evaluation/device/run_manifest.py --profile` |
 | Representative accuracy/p95 | **not measured** | Requires a permitted validation batch and target device |
 | Live camera demo | **blocked locally** | Real worker/HUD implemented; macOS camera permission denied |
 | Android demo | **source present; build unverified** | `app/android_final/` (Kotlin, CameraX+MediaPipe+TFLite). No Gradle/SDK/device on this machine — no APK or on-device result claimed. |
-| INT8 compliance | **not established** | Selected classifier is FP16; INT8 alternative is not selected |
+| INT8 compliance | **not established** | Shipped ensemble is FP16; the INT8 alternative scores 73.41% vs 78.61% and is not selected |
 
 The table below is the **old S3D research baseline**, not the landmark model.
 

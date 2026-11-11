@@ -12,7 +12,7 @@ import tarfile
 import tempfile
 from pathlib import Path
 
-REPO = Path("$REPO")
+REPO = Path(__file__).resolve().parents[2]
 DEST = Path(sys.argv[1])
 
 EXCLUDE_GLOBS = [

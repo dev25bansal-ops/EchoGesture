@@ -47,6 +47,30 @@ from build_bundle import sha256, safe_member  # noqa: E402  (reused, not modifie
 # --- The complete runtime closure for predict(video_path), landmark backend ---
 # Ordered so the manifest reads like a dependency list. Every entry is a
 # relative POSIX path rooted at the repository root.
+#
+# Ensemble members are declared by models/landmark_model_meta.json, not hardcoded
+# here: the runtime refuses to start when a declared member is absent, so a
+# closure that shipped only the single classifier staged a bundle that could not
+# predict. Derive them so the closure cannot drift from the metadata again.
+_META_REL = "models/landmark_model_meta.json"
+
+
+def _declared_members(repo=REPO):
+    """Member basenames declared by the model metadata, validated for safety."""
+    meta_path = Path(repo) / _META_REL
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    raw = meta.get("members")
+    if not isinstance(raw, list) or not raw:
+        raise ValueError(
+            f"{_META_REL} must declare a non-empty 'members' list for the ensemble runtime")
+    members = []
+    for name in raw:
+        if not isinstance(name, str) or not name or "/" in name or "\\" in name:
+            raise ValueError(f"Unsafe ensemble member name in {_META_REL}: {name!r}")
+        members.append(f"models/{name}")
+    return tuple(members)
+
+
 CLOSURE = (
     "src/main.py",
     "src/requirements.txt",
@@ -54,8 +78,9 @@ CLOSURE = (
     "src/features.py",
     "src/landmark_frontend.py",
     "models/landmark_classifier_fp16.tflite",
+    *_declared_members(),
     "models/landmark_labels.json",
-    "models/landmark_model_meta.json",
+    _META_REL,
     "models/hand_landmarker.task",
     "scripts/ml/export_tflite_tf.py",
     "results/results.csv",

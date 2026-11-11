@@ -72,6 +72,7 @@ class ClosureAssemblyTest(unittest.TestCase):
             "src/README.md",
             "src/features.py",
             "src/landmark_frontend.py",
+            "src/parallel_tracker.py",
             "models/landmark_classifier_fp16.tflite",
             "models/landmark_ens_tcn21_fp16.tflite",
             "models/landmark_ens_tcnm61_fp16.tflite",

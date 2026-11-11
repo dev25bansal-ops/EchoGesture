@@ -77,6 +77,9 @@ CLOSURE = (
     "src/README.md",
     "src/features.py",
     "src/landmark_frontend.py",
+    # The opt-in parallel tracker. Omitting it made ECHOGESTURE_TRACKER=parallel
+    # silently fall back to the singleton engine inside this bundle.
+    "src/parallel_tracker.py",
     "models/landmark_classifier_fp16.tflite",
     *_declared_members(),
     "models/landmark_labels.json",
@@ -141,11 +144,21 @@ def write_release_json(staging):
     return manifest
 
 
-def write_dockerfile(staging):
-    (staging / "Dockerfile").write_text(
-        "FROM python:3.11-slim\nWORKDIR /app\nCOPY . /app\n"
-        "RUN pip install --no-cache-dir -r src/requirements.txt\n"
-        'CMD ["python", "src/main.py"]\n', encoding="utf-8")
+def write_dockerfile(staging, repo=REPO):
+    """Stage the repository's Dockerfile, never a generated stub.
+
+    A stub here diverged from the image that was actually built and verified:
+    it had no apt-get for the X11/GL libraries opencv and mediapipe need, and no
+    ENTRYPOINT, so `docker run <image> --help` failed with
+    `exec: "--help": executable file not found in $PATH`.
+    """
+    source = Path(repo) / "Dockerfile"
+    if source.is_file() and source.read_text(encoding="utf-8").strip():
+        shutil.copy2(source, Path(staging) / "Dockerfile")
+        return
+    raise ValueError(
+        "No usable Dockerfile at the repository root; refusing to emit a stub "
+        "that will not run")
 
 
 def check_release_hash(staging):

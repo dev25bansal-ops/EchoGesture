@@ -198,9 +198,11 @@ readings. Do not pad to 5:00.
 
 Say none of these. If a shot would imply one, cut the shot.
 
-- **No 50 ms.** The number is **not met**. State p95 274.2 ms singleton /
-  154.8 parallel-2 / 99.8 parallel-4, on a **macOS arm64 laptop that is not
-  the target hardware**.
+- **No 50 ms.** The number is **not met**. State p95 **275.8 ms singleton /
+  152.5 parallel-2 / 93.9 parallel-4**, on a **macOS arm64 laptop that is not
+  the target hardware**. (An earlier run measured 274.2 / 154.8 / 99.8; the
+  2026-11-12 run supersedes it. Either is honest, but use the current one and
+  say which.)
 - **No continuous translation.** This is a 100-gloss *isolated-sign*
   recogniser. It is not an interpreter replacement. Say so on screen.
 - **No INT8.** The artifact is FP16. Do not let a slide or a caption say INT8.
@@ -408,7 +410,7 @@ Every item below was checked directly against an artifact in the tree on
 | Quantization | `"quantization": "float16"` — **not INT8**, and labelled as such everywhere | `models/landmark_model_meta.json`; `RELEASE_MANIFEST.json` → `is_int8: false` |
 | Top-1 | 909/1249 = 72.78%; 6 further eligible clips produced no hand; all-eligible 72.43% | `results/predictions.jsonl` (1,249 rows, exact 5-key schema, no empty predictions) |
 | Top-5 | 87.51% | `evaluation/device/ensemble_evidence/RESULT.md` |
-| Latency p95 | 274.2 / 154.8 / 99.8 ms, singleton / parallel-2 / parallel-4 | recomputed from `performance_final/results_ensemble/benchmark.json` (raw warm p95 274.18 / 154.77 / 99.81) |
+| Latency p95 | 275.8 / 152.5 / 93.9 ms, singleton / parallel-2 / parallel-4 (2026-11-12 run; earlier run 274.2 / 154.8 / 99.8) | `RELEASE_MANIFEST.json` → `release_candidate.latency_remeasured`; older run recomputable from `performance_final/results_ensemble/benchmark.json` |
 | 50 ms | **NOT met** | same |
 | Ensemble inference cost | 0.41 ms; hand tracking is 90% of runtime (217 ms of ~240 ms) | `performance_final/profile_final/PROFILE.md` |
 | Robustness | low light +3.33, blur 0.00, frame drop 0.00 PASS; occlusion −6.67, crop −10.00 FAIL | `robustness_ensemble/RESULTS.md` |
@@ -423,22 +425,23 @@ Every item below was checked directly against an artifact in the tree on
 | Physical device | **never attached** — no install, camera, power or thermal measurement | `android_apk_evidence.md` |
 | Python | 3.11.18 | `.venv/bin/python -V`; `Dockerfile` is `python:3.11-slim` |
 | Conversion script | present in the built ZIP at `scripts/ml/export_tflite_tf.py` | ZIP listing |
+| Docker | fresh build runs `--help` **and** a real prediction (`WHATFOR1`, 0.8818) | `DOCKER_ACCEPTANCE.md`, `COMPLIANCE_MATRIX_PDF.md` §9.1 |
 | Deck | 11 slides, placeholders present, no 3D / INT8 / 50 ms-met / continuous claim | python-pptx scan |
 | CI | source-only GitHub Actions green | `RELEASE_MANIFEST.json` |
 
-### Two things that are NOT verified and that you should know about
+### Two things to know about the package
 
-1. **Docker end-to-end is broken.** A fresh build of the current `Dockerfile`
-   starts and prints `--help`, but a real `predict()` inside the container
-   fails with `OSError: libGLESv2.so.2` because `python:3.11-slim` lacks
-   `libegl1 libgl1 libgles2`, which MediaPipe needs. With those installed the
-   container returns the correct prediction (`WHATFOR1`, 0.8818). This is a
-   one-line `apt-get install` fix owned by the packaging workstream, recorded
-   in `COMPLIANCE_MATRIX_PDF.md` §9.1. **Do not claim Docker works** until
-   that line lands and a real prediction succeeds.
-2. **The release ZIP is stale.** It predates the current `src/main.py` and does
-   not contain `src/parallel_tracker.py`. If you hand the ZIP to the organizer,
-   have the packaging owner rebuild it first.
+1. **Docker works, and I verified it.** A fresh build of the committed
+   `Dockerfile` prints `--help` and runs a real prediction inside the container:
+   `WHATFOR1`, confidence 0.8818. Two older images in the local Docker daemon
+   (`echogesture:rc`, `echogesture:rc2`) are stale and fail on `import cv2` —
+   do not cite them; rebuild from the `Dockerfile`. Evidence:
+   `evaluation/device/DOCKER_ACCEPTANCE.md` and `COMPLIANCE_MATRIX_PDF.md` §9.1.
+2. **Confirm the release ZIP is current before you hand it over.** An older
+   `evaluation/device/release_final2/echogesture_final2_ensemble.zip` predates
+   the current `src/main.py` and lacks `src/parallel_tracker.py`. If the
+   packaging owner has rebuilt it, use the new one; if not, ask them to rebuild
+   rather than shipping the stale archive.
 
 ---
 
@@ -459,7 +462,7 @@ not the target hardware:
   - Top-1 72.78% (909/1249) on the ASL Citizen signer-disjoint test split,
     11 unseen signers; top-5 87.51%. The test split was inspected during model
     selection, so this is not a pristine blind evaluation.
-  - Full clip-to-JSON p95 274.2 ms singleton, 154.8 ms parallel-2, 99.8 ms
+  - Full clip-to-JSON p95 275.8 ms singleton, 152.5 ms parallel-2, 93.9 ms
     parallel-4. The 50 ms target is not met.
   - Robustness: low light, motion blur and frame drop pass; crop (-10.00 pp)
     and occlusion (-6.67 pp) exceed the 5 pp budget.

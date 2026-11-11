@@ -14,7 +14,18 @@
     "ci": "GitHub Actions success on 26b2990",
     "pull_request": "https://github.com/dev25bansal-ops/EchoGesture/pull/1",
     "pr_state": "draft",
-    "model_weights_published": false
+    "model_weights_published": false,
+    "known_committed_weights_pre_existing": {
+      "files": [
+        "models/ptq_100_int8.tflite (904,256 B)",
+        "models/s3d_conv1d_qat_int8.tflite (901,200 B)"
+      ],
+      "total_bytes": 1805456,
+      "what_they_are": "third-party INT8 research weights (Kimpinde & Olukanmi, Algorithms 2026, WLASL-derived), committed in an early commit and present on every branch including main",
+      "not_ours": "the four shipped ensemble members are NOT published; these are a different, earlier candidate",
+      "corrects": "an earlier version of this manifest asserted model_weights_published:false while these files were in fact present",
+      "owner_decision": "rewriting history or deleting them is Dev/owner territory and was not done; flagged in docs/submission/LICENSING_REVIEW.md"
+    }
   },
   "model": {
     "kind": "4-member FP16 TFLite ensemble, mean-logit aggregation, single softmax",

@@ -78,6 +78,24 @@ top-1, top-5 and confidence against the Python fixture. It requires a device.
 
 ## What is proven and what is not
 
+## Build-time validation
+
+`build.gradle.kts` fails the build when an asset is missing, when any member or
+the detector or either JSON does not match its pinned SHA-256, when the members
+listed in `landmark_model_meta.json` are not exactly the pinned member set, or
+when the metadata's `quantization` is not `float16`.
+
+Both semantic guards were tested by deliberately breaking the tree and
+confirming the build failed with the intended message:
+
+| Sabotage | Result |
+| --- | --- |
+| `quantization` set to `int8` | build failed at the metadata hash check |
+| member list cut to three, hash re-pinned to isolate the set check | build failed: `Metadata members [...] do not match the pinned set [...]` |
+
+The final tree builds clean and the APK is byte-identical to the one measured
+above, so these checks add no artifact change — they only prevent a bad one.
+
 **Proven from the artifact:**
 - All four ensemble members are packaged, byte-identical to the pinned hashes.
 - The metadata declares exactly those four, in that order.

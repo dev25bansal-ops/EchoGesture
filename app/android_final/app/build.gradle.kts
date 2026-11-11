@@ -21,9 +21,24 @@ val memberHashes = mapOf(
 val modelAssets = mapOf(
     "hand_landmarker.task" to
         "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1",
-    "landmark_labels.json" to null,
-    "landmark_model_meta.json" to null
+    "landmark_labels.json" to
+        "e78f5028e97e2eaf86aff65af403af65061eebef010f0fbd41012293e8019a4a",
+    "landmark_model_meta.json" to
+        "06f655bbec9c75181e89218d7ba284523a2ee02f5ac30f133e48cde48072ddbc"
 ) + memberHashes
+
+fun sha256Of(file: java.io.File): String {
+    val digest = MessageDigest.getInstance("SHA-256")
+    file.inputStream().buffered().use { input ->
+        val buffer = ByteArray(64 * 1024)
+        while (true) {
+            val count = input.read(buffer)
+            if (count < 0) break
+            digest.update(buffer, 0, count)
+        }
+    }
+    return digest.digest().joinToString("") { "%02x".format(it) }
+}
 
 modelAssets.forEach { (name, expectedHash) ->
     val asset = layout.projectDirectory.file("src/main/assets/$name").asFile
@@ -34,20 +49,42 @@ modelAssets.forEach { (name, expectedHash) ->
                 "all ${memberHashes.size} ensemble members are required."
         )
     }
-    if (expectedHash != null) {
-        val digest = MessageDigest.getInstance("SHA-256")
-        asset.inputStream().buffered().use { input ->
-            val buffer = ByteArray(64 * 1024)
-            while (true) {
-                val count = input.read(buffer)
-                if (count < 0) break
-                digest.update(buffer, 0, count)
-            }
-        }
-        val actual = digest.digest().joinToString("") { "%02x".format(it) }
-        if (actual != expectedHash) {
-            throw GradleException("$name SHA-256 is $actual; expected $expectedHash")
-        }
+    val actual = sha256Of(asset)
+    if (actual != expectedHash) {
+        throw GradleException("$name SHA-256 is $actual; expected $expectedHash")
+    }
+}
+
+// The pinned member set above and the members declared in the metadata must be
+// the same set. Without this, a metadata edit that listed a fifth member (or
+// dropped one) would build cleanly while the runtime tried to load a set the
+// build never verified, or verified one it never loads.
+run {
+    val metaFile = layout.projectDirectory
+        .file("src/main/assets/landmark_model_meta.json").asFile
+    @Suppress("UNCHECKED_CAST")
+    val meta = groovy.json.JsonSlurper().parse(metaFile) as Map<String, Any?>
+    val declared = (meta["members"] as? List<*>)?.filterIsInstance<String>().orEmpty()
+    if (declared.isEmpty()) {
+        throw GradleException(
+            "landmark_model_meta.json declares no members; the build cannot verify a"
+                + " single-classifier fallback, which this app no longer supports."
+        )
+    }
+    val pinned = memberHashes.keys
+    if (declared.toSet() != pinned) {
+        throw GradleException(
+            "Metadata members ${declared.sorted()} do not match the pinned set "
+                + "${pinned.sorted()}; update memberHashes and the metadata together."
+        )
+    }
+    val quantization = meta["quantization"]?.toString()
+    if (quantization != "float16") {
+        throw GradleException(
+            "landmark_model_meta.json declares quantization='$quantization'; the"
+                + " shipped ensemble is FP16 and every published metric was measured"
+                + " on it."
+        )
     }
 }
 

@@ -18,8 +18,8 @@ Kotlin 2.0.20. `BUILD SUCCESSFUL`.
 | | |
 | --- | --- |
 | Path | `app/android_final/app/build/outputs/apk/debug/app-debug.apk` |
-| Size | 78,880,127 B |
-| SHA-256 | `67c836f52dc5c168bc98ed970fcd25cbf2da54af74adc4ec4998effb1682eeb0` |
+| Size | 75,072,706 B |
+| SHA-256 | `2ec087e543c2065d609ecea43056a390e9ce7248c7e2a52e8dc24e1282d44fcb` |
 | Signature | APK Signature Scheme v2, `CN=Android Debug`, RSA-2048 |
 | Zipalign | verified, all `.so` stored and 4-byte aligned |
 | minSdk / targetSdk | 24 / 34 |
@@ -95,6 +95,26 @@ confirming the build failed with the intended message:
 
 The final tree builds clean and the APK is byte-identical to the one measured
 above, so these checks add no artifact change — they only prevent a bad one.
+
+## Reproducibility
+
+Built twice from independent trees — this working tree, and a fresh clone of
+`hackathon/abhijeet-public` — with the same weights copied in. Both produce a
+**bit-identical** APK:
+
+```
+2ec087e543c2065d609ecea43056a390e9ce7248c7e2a52e8dc24e1282d44fcb
+75,072,706 B  ·  480 local headers / 480 central entries
+```
+
+An earlier build in this session reported 78,880,127 B. That artifact was
+defective: it carried 540 local headers (`PK\x03\x04`) for only 478 real
+entries, so roughly 3.8 MB of orphaned local headers had accumulated across
+incremental Gradle builds. `assembleDebug` was reusing a stale packaging state
+rather than rewriting the archive. Deleting `app/build/outputs/apk` and
+rebuilding produced the clean 480/480 archive above. The figures in this
+document come from the clean build; the earlier 78,880,127 B should not be
+quoted.
 
 **Proven from the artifact:**
 - All four ensemble members are packaged, byte-identical to the pinned hashes.

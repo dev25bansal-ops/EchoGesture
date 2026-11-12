@@ -153,3 +153,15 @@ Our code and harnesses: MIT. S3D-Conv1D architecture and weights: MIT
 (Kimpinde & Olukanmi). WLASL is C-UDA (academic/non-commercial); ASL Citizen is
 Microsoft Research licence (non-commercial). Neither dataset may be
 redistributed, and models trained on WLASL cannot be shipped commercially.
+
+## Working data and environment
+
+The full working tree — 16.9 GB, including the 3,390 ASL Citizen clips, the
+landmark caches, the reproduction virtualenvs and the built APK — is mirrored
+to a **private** Hugging Face dataset:
+[`Dev2506/echogesture-full`](https://huggingface.co/datasets/Dev2506/echogesture-full).
+
+It is private because of the licence above: it holds research video that cannot
+be redistributed. Download commands, an inventory of what is inside, and the
+small shipping subset live in
+[docs/hackathon/HF_DATASET.md](docs/hackathon/HF_DATASET.md).

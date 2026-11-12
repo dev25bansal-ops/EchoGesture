@@ -147,6 +147,18 @@ ASL Citizen clips and the extracted landmark cache stay **outside Git**
 scripts and the model artifacts are committed. ASL Citizen is research-use; the
 release ships derived model weights, not the videos.
 
+**Full working tree mirrored to a private Hugging Face dataset** —
+[`Dev2506/echogesture-full`](https://huggingface.co/datasets/Dev2506/echogesture-full),
+16.9 GB across 181,083 files. That includes the 3,390 ASL Citizen clips, the
+landmark caches, both reproduction venvs, training checkpoints and the built
+APK, so the environment can be rebuilt without a network install. See
+[HF_DATASET.md](HF_DATASET.md) for what is in it, download commands, and the
+shipping subset.
+
+**The dataset is private and must stay private.** It contains licensed research
+video; publishing it would be redistribution. The models are distributed
+through the release bundle instead.
+
 ## Open questions for Abhijeet
 
 1. Does the organizer manifest use clip IDs matching the **video stem**? We key

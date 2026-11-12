@@ -69,10 +69,13 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", default=".")
     ap.add_argument("--dry-run", action="store_true")
-    ap.add_argument("--batch-files", type=int, default=1200,
-                    help="max files per commit")
-    ap.add_argument("--batch-bytes", type=int, default=1_800_000_000,
-                    help="max bytes per commit")
+    ap.add_argument("--batch-files", type=int, default=250,
+                    help="max files per commit. Kept small on purpose: "
+                         "upload_folder() stages every file then commits once, "
+                         "so a large batch that dies at 99%% loses all of it.")
+    ap.add_argument("--batch-bytes", type=int, default=250_000_000,
+                    help="max bytes per commit; large files each get their own "
+                         "commit because they dominate transfer time")
     args = ap.parse_args()
 
     root = Path(args.root).resolve()
@@ -136,7 +139,14 @@ def main():
             batches.append(batch)
 
         for bi, batch in enumerate(batches, 1):
+            key = f"{group}#{bi}"
             bptr = sum(sizes[r] for r in batch)
+            if key in done:
+                print(f"[{gi}/{len(order)}] {group} batch {bi}/{len(batches)}"
+                      f" - done, skipping", flush=True)
+                uploaded_files += len(batch)
+                uploaded_bytes += bptr
+                continue
             print(f"[{gi}/{len(order)}] {group} batch {bi}/{len(batches)}  "
                   f"{len(batch):,} files {bptr/1e6:7.1f} MB", flush=True)
             api.upload_folder(
@@ -149,6 +159,9 @@ def main():
             )
             uploaded_files += len(batch)
             uploaded_bytes += bptr
+            done.add(key)
+            STATE.parent.mkdir(parents=True, exist_ok=True)
+            STATE.write_text(json.dumps(sorted(done), indent=2))
             el = time.time() - t0
             rate = uploaded_bytes / el / 1e6 if el else 0
             print(f"    running total {uploaded_bytes/1e9:.2f} GB "

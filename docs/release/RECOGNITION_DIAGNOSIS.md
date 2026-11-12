@@ -24,25 +24,40 @@ compressed into a different temporal scale on almost every capture.
 
 ## Root cause
 
-**The model was trained on whole clips; the app feeds it a window whose duration
-is uncontrolled.**
+**The model was trained on whole clips; the app feeds it a window whose temporal
+step is uncontrolled — and, even at a controlled rate, roughly 3.5× too fine.**
 
 `src/landmark_frontend.py:read_frames()` samples 32 frames **spread across the
-entire clip** — one documented example was a 110-frame clip, about 3.7 s at
-30 fps. The feature matrix is 24 frames with **no timestamp channel** (255
-features: positions, velocities, accelerations, inter-hand geometry). The model
-therefore learned rates of change measured against whatever wall-clock span its
-input covered.
+entire clip** — `np.linspace(0, total - 1, 32)`. Its own docstring records a
+typical ASL Citizen clip as **110 frames, about 3.7 s at 30 fps**. So training's
+consecutive samples are about **115 ms apart**.
 
-The app took 32 **consecutive** frames from the moment of the tap, so the span
-it presented was whatever the analyser happened to achieve. At 9.8 fps that is
-3.2 s; at 30 fps it is 1.0 s. Velocities and accelerations are computed in
-per-frame differences, so the same gesture produced features differing by up to
-3× in their temporal derivative depending on device state.
+`src/features.py:160-162` computes motion as a plain per-frame difference with no
+time term:
 
-This is a pipeline defect, not a model-quality question. It explains a *variable*
-score across attempts on the same sign better than it explains a consistently
-wrong one.
+```python
+vel[1:] = norm[1:] - norm[:-1]
+acc[2:] = norm[2:] - norm[:-2]
+```
+
+The step between samples *is* the time base. There is no `dt`, and the feature
+matrix (255 dims: pos, vel, acc, geometry) has no timestamp channel, so nothing
+downstream can correct the scale.
+
+The app took 32 **consecutive** camera frames — about **33 ms apart** — covering
+only ~1.0 s of the sign. Two defects followed from one mistake:
+
+1. **Wrong time base.** Every velocity was ~3.5× smaller than training saw and
+   every acceleration ~12× smaller (ratio of a 115 ms step to a 33 ms step).
+   The model was shown a third of the sign played at unit time.
+2. **Unstable time base.** Because the window ended at a frame *count*, its real
+   span was whatever the analyser achieved. Measured on-device: the same 32
+   frames took **1031 ms** warm and **3173 ms** cold — a 3× swing between
+   captures of the same code.
+
+This is a pipeline defect, not a model-quality question. It explains a
+*variable* score across attempts on the same sign better than it explains a
+consistently wrong one.
 
 ### A correction to my earlier claim
 
@@ -84,12 +99,22 @@ which is exactly the claim that must not be made.
 
 ## Fixes, all software, all restricted to this pipeline
 
-1. **Capture is now time-based.** `HandTracker` records a real
-   `SystemClock.elapsedRealtime()` timestamp per frame and ends the capture when
-   it has at least `RING_CAPACITY` frames **and** covers `MIN_CAPTURE_MS`
-   (1000 ms), bounded by `MAX_CAPTURE_MS` (4000 ms) and `MAX_CAPTURE_FRAMES`
-   (96) so a stalled analyser cannot hold it open. Verified: warm captures now
-   report ~1031 ms instead of an unknown span.
+1. **Capture is now a span of real time.** `HandTracker` records a real
+   `SystemClock.elapsedRealtime()` timestamp per frame, ends the capture after
+   `CAPTURE_SPAN_MS` (3700 ms, matching the documented training clip), and then
+   selects `RING_CAPACITY` (32) frames **evenly across that span by timestamp**
+   — `evenlySpacedIndices`, the same `linspace` selection `read_frames()` makes
+   over a clip. Every selected frame is a real analysed frame; nothing is
+   interpolated or invented. That puts the sample step back near training's
+   ~115 ms instead of the analyser's ~33 ms, and makes the span independent of
+   device speed.
+
+   Verified on the emulator after the rebuild: a capture now reports
+   **`dur_ms=3701`**, against **1031 ms** and **3173 ms** for the same 32-frame
+   count before the fix.
+
+   The ring keeps the whole span (bounded at `MAX_CAPTURE_FRAMES = 200` purely
+   as a memory backstop); the frame count no longer decides when capture ends.
 
 2. **Real capture facts are reported.** `Capture` carries frame count, duration,
    achieved FPS and hand-frame count, and the result card shows all four:

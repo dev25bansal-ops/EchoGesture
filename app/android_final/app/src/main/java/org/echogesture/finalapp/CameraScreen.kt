@@ -43,7 +43,7 @@ import kotlin.math.roundToInt
  * READY -> CAPTURING -> PROCESSING -> RESULT
  *
  * CAPTURING clears the tracker's ring and collects a genuinely fresh
- * [HandTracker.RING_CAPACITY]-frame window starting from the user's tap, so an
+ * [HandTracker.CAPTURE_SPAN_MS] window starting from the user's tap, so an
  * old window and a new sign can never be mixed. When the window is full the
  * existing 32->24 resample and four-member ensemble run unchanged on the
  * inference executor.

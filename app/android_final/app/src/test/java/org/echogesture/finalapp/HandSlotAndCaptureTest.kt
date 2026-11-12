@@ -61,10 +61,42 @@ class HandSlotAndCaptureTest {
 
     @Test
     fun windowBoundsAreSane() {
-        // The capture must be long enough to hold a dynamic sign yet bounded so
-        // a stalled analyser cannot keep it open forever.
-        assertTrue(HandTracker.RING_CAPACITY >= 24)
-        assertTrue(HandTracker.MIN_CAPTURE_MS <= HandTracker.MAX_CAPTURE_MS)
+        // The window must span a real interval comparable to a training clip
+        // (~3.7 s for the 110-frame example in the extractor's docstring), and
+        // the memory backstop must be able to hold that span at camera rates.
+        assertTrue(HandTracker.CAPTURE_SPAN_MS >= 3000L)
+        assertTrue(HandTracker.CAPTURE_SPAN_MS <= 5000L)
         assertTrue(HandTracker.MAX_CAPTURE_FRAMES >= HandTracker.RING_CAPACITY)
+    }
+
+    @Test
+    fun captureSamplesEvenlyAcrossTheSpanNotTheFirstFrames() {
+        // The defect this guards: taking 32 consecutive frames covers only the
+        // start of the sign. Training spread 32 samples across the whole clip
+        // and computes velocity as a plain per-frame difference with no dt, so
+        // the sample step IS the time base. The window must reach the END of
+        // the ring and advance ~115 ms, not 33 ms.
+        val ts = LongArray(111) { it * 33L } // ~110 frames, ~3.7 s
+        val idx = HandTracker.evenlySpacedIndices(ts, 32)
+        assertEquals(32, idx.size)
+        assertEquals("first sample is the window start", 0, idx.first())
+        assertEquals("last sample is the window end", 110, idx.last())
+        val step = ts[idx[1]] - ts[idx[0]]
+        assertTrue("step was $step ms, expected ~115 ms", step in 90L..140L)
+    }
+
+    @Test
+    fun shortWindowsArePassedThroughUnchanged() {
+        // A slow device that only delivered 10 frames must not be padded with
+        // duplicates; downstream resampling handles the count.
+        val ts = LongArray(10) { it * 100L }
+        val idx = HandTracker.evenlySpacedIndices(ts, 32)
+        assertEquals(10, idx.size)
+        assertTrue(idx.toList() == (0 until 10).toList())
+    }
+
+    @Test
+    fun emptyWindowSelectsNothing() {
+        assertTrue(HandTracker.evenlySpacedIndices(LongArray(0), 32).isEmpty())
     }
 }

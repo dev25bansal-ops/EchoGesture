@@ -30,7 +30,7 @@ class HandTracker private constructor(
     private val lock = Any()
 
     /**
-     * A capture collects exactly [RING_CAPACITY] frames starting from the
+     * A capture collects frames over [CAPTURE_SPAN_MS] starting from the
      * moment the user asks for one. Without this the ring would already be
      * full of frames from before the user raised their hand, so the 24-frame
      * sequence the model sees would mix an old window with the new sign.
@@ -67,26 +67,64 @@ class HandTracker private constructor(
         private const val TAG = "HandTracker"
         private const val FRAME_INTERVAL_MS = 33L // ~30 fps, monotonic VIDEO timestamps
 
-        /** Capture window. Matches src/landmark_frontend.py's max_frames=32. */
+        /** Frames resampled across the window into the model's 24-step input. */
         const val RING_CAPACITY = 32
 
         /**
-         * Initial window length. The window is 32 frames, and at 30 fps that is
-         * ~1.07 s — but real analysis FPS is lower than the camera's frame rate
-         * because hand tracking runs inline, so the window is longer than this
-         * in wall clock. Training sampled 32 frames spread across each whole
-         * ASL Citizen clip (one example was 110 frames), so a live window that
-         * is too short only sees the part of the sign that happens to fall
-         * inside it.
+         * The capture window is a span of REAL TIME, not a frame count.
          *
-         * The window therefore extends until the capture covers
-         * [MIN_CAPTURE_MS] of real time, using measured frame timestamps, with
-         * [RING_CAPACITY] as the floor. It stays bounded so capture cannot run
-         * away when the analyser stalls.
+         * Training sampled 32 frames spread evenly across each whole ASL
+         * Citizen clip (`read_frames()` uses `np.linspace(0, total-1, 32)`); the
+         * extractor's own docstring records a typical clip as 110 frames, about
+         * 3.7 s. Because `features.py` computes velocity as a plain per-frame
+         * difference (`vel[1:] = norm[1:] - norm[:-1]`) with no `dt`
+         * normalisation, the step between consecutive sampled frames IS the
+         * time base. Across a 3.7 s clip 32 samples are ~115 ms apart; 32
+         * consecutive camera frames are ~33 ms apart. Feeding consecutive
+         * frames therefore made every velocity ~3.5x too small and every
+         * acceleration ~12x too small — the model saw a sliver of the sign
+         * played at unit time.
+         *
+         * So the app now captures a [CAPTURE_SPAN_MS] window and resamples
+         * [RING_CAPACITY] frames evenly across it, which reproduces the
+         * training step instead of whatever rate the analyser happened to hit.
+         * Nothing is invented: every resampled point is an actual analysed
+         * frame, chosen by nearest timestamp. If the analyser is too slow to
+         * fill the span, the per-frame timestamps below still say what was
+         * really covered.
          */
-        const val MIN_CAPTURE_MS = 1000L
-        const val MAX_CAPTURE_MS = 4000L
-        const val MAX_CAPTURE_FRAMES = 96
+        const val CAPTURE_SPAN_MS = 3700L
+
+        /**
+         * Bounds on the raw ring. The span is what matters; these only stop a
+         * stalled or runaway analyser from growing memory without limit.
+         */
+        const val MAX_CAPTURE_FRAMES = 200
+
+        /**
+         * Indices of [target] frames spread evenly across the window by capture
+         * time — the same `linspace(0, n-1, target)` selection `read_frames()`
+         * makes over a training clip. Each entry is a real analysed frame (nearest
+         * timestamp), never an interpolated synthetic one. Windows shorter than
+         * [target] are returned as they are; the caller resamples them as before.
+         *
+         * Pure so the selection can be tested without a device: the defect it
+         * guards is about which frames are chosen, not about MediaPipe.
+         */
+        fun evenlySpacedIndices(timestamps: LongArray, target: Int): IntArray {
+            if (timestamps.isEmpty()) return IntArray(0)
+            if (timestamps.size <= target) return IntArray(timestamps.size) { it }
+            val first = timestamps.first()
+            val span = (timestamps.last() - first).coerceAtLeast(1L)
+            return IntArray(target) { o ->
+                val wanted = first + span * o / (target - 1)
+                var best = 0
+                for (i in timestamps.indices) {
+                    if (kotlin.math.abs(timestamps[i] - wanted) < kotlin.math.abs(timestamps[best] - wanted)) best = i
+                }
+                best
+            }
+        }
 
         /**
          * Consecutive frame failures after which the tracker is considered
@@ -143,14 +181,15 @@ class HandTracker private constructor(
             var completed: (() -> Unit)? = null
             synchronized(lock) {
                 ring.addLast(frame)
-                while (ring.size > RING_CAPACITY) ring.removeFirst()
-                // End the capture once it covers the minimum real-time window,
-                // with RING_CAPACITY as the floor and MAX_CAPTURE_* as a bound.
-                // A stalled analyser therefore cannot keep it open forever.
+                // The ring holds the whole span; capacity is only a memory
+                // backstop, not the window length.
+                while (ring.size > MAX_CAPTURE_FRAMES) ring.removeFirst()
                 val elapsed = now - captureStartedMs
-                val enoughTime = elapsed >= MIN_CAPTURE_MS
-                val tooLong = elapsed >= MAX_CAPTURE_MS || ring.size >= MAX_CAPTURE_FRAMES
-                if (capturing && ((ring.size >= RING_CAPACITY && enoughTime) || tooLong)) {
+                // End on time, or early if a stalled analyser fills the
+                // backstop. Frame count alone must never close the window:
+                // that is what tied the temporal span to device speed.
+                val tooLong = elapsed >= MAX_CAPTURE_FRAMES.toLong() * FRAME_INTERVAL_MS
+                if (capturing && (elapsed >= CAPTURE_SPAN_MS || ring.size >= MAX_CAPTURE_FRAMES || tooLong)) {
                     capturing = false
                     completed = captureCallback
                     captureCallback = null
@@ -190,7 +229,7 @@ class HandTracker private constructor(
 
     /**
      * Starts a fresh capture window: clears the ring and calls [onComplete]
-     * once [RING_CAPACITY] new frames have been analysed. Any previous
+     * once [CAPTURE_SPAN_MS] of real time has been analysed. Any previous
      * capture in flight is cancelled. Returns immediately; the callback runs
      * on the analysis thread.
      */
@@ -215,19 +254,30 @@ class HandTracker private constructor(
      * The finished capture window, with the real elapsed time and effective
      * analysis FPS measured from per-frame timestamps.
      *
-     * The FPS here is what the analyser actually achieved, not the camera's
-     * nominal rate: hand tracking runs inline, and a slower device produces a
-     * longer window for the same 32 frames. Reporting the nominal 30 fps
-     * would misstate both the capture duration and the temporal span the model
-     * saw.
+     * [frames] holds [RING_CAPACITY] frames chosen evenly across the captured
+     * span by timestamp, which reproduces the uniform sampling training used.
+     * The ring itself holds far more frames than that; passing all of them
+     * would let the frame rate rather than the time base decide what the model
+     * sees, which is the defect this window exists to remove.
+     *
+     * [durationMs] and [fps] describe the RAW analysed window, so the card and
+     * the diagnostic report what the camera really delivered.
      */
     fun captureSnapshot(): Capture = synchronized(lock) {
-        val frames = ring.toList()
-        val first = frames.firstOrNull()?.capturedAtMs ?: 0L
-        val last = frames.lastOrNull()?.capturedAtMs ?: 0L
-        val duration = if (frames.size >= 2) last - first else 0L
-        val fps = if (duration > 0) (frames.size - 1) * 1000f / duration else 0f
-        Capture(frames, duration, fps, frames.count { it.hands.isNotEmpty() })
+        val raw = ring.toList()
+        val first = raw.firstOrNull()?.capturedAtMs ?: 0L
+        val last = raw.lastOrNull()?.capturedAtMs ?: 0L
+        val duration = if (raw.size >= 2) last - first else 0L
+        val fps = if (duration > 0) (raw.size - 1) * 1000f / duration else 0f
+        // Report coverage over the frames the model actually receives, so the
+        // card's "N frames / M with a hand" describes one window, not two.
+        val sampled = evenlySpaced(raw, RING_CAPACITY)
+        Capture(sampled, duration, fps, sampled.count { it.hands.isNotEmpty() })
+    }
+
+    private fun evenlySpaced(raw: List<Frame>, target: Int): List<Frame> {
+        val idx = evenlySpacedIndices(LongArray(raw.size) { raw[it].capturedAtMs }, target)
+        return idx.map { raw[it] }
     }
 
     override fun close() {

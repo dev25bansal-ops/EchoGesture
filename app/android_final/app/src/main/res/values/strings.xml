@@ -31,7 +31,6 @@
     <string name="torch_toggle_desc">Toggle the camera torch</string>
     <string name="camera_rear">Rear camera</string>
     <string name="camera_front">Front camera</string>
-    <string name="camera_frame_count">%1$d of %2$d frames have a hand</string>
     <string name="camera_auto">Automatic</string>
     <string name="no_hands_detail_for_state">Keep both hands inside the frame guide and try again.</string>
     <string name="error_generic">Something interrupted recognition. You can try again.</string>
@@ -60,14 +59,12 @@
     <string name="action_speak">Speak</string>
     <string name="action_recognise_again">Recognise again</string>
     <string name="action_clear_result">Clear</string>
-    <string name="action_save">Saved to history</string>
     <string name="tts_unavailable">No offline voice available on this device</string>
 
     <!-- Glossary -->
     <string name="glossary_title">Glossary</string>
     <string name="glossary_subtitle">%1$d signs this model can recognise</string>
     <string name="glossary_search_hint">Search signs</string>
-    <string name="glossary_sort_alpha">A–Z</string>
     <string name="glossary_empty">No sign matches “%1$s”</string>
     <string name="glossary_clear_search">Clear search</string>
     <string name="glossary_label_note">These are the model’s output class names. They identify which sign was recognised, not a full description of the sign’s meaning or grammar.</string>
@@ -139,7 +136,6 @@
     <string name="help_step_4">Hold the sign steady while it captures.</string>
     <string name="help_step_5">Read the recognised sign and the alternatives offered.</string>
     <string name="help_privacy">Everything runs on this phone. Nothing is uploaded.</string>
-    <string name="action_close">Close</string>
 
     <!-- Privacy sheet -->
     <string name="privacy_title">Privacy</string>
@@ -149,5 +145,4 @@
     <string name="privacy_point_permission">The app has no internet permission and cannot open a network connection.</string>
 
     <string name="action_done">Done</string>
-    <string name="action_ok">OK</string>
 </resources>

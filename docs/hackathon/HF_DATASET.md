@@ -7,13 +7,61 @@ This is a complete mirror of the EchoGesture working tree, uploaded so the
 development environment can be rebuilt byte for byte without a network install.
 It is **not** a model release and **not** a redistributable dataset.
 
-Written 12 Nov 2026. Upload in progress at time of writing; the totals below
-are the local measurement, and the [verification](#verification) section says
-how to confirm the remote matches.
+Written 12 Nov 2026, corrected 13 Nov 2026.
+
+> **The full-tree upload did not finish.** It stopped after 2.73 GB / 5,751
+> files, and never reached `.scratch/landmarks/`. What the repo actually holds
+> is recorded under [Actual contents](#actual-contents) below. The 16.9 GB
+> figures further down are the *local* measurement of the tree, not what is
+> remote; they are kept only to show what an upload would need to carry.
 
 ---
 
-## Size, measured
+## Actual contents (verified 13 Nov 2026)
+
+| | |
+| --- | --- |
+| Files on the remote | **9,194** |
+| Bytes on the remote | **~2.77 GB** |
+
+| path | remote | what it is |
+| --- | --- | --- |
+| `.scratch/landmarks/{train,val,test}/` | **3,390 npz, complete** | The training input. 1,789 train / 346 val / 1,255 test — exact against the split CSVs |
+| `.scratch/aslcit_vocab_videos/` | 3,390 clips | ~1,400 pulled before the download was stopped |
+| `.scratch/eval_research/aslcit/` | splits, records | Split CSVs and the participant records |
+| `.scratch/claim2_probe/`, `claim3_probe/` | partial | verification probes |
+| `models/` | 8 files, complete | The shipped four-member FP16 ensemble + labels + meta + detector |
+| `src/`, `scripts/`, `results/`, `docs/` | complete | Code, measurements, handoff notes |
+| `.scratch/vocab_best100.json` | complete | The 100-class vocabulary |
+| `.scratch/s3d_repro/`, most of `eval_research/` | **absent** | 13 GB of venvs and research sweeps — reinstallable, not needed to train |
+
+`scripts/release/hf_push_for_pod.py` is what completed the landmark and code
+push. It is resumable per batch, so rerunning it only sends what is missing.
+
+### Verified end to end
+
+A fresh PAI-DSW A10 instance pulled the repo with
+
+```python
+snapshot_download("Dev2506/echogesture-full", repo_type="dataset",
+    allow_patterns=[".scratch/landmarks/*/*.npz", ".scratch/vocab_best100.json",
+                    ".scratch/eval_research/aslcit/splits/*.csv",
+                    "models/*", "src/*", "scripts/*", "results/*", "docs/*"],
+    local_dir="/mnt/workspace/eg")
+```
+
+and reproduced the shipped numbers exactly from that download alone:
+
+```
+val  289/345  = 83.77%
+test 909/1249 = 72.78%
+```
+
+See [POD_SETUP.md](POD_SETUP.md) for the full recipe.
+
+---
+
+## Local tree size, measured
 
 | | |
 | --- | --- |
@@ -98,8 +146,9 @@ fs = HfApi().dataset_info("Dev2506/echogesture-full").siblings
 print(len(fs), sum(f.size or 0 for f in fs))
 ```
 
-Compare against **181,083 files / 16,905,750,619 bytes**. A partial upload shows
-fewer files; it does not show wrong content.
+Compare against the [actual contents](#actual-contents-verified-13-nov-2026)
+above — **9,194 files**. The 181,083-file figure this section used to name was
+the intended scope of the full-tree upload, not what landed.
 
 Spot-check the models against the handoff:
 

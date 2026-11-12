@@ -31,7 +31,9 @@ object FeatureTransform {
         landmarks: FloatArray,
         present: FloatArray,
         srcFrames: Int,
-        expectedFrames: Int = 24
+        expectedFrames: Int = 24,
+        frameStart: Int = 0,
+        frameEnd: Int = srcFrames
     ): FloatArray {
         require(srcFrames >= 1) { "srcFrames must be >= 1, got $srcFrames" }
         require(landmarks.size == srcFrames * HANDS * LANDMARKS * COORDS) {
@@ -40,6 +42,14 @@ object FeatureTransform {
         require(present.size == srcFrames * HANDS) {
             "present has ${present.size} floats, expected ${srcFrames * HANDS}"
         }
+        // A window is a sub-span of the captured frames. Resampling runs over
+        // the window, not the whole capture, which is what makes the
+        // multi-window vote possible without copying sub-arrays at the call
+        // site. Defaults reproduce the whole-capture behaviour exactly.
+        val winStart = frameStart.coerceIn(0, srcFrames - 1)
+        val winEnd = frameEnd.coerceIn(winStart + 1, srcFrames)
+        val winFrames = winEnd - winStart
+        val base = winStart
 
         // 1) Linear resample landmarks + present along time to expectedFrames.
         //    Mirrors _resample() operating on xy (T,2,21,2) and present (T,2).
@@ -48,10 +58,10 @@ object FeatureTransform {
         val srcPerFrame = HANDS * LANDMARKS * COORDS
         val xyPerFrame = HANDS * LANDMARKS * 2
         for (o in 0 until expectedFrames) {
-            // Same index mapping as np.linspace(0, t-1, target).
-            val idx = if (srcFrames <= 1) 0.0 else o.toDouble() * (srcFrames - 1) / (expectedFrames - 1)
-            val lo = idx.toInt().coerceIn(0, srcFrames - 1)
-            val hi = minOf(lo + 1, srcFrames - 1)
+            // Same index mapping as np.linspace(0, t-1, target), over the window.
+            val idx = if (winFrames <= 1) 0.0 else o.toDouble() * (winFrames - 1) / (expectedFrames - 1)
+            val lo = base + idx.toInt().coerceIn(0, winFrames - 1)
+            val hi = minOf(lo + 1, winEnd - 1)
             val w = (idx - lo).toFloat()
             // Only x,y are carried into features; z is dropped (use_z=false).
             for (slot in 0 until HANDS) {

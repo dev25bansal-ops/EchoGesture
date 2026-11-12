@@ -128,7 +128,21 @@ class EnsembleRuntimeParityTest {
         var found: java.io.File? = null
         repeat(6) {
             val candidate = java.io.File(dir, "models")
-            if (java.io.File(candidate, ModelContract.LABELS_ASSET).isFile) found = candidate
+            // ModelContract.load reads EVERY member listed in the meta sidecar,
+            // so a directory holding the labels but not the weights throws
+            // FileNotFoundException instead of reaching the assumeTrue skip.
+            // Treat the directory as usable only when the whole declared set is
+            // there. Parsing the sidecar keeps this independent of the member
+            // list, which changed once already.
+            val meta = java.io.File(candidate, ModelContract.META_ASSET)
+            val labels = java.io.File(candidate, ModelContract.LABELS_ASSET)
+            if (labels.isFile && meta.isFile) {
+                val declared = Regex("\"([^\"]+\\.tflite)\"")
+                    .findAll(meta.readText()).map { it.groupValues[1] }.toList()
+                if (declared.isNotEmpty() &&
+                    declared.all { java.io.File(candidate, it).isFile }
+                ) found = candidate
+            }
             dir = dir.parentFile ?: dir
         }
         org.junit.Assume.assumeTrue(

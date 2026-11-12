@@ -31,6 +31,11 @@ __pycache__/
 *.npy
 *.npz
 
+# Installable app packages. A debug APK embeds the restricted weights, so it
+# must never be staged by a plain `git add`. Nothing tracked is matched here.
+*.apk
+*.aab
+
 # Temporary / scratch directories
 .scratch/
 _altbench/

@@ -14,17 +14,17 @@
     "ci": "GitHub Actions success on 26b2990",
     "pull_request": "https://github.com/dev25bansal-ops/EchoGesture/pull/1",
     "pr_state": "draft",
-    "model_weights_published": false,
-    "known_committed_weights_pre_existing": {
-      "files": [
-        "models/ptq_100_int8.tflite (904,256 B)",
-        "models/s3d_conv1d_qat_int8.tflite (901,200 B)"
-      ],
-      "total_bytes": 1805456,
-      "what_they_are": "third-party INT8 research weights (Kimpinde & Olukanmi, Algorithms 2026, WLASL-derived), committed in an early commit and present on every branch including main",
-      "not_ours": "the four shipped ensemble members are NOT published; these are a different, earlier candidate",
-      "corrects": "an earlier version of this manifest asserted model_weights_published:false while these files were in fact present",
-      "owner_decision": "rewriting history or deleting them is Dev/owner territory and was not done; flagged in docs/submission/LICENSING_REVIEW.md"
+    "model_weights_published": true,
+    "exposure_correction": {
+      "previous_claim": "model_weights_published: false",
+      "why_it_was_wrong": "checked only the integration branch; the repository is PUBLIC and hackathon/dev-model exposes all four ensemble members at the exact shipped SHAs",
+      "verified": "2026-11-12 via gh repo view + git ls-tree over every remote branch",
+      "all_four_members_public": true,
+      "detector_public": true,
+      "legacy_int8_public": true,
+      "participant_ids_public": "evaluation/asl_citizen_predictions.csv - 1705 rows, 11 raw participant IDs",
+      "detail": "docs/release/PUBLIC_WEIGHT_EXPOSURE.md",
+      "status": "UNSATISFIED RELEASE GATE - owner decision required"
     }
   },
   "model": {

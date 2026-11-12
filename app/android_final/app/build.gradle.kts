@@ -71,7 +71,7 @@ fun sha256Of(name: String, normalizeNewlines: Boolean = name in textAssets): Str
 /**
  * The complete set of pinned assets, digest-verified. This is the ONLY thing
  * that may run before an APK is packaged; source-only tasks call
- * [validateMetadata] alone so they do not need the restricted weights.
+ * `validateMetadata` alone so they do not need the restricted weights.
  */
 fun requirePinnedAssets() {
     modelAssets.forEach { (name, expectedHash) ->

@@ -1,6 +1,5 @@
 package org.echogesture.finalapp
 
-import android.content.Intent
 import android.view.View
 import android.widget.ScrollView
 import android.widget.TextView
@@ -84,15 +83,7 @@ class ResultCardRenderTest {
         assertEquals("confidence", expectedConfidence, result.confidence, 1e-3f)
         assertEquals(classes, result.averagedLogits!!.size)
 
-        instrumentation.uiAutomation.grantRuntimePermission(
-            instrumentation.targetContext.packageName,
-            android.Manifest.permission.CAMERA
-        )
-
-        val intent = Intent(Intent.ACTION_MAIN)
-            .setClassName(instrumentation.targetContext, "org.echogesture.finalapp.MainActivity")
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        val activity = instrumentation.startActivitySync(intent) as MainActivity
+        val activity = ActivityLaunch.fresh()
 
         try {
             val cameraField = MainActivity::class.java.getDeclaredField("cameraScreen")

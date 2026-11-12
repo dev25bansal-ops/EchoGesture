@@ -1,6 +1,5 @@
 package org.echogesture.finalapp
 
-import android.content.Intent
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -40,15 +39,7 @@ class ProcessingStateRenderTest {
 
     @Test
     fun processingStateRendersItsOwnAffordances() {
-        instrumentation.uiAutomation.grantRuntimePermission(
-            instrumentation.targetContext.packageName,
-            android.Manifest.permission.CAMERA
-        )
-
-        val intent = Intent(Intent.ACTION_MAIN)
-            .setClassName(instrumentation.targetContext, "org.echogesture.finalapp.MainActivity")
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        val activity = instrumentation.startActivitySync(intent) as MainActivity
+        val activity = ActivityLaunch.fresh()
 
         try {
             val screen = MainActivity::class.java.getDeclaredField("cameraScreen")

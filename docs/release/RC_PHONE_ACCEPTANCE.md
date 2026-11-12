@@ -31,6 +31,50 @@ evidence of a working live-camera prediction.
 - Good indoor light. The model was trained on recorded clips; low light and
   motion blur are the most likely causes of a low score.
 
+### Connecting the phone from a Mac
+
+No driver is needed on macOS. The phone is the only side that has to be
+configured, and the order matters — USB debugging must be switched on *before*
+the Mac can see the device.
+
+1. **Unlock the phone** and open **Settings → About phone**. Tap **Build number**
+   seven times; Android replies that developer options are unlocked.
+2. **Settings → System → Developer options** → turn on **USB debugging**.
+   On Samsung it is **Settings → About phone → Software information → Build
+   number**, then **Developer options** under Settings. On Xiaomi it is
+   **Settings → About phone → MIUI version** seven times, then **Additional
+   settings → Developer options → USB debugging**, and also **Install via USB**.
+3. Connect the phone to the Mac **with a data cable**. Charge-only cables are a
+   common cause of "nothing appears" — try a different cable before anything else.
+4. **Pull down the notification shade on the phone** and tap the USB notification.
+   Choose **File transfer / MTP** (not "Charging only").
+5. A dialog appears on the phone: **Allow USB debugging?** with the Mac's RSA
+   fingerprint. Tick **Always allow from this computer** and tap **Allow**.
+   If no dialog appears, tap **Developer options → Revoke USB debugging
+   authorisations**, unplug, and reconnect.
+6. Confirm from the Mac:
+
+```bash
+adb devices -l
+```
+
+A physical device appears as a serial that is **not** `emulator-5554`, with
+`device` (not `unauthorized` or `offline`). `unauthorized` means step 5 was not
+accepted. `offline` usually means the cable or the USB mode.
+
+7. Record the identity this run is made against:
+
+```bash
+adb shell getprop ro.product.model
+adb shell getprop ro.build.version.release
+adb shell getprop ro.build.version.sdk
+adb shell getprop ro.product.cpu.abi
+adb shell pm list features | grep -E "camera|flash|autofocus"
+```
+
+If several devices are attached, prefix every command with `-s <serial>` so the
+emulator cannot receive the install.
+
 Install:
 
 ```bash
@@ -51,7 +95,12 @@ run; report the step number and the on-screen text.
 | 1.3 | Glossary lists 100 signs, search filters, detail sheet opens | pass |
 | 1.4 | Settings renders every control; toggles respond | pass |
 | 1.5 | History shows the empty state and its explanation | pass |
-| 1.6 | Only CAMERA is requested; no internet permission | pass (manifest) |
+| 1.6 | Only CAMERA is requested; no internet permission | pass (installed manifest) |
+| 1.7 | Instrumentation suite: 8 tests, 0 failed, 0 skipped | pass |
+| 1.8 | JVM suite: 30 tests, 0 failed, 0 skipped | pass |
+
+None of the above involved a hand in a real frame. They establish that the app
+starts, renders and navigates; they establish nothing about recognition.
 
 ### 2. Camera and permissions
 
@@ -61,6 +110,14 @@ run; report the step number and the on-screen text.
 | 2.2 | Denying permission leaves the app usable | app stays open, states clearly that the camera is off; no crash |
 | 2.3 | Granting permission shows a live preview | preview fills the frame guide, upright and correctly rotated |
 | 2.4 | Rotating the phone | preview stays upright; no stretched or mirrored image |
+| 2.5 | Tap the flip button | preview switches between front and rear; the choice survives a relaunch |
+| 2.6 | Switch back to the original camera | preview returns; hands are still detected |
+| 2.7 | Hold one hand in the guide, then both | "Hands detected" then "Ready to recognise"; the pill tracks reality |
+| 2.8 | Tap the torch button on the rear camera | torch toggles; no crash on a device without a torch |
+
+2.5 matters for the model, not just the UI: a camera rebind starts from a
+cleared frame ring, so a frame from the previous camera must never reach the
+ensemble.
 
 ### 3. Live recognition
 
@@ -73,10 +130,19 @@ Perform each sign held steady inside the frame guide for a full capture window.
 | 3.3 | Recognise a different sign | a different gloss; recognition is not stuck on one class |
 | 3.4 | Move your hands quickly out of frame mid-capture | no prediction from an empty window |
 | 3.5 | Repeat 3.2 three times | same gloss each time, confidence varies within a plausible band |
+| 3.6 | **Time capture → visible caption with a stopwatch, 3 runs** | record each in milliseconds; compare with the on-screen latency line |
+| 3.7 | Tap **Copy** after a prediction | "Copied" toast; pasting elsewhere yields the gloss |
+| 3.8 | Tap **Recognise again** | a new capture starts; the previous result is replaced |
+| 3.9 | After a "No hands" result, return your hands and capture | recovery to a normal result with no relaunch |
+| 3.10 | Recognise at least 5 different supported glosses | record each: signed vs predicted vs confidence |
 
-Record the gloss shown, the confidence percentage and the reported latency for
-3.2 and 3.3. If a gloss is wrong, record what it predicted and what you signed —
-a wrong-but-plausible gloss is a model question for Dev, not an app defect.
+3.6 measures the product-level number the user experiences. The on-screen
+latency line reports inference time only, so the stopwatch value will be higher —
+record both rather than substituting one for the other.
+
+3.10 is the false-recognition test. Every mismatch is recorded as a failure and
+reported; a plausible wrong gloss is a model question for Dev, not an app defect,
+but it is still a failure of the feature.
 
 ### 4. History and privacy
 
@@ -109,14 +175,36 @@ failure, and confirm the text path still works.
 | --- | --- | --- |
 | 6.1 | Change result text size, haptics and speech | each takes effect immediately |
 | 6.2 | Force-stop and relaunch | the three choices are remembered |
+| 6.3 | Change the preferred camera in Settings, relaunch | the camera you picked is the one that opens |
 
-### 7. Stability
+### 7. Glossary
 
 | # | Check | Expected |
 | --- | --- | --- |
-| 7.1 | Roughly 20 consecutive recognitions | no crash, no ANR, latency does not climb |
-| 7.2 | Switch tabs during processing | no crash; the result is not attributed to the wrong tab |
-| 7.3 | Background the app mid-capture and return | camera resumes; no crash |
+| 7.1 | Search for a gloss by its first letters | the list filters to matches; the count reads "N of 100 signs" |
+| 7.2 | Search for something not in the 100 | "No sign matches “…”" with a Clear search action, not a crash |
+| 7.3 | Tap Clear search | the full 100 return |
+| 7.4 | Open a gloss detail sheet | the gloss, "One of the 100 output classes" and the Speak/Copy actions render |
+| 7.5 | Tap Copy in the sheet | "Copied" toast; the gloss pastes elsewhere |
+
+### 8. Stability and resources
+
+| # | Check | Expected |
+| --- | --- | --- |
+| 8.1 | Roughly 20 consecutive recognitions | no crash, no ANR, latency does not climb |
+| 8.2 | Switch tabs during processing | no crash; the result is not attributed to the wrong tab |
+| 8.3 | Background the app mid-capture and return | camera resumes; no crash |
+| 8.4 | Record `dumpsys meminfo` before and after 20 recognitions | memory does not climb run over run |
+| 8.5 | Leave the app idle on the camera screen for 5 minutes | no thermal throttle, no crash, battery drain is not abnormal |
+
+For 8.4:
+
+```bash
+adb shell dumpsys meminfo org.echogesture.finalapp | grep -E "TOTAL PSS|TOTAL RSS"
+```
+
+Run it once before the first recognition and again after the twentieth. The two
+totals belong in the report.
 
 ## Recording the result
 

@@ -7,6 +7,7 @@ app/src/main/assets/landmark_model_meta.json
 
 # Build outputs and local machine config
 .gradle/
+.kotlin/
 build/
 app/build/
 .cxx/

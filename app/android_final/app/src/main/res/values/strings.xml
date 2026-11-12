@@ -72,6 +72,7 @@
     <string name="glossary_clear_search">Clear search</string>
     <string name="glossary_label_note">These are the model’s output class names. They identify which sign was recognised, not a full description of the sign’s meaning or grammar.</string>
     <string name="glossary_seen_recently">Recognised this session</string>
+    <string name="glossary_detail_meta">One of the %1$d output classes</string>
     <string name="glossary_count">%1$d of %2$d signs</string>
 
     <!-- History -->

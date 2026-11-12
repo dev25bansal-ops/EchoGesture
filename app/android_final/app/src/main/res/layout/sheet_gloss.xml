@@ -49,9 +49,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableStart="@drawable/ic_speak"
+            android:paddingStart="@dimen/space_2"
+            android:paddingEnd="@dimen/space_2"
             android:text="@string/action_speak"
-            app:drawableTint="@color/primary" />
+            app:icon="@drawable/ic_speak"
+            app:iconGravity="textStart"
+            app:iconPadding="@dimen/space_1"
+            app:iconSize="18dp"
+            app:iconTint="@color/primary" />
 
         <Button
             android:id="@+id/sheetGlossCopy"
@@ -60,8 +65,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/space_2"
             android:layout_weight="1"
-            android:drawableStart="@drawable/ic_copy"
+            android:paddingStart="@dimen/space_2"
+            android:paddingEnd="@dimen/space_2"
             android:text="@string/action_copy"
-            app:drawableTint="@color/primary" />
+            app:icon="@drawable/ic_copy"
+            app:iconGravity="textStart"
+            app:iconPadding="@dimen/space_1"
+            app:iconSize="18dp"
+            app:iconTint="@color/primary" />
     </LinearLayout>
 </LinearLayout>

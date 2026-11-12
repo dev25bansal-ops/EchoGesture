@@ -96,7 +96,7 @@ class GlossaryScreen(
         val view = LayoutInflater.from(activity).inflate(R.layout.sheet_gloss, null, false)
         view.findViewById<TextView>(R.id.sheetGlossLabel).text = label
         view.findViewById<TextView>(R.id.sheetGlossMeta).text =
-            activity.getString(R.string.glossary_subtitle, labels.size)
+            activity.getString(R.string.glossary_detail_meta, labels.size)
         view.findViewById<Button>(R.id.sheetGlossCopy).setOnClickListener {
             val cm = activity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             cm.setPrimaryClip(ClipData.newPlainText(activity.getString(R.string.app_name), label))

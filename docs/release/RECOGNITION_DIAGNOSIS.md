@@ -109,9 +109,10 @@ which is exactly the claim that must not be made.
    ~115 ms instead of the analyser's ~33 ms, and makes the span independent of
    device speed.
 
-   Verified on the emulator after the rebuild: a capture now reports
-   **`dur_ms=3701`**, against **1031 ms** and **3173 ms** for the same 32-frame
-   count before the fix.
+   Verified on the **final shipped APK** (clean build `9bba9191…`, installed on
+   the Android 14 emulator): a capture now reports **`dur_ms=3695` at 10.0 fps**.
+   Before the fix the same 32-frame count covered **1031 ms** warm and
+   **3173 ms** cold on the same code.
 
    The ring keeps the whole span (bounded at `MAX_CAPTURE_FRAMES = 200` purely
    as a memory backstop); the frame count no longer decides when capture ends.
@@ -168,7 +169,7 @@ This is a ranking score, not a calibrated probability, and the app now says so.
 
 - **No physical phone was attached to this machine**, so nothing here is a
   real-camera result. The EAT1→TAIL1 and DEAF1→DOG1 observations are yours, not
-  reproduced here.
+  reproduced here, and they were made on the pre-fix build.
 - **Whether recognition accuracy is now sufficient is unknown.** The capture fix
   addresses a real defect; it is not a demonstrated accuracy improvement. That
   requires re-running your sign tests on a phone.
@@ -191,3 +192,52 @@ the capture missed the sign and that is a capture problem. If coverage is high
 and the prediction is still wrong, the pipeline saw the gesture and the model
 misclassified it — that is a model question for Dev, and the record now
 separates the two.
+
+## Sign-test table
+
+**Cannot be filled here.** These columns require a physical phone running your
+signs; the machine this was built on has no camera and no phone attached. No row
+below is a measurement — the table is the template, and I will not invent values
+into it.
+
+| # | Expected label | Predicted label | Top-5 | Score | `hand_frames`/`frames` | `dur_ms` | Verdict |
+| --: | --- | --- | --- | --: | ---: | --: | --- |
+| 1 | EAT1 | — | — | — | — | — | *not run on hardware* |
+| 2 | DEAF1 | — | — | — | — | — | *not run on hardware* |
+
+Your two earlier observations cannot be used as before/after rows either: they
+were recorded on the pre-fix build, which had no diagnostics, so there is no
+`dur_ms` or coverage figure for them.
+
+## Recommendations for Dev
+
+The capture fix removes a real pipeline defect. It does **not** establish that
+the model generalises to live phone footage, and two known weaknesses make a
+remaining accuracy gap plausible:
+
+1. **Training and inference see different sampling rates.** Training samples
+   across a whole clip; the app now samples across a fixed 3.7 s window. Signs
+   performed faster or slower than the training distribution will still land on
+   the wrong time base. **Suggested:** train with random temporal-span
+   augmentation (`linspace` over a randomly truncated span, plus resampling to
+   a random step in ~60–200 ms) so the model stops depending on one step size.
+2. **Frame-drop robustness is already measured as weak** — 13.33 pt degradation
+   at severity 0.5 in `FINAL_EVIDENCE.md`. A real phone runs at variable
+   analysis FPS, which is frame dropping. **Suggested:** include variable-rate
+   sampling in the training augmentation above, and re-measure on the
+   held-out split rather than only the synthetic corruption suite.
+3. **Per-signer generalisation is the dominant error source** if the failures
+   are on a signer unlike the training set. **Suggested:** report top-1 by
+   signer on the validation split; if your two misclassifications are
+   consistent, they point at signer- or camera-domain shift rather than noise.
+4. **Camera domain shift.** ASL Citizen is recorded with a fixed setup; a
+   handheld or laptop camera has different framing, lighting and lens. Nothing
+   in the pipeline corrects for it and I have not changed any model feature.
+   **Suggested:** if the table shows high coverage with consistently wrong
+   labels, add a small amount of phone-camera-style augmentation (perspective,
+   illumination, white balance) and re-evaluate — a training change, which needs
+   your and Dev's approval before I touch anything.
+
+Until the table above is filled on a phone, the honest statement is: the
+capture defect is fixed and measured; recognition accuracy on your phone is
+**not yet established**.

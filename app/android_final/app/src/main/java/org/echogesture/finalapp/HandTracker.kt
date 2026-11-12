@@ -28,6 +28,16 @@ class HandTracker private constructor(
     private val ring = ArrayDeque<Frame>()
     private val lock = Any()
 
+    /**
+     * A capture collects exactly [RING_CAPACITY] frames starting from the
+     * moment the user asks for one. Without this the ring would already be
+     * full of frames from before the user raised their hand, so the 24-frame
+     * sequence the model sees would mix an old window with the new sign.
+     */
+    private var capturing = false
+    private var captureTarget = 0
+    private var captureCallback: (() -> Unit)? = null
+
     /** Consecutive failed frames; reset to 0 on any successful analysis. */
     private val consecutiveFailures = AtomicInteger(0)
 
@@ -100,10 +110,19 @@ class HandTracker private constructor(
                 nextFrameTs.getAndAdd(FRAME_INTERVAL_MS)
             )
             val frame = Frame(toHands(result))
+            var completed: (() -> Unit)? = null
             synchronized(lock) {
                 ring.addLast(frame)
                 while (ring.size > RING_CAPACITY) ring.removeFirst()
+                if (capturing && ring.size >= captureTarget) {
+                    capturing = false
+                    completed = captureCallback
+                    captureCallback = null
+                }
             }
+            // Invoked outside the lock: the callback hands the finished window
+            // to the inference executor and must not hold the ring's monitor.
+            completed?.invoke()
             consecutiveFailures.set(0)
             true
         } catch (t: Throwable) {
@@ -133,10 +152,40 @@ class HandTracker private constructor(
 
     fun clear() = synchronized(lock) { ring.clear() }
 
+    /**
+     * Starts a fresh capture window: clears the ring and calls [onComplete]
+     * once [RING_CAPACITY] new frames have been analysed. Any previous
+     * capture in flight is cancelled. Returns immediately; the callback runs
+     * on the analysis thread.
+     */
+    fun beginCapture(onComplete: () -> Unit) {
+        synchronized(lock) {
+            ring.clear()
+            captureTarget = RING_CAPACITY
+            captureCallback = onComplete
+            capturing = true
+        }
+    }
+
+    fun cancelCapture() = synchronized(lock) {
+        capturing = false
+        captureCallback = null
+    }
+
+    /** True while a capture window is still filling. */
+    fun isCapturing(): Boolean = synchronized(lock) { capturing }
+
+    /** A settled window to classify: the whole ring once it is full. */
+    fun captureSnapshot(): List<Frame> = synchronized(lock) { ring.toList() }
+
     override fun close() {
         if (closed.compareAndSet(false, true)) {
             landmarker.close()
-            synchronized(lock) { ring.clear() }
+            synchronized(lock) {
+                ring.clear()
+                capturing = false
+                captureCallback = null
+            }
         }
     }
 

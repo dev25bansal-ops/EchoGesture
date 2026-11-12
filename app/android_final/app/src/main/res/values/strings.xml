@@ -1,22 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">EchoGesture</string>
-    <string name="offline_indicator">OFFLINE</string>
-    <string name="capture_action">Capture &amp; translate</string>
-    <string name="retry_action">Retry</string>
-    <string name="waiting_title">Waiting for hands</string>
-    <string name="waiting_detail">Show one or both hands. Capture needs at least one detected hand frame.</string>
-    <string name="processing_title">Processing…</string>
-    <string name="processing_detail">Running hand landmarks through the on-device classifier.</string>
-    <string name="no_hands_title">No hands detected</string>
-    <string name="no_hands_detail">Keep hands in frame and try again.</string>
+    <string name="app_subtitle">Offline sign recognition</string>
+    <string name="offline_indicator">Offline</string>
+    <string name="offline_detail">On-device · no network</string>
+
+    <!-- Navigation -->
+    <string name="nav_camera">Camera</string>
+    <string name="nav_glossary">Glossary</string>
+    <string name="nav_history">History</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Camera screen -->
+    <string name="camera_header_title">Camera</string>
+    <string name="camera_guidance">Keep your hands in frame</string>
+    <string name="camera_state_searching">Searching for hands</string>
+    <string name="camera_state_detected">Hands detected</string>
+    <string name="camera_state_ready">Ready to recognise</string>
+    <string name="camera_state_preparing">Preparing camera</string>
+    <string name="camera_state_capturing">Capturing… keep still</string>
+    <string name="camera_state_processing">Reading the sign…</string>
+    <string name="camera_state_no_hands">No hands in view</string>
+    <string name="camera_state_low_frames">Move your hands into frame</string>
+    <string name="capture_action">Recognise sign</string>
+    <string name="capture_action_capturing">Capturing…</string>
+    <string name="capture_action_processing">Reading…</string>
+    <string name="flip_camera">Switch camera</string>
+    <string name="flip_camera_desc">Switch between front and back camera</string>
+    <string name="torch_toggle">Torch</string>
+    <string name="torch_toggle_desc">Toggle the camera torch</string>
+    <string name="camera_rear">Rear camera</string>
+    <string name="camera_front">Front camera</string>
+    <string name="camera_frame_count">%1$d of %2$d frames have a hand</string>
+    <string name="camera_auto">Automatic</string>
+    <string name="no_hands_detail_for_state">Keep both hands inside the frame guide and try again.</string>
+    <string name="error_generic">Something interrupted recognition. You can try again.</string>
+
+    <!-- Permission / errors -->
+    <string name="permission_title">Camera permission needed</string>
+    <string name="permission_detail">EchoGesture reads hand landmarks from the camera. Frames are processed on this device and never leave it.</string>
+    <string name="grant_camera">Allow camera access</string>
     <string name="error_title">Something went wrong</string>
-    <string name="permission_title">Camera permission required</string>
-    <string name="permission_detail">EchoGesture needs the camera to read hand landmarks. Nothing leaves this device.</string>
-    <string name="grant_camera">Grant camera</string>
-    <string name="model_identity">%1$s · SHA-256 %2$s… · %3$d members</string>
-    <string name="frame_status">%1$d/32 frames · %2$d with hands</string>
-    <string name="caption_confidence">Confidence %1$s%%</string>
-    <string name="top_alternatives">Also considered: %1$s</string>
-    <string name="latency_line">Inference %1$d ms · total %2$d ms</string>
+    <string name="error_retry">Try again</string>
+    <string name="error_camera_start">The camera could not start. Close other apps using the camera and try again.</string>
+    <string name="error_model_load">The recognition models could not load. Restart the app.</string>
+    <string name="error_inference">Recognition failed for this capture. Try again.</string>
+
+    <!-- Result card -->
+    <string name="result_label">Recognised sign</string>
+    <string name="result_score">%1$s%% model score</string>
+    <string name="result_alternatives_label">Alternatives</string>
+    <string name="result_processing_time">%1$d ms on device</string>
+    <string name="result_confidence_high">High confidence</string>
+    <string name="result_confidence_medium">Moderate confidence</string>
+    <string name="result_confidence_low">Low confidence — try again</string>
+    <string name="result_responsibility">A model score is a probability, not a guarantee. Recognises one isolated sign at a time.</string>
+    <string name="action_copy">Copy</string>
+    <string name="action_copied">Copied</string>
+    <string name="action_speak">Speak</string>
+    <string name="action_recognise_again">Recognise again</string>
+    <string name="action_clear_result">Clear</string>
+    <string name="action_save">Saved to history</string>
+    <string name="tts_unavailable">No offline voice available on this device</string>
+
+    <!-- Glossary -->
+    <string name="glossary_title">Glossary</string>
+    <string name="glossary_subtitle">%1$d signs this model can recognise</string>
+    <string name="glossary_search_hint">Search signs</string>
+    <string name="glossary_sort_alpha">A–Z</string>
+    <string name="glossary_empty">No sign matches “%1$s”</string>
+    <string name="glossary_clear_search">Clear search</string>
+    <string name="glossary_label_note">These are the model’s output class names. They identify which sign was recognised, not a full description of the sign’s meaning or grammar.</string>
+    <string name="glossary_seen_recently">Recognised this session</string>
+    <string name="glossary_count">%1$d of %2$d signs</string>
+
+    <!-- History -->
+    <string name="history_title">History</string>
+    <string name="history_subtitle_session">Kept in memory for this session only</string>
+    <string name="history_subtitle_persistent">Saved on this device</string>
+    <string name="history_empty_title">No recognitions yet</string>
+    <string name="history_empty_detail">Recognise a sign on the Camera tab and it will appear here.</string>
+    <string name="history_clear">Clear history</string>
+    <string name="history_clear_confirm">Clear all %1$d saved recognitions? This cannot be undone.</string>
+    <string name="history_cleared">History cleared</string>
+    <string name="history_item_score">%1$s%%</string>
+    <string name="action_cancel">Cancel</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_section_camera">Camera</string>
+    <string name="settings_section_accessibility">Accessibility</string>
+    <string name="settings_section_privacy">Privacy</string>
+    <string name="settings_section_model">Model</string>
+    <string name="settings_section_about">About</string>
+
+    <string name="settings_preferred_camera">Preferred camera</string>
+    <string name="settings_preferred_camera_detail">Used when the app opens the camera</string>
+    <string name="settings_show_guidance">Framing guide</string>
+    <string name="settings_show_guidance_detail">Show the hand-placement guide over the preview</string>
+    <string name="settings_haptics">Haptic feedback</string>
+    <string name="settings_haptics_detail">Short vibration on capture, result and error</string>
+    <string name="settings_caption_size">Result text size</string>
+    <string name="settings_caption_size_detail">Size of the recognised sign on the result card</string>
+    <string name="caption_size_small">Small</string>
+    <string name="caption_size_medium">Medium</string>
+    <string name="caption_size_large">Large</string>
+    <string name="settings_speech">Speak results</string>
+    <string name="settings_speech_detail">Read the recognised sign aloud using the on-device voice</string>
+    <string name="settings_save_history">Keep history on this device</string>
+    <string name="settings_save_history_detail">When off, history is kept in memory and cleared when the app closes. No video is ever stored.</string>
+    <string name="settings_privacy_frames">Camera frames never leave this device.</string>
+    <string name="settings_privacy_no_internet">This app does not request the internet permission.</string>
+    <string name="settings_privacy_no_video">No video or images are saved.</string>
+    <string name="settings_clear_history">Clear saved history</string>
+
+    <string name="settings_model_ensemble">Four-model ensemble</string>
+    <string name="settings_model_ensemble_detail">logit-averaged, one softmax</string>
+    <string name="settings_model_precision">FP16 TFLite</string>
+    <string name="settings_model_precision_detail">float16 weights, float32 input/output</string>
+    <string name="settings_model_vocab">100 supported signs</string>
+    <string name="settings_model_hash">Ensemble SHA-256</string>
+    <string name="settings_model_members">Members</string>
+
+    <string name="settings_about_track">Samsung XR Hackathon 2026 · Track 2</string>
+    <string name="settings_about_version">Version %1$s</string>
+    <string name="settings_about_limitations_title">Limitations</string>
+    <string name="settings_about_limitations">Recognises one isolated sign at a time from a fixed 100-sign vocabulary. It is not a sentence translator and does not replace a human interpreter.</string>
+    <string name="settings_about_credits">Hand tracking by Google MediaPipe (Apache-2.0). Model and app by the EchoGesture team.</string>
+
+    <!-- Help -->
+    <string name="help_quick_title">New here?</string>
+    <string name="help_quick_body">Hold your hands inside the frame, perform one sign, then tap Recognise sign.</string>
+    <string name="help_title">How to use EchoGesture</string>
+    <string name="help_step_1">Point the camera so the signer’s hands are clearly visible.</string>
+    <string name="help_step_2">Keep both hands inside the frame guide.</string>
+    <string name="help_step_3">Perform one supported sign, then tap Recognise sign.</string>
+    <string name="help_step_4">Hold the sign steady while it captures.</string>
+    <string name="help_step_5">Read the recognised sign and the alternatives offered.</string>
+    <string name="help_privacy">Everything runs on this phone. Nothing is uploaded.</string>
+    <string name="action_close">Close</string>
+
+    <!-- Privacy sheet -->
+    <string name="privacy_title">Privacy</string>
+    <string name="privacy_point_device">All inference runs on this device.</string>
+    <string name="privacy_point_frames">Raw camera frames are never uploaded or stored.</string>
+    <string name="privacy_point_history">History is session-only unless you turn on saving.</string>
+    <string name="privacy_point_permission">The app has no internet permission and cannot open a network connection.</string>
+
+    <string name="action_done">Done</string>
+    <string name="action_ok">OK</string>
 </resources>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Semantic colour tokens. Every layout references these names, never a raw hex
+  literal, so the palette is changed in exactly one place.
+
+  Role mapping (never colour alone — every state also carries text and an icon):
+    primary    - the one action that advances the task
+    success    - a real, positive result (hand detected, recognition produced)
+    warning    - guidance the user can act on (hands off frame, low confidence)
+    danger     - an actual failure (permission denied, model could not load)
+-->
+<resources>
+    <!-- Brand / primary -->
+    <color name="primary">#2563EB</color>
+    <color name="primary_dark">#1D4ED8</color>
+    <color name="primary_soft">#EFF6FF</color>
+    <color name="on_primary">#FFFFFF</color>
+
+    <!-- Semantic states -->
+    <color name="success">#16A34A</color>
+    <color name="success_soft">#DCFCE7</color>
+    <color name="warning">#F59E0B</color>
+    <color name="warning_soft">#FEF3C7</color>
+    <color name="danger">#DC2626</color>
+    <color name="danger_soft">#FEE2E2</color>
+
+    <!-- Surfaces -->
+    <color name="background">#F8FAFC</color>
+    <color name="surface">#F1F5F9</color>
+    <color name="surface_raised">#FFFFFF</color>
+    <color name="border">#E2E8F0</color>
+    <color name="border_strong">#CBD5E1</color>
+
+    <!-- Text -->
+    <color name="text_primary">#0F172A</color>
+    <color name="text_secondary">#64748B</color>
+    <color name="text_on_dark">#FFFFFF</color>
+
+    <!-- Scrim used behind guidance drawn on top of the camera image -->
+    <color name="scrim_soft">#66000000</color>
+    <color name="scrim_chip">#B30F172A</color>
+
+    <!-- Neutral disabled state -->
+    <color name="disabled_bg">#E2E8F0</color>
+    <color name="disabled_text">#94A3B8</color>
+
+    <!-- Ripple -->
+    <color name="ripple_light">#332563EB</color>
+    <color name="ripple_on_primary">#40FFFFFF</color>
+    <color name="ripple_dark">#220F172A</color>
+</resources>

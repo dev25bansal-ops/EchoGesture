@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 8dp rhythm. Named by role so screens stay consistent. -->
+<resources>
+    <dimen name="space_1">4dp</dimen>
+    <dimen name="space_2">8dp</dimen>
+    <dimen name="space_3">12dp</dimen>
+    <dimen name="space_4">16dp</dimen>
+    <dimen name="space_5">20dp</dimen>
+    <dimen name="space_6">24dp</dimen>
+    <dimen name="space_8">32dp</dimen>
+
+    <dimen name="screen_padding">16dp</dimen>
+    <dimen name="card_padding">16dp</dimen>
+    <dimen name="card_gap">12dp</dimen>
+
+    <dimen name="radius_sm">12dp</dimen>
+    <dimen name="radius_md">16dp</dimen>
+    <dimen name="radius_lg">20dp</dimen>
+    <dimen name="radius_pill">999dp</dimen>
+
+    <!-- Minimum touch target. 48dp is the accessibility floor. -->
+    <dimen name="touch_min">48dp</dimen>
+    <dimen name="icon_sm">18dp</dimen>
+    <dimen name="icon_md">22dp</dimen>
+    <dimen name="icon_lg">24dp</dimen>
+
+    <dimen name="capture_button_height">56dp</dimen>
+    <dimen name="bottom_nav_height">64dp</dimen>
+    <dimen name="header_height">56dp</dimen>
+    <dimen name="camera_min_height">240dp</dimen>
+
+    <dimen name="text_caption_small">28sp</dimen>
+    <dimen name="text_caption_medium">36sp</dimen>
+    <dimen name="text_caption_large">46sp</dimen>
+</resources>

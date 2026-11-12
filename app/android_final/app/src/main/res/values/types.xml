@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Text roles. 12 / 14 / 16 / 20 / 24 / 32sp. -->
+    <style name="Text" />
+    <style name="Text.Caption">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:lineSpacingExtra">3dp</item>
+    </style>
+
+    <style name="Text.Body">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:lineSpacingExtra">4dp</item>
+    </style>
+
+    <style name="Text.Body.Emphasis">
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <style name="Text.Title">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Text.Section">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.06</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="Text.Headline">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Text.Display">
+        <item name="android:textSize">32sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">-0.01</item>
+    </style>
+
+    <!-- Surfaces -->
+
+    <style name="Card">
+        <item name="android:background">@drawable/bg_card</item>
+        <item name="android:padding">@dimen/card_padding</item>
+        <item name="android:elevation">1dp</item>
+    </style>
+
+    <style name="Card.Flat">
+        <item name="android:background">@drawable/bg_card_flat</item>
+        <item name="android:elevation">0dp</item>
+    </style>
+
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/border</item>
+    </style>
+
+    <!-- Buttons.
+      All buttons draw their own shape via a background selector so the pressed
+      state is a real colour change, not a default AppCompat ripple on a grey
+      rectangle. Text colour is set per variant.
+    -->
+
+    <style name="Widget.Button" parent="Widget.AppCompat.Button.Borderless">
+        <!-- Material3 tints every button background with colorPrimary. The
+             variants below supply their own shape, so the tint must be off or
+             the background is painted solid blue over it and the label
+             disappears against it. -->
+        <item name="backgroundTint">@null</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:minHeight">@dimen/touch_min</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:paddingStart">@dimen/space_5</item>
+        <item name="android:paddingEnd">@dimen/space_5</item>
+    </style>
+
+    <style name="Widget.Button.Primary" parent="Widget.Button">
+        <item name="android:background">@drawable/bg_button_primary</item>
+        <item name="android:textColor">@color/button_primary_text</item>
+        <item name="android:minHeight">@dimen/capture_button_height</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="Widget.Button.Secondary" parent="Widget.Button">
+        <item name="android:background">@drawable/bg_button_secondary</item>
+        <item name="android:textColor">@color/primary</item>
+        <item name="android:minHeight">@dimen/touch_min</item>
+    </style>
+
+    <style name="Widget.Button.Ghost" parent="Widget.Button">
+        <item name="android:background">@drawable/bg_button_ghost</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:minHeight">@dimen/touch_min</item>
+    </style>
+
+    <style name="Widget.Button.Danger" parent="Widget.Button">
+        <item name="android:background">@drawable/bg_button_danger</item>
+        <item name="android:textColor">@color/danger</item>
+        <item name="android:minHeight">@dimen/touch_min</item>
+    </style>
+
+    <style name="Widget.IconButton" parent="Widget.AppCompat.Button.Borderless" />
+
+    <!-- Round icon button drawn over the camera image -->
+    <style name="Widget.IconButton.Overlay" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:background">@drawable/bg_icon_overlay</item>
+        <item name="android:minWidth">@dimen/touch_min</item>
+        <item name="android:minHeight">@dimen/touch_min</item>
+        <item name="android:padding">@dimen/space_3</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <!-- Chips  - -->
+
+    <style name="Widget.Chip" parent="">
+        <item name="android:background">@drawable/bg_chip</item>
+        <item name="android:paddingStart">@dimen/space_3</item>
+        <item name="android:paddingEnd">@dimen/space_3</item>
+        <item name="android:paddingTop">6dp</item>
+        <item name="android:paddingBottom">6dp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/success</item>
+        <item name="android:drawablePadding">6dp</item>
+    </style>
+
+    <style name="Widget.Chip.OnCamera" parent="Widget.Chip">
+        <item name="android:background">@drawable/bg_chip_on_camera</item>
+        <item name="android:textColor">@color/text_on_dark</item>
+    </style>
+
+</resources>

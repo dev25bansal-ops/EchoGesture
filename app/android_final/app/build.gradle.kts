@@ -18,25 +18,35 @@ val memberHashes = mapOf(
     "landmark_ens_rob71_fp16.tflite" to
         "08417e72da59150ac9adf749e6324c30fb001d4a401394e32f125d3276d1ab21"
 )
-val modelAssets = mapOf(
-    "hand_landmarker.task" to
-        "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1",
+// Every weight and the detector are byte-pinned: a swapped classifier cannot
+// get past this, and those bytes are what decide what the app runs.
+//
+// Text assets are pinned with line endings normalized to LF. The pins were
+// taken on a Linux checkout; on Windows the same tracked file arrives with
+// CRLF and hashes differently, which failed the build over a checkout setting
+// rather than over a wrong model.
+//
+// landmark_model_meta.json is deliberately NOT byte-pinned. It is a sidecar
+// whose meaning is the member list and the quantization field, and that
+// meaning is validated semantically below (set equality against memberHashes,
+// and quantization == "float16"). Pinning its bytes made the build fail for
+// cosmetic reasons: the shipped meta carries extra provenance keys
+// (ensemble_test_top1) that this repo's copy omits.
+val textAssets = mapOf(
     "landmark_labels.json" to
-        "e78f5028e97e2eaf86aff65af403af65061eebef010f0fbd41012293e8019a4a",
-    "landmark_model_meta.json" to
-        "06f655bbec9c75181e89218d7ba284523a2ee02f5ac30f133e48cde48072ddbc"
+        "e78f5028e97e2eaf86aff65af403af65061eebef010f0fbd41012293e8019a4a"
+)
+val binaryAssets = mapOf(
+    "hand_landmarker.task" to
+        "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1"
 ) + memberHashes
+val modelAssets = textAssets + binaryAssets
 
-fun sha256Of(file: java.io.File): String {
+fun sha256Of(file: java.io.File, normalizeNewlines: Boolean = false): String {
     val digest = MessageDigest.getInstance("SHA-256")
-    file.inputStream().buffered().use { input ->
-        val buffer = ByteArray(64 * 1024)
-        while (true) {
-            val count = input.read(buffer)
-            if (count < 0) break
-            digest.update(buffer, 0, count)
-        }
-    }
+    val bytes = file.readBytes()
+    digest.update(if (normalizeNewlines) bytes.toString(Charsets.UTF_8)
+        .replace("\r\n", "\n").toByteArray(Charsets.UTF_8) else bytes)
     return digest.digest().joinToString("") { "%02x".format(it) }
 }
 
@@ -49,7 +59,7 @@ modelAssets.forEach { (name, expectedHash) ->
                 "all ${memberHashes.size} ensemble members are required."
         )
     }
-    val actual = sha256Of(asset)
+    val actual = sha256Of(asset, normalizeNewlines = name in textAssets)
     if (actual != expectedHash) {
         throw GradleException("$name SHA-256 is $actual; expected $expectedHash")
     }
@@ -62,6 +72,13 @@ modelAssets.forEach { (name, expectedHash) ->
 run {
     val metaFile = layout.projectDirectory
         .file("src/main/assets/landmark_model_meta.json").asFile
+    if (!metaFile.isFile) {
+        throw GradleException(
+            "Missing ${metaFile.absolutePath}. Copy it from the root models/ "
+                + "directory using the README.md prepare-assets commands; the "
+                + "runtime reads the member list from it."
+        )
+    }
     @Suppress("UNCHECKED_CAST")
     val meta = groovy.json.JsonSlurper().parse(metaFile) as Map<String, Any?>
     val declared = (meta["members"] as? List<*>)?.filterIsInstance<String>().orEmpty()

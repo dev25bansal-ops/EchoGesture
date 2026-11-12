@@ -1,9 +1,13 @@
 # Android UI redesign — captured evidence
 
 All eleven screenshots were taken on the Android emulator `eg34`
-(sdk_gphone64_arm64, android-34, 1080×2400, density 420) from the debug APK
-built at commit `5d90063`, via `adb exec-out screencap -p`. Nothing here is a
-mockup, a render, or a re-creation of the UI in another tool.
+(sdk_gphone64_arm64, android-34, 1080×2400, density 420) from a debug APK built
+on this branch, via `adb exec-out screencap -p`. Nothing here is a mockup, a
+render, or a re-creation of the UI in another tool.
+
+They were captured on the build at `974f610`. The two commits after it —
+`f8d4643` (a test file) and `5d90063` (removal of five unreferenced strings) —
+change no rendered pixel; the current APK is the one those commits build to.
 
 ## What each shot shows, and what it does not
 

@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var prefs: AppPreferences
     private lateinit var history: RecognitionHistory
     private lateinit var speaker: Speaker
+    private lateinit var diagnostics: DiagnosticsLog
     private lateinit var cameraScreen: CameraScreen
     private lateinit var glossaryScreen: GlossaryScreen
     private lateinit var historyScreen: HistoryScreen
@@ -48,11 +49,12 @@ class MainActivity : AppCompatActivity() {
         prefs = AppPreferences(this)
         history = RecognitionHistory(this)
         speaker = Speaker(this)
+        diagnostics = DiagnosticsLog(this)
 
-        cameraScreen = CameraScreen(this, prefs, history, speaker)
+        cameraScreen = CameraScreen(this, prefs, history, speaker, diagnostics)
         glossaryScreen = GlossaryScreen(this, history, speaker)
         historyScreen = HistoryScreen(this, history, prefs)
-        settingsScreen = SettingsScreen(this, prefs, history, speaker)
+        settingsScreen = SettingsScreen(this, prefs, history, speaker, diagnostics)
 
         contentHost.addView(
             cameraScreen.root,

@@ -22,7 +22,8 @@ class SettingsScreen(
     private val activity: MainActivity,
     private val prefs: AppPreferences,
     private val history: RecognitionHistory,
-    private val speaker: Speaker
+    private val speaker: Speaker,
+    private val diagnostics: DiagnosticsLog
 ) {
 
     val root: View = LayoutInflater.from(activity).inflate(R.layout.screen_settings, null, false)
@@ -39,6 +40,7 @@ class SettingsScreen(
     private val switchHaptics: SwitchMaterial = root.findViewById(R.id.switchHaptics)
     private val switchSpeech: SwitchMaterial = root.findViewById(R.id.switchSpeech)
     private val switchSaveHistory: SwitchMaterial = root.findViewById(R.id.switchSaveHistory)
+    private val switchDiagnostics: SwitchMaterial = root.findViewById(R.id.switchDiagnostics)
     private val captionGroup: RadioGroup = root.findViewById(R.id.captionSizeGroup)
     private val captionSmall: RadioButton = root.findViewById(R.id.captionSmall)
     private val captionMedium: RadioButton = root.findViewById(R.id.captionMedium)
@@ -114,6 +116,12 @@ class SettingsScreen(
             history.onPersistenceChanged(checked)
             callbacks.onHistoryChanged()
         }
+        switchDiagnostics.setOnCheckedChangeListener { _, checked ->
+            prefs.diagnostics = checked
+            // Turning it off deletes what was recorded: the point of the switch
+            // is that a test session's record does not outlive the session.
+            if (!checked) diagnostics.clear()
+        }
         captionGroup.setOnCheckedChangeListener { _, checkedId ->
             prefs.captionSize = when (checkedId) {
                 R.id.captionSmall -> AppPreferences.CaptionSize.SMALL
@@ -154,6 +162,7 @@ class SettingsScreen(
         switchHaptics.isChecked = prefs.haptics
         switchSpeech.isChecked = prefs.speech
         switchSaveHistory.isChecked = prefs.saveHistory
+        switchDiagnostics.isChecked = prefs.diagnostics
         when (prefs.captionSize) {
             AppPreferences.CaptionSize.SMALL -> captionSmall.isChecked = true
             AppPreferences.CaptionSize.MEDIUM -> captionMedium.isChecked = true

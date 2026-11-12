@@ -21,7 +21,8 @@
     <string name="camera_state_capturing">Capturing… keep still</string>
     <string name="camera_state_processing">Reading the sign…</string>
     <string name="camera_state_no_hands">No hands in view</string>
-    <string name="camera_state_low_frames">Move your hands into frame</string>
+    <string name="camera_state_low_frames">Hand not visible for most of the capture</string>
+    <string name="low_frames_detail">Keep both hands inside the frame guide for the whole capture and try again.</string>
     <string name="capture_action">Recognise sign</string>
     <string name="capture_action_capturing">Capturing…</string>
     <string name="capture_action_processing">Reading…</string>
@@ -50,10 +51,13 @@
     <string name="result_score">%1$s%% model score</string>
     <string name="result_alternatives_label">Alternatives</string>
     <string name="result_processing_time">%1$d ms on device</string>
+    <string name="result_confidence_accepted">Best match — still confirm before relying on it</string>
+    <string name="result_confidence_uncertain">Uncertain — this is the model\'s best guess, not a confirmed reading</string>
+    <string name="result_capture_detail">%1$d frames · %2$d ms captured · %3$d fps · %4$d ms inference</string>
     <string name="result_confidence_high">High confidence</string>
     <string name="result_confidence_medium">Moderate confidence</string>
     <string name="result_confidence_low">Low confidence — try again</string>
-    <string name="result_responsibility">A model score is a probability, not a guarantee. Recognises one isolated sign at a time.</string>
+    <string name="result_responsibility">A model score ranks the 100 known signs; it is not a calibrated probability that the reading is correct. Recognises one isolated sign at a time.</string>
     <string name="action_copy">Copy</string>
     <string name="action_copied">Copied</string>
     <string name="action_speak">Speak</string>
@@ -107,6 +111,8 @@
     <string name="settings_speech_detail">Read the recognised sign aloud using the on-device voice</string>
     <string name="settings_save_history">Keep history on this device</string>
     <string name="settings_save_history_detail">When off, history is kept in memory and cleared when the app closes. No video is ever stored.</string>
+    <string name="settings_diagnostics">Capture diagnostics</string>
+    <string name="settings_diagnostics_detail">Records frame counts, capture timing and hand-presence flags for a consented test session. No images, no landmarks, no identifiers; nothing leaves the device. Turning this off deletes the record.</string>
     <string name="settings_privacy_frames">Camera frames never leave this device.</string>
     <string name="settings_privacy_no_internet">This app does not request the internet permission.</string>
     <string name="settings_privacy_no_video">No video or images are saved.</string>

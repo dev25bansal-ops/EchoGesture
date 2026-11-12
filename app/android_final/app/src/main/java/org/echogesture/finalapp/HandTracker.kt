@@ -1,6 +1,7 @@
 package org.echogesture.finalapp
 
 import android.content.Context
+import android.os.SystemClock
 import android.util.Log
 import androidx.camera.core.ImageProxy
 import com.google.mediapipe.framework.image.BitmapImageBuilder
@@ -35,7 +36,7 @@ class HandTracker private constructor(
      * sequence the model sees would mix an old window with the new sign.
      */
     private var capturing = false
-    private var captureTarget = 0
+    private var captureStartedMs = 0L
     private var captureCallback: (() -> Unit)? = null
 
     /** Consecutive failed frames; reset to 0 on any successful analysis. */
@@ -50,7 +51,17 @@ class HandTracker private constructor(
      * 32 ARGB_8888 buffers would be tens of MB.
      */
     data class Hand(val slot: Int, val xyz: FloatArray)
-    data class Frame(val hands: List<Hand>)
+    data class Frame(val hands: List<Hand>, val capturedAtMs: Long)
+
+    /** What one finished capture actually contained, for the UI and diagnostics. */
+    data class Capture(
+        val frames: List<Frame>,
+        val durationMs: Long,
+        val fps: Float,
+        val handFrames: Int
+    ) {
+        val frameCount: Int get() = frames.size
+    }
 
     companion object {
         private const val TAG = "HandTracker"
@@ -58,6 +69,24 @@ class HandTracker private constructor(
 
         /** Capture window. Matches src/landmark_frontend.py's max_frames=32. */
         const val RING_CAPACITY = 32
+
+        /**
+         * Initial window length. The window is 32 frames, and at 30 fps that is
+         * ~1.07 s — but real analysis FPS is lower than the camera's frame rate
+         * because hand tracking runs inline, so the window is longer than this
+         * in wall clock. Training sampled 32 frames spread across each whole
+         * ASL Citizen clip (one example was 110 frames), so a live window that
+         * is too short only sees the part of the sign that happens to fall
+         * inside it.
+         *
+         * The window therefore extends until the capture covers
+         * [MIN_CAPTURE_MS] of real time, using measured frame timestamps, with
+         * [RING_CAPACITY] as the floor. It stays bounded so capture cannot run
+         * away when the analyser stalls.
+         */
+        const val MIN_CAPTURE_MS = 1000L
+        const val MAX_CAPTURE_MS = 4000L
+        const val MAX_CAPTURE_FRAMES = 96
 
         /**
          * Consecutive frame failures after which the tracker is considered
@@ -109,12 +138,19 @@ class HandTracker private constructor(
                     .build(),
                 nextFrameTs.getAndAdd(FRAME_INTERVAL_MS)
             )
-            val frame = Frame(toHands(result))
+            val now = SystemClock.elapsedRealtime()
+            val frame = Frame(toHands(result), now)
             var completed: (() -> Unit)? = null
             synchronized(lock) {
                 ring.addLast(frame)
                 while (ring.size > RING_CAPACITY) ring.removeFirst()
-                if (capturing && ring.size >= captureTarget) {
+                // End the capture once it covers the minimum real-time window,
+                // with RING_CAPACITY as the floor and MAX_CAPTURE_* as a bound.
+                // A stalled analyser therefore cannot keep it open forever.
+                val elapsed = now - captureStartedMs
+                val enoughTime = elapsed >= MIN_CAPTURE_MS
+                val tooLong = elapsed >= MAX_CAPTURE_MS || ring.size >= MAX_CAPTURE_FRAMES
+                if (capturing && ((ring.size >= RING_CAPACITY && enoughTime) || tooLong)) {
                     capturing = false
                     completed = captureCallback
                     captureCallback = null
@@ -161,7 +197,7 @@ class HandTracker private constructor(
     fun beginCapture(onComplete: () -> Unit) {
         synchronized(lock) {
             ring.clear()
-            captureTarget = RING_CAPACITY
+            captureStartedMs = SystemClock.elapsedRealtime()
             captureCallback = onComplete
             capturing = true
         }
@@ -175,8 +211,24 @@ class HandTracker private constructor(
     /** True while a capture window is still filling. */
     fun isCapturing(): Boolean = synchronized(lock) { capturing }
 
-    /** A settled window to classify: the whole ring once it is full. */
-    fun captureSnapshot(): List<Frame> = synchronized(lock) { ring.toList() }
+    /**
+     * The finished capture window, with the real elapsed time and effective
+     * analysis FPS measured from per-frame timestamps.
+     *
+     * The FPS here is what the analyser actually achieved, not the camera's
+     * nominal rate: hand tracking runs inline, and a slower device produces a
+     * longer window for the same 32 frames. Reporting the nominal 30 fps
+     * would misstate both the capture duration and the temporal span the model
+     * saw.
+     */
+    fun captureSnapshot(): Capture = synchronized(lock) {
+        val frames = ring.toList()
+        val first = frames.firstOrNull()?.capturedAtMs ?: 0L
+        val last = frames.lastOrNull()?.capturedAtMs ?: 0L
+        val duration = if (frames.size >= 2) last - first else 0L
+        val fps = if (duration > 0) (frames.size - 1) * 1000f / duration else 0f
+        Capture(frames, duration, fps, frames.count { it.hands.isNotEmpty() })
+    }
 
     override fun close() {
         if (closed.compareAndSet(false, true)) {

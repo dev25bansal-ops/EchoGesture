@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
@@ -31,6 +32,7 @@ import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.util.concurrent.Executors
+import kotlin.math.roundToInt
 
 /**
  * Camera destination: owns the preview, the hand tracker, the capture state
@@ -53,10 +55,21 @@ class CameraScreen(
     private val activity: MainActivity,
     private val prefs: AppPreferences,
     private val history: RecognitionHistory,
-    private val speaker: Speaker
+    private val speaker: Speaker,
+    private val diagnostics: DiagnosticsLog
 ) {
 
-    enum class UiState { INIT, WAITING, CAPTURING, PROCESSING, RESULT, NO_HANDS, ERROR }
+    enum class UiState { INIT, WAITING, CAPTURING, PROCESSING, RESULT, NO_HANDS, LOW_FRAMES, ERROR }
+
+    companion object {
+        /**
+         * A capture with fewer hand-bearing frames than this cannot describe a
+         * sign's motion. It is a low bar on purpose: the first and last frames
+         * of a real sign are often empty, and the model was trained on windows
+         * that contained them.
+         */
+        private const val MIN_HAND_FRAMES = 3
+    }
 
     val root: View = LayoutInflater.from(activity).inflate(R.layout.screen_camera, null, false)
 
@@ -74,6 +87,7 @@ class CameraScreen(
     private val confidenceBadge: TextView = root.findViewById(R.id.confidenceBadge)
     private val alternativesText: TextView = root.findViewById(R.id.alternativesText)
     private val latencyText: TextView = root.findViewById(R.id.latencyText)
+    private val confidenceLabel: TextView = root.findViewById(R.id.confidenceLabel)
     private val copyButton: Button = root.findViewById(R.id.copyButton)
     private val speakButton: Button = root.findViewById(R.id.speakButton)
     private val retryButton: Button = root.findViewById(R.id.retryButton)
@@ -310,6 +324,16 @@ class CameraScreen(
                         tone = Tone.WARNING
                     )
                     setLiveStatus(R.string.camera_state_no_hands, R.color.warning)
+                }
+                UiState.LOW_FRAMES -> {
+                    showStatus(
+                        R.string.camera_state_low_frames,
+                        R.string.low_frames_detail,
+                        icon = R.drawable.ic_warning,
+                        tint = R.color.warning,
+                        tone = Tone.WARNING
+                    )
+                    setLiveStatus(R.string.camera_state_low_frames, R.color.warning)
                 }
                 UiState.ERROR -> {
                     showStatus(
@@ -564,13 +588,31 @@ class CameraScreen(
         // full, then inference moves to its own executor.
         t.beginCapture {
             if (!processing) return@beginCapture
-            val frames = t.captureSnapshot()
+            val capture = t.captureSnapshot()
+            val frames = capture.frames
             activity.runOnUiThread { if (processing) render(UiState.PROCESSING) }
             inferExecutor.execute {
                 try {
-                    if (frames.none { it.hands.isNotEmpty() }) {
+                    if (capture.handFrames == 0) {
                         finishProcessing()
+                        // A capture with no hand at all is the single most
+                        // useful diagnostic line: it separates "the sign was
+                        // never seen" from "the model scored it wrong".
+                        if (prefs.diagnostics) logDiagnostic(capture, null, 0L)
                         render(UiState.NO_HANDS)
+                        return@execute
+                    }
+                    // A window where the hand is missing for most of it cannot
+                    // describe a two-handed dynamic sign; say so rather than
+                    // producing a confident-looking guess from a few frames.
+                    // The onset and offset frames of a dynamic sign are naturally empty,
+                    // so requiring a hand in every frame would be wrong. Below
+                    // this many, the hand was barely in frame and the window
+                    // cannot describe the motion.
+                    if (capture.handFrames < MIN_HAND_FRAMES) {
+                        finishProcessing()
+                        if (prefs.diagnostics) logDiagnostic(capture, null, 0L)
+                        render(UiState.LOW_FRAMES)
                         return@execute
                     }
                     val started = System.nanoTime()
@@ -581,7 +623,8 @@ class CameraScreen(
                     val result = c.predict(feats)
                     val totalMs = (System.nanoTime() - started) / 1_000_000L
                     finishProcessing()
-                    activity.runOnUiThread { renderResult(result, totalMs) }
+                    if (prefs.diagnostics) logDiagnostic(capture, result, totalMs)
+                    activity.runOnUiThread { renderResult(result, totalMs, capture) }
                 } catch (t: Throwable) {
                     finishProcessing()
                     render(UiState.ERROR, detail = activity.getString(R.string.error_inference))
@@ -607,26 +650,53 @@ class CameraScreen(
         return Triple(landmarks, present, n)
     }
 
-    private fun renderResult(result: LandmarkClassifier.Result, totalMs: Long) {
-        captionText.text = result.prediction
+    private fun renderResult(
+        result: LandmarkClassifier.Result,
+        totalMs: Long,
+        capture: HandTracker.Capture
+    ) {
         val percent = result.confidence * 100f
+
+        // Softmax over averaged logits is a score, not a probability that the
+        // label is right. Held-out evidence (346 ASL Citizen validation clips,
+        // 5 unseen signers) says a top-1 score of 0.35 or below is close to a
+        // coin flip: clips at >=0.20 score 86.9% top-1, at >=0.30 93.3%, and
+        // the whole population 74.9%. So below 0.35 the app says "uncertain"
+        // and does not read the gloss aloud as if it were a result.
+        val certain = percent >= 35f
+
+        captionText.text = result.prediction
         confidenceBadge.text = activity.getString(
             R.string.result_score,
             "%.1f".format(percent)
         )
         alternativesText.text = result.top5.drop(1).joinToString("  ·  ")
-        latencyText.text = activity.getString(R.string.result_processing_time, result.inferenceMillis)
+
+        // Label the reliability, and report the real capture facts next to it.
+        // The inference figure alone invited "43 ms" to be read as
+        // capture-to-caption, which it never was.
+        confidenceLabel.text = activity.getString(
+            if (certain) R.string.result_confidence_accepted
+            else R.string.result_confidence_uncertain
+        )
+        latencyText.text = activity.getString(
+            R.string.result_capture_detail,
+            capture.frameCount,
+            capture.durationMs,
+            capture.fps.roundToInt(),
+            result.inferenceMillis
+        )
 
         val tone = when {
-            percent >= 60f -> R.color.success
-            percent >= 30f -> R.color.warning
+            certain -> R.color.success
+            percent >= 20f -> R.color.warning
             else -> R.color.danger
         }
         confidenceBadge.setTextColor(ContextCompat.getColor(activity, tone))
         confidenceBadge.setBackgroundResource(
             when {
-                percent >= 60f -> R.drawable.bg_chip
-                percent >= 30f -> R.drawable.bg_card_warning_soft
+                certain -> R.drawable.bg_chip
+                percent >= 20f -> R.drawable.bg_card_warning_soft
                 else -> R.drawable.bg_card_danger_soft
             }
         )
@@ -634,8 +704,20 @@ class CameraScreen(
         render(UiState.RESULT)
         haptic(HapticFeedbackConstants.LONG_PRESS)
 
+        // Still recorded: an uncertain reading is real evidence about what the
+        // model saw, and hiding it would lose information the user asked for.
         history.add(result.prediction, result.confidence)
-        if (prefs.speech) speakResult(result.prediction)
+        if (prefs.speech && certain) speakResult(result.prediction)
+    }
+
+    /** Runs the diagnostic logger when the user has opted in. Never throws. */
+    private fun logDiagnostic(
+        capture: HandTracker.Capture,
+        result: LandmarkClassifier.Result?,
+        totalMs: Long
+    ) {
+        runCatching { diagnostics.record(capture, result, totalMs) }
+            .onFailure { Log.w("CameraScreen", "diagnostic write failed: ${it.javaClass.simpleName}") }
     }
 
     private fun speakResult(text: String) {

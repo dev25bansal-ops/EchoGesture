@@ -43,6 +43,15 @@ class AppPreferences(context: Context) {
         get() = prefs.getBoolean(KEY_SAVE_HISTORY, false)
         set(v) = prefs.edit().putBoolean(KEY_SAVE_HISTORY, v).apply()
 
+    /**
+     * Off by default and only ever switched on for a consenting test session.
+     * Records capture counts, timing and presence flags — never images,
+     * landmarks or identifiers. See [DiagnosticsLog].
+     */
+    var diagnostics: Boolean
+        get() = prefs.getBoolean(KEY_DIAGNOSTICS, false)
+        set(v) = prefs.edit().putBoolean(KEY_DIAGNOSTICS, v).apply()
+
     var captionSize: CaptionSize
         get() = enumValue(KEY_CAPTION_SIZE, CaptionSize.MEDIUM)
         set(v) = prefs.edit().putString(KEY_CAPTION_SIZE, v.name).apply()
@@ -67,6 +76,7 @@ class AppPreferences(context: Context) {
         const val KEY_HAPTICS = "haptics"
         const val KEY_SPEECH = "speech"
         const val KEY_SAVE_HISTORY = "save_history"
+        const val KEY_DIAGNOSTICS = "diagnostics"
         const val KEY_CAPTION_SIZE = "caption_size"
     }
 }

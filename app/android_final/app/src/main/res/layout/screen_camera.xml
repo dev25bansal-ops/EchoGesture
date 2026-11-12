@@ -272,6 +272,14 @@
                 android:textSize="@dimen/text_caption_medium"
                 tools:ignore="SpUsage" />
 
+            <TextView
+                android:id="@+id/confidenceLabel"
+                style="@style/Text.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_2"
+                android:accessibilityLiveRegion="polite" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

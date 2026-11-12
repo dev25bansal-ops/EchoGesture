@@ -110,11 +110,21 @@ class ResultCardRenderTest {
             val render = CameraScreen::class.java.getDeclaredMethod(
                 "renderResult",
                 LandmarkClassifier.Result::class.java,
-                java.lang.Long.TYPE
+                java.lang.Long.TYPE,
+                HandTracker.Capture::class.java
             ).apply { isAccessible = true }
 
+            // The capture the production path would have handed to renderResult:
+            // a real 32-frame window with a hand present in every frame, so the
+            // card is populated by the same code a live capture reaches.
+            val now = android.os.SystemClock.elapsedRealtime()
+            val frames = (0 until 32).map { i ->
+                HandTracker.Frame(emptyList(), now - 1000L + i * 33L)
+            }
+            val capture = HandTracker.Capture(frames, 1023L, 30f, 32)
+
             instrumentation.runOnMainSync {
-                render.invoke(screen, result, result.inferenceMillis)
+                render.invoke(screen, result, result.inferenceMillis, capture)
                 val card = activity.findViewById<View>(R.id.resultCard)
                 // Settle the 180 ms reveal so the capture cannot catch a
                 // half-transparent card.
@@ -159,6 +169,27 @@ class ResultCardRenderTest {
                 "latency is a measured non-zero duration, was '${latency.text}'",
                 result.inferenceMillis > 0 &&
                     latency.text.toString().contains(result.inferenceMillis.toString())
+            )
+
+            val reliability = activity.findViewById<TextView>(R.id.confidenceLabel)
+            assertTrue(
+                "card must state capture facts, not only inference time, was '${latency.text}'",
+                latency.text.toString().contains("32 frames") &&
+                    latency.text.toString().contains("1023 ms")
+            )
+            assertTrue(
+                "card must label reliability, was '${reliability.text}'",
+                reliability.text.toString() ==
+                    activity.getString(R.string.result_confidence_uncertain) ||
+                    reliability.text.toString() ==
+                    activity.getString(R.string.result_confidence_accepted)
+            )
+            // The parity vector is a real clip and scores well above the
+            // calibration cut, so this render must take the accepted branch.
+            assertEquals(
+                "a high-scoring clip must read as a best match",
+                activity.getString(R.string.result_confidence_accepted),
+                reliability.text.toString()
             )
 
             // Hold the screen while the harness grabs the framebuffer. The ready

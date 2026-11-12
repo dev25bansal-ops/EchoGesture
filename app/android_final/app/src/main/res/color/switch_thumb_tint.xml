@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Material3 defaults the unchecked thumb to colorOnSurface, which is
+  text_primary here and reads as a near-black blob against the white card.
+  Unchecked should be a quiet neutral; checked takes the brand colour.
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true" android:color="@color/on_primary" />
+    <item android:color="@color/surface_raised" />
+</selector>

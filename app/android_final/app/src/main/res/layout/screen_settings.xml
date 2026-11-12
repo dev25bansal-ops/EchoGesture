@@ -104,7 +104,9 @@
                     android:id="@+id/switchGuidance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/settings_show_guidance" />
+                    android:contentDescription="@string/settings_show_guidance"
+                    app:thumbTint="@color/switch_thumb_tint"
+                    app:trackTint="@color/switch_track_tint" />
             </LinearLayout>
         </LinearLayout>
 
@@ -196,7 +198,9 @@
                     android:id="@+id/switchHaptics"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/settings_haptics" />
+                    android:contentDescription="@string/settings_haptics"
+                    app:thumbTint="@color/switch_thumb_tint"
+                    app:trackTint="@color/switch_track_tint" />
             </LinearLayout>
 
             <View style="@style/Divider" />
@@ -231,7 +235,9 @@
                     android:id="@+id/switchSpeech"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/settings_speech" />
+                    android:contentDescription="@string/settings_speech"
+                    app:thumbTint="@color/switch_thumb_tint"
+                    app:trackTint="@color/switch_track_tint" />
             </LinearLayout>
         </LinearLayout>
 
@@ -313,7 +319,9 @@
                     android:id="@+id/switchSaveHistory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/settings_save_history" />
+                    android:contentDescription="@string/settings_save_history"
+                    app:thumbTint="@color/switch_thumb_tint"
+                    app:trackTint="@color/switch_track_tint" />
             </LinearLayout>
 
             <Button

@@ -18,7 +18,7 @@ next action.
 | G1 Ensemble integration | `DONE_VERIFIED` | 4 members load, per-member tensor indices, mean logits; `WHATFOR1` @ 0.8821 |
 | G2 All tests discovered | `DONE_VERIFIED` | 572 local / 500 published, 0 failures |
 | G3 Source-only CI | `DONE_PUBLISHED` | GitHub Actions **green** on `79278a7` and later |
-| G4 Android APK | `DONE_VERIFIED` | 75,072,782 B, signed, 4 members embedded, 9/9 unit tests |
+| G4 Android APK | `DONE_VERIFIED` | 75,072,706 B, signed, 4 members embedded, 20/20 JVM unit tests; 4 instrumentation tests pass on an Android 14 arm64 emulator |
 | G5 Performance / robustness frozen | `DONE_VERIFIED` | p95 274.2 / 154.8 / 99.8 ms; robustness 3 PASS / 2 FAIL |
 | G6 Public-safe code committed | `DONE_PUBLISHED` | 7 commits on `hackathon/abhijeet-public` |
 | G7 Branch pushed, remote matches | `DONE_PUBLISHED` | remote `26b2990` == local |

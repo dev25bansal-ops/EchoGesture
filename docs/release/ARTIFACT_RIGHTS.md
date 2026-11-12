@@ -1,90 +1,120 @@
-# Artifact rights
+# Artifact rights register
 
-Every artifact the submission touches, with its provenance, the evidence that
-exists for its licence, and whether we may redistribute it.
+Scope: every artifact this submission ships, links, or relies on. This is a
+project-internal compliance record, not legal advice. It records what the
+repository can and cannot prove, and marks "no documentary evidence in repo"
+wherever that is the honest answer.
 
-**Rule applied:** an artifact appearing in this repository or on GitHub is not a
-licence grant. A right is only "cleared" where documentary evidence exists in
-this repository. Where it does not, the row says so.
+Source documents consulted: `NOTICE`, `LICENSE`, `models/README.md`,
+`README.md` §Licensing, `docs/release/COMPLIANCE_AUDIT.md`,
+`docs/release/COMPLIANCE_FINAL.md`, `submission_final/RELEASE_MANIFEST.json`,
+and the installed package metadata under `.venv/lib/python3.11/site-packages/`.
 
-Updated 2026-11-11. Supersedes the artifact table in `NOTICE` §2, which listed
-only the single-classifier model and predates the four-model ensemble.
+Compiled 2026-11-11. Artifacts and hashes are as they exist in this checkout.
 
----
+## Summary
 
-## 1. Code we wrote
-
-| Artifact | Origin | Licence evidence | Internal use | Redistribution | Status |
+| Artifact | Origin | Licence/permission evidence | Allowed internal use | Allowed redistribution | Status |
 | --- | --- | --- | --- | --- | --- |
-| `src/`, `app/`, `scripts/`, `evaluation/device/` | EchoGesture team | `LICENSE` (MIT) in repo | yes | yes | **CLEARED** |
+| `landmark_ens_tcn21_fp16.tflite` (939,152 B, `112279bc…`) | Trained by Dev on ASL Citizen-derived features | `NOTICE` §2: trained on ASL Citizen-derived data; **no written permission on file** | Yes (research/evaluation, the use ASL Citizen's licence contemplates) | **No** — no documentary evidence in repo | BLOCKED for publication |
+| `landmark_ens_tcnm61_fp16.tflite` (832,888 B, `01a261d8…`) | Same lineage, mirror-augmented | Same | Yes | **No** — no documentary evidence in repo | BLOCKED for publication |
+| `landmark_ens_tcnm62_fp16.tflite` (832,888 B, `27058a85…`) | Same lineage, mirror-augmented | Same | Yes | **No** — no documentary evidence in repo | BLOCKED for publication |
+| `landmark_ens_rob71_fp16.tflite` (939,152 B, `08417e72…`) | Same lineage, stronger augmentation | Same | Yes | **No** — no documentary evidence in repo | BLOCKED for publication |
+| `models/hand_landmarker.task` (7,819,105 B, `fbc2a300…`) | Published by Google MediaPipe at `storage.googleapis.com/mediapipe-models/.../float16/1/hand_landmarker.task` | Apache-2.0 claimed in `NOTICE` §2 from MediaPipe terms; `mediapipe` 1.2.2 wheel carries `Apache License 2.0` text in `dist-info/licenses/LICENSE`. The **detector binary's own** licence file is not vendored in this repo. | Yes | Apache-2.0 permits redistribution **with attribution + licence text**; that attribution is not currently vendored alongside the file | PERMITTED with attribution (attribution not yet shipped) |
+| APK `app/android_final/app/build/outputs/apk/debug/app-debug.apk` (75,072,782 B, `041e163f…`) | Built from this repo; embeds all four ensemble members (`assets/landmark_ens_*.tflite`), `hand_landmarker.task`, and `landmark_labels.json` | Composite: MIT (repo code) + Apache-2.0 (MediaPipe JNI, detector) + unresolved (ensemble weights, labels) | Yes | **No** as built — it contains the four unresolved weight files and their vocabulary | BLOCKED for publication |
+| Release ZIP `evaluation/device/release_final2/echogesture_final2_ensemble.zip` (9,007,144 B, `34a0e667…`) | Built by `scripts/release/build_bundle.py` from this checkout; `official_submission: false` | Composite: MIT (repo code + docs) + Apache-2.0 (detector) + unresolved (four ensemble members, `landmark_labels.json`) | Yes | **No** — same four unresolved members and their vocabulary; no documentary evidence of permission | BLOCKED for publication |
+| ASL Citizen dataset (clips, split CSVs, landmark caches) | Microsoft Research | `NOTICE` §3: "Microsoft Research licence, non-commercial, no redistribution"; `README.md` §Licensing: "non-commercial … may not be redistributed". The upstream licence text is **not** vendored in the repo. | Yes, research/benchmarking only | **No** — not redistributable | BLOCKED; kept out of Git and out of the ZIP |
+| WLASL dataset (S3D baseline lineage) | WLASL authors | `NOTICE` §3 / `README.md`: C-UDA, academic / non-commercial; licence text **not** vendored | Yes, research | **No** | BLOCKED; S3D weights also unshipped by the ensemble build |
+| Training code (`scripts/ml/train.py`, `ensemble.py`, `evaluate.py`, landmark extraction) | Dev-authored | MIT per `LICENSE` (repo-authored code). **Not present on `hackathon/abhijeet-integration`** — it exists only on `origin/hackathon/dev-model`. | Yes | MIT permits redistribution **when present**; not in this branch's tree | PERMITTED (MIT) — absent from this branch |
+| Runtime + packaging code (`src/`, `scripts/release/`, `evaluation/device/`) | Repo-authored | MIT per `LICENSE` | Yes | Yes, under MIT | PERMITTED (MIT) |
 
----
+## Detail and evidence
 
-## 2. Shipped model artifacts
+### 1. The four TFLite ensemble members
 
-These are the four members the runtime actually loads. They are **not** the
-single `landmark_classifier_fp16.tflite` the older NOTICE documented.
+`NOTICE` §2 records each as "trained on ASL Citizen-derived data" with
+**"NO confirmed redistribution permission … LOCAL/PRIVATE only pending written
+authorization"**. `models/README.md` repeats `**no** (restricted)` for each.
+`docs/release/COMPLIANCE_FINAL.md` records the same as `NOT_CLEARED`.
 
-| Artifact | Bytes | Origin | Licence evidence | Internal use | Redistribution | Status |
-| --- | --: | --- | --- | --- | --- | --- |
-| `models/landmark_ens_tcn21_fp16.tflite` | 939,152 | Trained by Dev on ASL Citizen / WLASL-derived features | None in repo | yes | **no** | **NOT CLEARED** |
-| `models/landmark_ens_tcnm61_fp16.tflite` | 832,888 | same | None in repo | yes | **no** | **NOT CLEARED** |
-| `models/landmark_ens_tcnm62_fp16.tflite` | 832,888 | same | None in repo | yes | **no** | **NOT CLEARED** |
-| `models/landmark_ens_rob71_fp16.tflite` | 939,152 | same | None in repo | yes | **no** | **NOT CLEARED** |
-| `models/landmark_labels.json` | 1,492 | 100-gloss vocabulary we assembled | None in repo | yes | **no** | Follows the weights |
-| `models/hand_landmarker.task` | 7,819,105 | Google MediaPipe | Apache-2.0 per MediaPipe terms; upstream URL recorded in `NOTICE` | yes | attribution required | **CLEARED WITH ATTRIBUTION** |
+There is **no documentary evidence in this repo** — no signed permission, no
+written grant, no organizer clause — that these weight files may be published
+or included in a publicly distributed submission. The permission-request draft
+in `NOTICE` §2a is unsent; the "record the reply" instruction there is
+unfulfilled.
 
-The four ensemble members derive from ASL Citizen and WLASL, both of which carry
-academic / non-commercial restrictions. No written permission covers
-redistribution. They are therefore gitignored and excluded from every published
-commit and from the public branch.
+**Correction (2026-11-12).** An earlier version of this section said the weights
+lived only inside the submission ZIP and that the manifest recorded
+`"model_weights_published": false`. That was wrong: the repository is PUBLIC and
+`hackathon/dev-model` exposes all four ensemble members at byte-identical SHAs,
+plus the detector, the legacy INT8 classifier, and a 1,705-row CSV containing 11
+raw participant IDs. The manifest has been corrected.
 
-**Consequence, stated plainly:** the public repository is source-only. It is not
-a runnable package without the weights, and the submission must say so.
+So the weights are *not* merely inside the ZIP — they are publicly clonable from
+the repository today. See `docs/release/PUBLIC_WEIGHT_EXPOSURE.md` for the full
+inventory and the remediation options. Whether handing restricted weights to
+competition organizers counts as "redistribution" is still a question for the
+rights holder, but that is now a second problem, not the only one.
 
----
+### 2. `hand_landmarker.task`
 
-## 3. Datasets
+Apache-2.0 is claimed in `NOTICE` §2 and repeated in `models/README.md:25`. The
+supporting evidence available in-repo is the MediaPipe Python package's own
+bundled `LICENSE` (Apache License 2.0) in `mediapipe-1.2.2.dist-info/licenses/`.
+That establishes the library's licence, not conclusively the `.task` model
+binary's. `NOTICE` itself flags "Re-verify current MediaPipe terms and carry the
+upstream attribution + source URL at submission."
 
-| Artifact | Origin | Licence | Internal use | Redistribution | Status |
-| --- | --- | --- | --- | --- | --- |
-| ASL Citizen clips | ASL Citizen (2023) | academic, signer-consented for research | yes | **no** | **NOT CLEARED** |
-| WLASL clips | WLASL | C-UDA academic / non-commercial | yes | **no** | **NOT CLEARED** |
-| Rendered HUD frames (`evaluation/device/demo_final/*.png`) | Our renderer over the above clips | inherits the dataset terms | yes | **no** | **EXCLUDED** — gitignored |
+Apache-2.0 requires the licence text and NOTICE attribution to travel with a
+redistributed binary. **No `NOTICE`/`LICENSE` copy is currently staged inside
+the release ZIP or the APK** — the ZIP contains `Dockerfile`, `release.json`,
+`models/`, `results/`, `scripts/`, `src/` only. This is a fixable gap
+(add the Apache-2.0 text + MediaPipe attribution to the bundle), not an
+unresolved-rights problem.
 
-The HUD frames are pictures of real participants. They are ignored by
-`.gitignore` and were never committed.
+### 3. APK and release ZIP
 
----
+Both are composites. The repo's own code is MIT. Everything else inherits the
+status of its parts: the four ensemble members and `landmark_labels.json` are
+unresolved (section 1); the detector is Apache-2.0 (section 2). The APK also
+bundles `libmediapipe_tasks_vision_jni.so` in three ABIs, which is Apache-2.0
+like the Python wheel. Because the unresolved weights are inside both
+archives, **neither archive may be publicly redistributed** on the evidence
+currently in the repo.
 
-## 4. Built artifacts
+### 4. Datasets
 
-| Artifact | Contains | Can we distribute it? | Status |
-| --- | --- | --- | --- |
-| `evaluation/device/release_final2/echogesture_final2_ensemble.zip` (9,007,144 B, SHA-256 `34a0e667…`) | the four members + detector | **no** — bundles weights | private / local |
-| `app/android_final/…/app-debug.apk` (75,072,782 B) | same weights as assets | **no** | private / local |
+ASL Citizen and WLASL are recorded in `NOTICE` §3 and `README.md` §Licensing as
+non-commercial and non-redistributable. Neither upstream licence text is
+vendored. Raw clips and landmark caches are correctly kept outside Git and
+outside the ZIP (`build_bundle.py` stages an explicit allowlist rooted at
+`src/ models/ scripts/ evaluation/`, and the clip data directories are not on
+that list). Per-participant rows remain a separate open item flagged in
+`COMPLIANCE_AUDIT.md` C5.
 
-Both are held locally. Neither is on the public branch. `results/results.csv`,
-`results/predictions.jsonl` and all markdown are publishable — they contain
-numbers, not weights.
+### 5. Training code
 
----
+`LICENSE` is MIT over repo-authored code, which is sufficient documentary
+evidence that the training code *may* be redistributed under MIT. Two caveats
+recorded as fact: (a) `scripts/ml/train.py` and the full training pipeline are
+**not on this branch** — only `scripts/ml/export_tflite_tf.py` is; they exist on
+`origin/hackathon/dev-model`; (b) the MIT grant covers the code, not the
+weights it produced.
 
-## 5. What the submission says about this
+## What is deliberately not claimed
 
-The honest position, already in the deck and the README:
+- No artifact is labelled "MIT" except repo-authored code.
+- No redistribution right is asserted for any weight file or dataset.
+- No organizer approval or target-device certification is implied.
+- Where the repo lacks evidence, this document says so rather than inferring a
+  permission from the file being present.
 
-- The repository link is offered as **source code for review**, not as a
-  complete runnable artifact.
-- Weights are supplied separately if the organizer requires a runnable package,
-  subject to whatever permission Dev can obtain from the data rights holders.
-- No licence is claimed that we do not hold.
+## Open actions (owner: Abhijeet, unless noted)
 
-## 6. What would change a status
-
-Only written permission from the ASL Citizen and WLASL rights holders, or
-explicit organizer guidance that the competition's own terms cover the derived
-weights. Neither exists in this repository as of 2026-11-11.
-
-This is `WAITING_FOR_PERMISSION`, owned by Dev, and it does not block
-submission — it blocks only publishing the weights.
+1. Send the `NOTICE` §2a permission request; record any written reply, its
+   date and its exact scope here and in `NOTICE`.
+2. Vendor the Apache-2.0 licence text and MediaPipe attribution into the release
+   bundle and APK, or confirm the organizer accepts a linked NOTICE.
+3. Decide repo visibility for `hackathon/abhijeet-public`: a public link exposes
+   the unresolved weights (`COMPLIANCE_FINAL.md` marks this BLOCKED).
+4. Resolve the tracked per-participant CSV (`COMPLIANCE_AUDIT.md` C5).

@@ -120,40 +120,76 @@ class EnsembleRuntimeParityTest {
         )
     }
 
+    /**
+     * Source-only vocabulary check. Reads `models/landmark_labels.json`, parses
+     * it through the production vocabulary logic ([ModelContract.parseLabels]),
+     * and requires the result to be exactly the frozen class axis the parity
+     * fixture was produced against.
+     *
+     * This deliberately loads NO model weights: the vocabulary is the one piece
+     * of the runtime contract that is fully readable from source, so it must be
+     * verified on every checkout, including one that has no weights at all. It
+     * never skips — a missing or moved labels file is a failure, not an
+     * "unavailable".
+     */
     @Test
-    fun fixtureVocabularyMatchesTheShippedLabels() {
-        // The fixture's vocabulary is the class axis the Python path used. When
-        // the real labels asset is present, it must agree exactly.
-        var dir = java.io.File(".").absoluteFile
-        var found: java.io.File? = null
-        repeat(6) {
-            val candidate = java.io.File(dir, "models")
-            // ModelContract.load reads EVERY member listed in the meta sidecar,
-            // so a directory holding the labels but not the weights throws
-            // FileNotFoundException instead of reaching the assumeTrue skip.
-            // Treat the directory as usable only when the whole declared set is
-            // there. Parsing the sidecar keeps this independent of the member
-            // list, which changed once already.
-            val meta = java.io.File(candidate, ModelContract.META_ASSET)
-            val labels = java.io.File(candidate, ModelContract.LABELS_ASSET)
-            if (labels.isFile && meta.isFile) {
-                val declared = Regex("\"([^\"]+\\.tflite)\"")
-                    .findAll(meta.readText()).map { it.groupValues[1] }.toList()
-                if (declared.isNotEmpty() &&
-                    declared.all { java.io.File(candidate, it).isFile }
-                ) found = candidate
-            }
-            dir = dir.parentFile ?: dir
-        }
-        org.junit.Assume.assumeTrue(
-            "model assets not present from CWD; skipping vocabulary cross-check", found != null
+    fun shippedVocabularyMatchesTheFrozenClassAxis() {
+        val labelsFile = findRepoFile("models/${ModelContract.LABELS_ASSET}")
+        val parsed = ModelContract.parseLabels(labelsFile.readText(Charsets.UTF_8))
+
+        // Contiguous indices 0..99: the class axis the model scores over.
+        assertEquals("vocabulary size", 100, parsed.size)
+        assertEquals(
+            "vocabulary labels must be unique",
+            parsed.size,
+            parsed.toSet().size
         )
-        val assets = found!!
-        val loaded = ModelContract.load(
-            ModelContract.AssetSource { n -> java.io.File(assets, n).readBytes() }
-        )
+
+        // The frozen reference: the class axis the parity fixtures were made on.
         val l = lines()
-        val vocabulary = l[7 + l[0].split(' ')[0].toInt()].trim().split(' ')
-        assertEquals(loaded.labels, vocabulary)
+        val classes = l[0].split(' ')[1].toInt()
+        val fixtureVocabulary = l[7 + l[0].split(' ')[0].toInt()].trim().split(' ')
+        assertEquals("fixture vocabulary size", 100, classes)
+        assertEquals(
+            "shipped labels must equal the frozen class axis, in order",
+            fixtureVocabulary,
+            parsed
+        )
+
+        // The fixture pins index 8 as WHATFOR1; a re-ordered labels file would
+        // change the meaning of every index the model emits.
+        assertEquals("WHATFOR1", parsed[8])
+    }
+
+    /**
+     * A labels file whose indices are not a permutation of 0..99 is rejected,
+     * not silently re-sorted. Reads no weights.
+     */
+    @Test
+    fun vocabularyWithADuplicateOrMissingIndexIsRejected() {
+        val dup = """{"A":0,"B":0}"""
+        val gap = """{"A":0,"B":2}"""
+        for (json in listOf(dup, gap)) {
+            val err = runCatching { ModelContract.parseLabels(json) }.exceptionOrNull()
+            assertTrue(
+                "malformed vocabulary must fail, got $err for $json",
+                err is IllegalStateException
+            )
+        }
+    }
+
+    private fun findRepoFile(relative: String): java.io.File {
+        // Gradle runs unit tests with the module directory as CWD
+        // (app/android_final/app), so the repo root is a few levels up.
+        var dir = java.io.File(".").absoluteFile
+        repeat(6) {
+            val candidate = java.io.File(dir, relative)
+            if (candidate.isFile) return candidate
+            dir = dir.parentFile ?: return@repeat
+        }
+        throw AssertionError(
+            "$relative was not found from ${java.io.File(".").absolutePath}. It is " +
+                "tracked source and must be present on every checkout."
+        )
     }
 }

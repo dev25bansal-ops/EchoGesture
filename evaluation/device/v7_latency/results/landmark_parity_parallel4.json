@@ -1,0 +1,186 @@
+{
+  "clips": [
+    {
+      "clip_id": "6523145816470133-WHAT FOR",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "6961575623504714-SHAVE",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "15347326711184706-NOON",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "9990244640190733-BACKPACK",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "7629092396207264-MAPLE",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "5784034175717614-EASY",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "4254167262351618-CHEW 2",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "6142521746642153-WHAT FOR",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "5004269948712425-SOCCER 2",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "7713194149900888-CEMETERY",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "9336391016353045-FLIP",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "3191470037860531-8 HOUR",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "647818976594698-BABY 2",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "7355641552290353-MECHANIC",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "6987156871330971-BEE",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "7873618416168222-TICKLE",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "0283886564670357-WHAT FOR",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "4481998873282871-PONDER",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "697572736827275-COMB",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "5008852988399453-MYSELF",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "6495415212975224-UNDERWEAR",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "25500869855740893-ANYONE",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "8213787748653953-PENNY",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "3738312466703404-TEACH",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "8581142177964065-AXE",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "6416983573445294-SHAVE",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "032677896012150764-WHAT FOR",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "17092802473126545-SQUEEZE",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "8166700420399404-CHEEK",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "clip_id": "9474917526716478-BASKETBALL",
+      "identical_landmarks": true,
+      "identical_present": true,
+      "max_abs_diff": 0.0
+    }
+  ],
+  "n_identical": 30,
+  "n_total": 30
+}

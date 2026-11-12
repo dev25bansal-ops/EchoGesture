@@ -1,0 +1,10 @@
+{
+ "adb": [],
+ "gradle": [],
+ "sdkmanager": [],
+ "emulator": [],
+ "sdk_dir": "False",
+ "android_home": "unset",
+ "java_home": "unset",
+ "studio_jbr": []
+}

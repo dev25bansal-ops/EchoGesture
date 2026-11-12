@@ -1,0 +1,97 @@
+{
+  "repo_head": "f81dd30c3e6dc1fc035244c5ca9791e7a84da0c4",
+  "assets": {
+    "fp16": {
+      "path": "models/landmark_classifier_fp16.tflite",
+      "sha256": "a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4",
+      "bytes": 832888
+    },
+    "int8": {
+      "path": "models/landmark_classifier_int8.tflite",
+      "sha256": "9d24640a23244a3cd00c9fa62257733819f86ed1da5a10194c9b1cb64323700b",
+      "bytes": 509720
+    },
+    "detector": {
+      "path": "models/hand_landmarker.task",
+      "sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1",
+      "bytes": 7819105
+    },
+    "labels": {
+      "path": "models/landmark_labels.json",
+      "sha256": "e78f5028e97e2eaf86aff65af403af65061eebef010f0fbd41012293e8019a4a",
+      "bytes": 1492
+    },
+    "meta": {
+      "path": "models/landmark_model_meta.json",
+      "sha256": "7f189a16f4d175042b5481afb973217fc21410832ebd14c5bacf2f516473947e",
+      "bytes": 123
+    },
+    "features": {
+      "path": "src/features.py",
+      "sha256": "baf28d05bbd36e2783ea7ef6f78e793b89ed832d0eaad5dffed23d35c775aa84",
+      "bytes": 8312
+    },
+    "frontend": {
+      "path": "src/landmark_frontend.py",
+      "sha256": "c73ef64b72f21a86638c4a126ad642b64c4ee29851cd2f8fd8ea4ed516fa97b0",
+      "bytes": 6633
+    },
+    "exporter": {
+      "path": "scripts/ml/export_tflite_tf.py",
+      "sha256": "8abdb6368748babdbf3a74351fe15b8fb8da3348de60dd1a387da51364e96e5f",
+      "bytes": 5582
+    },
+    "runtime": {
+      "path": "src/main.py",
+      "sha256": "c695d78b1b1980e3b95b5357e0549385638eda3274a76eba479c6f3dcddf8141",
+      "bytes": 10154
+    }
+  },
+  "paired_evidence": {
+    "summary": {
+      "path": "evaluation/device/v5_accuracy/results/val_346/summary.json",
+      "sha256": "1ef28344e0684c46dd2422df2e96f1f1f55e4c277bca73a8dda76eec54992657"
+    },
+    "predictions": {
+      "path": "evaluation/device/v5_accuracy/results/val_346/predictions.json",
+      "sha256": "8d980fbe5ae41613b578f411855e0d1d96e4ac178ac5a84d9aae5f1a65546555"
+    },
+    "manifest": {
+      "path": "evaluation/device/v5_accuracy/data/val_346/clips/fetched_manifest.csv",
+      "sha256": "3f06798af00e69314da87414bf0c39bb2ec49e578f560c111754fa00966f6c82"
+    }
+  },
+  "real_clip_ids": [
+    "3006731850276776-CHEEK",
+    "946511360551606-ELEVATOR",
+    "8166700420399404-CHEEK",
+    "5989539775823847-INTUITIVE"
+  ],
+  "frozen_contract": {
+    "input_shape": [1, 24, 255],
+    "input_dtype": "float32",
+    "output_shape": [1, 100],
+    "output_dtype": "float32",
+    "output_semantics": "logits; apply softmax for confidence",
+    "frames": 24,
+    "feature_dim": 255,
+    "classes": 100,
+    "feature_sha256": "baf28d05bbd36e2783ea7ef6f78e793b89ed832d0eaad5dffed23d35c775aa84",
+    "labels_sha256": "e78f5028e97e2eaf86aff65af403af65061eebef010f0fbd41012293e8019a4a",
+    "coordinate_convention": "MediaPipe normalized x/y in [0,1]; z dropped; canonical [Left, Right] slots",
+    "missing_hand_policy": "explicit per-hand presence flags; absent hand is zeros plus flag; inter-hand features zero when either hand absent",
+    "sampling": "read_frames samples 32 frames evenly across the whole clip, resized 256x256 RGB; build_features linearly resamples to 24"
+  },
+  "calibration_code_audit": {
+    "exporter_representative_set": "X[:300] from .scratch/landmarks/val after build_features(expected_frames=frames); entry skips clips whose max present < 0.5; this is the official val split, not training",
+    "exporter_accuracy_gate": "drop = 0.0 is hardcoded, so the stated >15pp rejection condition is unreachable",
+    "exporter_accuracy_populations": "int8_acc is computed over all X, while pt_acc is computed over the first 200 rows; the two values are not paired",
+    "exporter_calibration_ordering": "files are sorted by path, then truncated to 300; no per-signer, per-gloss, hand-coverage stratification or shuffling",
+    "exporter_input_quantization_note": "the converter sets float32 input/output, so the interpreter applies an internal QUANTIZE; src/main.py's external q_tensor branch is unused for this artifact",
+    "missing_hand_coverage": "clips with zero hand frames are skipped from calibration; partially missing-hand clips are included only if their maximum presence exceeds 0.5",
+    "no_calibration_artifact_in_checkout": "the checkpoint, calibration tensor list, and alternate INT8 candidate are absent; the shipped INT8 bytes cannot be reproduced or replaced here",
+    "second_exporter_exists": "scripts/ml/export_int8.py exists on origin/hackathon/dev-model and writes the same output path via onnxruntime static quantization (per-channel QDQ, calib.pt or synthetic fallback); both exporters target models/landmark_classifier_int8.tflite, so provenance must be stated explicitly",
+    "meta_discrepancy": "the shipped landmark_model_meta.json contains quantization:'float16' and lacks val_top1_int8/size_kb, matching neither export_tflite_tf.py nor export_int8.py output; treat the shipped meta as hand-augmented until Dev confirms provenance",
+    "source": "scripts/ml/export_tflite_tf.py at the pinned SHA"
+  }
+}

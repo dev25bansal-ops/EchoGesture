@@ -1,0 +1,20 @@
+# Keep model binaries in the repository's existing models/ directory. The
+# documented local copy step places them here only for packaging.
+app/src/main/assets/hand_landmarker.task
+app/src/main/assets/landmark_classifier_fp16.tflite
+app/src/main/assets/landmark_labels.json
+app/src/main/assets/landmark_model_meta.json
+
+# Build outputs and local machine config
+.gradle/
+build/
+app/build/
+.cxx/
+local.properties
+*.apk
+*.aab
+*.jks
+*.keystore
+
+# Do NOT ignore gradle/wrapper/gradle-wrapper.jar and gradlew once generated:
+# a committed wrapper is what makes `./gradlew :app:assembleDebug` reproducible.

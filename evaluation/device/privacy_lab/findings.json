@@ -1,0 +1,122 @@
+{
+  "root": "/private/tmp/echogesture-agents/A15",
+  "files_scanned": 55,
+  "pass": 5,
+  "fail": 7,
+  "not_cleared": 1,
+  "findings": [
+    {
+      "check": "P1-absolute-paths",
+      "status": "FAIL",
+      "detail": "11 absolute-path literal(s). Shipped code must use Path(__file__)-relative roots; research scripts may carry local paths but must not ship as evaluator entry points.",
+      "where": [
+        "docs/release/COMPLIANCE_AUDIT.md:31: | C10 | Absolute paths in code | PASS (research-only) | `C:\\Users\\dev25\\…` site-packages a",
+        "docs/release/COMPLIANCE_AUDIT.md:63: | D4 | Low | `D4-temp-dir-shared` | Temp capture `echogesture-capture-*.mp4` lands in the ",
+        "evaluation/eval_wlasl_signers.py:2: sys.path.append(r\"C:\\Users\\dev25\\AppData\\Roaming\\Python\\Python312\\site-packages\")",
+        "evaluation/eval_asl_citizen.py:16: sys.path.append(r\"C:\\Users\\dev25\\AppData\\Roaming\\Python\\Python312\\site-packages\")",
+        "evaluation/device/privacy_lab/reproductions.json:2: \"root\": \"/private/tmp/echogesture-agents/A15\",",
+        "evaluation/device/privacy_lab/reproductions.json:7: \"evidence\": \"raised='ValueError: Could not open video: /var/folders/d5/ntnmmx2d13qf'; work",
+        "evaluation/device/privacy_lab/reproductions.json:12: \"evidence\": \"resolved=/var/folders/d5/ntnmmx2d13qfwk5xk4f7bnd40000gn/T/tmppeouphxi/sub/../",
+        "evaluation/device/privacy_lab/reproductions.json:22: \"evidence\": \"temp=/var/folders/d5/ntnmmx2d13qfwk5xk4f7bnd40000gn/T/echogesture-capture-pj3",
+        "evaluation/device/privacy_lab/findings.json:2: \"root\": \"/private/tmp/echogesture-agents/A15\",",
+        "evaluation/device/privacy_lab/findings.json:15: \"evaluation/device/privacy_lab/findings.json:2: \\\"root\\\": \\\"/private/tmp/echogesture-agent",
+        "evaluation/device/privacy_lab/findings.json:16: \"evaluation/device/privacy_lab/findings.json:15: \\\"evaluation/device/privacy_lab/findings."
+      ]
+    },
+    {
+      "check": "P2-secrets",
+      "status": "PASS",
+      "detail": "Hardcoded credential patterns ('secretary' vocab label excluded as a false-positive substring match).",
+      "where": []
+    },
+    {
+      "check": "P3-network-sinks",
+      "status": "PASS",
+      "detail": "Shipped src/app network sinks: 0. Research-only network fetchers (expected, keep out of submission ZIP): 4.",
+      "where": [
+        "evaluation/eval_asl_citizen.py:13: import urllib.request",
+        "evaluation/eval_asl_citizen.py:31: with urllib.request.urlopen(req, timeout=120) as r:",
+        "evaluation/device/fetch_smoke_clip.py:9: import urllib.request",
+        "evaluation/device/fetch_smoke_clip.py:19: with urllib.request.urlopen(request, timeout=120) as response:"
+      ]
+    },
+    {
+      "check": "P5-tracked-media",
+      "status": "PASS",
+      "detail": "Tracked video/cache files: none. .gitignore missing entries: ['*.mp4', '.scratch/', '*.npz']. NOTE: isolated audit copy has no .gitignore (original checkout does); verify in original.",
+      "where": []
+    },
+    {
+      "check": "P6-bundle-allowlist",
+      "status": "PASS",
+      "detail": "build_bundle.py restricts --extra artifacts to src/models/scripts/evaluation. Research fetchers under evaluation/ are still IN the allowlist: they must be excluded by not passing them as --extra, or by widening the check so the submission ZIP cannot carry ASL Citizen download code. ZIP ships only src/main.py + requirements + README + explicit --extra + model/labels/results + generated Dockerfile.",
+      "where": []
+    },
+    {
+      "check": "P7-robustness-temp-cleanup",
+      "status": "FAIL",
+      "detail": "evaluation/device/robustness.py: shutil.rmtree(workdir) is NOT in a try/finally. A decode/write failure mid-loop leaves corrupted derivative clips in <output-dir>/work/. Reproduced: paired_evaluate on an unreadable clip raises ValueError and the work dir remains. HANDOFF: wrap loop in try/finally (owned by Abhijeet's eval code).",
+      "where": [
+        "evaluation/device/robustness.py:45"
+      ]
+    },
+    {
+      "check": "P7-manifest-containment",
+      "status": "FAIL",
+      "detail": "evaluation/device/run_manifest.py:read_manifest resolves relative clip paths from the manifest dir but allows '../' and absolute paths pointing anywhere on disk (no containment check). Low risk (local evaluator, operator-supplied manifest) but a crafted manifest can pull clips from outside the dataset dir. Reproduced: 'c1,../outside.mp4' is accepted. HANDOFF: add containment check or document it as a deliberate operator capability.",
+      "where": [
+        "evaluation/device/run_manifest.py:82-86"
+      ]
+    },
+    {
+      "check": "P9-evidence-hostname-leak",
+      "status": "FAIL",
+      "detail": "evaluation/device/run_manifest.py writes platform.node() as 'device_model' plus absolute resolved paths for every artifact into benchmark.json. If that file is pasted into results/notes or submitted, it discloses the operator's hostname and local paths. HANDOFF: use a generic device label and repo-relative paths for any evidence that leaves the machine.",
+      "where": [
+        "evaluation/device/run_manifest.py:324-334"
+      ]
+    },
+    {
+      "check": "P4-retention-wording",
+      "status": "PASS",
+      "detail": "app/offline_demo.py: NamedTemporaryFile(delete=False) temp becomes unlink(missing_ok=True) in finally -> file deleted on success AND on predictor exception (verified; the only leak is SIGKILL/machine crash, which no user-space code can clean). Frames remain in RAM (deque + list copy) and are freed on submit/clear but not explicitly scrubbed. Wording 'no footage retained' would be more honest as 'no footage is kept on disk after each capture; frames are held in memory only during inference'. The on-disk claim holds.",
+      "where": [
+        "app/offline_demo.py:50-78"
+      ]
+    },
+    {
+      "check": "P4b-temp-dir",
+      "status": "FAIL",
+      "detail": "Temp clips are created in the shared system temp dir with a predictable prefix 'echogesture-capture-*.mp4' (tempfile gives 0600 + O_EXCL, so predictable-name attack is blocked, but the file is still world-listable by name in /tmp and same-user processes can open it). Prefer a private subdir (tempfile.mkdtemp, 0700) or TMPDIR with restricted permissions for any release build. HANDOFF if demo is reworked.",
+      "where": [
+        "app/offline_demo.py:59"
+      ]
+    },
+    {
+      "check": "P8-license-file",
+      "status": "FAIL",
+      "detail": "No LICENSE file in repo root. README.md:167-172 states 'Our code and harnesses: MIT' but there is no LICENSE text to bind that statement, and no per-asset licence/attribution file for hand_landmarker.task (MediaPipe, Apache-2.0) or the S3D weights. Do not label the release 'MIT' without adding the licence text.",
+      "where": []
+    },
+    {
+      "check": "P8-models",
+      "status": "NOT_CLEARED",
+      "detail": "models/ contains 4 .tflite + hand_landmarker.task + 3 .json. Trained Dev landmark classifier (fp16/int8, ASL Citizen-derived) carries the ASL Citizen research-licence context: evaluation, not redistribution, of the dataset is permitted but weights trained on it must not be over-claimed as freely licensable or commercially shippable. Verify Organizer + licence review before shipping any trained weight; match the model's vocab (landmark_ labels) to the packaged label file. hand_landmarker.task is a Google MediaPipe asset (Apache-2.0 per MediaPipe terms; verify current terms and add attribution) - checked-in blob must carry its provenance. S3D ptq/qat weights: README attributes MIT to Kimpinde & Olukanmi (Algorithms 2026); confirm the licence text ships with the weights and that WLASL C-UDA restrictions do not reattach - the weights were trained on WLASL, which README itself says cannot be shipped commercially.",
+      "where": [
+        "models/hand_landmarker.task",
+        "models/landmark_classifier_fp16.tflite",
+        "models/landmark_classifier_int8.tflite",
+        "models/ptq_100_int8.tflite",
+        "models/s3d_conv1d_qat_int8.tflite"
+      ]
+    },
+    {
+      "check": "P8-research-data",
+      "status": "FAIL",
+      "detail": "evaluation/asl_citizen_predictions.csv (1706 lines, participant IDs P15-style) is tracked in Git. As derived evaluation output it is low-risk, but participant IDs are personal-adjacent metadata: confirm ASL Citizen terms allow redistribution of per-participant result rows, or strip participant IDs before submission. Raw clips correctly stay outside Git (fetch_*.py write to operator-chosen output dirs); there is no .gitignore in this audit copy - confirm the original retains *.mp4/.scratch exclusions.",
+      "where": [
+        "evaluation/asl_citizen_predictions.csv"
+      ]
+    }
+  ]
+}

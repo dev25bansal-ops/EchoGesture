@@ -1,0 +1,11 @@
+metric,target,measured,unit,device,runtime,pass,notes
+top1_accuracy,>=70,NOT_MEASURED,%,unavailable,unavailable,NOT_MEASURED,No representative labelled validation run supplied
+latency_p95,<50,NOT_MEASURED,ms,unavailable,unavailable,NOT_MEASURED,No representative target-device run supplied
+model_size,<20,NOT_MEASURED,MB,unavailable,unavailable,NOT_MEASURED,Classifier and detector bytes must be included in final accounting
+accuracy_drop_occlusion,<=5,NOT_MEASURED,pt,unavailable,unavailable,NOT_MEASURED,No representative paired robustness run supplied
+accuracy_drop_low_light,<=5,NOT_MEASURED,pt,unavailable,unavailable,NOT_MEASURED,No representative paired robustness run supplied
+accuracy_drop_blur,<=5,NOT_MEASURED,pt,unavailable,unavailable,NOT_MEASURED,No representative paired robustness run supplied
+accuracy_drop_crop,<=5,NOT_MEASURED,pt,unavailable,unavailable,NOT_MEASURED,No representative paired robustness run supplied
+accuracy_drop_frame_drop,<=5,NOT_MEASURED,pt,unavailable,unavailable,NOT_MEASURED,No representative paired robustness run supplied
+avg_power,<=500,NOT_MEASURED,mW,unavailable,unavailable,NOT_MEASURED,No physical-device measurement supplied
+thermal_drift_10min,<=20,NOT_MEASURED,%,unavailable,unavailable,NOT_MEASURED,No sustained 10-minute physical-device run supplied

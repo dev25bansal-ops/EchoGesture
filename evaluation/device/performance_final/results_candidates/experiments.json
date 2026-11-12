@@ -1,0 +1,2696 @@
+{
+  "git_head": "efaa3231110cfd9e7fb859925dac78cae75a620d",
+  "clip_dir": "$REPO/evaluation/device/v5_accuracy/data/val_30",
+  "clip_count": 12,
+  "clips": [
+    "0283886564670357-WHAT FOR.mp4",
+    "032677896012150764-WHAT FOR.mp4",
+    "15347326711184706-NOON.mp4",
+    "17092802473126545-SQUEEZE.mp4",
+    "25500869855740893-ANYONE.mp4",
+    "3191470037860531-8 HOUR.mp4",
+    "3738312466703404-TEACH.mp4",
+    "4254167262351618-CHEW 2.mp4",
+    "4481998873282871-PONDER.mp4",
+    "5004269948712425-SOCCER 2.mp4",
+    "5008852988399453-MYSELF.mp4",
+    "5784034175717614-EASY.mp4"
+  ],
+  "variants": [
+    "baseline_4",
+    "mirror_4",
+    "pipeline_4",
+    "pipeline_8",
+    "pipeline_12",
+    "workers_8",
+    "workers_12",
+    "workers_16"
+  ],
+  "control": "mirror_4",
+  "rounds": 3,
+  "runs": {
+    "baseline_4": {
+      "variant": "baseline_4",
+      "config": {
+        "workers": 4
+      },
+      "kind": "predict",
+      "env": {
+        "ECHOGESTURE_TRACKER": "parallel",
+        "ECHOGESTURE_WORKERS": "4",
+        "OPENBLAS_NUM_THREADS": null
+      },
+      "warm": {
+        "count": 36,
+        "p50_ms": 105.25335399870528,
+        "p95_ms": 147.21540625214402,
+        "min_ms": 81.2099169997964,
+        "max_ms": 156.79537499818252,
+        "mean_ms": 110.91776274952281
+      },
+      "peak_rss_mib": 409.984375,
+      "records": [
+        {
+          "clip": "0283886564670357-WHAT FOR.mp4",
+          "ms": 92.63866699620849,
+          "prediction": "WHATFOR1",
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "KNIGHT1",
+            "SCROLLDOWN",
+            "DECIDE1"
+          ],
+          "confidence": 0.8821,
+          "stages": {
+            "model_initialization": 0.107708,
+            "video_open_decode": 25.4455,
+            "landmark_tracking": 66.493625,
+            "feature_preparation": 0.182792,
+            "model_inference": 0.325709,
+            "output_postprocessing": 0.357542
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "032677896012150764-WHAT FOR.mp4",
+          "ms": 102.67662499973085,
+          "prediction": "WHATFOR1",
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "DEAF1",
+            "TAIL1",
+            "ANYONE"
+          ],
+          "confidence": 0.2843,
+          "stages": {
+            "model_initialization": 0.090833,
+            "video_open_decode": 18.379542,
+            "landmark_tracking": 83.576708,
+            "feature_preparation": 0.20425,
+            "model_inference": 0.33675,
+            "output_postprocessing": 0.369125
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "15347326711184706-NOON.mp4",
+          "ms": 100.47508400020888,
+          "prediction": "BREAKFAST1",
+          "top5": [
+            "BREAKFAST1",
+            "NOON1",
+            "AUTISM1",
+            "BEE1",
+            "GUESS1"
+          ],
+          "confidence": 0.1221,
+          "stages": {
+            "model_initialization": 0.077167,
+            "video_open_decode": 17.718834,
+            "landmark_tracking": 81.709292,
+            "feature_preparation": 0.205667,
+            "model_inference": 0.668917,
+            "output_postprocessing": 0.706667
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "17092802473126545-SQUEEZE.mp4",
+          "ms": 105.15899999882095,
+          "prediction": "SQUEEZE",
+          "top5": [
+            "SQUEEZE",
+            "SOCCER2",
+            "SCROLLDOWN",
+            "CHEESEGRATER",
+            "ADVERTISE"
+          ],
+          "confidence": 0.1164,
+          "stages": {
+            "model_initialization": 0.086417,
+            "video_open_decode": 18.8985,
+            "landmark_tracking": 85.37575,
+            "feature_preparation": 0.277084,
+            "model_inference": 0.407583,
+            "output_postprocessing": 0.459708
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "25500869855740893-ANYONE.mp4",
+          "ms": 105.34770799858961,
+          "prediction": "ANYONE",
+          "top5": [
+            "ANYONE",
+            "PATIENT2",
+            "SOCIETY",
+            "ALLOFSUDDEN",
+            "OFFEND"
+          ],
+          "confidence": 0.7422,
+          "stages": {
+            "model_initialization": 0.127458,
+            "video_open_decode": 21.745958,
+            "landmark_tracking": 82.559709,
+            "feature_preparation": 0.425291,
+            "model_inference": 0.387875,
+            "output_postprocessing": 0.424459
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "3191470037860531-8 HOUR.mp4",
+          "ms": 136.59999999799766,
+          "prediction": "8HOUR",
+          "top5": [
+            "8HOUR",
+            "MAPLE",
+            "ELEVATOR1",
+            "BEE1",
+            "DOG1"
+          ],
+          "confidence": 0.3192,
+          "stages": {
+            "model_initialization": 0.110916,
+            "video_open_decode": 20.03825,
+            "landmark_tracking": 115.708208,
+            "feature_preparation": 0.270042,
+            "model_inference": 0.377833,
+            "output_postprocessing": 0.413542
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "3738312466703404-TEACH.mp4",
+          "ms": 131.1487080020015,
+          "prediction": "TEACH1",
+          "top5": [
+            "TEACH1",
+            "CHEER",
+            "HALLOWEEN1",
+            "DECIDE1",
+            "PARTY1"
+          ],
+          "confidence": 0.4715,
+          "stages": {
+            "model_initialization": 0.140667,
+            "video_open_decode": 18.216042,
+            "landmark_tracking": 110.833,
+            "feature_preparation": 0.618875,
+            "model_inference": 1.115709,
+            "output_postprocessing": 1.244375
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "4254167262351618-CHEW 2.mp4",
+          "ms": 148.7706249972689,
+          "prediction": "CHEW1",
+          "top5": [
+            "CHEW1",
+            "PATIENT2",
+            "BASEBALLCAP",
+            "TAIL1",
+            "ANYONE"
+          ],
+          "confidence": 0.5242,
+          "stages": {
+            "model_initialization": 0.145625,
+            "video_open_decode": 35.706875,
+            "landmark_tracking": 112.037458,
+            "feature_preparation": 0.275042,
+            "model_inference": 0.462125,
+            "output_postprocessing": 0.502375
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "4481998873282871-PONDER.mp4",
+          "ms": 156.79537499818252,
+          "prediction": "PONDER",
+          "top5": [
+            "PONDER",
+            "AXE1",
+            "BACKPACK1",
+            "DARK1",
+            "JEWELRY"
+          ],
+          "confidence": 0.4829,
+          "stages": {
+            "model_initialization": 0.117291,
+            "video_open_decode": 41.716625,
+            "landmark_tracking": 114.157584,
+            "feature_preparation": 0.315792,
+            "model_inference": 0.386375,
+            "output_postprocessing": 0.420542
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "5004269948712425-SOCCER 2.mp4",
+          "ms": 113.54587499954505,
+          "prediction": "SOCCER2",
+          "top5": [
+            "SOCCER2",
+            "DEAF1",
+            "GOODYGOODYSHOEOPPOSITE",
+            "DECIDE1",
+            "MOVIE1"
+          ],
+          "confidence": 0.3957,
+          "stages": {
+            "model_initialization": 0.102208,
+            "video_open_decode": 20.314833,
+            "landmark_tracking": 92.420709,
+            "feature_preparation": 0.230458,
+            "model_inference": 0.385834,
+            "output_postprocessing": 0.42
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "5008852988399453-MYSELF.mp4",
+          "ms": 104.35712500475347,
+          "prediction": "PATIENT2",
+          "top5": [
+            "PATIENT2",
+            "MYSELF",
+            "CHEEK",
+            "ANYONE",
+            "KNIGHT1"
+          ],
+          "confidence": 0.4691,
+          "stages": {
+            "model_initialization": 0.087958,
+            "video_open_decode": 26.216292,
+            "landmark_tracking": 77.330541,
+            "feature_preparation": 0.213125,
+            "model_inference": 0.400125,
+            "output_postprocessing": 0.436125
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "5784034175717614-EASY.mp4",
+          "ms": 132.8136669981177,
+          "prediction": "EASY",
+          "top5": [
+            "EASY",
+            "DARK1",
+            "HOW1",
+            "KNIGHT1",
+            "CALENDAR1"
+          ],
+          "confidence": 0.9028,
+          "stages": {
+            "model_initialization": 0.119041,
+            "video_open_decode": 19.197292,
+            "landmark_tracking": 112.670458,
+            "feature_preparation": 0.337875,
+            "model_inference": 0.362166,
+            "output_postprocessing": 0.394291
+          },
+          "tensor_sha": null
+        }
+      ],
+      "clip_count": 12,
+      "round": 0,
+      "round_p50": [
+        109.44679149906733,
+        120.23441649944289,
+        89.20450000005076
+      ],
+      "round_p95": [
+        152.38176249768003,
+        146.61149809908238,
+        104.80489375004254
+      ]
+    },
+    "mirror_4": {
+      "variant": "mirror_4",
+      "config": {
+        "workers": 4,
+        "sample_frames": 32,
+        "size": 256
+      },
+      "kind": "mirror",
+      "env": {
+        "ECHOGESTURE_TRACKER": null,
+        "ECHOGESTURE_WORKERS": null,
+        "OPENBLAS_NUM_THREADS": null
+      },
+      "warm": {
+        "count": 36,
+        "p50_ms": 87.11920849964372,
+        "p95_ms": 104.24285450062598,
+        "min_ms": 77.63683299708646,
+        "max_ms": 112.42258299898822,
+        "mean_ms": 89.46111222212494
+      },
+      "peak_rss_mib": 439.3125,
+      "records": [
+        {
+          "clip": "0283886564670357-WHAT FOR.mp4",
+          "ms": 81.02008299465524,
+          "prediction": "WHATFOR1",
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "KNIGHT1",
+            "SCROLLDOWN",
+            "DECIDE1"
+          ],
+          "confidence": 0.882110595703125,
+          "tensor_sha": "8c42643554db7973",
+          "tensor_sum": 14.721639633178711,
+          "landmarks_sha": "55195d1f57a9b734",
+          "stages": {
+            "read_ms": 21.784542,
+            "detect_ms": 58.620583,
+            "features_ms": 0.185583,
+            "ensemble_ms": 0.336625
+          },
+          "real_prediction": "WHATFOR1",
+          "real_top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "KNIGHT1",
+            "SCROLLDOWN",
+            "DECIDE1"
+          ],
+          "mirror_matches_predict": true
+        },
+        {
+          "clip": "032677896012150764-WHAT FOR.mp4",
+          "ms": 89.9181659988244,
+          "prediction": "WHATFOR1",
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "DEAF1",
+            "TAIL1",
+            "ANYONE"
+          ],
+          "confidence": 0.2843070924282074,
+          "tensor_sha": "c3a1cb8908ff956e",
+          "tensor_sum": -62.38705825805664,
+          "landmarks_sha": "852d5b05ad11cca2",
+          "stages": {
+            "read_ms": 16.879542,
+            "detect_ms": 72.301542,
+            "features_ms": 0.222084,
+            "ensemble_ms": 0.411042
+          },
+          "real_prediction": "WHATFOR1",
+          "real_top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "DEAF1",
+            "TAIL1",
+            "ANYONE"
+          ],
+          "mirror_matches_predict": true
+        },
+        {
+          "clip": "15347326711184706-NOON.mp4",
+          "ms": 80.57533299870556,
+          "prediction": "BREAKFAST1",
+          "top5": [
+            "BREAKFAST1",
+            "NOON1",
+            "AUTISM1",
+            "BEE1",
+            "GUESS1"
+          ],
+          "confidence": 0.12205135077238083,
+          "tensor_sha": "94fe8234c8af4a55",
+          "tensor_sum": -159.78077697753906,
+          "landmarks_sha": "972ef27bd0344a20",
+          "stages": {
+            "read_ms": 14.997542,
+            "detect_ms": 64.9505,
+            "features_ms": 0.178375,
+            "ensemble_ms": 0.355209
+          },
+          "real_prediction": "BREAKFAST1",
+          "real_top5": [
+            "BREAKFAST1",
+            "NOON1",
+            "AUTISM1",
+            "BEE1",
+            "GUESS1"
+          ],
+          "mirror_matches_predict": true
+        },
+        {
+          "clip": "17092802473126545-SQUEEZE.mp4",
+          "ms": 84.22287500434322,
+          "prediction": "SQUEEZE",
+          "top5": [
+            "SQUEEZE",
+            "SOCCER2",
+            "SCROLLDOWN",
+            "CHEESEGRATER",
+            "ADVERTISE"
+          ],
+          "confidence": 0.11642233282327652,
+          "tensor_sha": "9909cc5cfddfb650",
+          "tensor_sum": -163.9489288330078,
+          "landmarks_sha": "8280418968ed98ad",
+          "stages": {
+            "read_ms": 14.57875,
+            "detect_ms": 69.00175,
+            "features_ms": 0.224625,
+            "ensemble_ms": 0.332708
+          },
+          "real_prediction": "SQUEEZE",
+          "real_top5": [
+            "SQUEEZE",
+            "SOCCER2",
+            "SCROLLDOWN",
+            "CHEESEGRATER",
+            "ADVERTISE"
+          ],
+          "mirror_matches_predict": true
+        },
+        {
+          "clip": "25500869855740893-ANYONE.mp4",
+          "ms": 77.63683299708646,
+          "prediction": "ANYONE",
+          "top5": [
+            "ANYONE",
+            "PATIENT2",
+            "SOCIETY",
+            "ALLOFSUDDEN",
+            "OFFEND"
+          ],
+          "confidence": 0.7421548366546631,
+          "tensor_sha": "81e770089479218e",
+          "tensor_sum": -145.3413848876953,
+          "landmarks_sha": "10abcac3be6ed96a",
+          "stages": {
+            "read_ms": 17.446875,
+            "detect_ms": 59.590708,
+            "features_ms": 0.181917,
+            "ensemble_ms": 0.329083
+          },
+          "real_prediction": "ANYONE",
+          "real_top5": [
+            "ANYONE",
+            "PATIENT2",
+            "SOCIETY",
+            "ALLOFSUDDEN",
+            "OFFEND"
+          ],
+          "mirror_matches_predict": true
+        },
+        {
+          "clip": "3191470037860531-8 HOUR.mp4",
+          "ms": 96.01341700181365,
+          "prediction": "8HOUR",
+          "top5": [
+            "8HOUR",
+            "MAPLE",
+            "ELEVATOR1",
+            "BEE1",
+            "DOG1"
+          ],
+          "confidence": 0.31917548179626465,
+          "tensor_sha": "40215546670d2662",
+          "tensor_sum": -214.07855224609375,
+          "landmarks_sha": "d96ec748db63c97f",
+          "stages": {
+            "read_ms": 14.831,
+            "detect_ms": 80.45175,
+            "features_ms": 0.238167,
+            "ensemble_ms": 0.402625
+          },
+          "real_prediction": "8HOUR",
+          "real_top5": [
+            "8HOUR",
+            "MAPLE",
+            "ELEVATOR1",
+            "BEE1",
+            "DOG1"
+          ],
+          "mirror_matches_predict": true
+        },
+        {
+          "clip": "3738312466703404-TEACH.mp4",
+          "ms": 84.07433299726108,
+          "prediction": "TEACH1",
+          "top5": [
+            "TEACH1",
+            "CHEER",
+            "HALLOWEEN1",
+            "DECIDE1",
+            "PARTY1"
+          ],
+          "confidence": 0.4714962840080261,
+          "tensor_sha": "0cf2df95e3431cff",
+          "tensor_sum": -465.4068908691406,
+          "landmarks_sha": "632e776167407096",
+          "stages": {
+            "read_ms": 14.231834,
+            "detect_ms": 69.160083,
+            "features_ms": 0.263792,
+            "ensemble_ms": 0.331375
+          },
+          "real_prediction": "TEACH1",
+          "real_top5": [
+            "TEACH1",
+            "CHEER",
+            "HALLOWEEN1",
+            "DECIDE1",
+            "PARTY1"
+          ],
+          "mirror_matches_predict": true
+        },
+        {
+          "clip": "4254167262351618-CHEW 2.mp4",
+          "ms": 98.0327919969568,
+          "prediction": "CHEW1",
+          "top5": [
+            "CHEW1",
+            "PATIENT2",
+            "BASEBALLCAP",
+            "TAIL1",
+            "ANYONE"
+          ],
+          "confidence": 0.52422034740448,
+          "tensor_sha": "080ee4906fdbc271",
+          "tensor_sum": -151.1184844970703,
+          "landmarks_sha": "903793725deff639",
+          "stages": {
+            "read_ms": 24.278208,
+            "detect_ms": 72.88125,
+            "features_ms": 0.297167,
+            "ensemble_ms": 0.414458
+          },
+          "real_prediction": "CHEW1",
+          "real_top5": [
+            "CHEW1",
+            "PATIENT2",
+            "BASEBALLCAP",
+            "TAIL1",
+            "ANYONE"
+          ],
+          "mirror_matches_predict": true
+        },
+        {
+          "clip": "4481998873282871-PONDER.mp4",
+          "ms": 98.33141700073611,
+          "prediction": "PONDER",
+          "top5": [
+            "PONDER",
+            "AXE1",
+            "BACKPACK1",
+            "DARK1",
+            "JEWELRY"
+          ],
+          "confidence": 0.4829208254814148,
+          "tensor_sha": "4faf079492d4525a",
+          "tensor_sum": -377.57061767578125,
+          "landmarks_sha": "e18cc7f3a14c040c",
+          "stages": {
+            "read_ms": 21.946083,
+            "detect_ms": 75.708,
+            "features_ms": 0.257667,
+            "ensemble_ms": 0.332125
+          },
+          "real_prediction": "PONDER",
+          "real_top5": [
+            "PONDER",
+            "AXE1",
+            "BACKPACK1",
+            "DARK1",
+            "JEWELRY"
+          ],
+          "mirror_matches_predict": true
+        },
+        {
+          "clip": "5004269948712425-SOCCER 2.mp4",
+          "ms": 81.79366699914681,
+          "prediction": "SOCCER2",
+          "top5": [
+            "SOCCER2",
+            "DEAF1",
+            "GOODYGOODYSHOEOPPOSITE",
+            "DECIDE1",
+            "MOVIE1"
+          ],
+          "confidence": 0.39567017555236816,
+          "tensor_sha": "af39a1836578f26f",
+          "tensor_sum": 13.356063842773438,
+          "landmarks_sha": "543b9e26d2830cc2",
+          "stages": {
+            "read_ms": 14.657584,
+            "detect_ms": 66.403333,
+            "features_ms": 0.224959,
+            "ensemble_ms": 0.4175
+          },
+          "real_prediction": "SOCCER2",
+          "real_top5": [
+            "SOCCER2",
+            "DEAF1",
+            "GOODYGOODYSHOEOPPOSITE",
+            "DECIDE1",
+            "MOVIE1"
+          ],
+          "mirror_matches_predict": true
+        },
+        {
+          "clip": "5008852988399453-MYSELF.mp4",
+          "ms": 82.62004199787043,
+          "prediction": "PATIENT2",
+          "top5": [
+            "PATIENT2",
+            "MYSELF",
+            "CHEEK",
+            "ANYONE",
+            "KNIGHT1"
+          ],
+          "confidence": 0.46905717253685,
+          "tensor_sha": "20f8c938a7f1543e",
+          "tensor_sum": -30.915283203125,
+          "landmarks_sha": "be5ce999f415d611",
+          "stages": {
+            "read_ms": 21.150459,
+            "detect_ms": 60.846416,
+            "features_ms": 0.183084,
+            "ensemble_ms": 0.352791
+          },
+          "real_prediction": "PATIENT2",
+          "real_top5": [
+            "PATIENT2",
+            "MYSELF",
+            "CHEEK",
+            "ANYONE",
+            "KNIGHT1"
+          ],
+          "mirror_matches_predict": true
+        },
+        {
+          "clip": "5784034175717614-EASY.mp4",
+          "ms": 106.67229200043948,
+          "prediction": "EASY",
+          "top5": [
+            "EASY",
+            "DARK1",
+            "HOW1",
+            "KNIGHT1",
+            "CALENDAR1"
+          ],
+          "confidence": 0.9028089046478271,
+          "tensor_sha": "2c97489b2e168fcd",
+          "tensor_sum": -533.2008056640625,
+          "landmarks_sha": "0af7f8e0b3ee9e1e",
+          "stages": {
+            "read_ms": 16.595625,
+            "detect_ms": 89.385917,
+            "features_ms": 0.282667,
+            "ensemble_ms": 0.322083
+          },
+          "real_prediction": "EASY",
+          "real_top5": [
+            "EASY",
+            "DARK1",
+            "HOW1",
+            "KNIGHT1",
+            "CALENDAR1"
+          ],
+          "mirror_matches_predict": true
+        }
+      ],
+      "clip_count": 12,
+      "round": 0,
+      "round_p50": [
+        84.14860400080215,
+        86.46643750034855,
+        87.78985399476369
+      ],
+      "round_p95": [
+        102.08481075060263,
+        100.80596700172464,
+        105.9959248490486
+      ]
+    },
+    "pipeline_4": {
+      "variant": "pipeline_4",
+      "config": {
+        "workers": 4,
+        "sample_frames": 32,
+        "size": 256,
+        "pipeline": true
+      },
+      "kind": "mirror",
+      "env": {
+        "ECHOGESTURE_TRACKER": null,
+        "ECHOGESTURE_WORKERS": null,
+        "OPENBLAS_NUM_THREADS": null
+      },
+      "warm": {
+        "count": 36,
+        "p50_ms": 80.21912500043982,
+        "p95_ms": 102.187072752713,
+        "min_ms": 67.41887499811128,
+        "max_ms": 107.19920799601823,
+        "mean_ms": 82.83414002693866
+      },
+      "peak_rss_mib": 402.375,
+      "records": [
+        {
+          "clip": "0283886564670357-WHAT FOR.mp4",
+          "ms": 70.45408299745759,
+          "prediction": "WHATFOR1",
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "KNIGHT1",
+            "SCROLLDOWN",
+            "DECIDE1"
+          ],
+          "confidence": 0.882110595703125,
+          "tensor_sha": "8c42643554db7973",
+          "tensor_sum": 14.721639633178711,
+          "landmarks_sha": "55195d1f57a9b734",
+          "stages": {
+            "pipelined_total_ms": 69.856208,
+            "decode_in_producer_ms": 24.773583,
+            "read_ms": 24.773583,
+            "detect_ms": 45.08262499999999,
+            "features_ms": 0.190125,
+            "ensemble_ms": 0.343875
+          }
+        },
+        {
+          "clip": "032677896012150764-WHAT FOR.mp4",
+          "ms": 80.23587500065332,
+          "prediction": "WHATFOR1",
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "DEAF1",
+            "TAIL1",
+            "ANYONE"
+          ],
+          "confidence": 0.2843070924282074,
+          "tensor_sha": "c3a1cb8908ff956e",
+          "tensor_sum": -62.38705825805664,
+          "landmarks_sha": "852d5b05ad11cca2",
+          "stages": {
+            "pipelined_total_ms": 79.559167,
+            "decode_in_producer_ms": 18.393875,
+            "read_ms": 18.393875,
+            "detect_ms": 61.165292,
+            "features_ms": 0.194667,
+            "ensemble_ms": 0.393584
+          }
+        },
+        {
+          "clip": "15347326711184706-NOON.mp4",
+          "ms": 71.12695799878566,
+          "prediction": "BREAKFAST1",
+          "top5": [
+            "BREAKFAST1",
+            "NOON1",
+            "AUTISM1",
+            "BEE1",
+            "GUESS1"
+          ],
+          "confidence": 0.12205135077238083,
+          "tensor_sha": "94fe8234c8af4a55",
+          "tensor_sum": -159.78077697753906,
+          "landmarks_sha": "972ef27bd0344a20",
+          "stages": {
+            "pipelined_total_ms": 70.474333,
+            "decode_in_producer_ms": 17.068084,
+            "read_ms": 17.068084,
+            "detect_ms": 53.406249,
+            "features_ms": 0.19075,
+            "ensemble_ms": 0.396167
+          }
+        },
+        {
+          "clip": "17092802473126545-SQUEEZE.mp4",
+          "ms": 77.94962499610847,
+          "prediction": "SQUEEZE",
+          "top5": [
+            "SQUEEZE",
+            "SOCCER2",
+            "SCROLLDOWN",
+            "CHEESEGRATER",
+            "ADVERTISE"
+          ],
+          "confidence": 0.11642233282327652,
+          "tensor_sha": "9909cc5cfddfb650",
+          "tensor_sum": -163.9489288330078,
+          "landmarks_sha": "8280418968ed98ad",
+          "stages": {
+            "pipelined_total_ms": 77.205167,
+            "decode_in_producer_ms": 17.37775,
+            "read_ms": 17.37775,
+            "detect_ms": 59.827417000000004,
+            "features_ms": 0.271791,
+            "ensemble_ms": 0.4
+          }
+        },
+        {
+          "clip": "25500869855740893-ANYONE.mp4",
+          "ms": 71.8529590012622,
+          "prediction": "ANYONE",
+          "top5": [
+            "ANYONE",
+            "PATIENT2",
+            "SOCIETY",
+            "ALLOFSUDDEN",
+            "OFFEND"
+          ],
+          "confidence": 0.7421548366546631,
+          "tensor_sha": "81e770089479218e",
+          "tensor_sum": -145.3413848876953,
+          "landmarks_sha": "10abcac3be6ed96a",
+          "stages": {
+            "pipelined_total_ms": 71.269,
+            "decode_in_producer_ms": 20.394666,
+            "read_ms": 20.394666,
+            "detect_ms": 50.874334000000005,
+            "features_ms": 0.18725,
+            "ensemble_ms": 0.334541
+          }
+        },
+        {
+          "clip": "3191470037860531-8 HOUR.mp4",
+          "ms": 90.3128329955507,
+          "prediction": "8HOUR",
+          "top5": [
+            "8HOUR",
+            "MAPLE",
+            "ELEVATOR1",
+            "BEE1",
+            "DOG1"
+          ],
+          "confidence": 0.31917548179626465,
+          "tensor_sha": "40215546670d2662",
+          "tensor_sum": -214.07855224609375,
+          "landmarks_sha": "d96ec748db63c97f",
+          "stages": {
+            "pipelined_total_ms": 89.696708,
+            "decode_in_producer_ms": 17.561208,
+            "read_ms": 17.561208,
+            "detect_ms": 72.13550000000001,
+            "features_ms": 0.222833,
+            "ensemble_ms": 0.332167
+          }
+        },
+        {
+          "clip": "3738312466703404-TEACH.mp4",
+          "ms": 76.90483299666084,
+          "prediction": "TEACH1",
+          "top5": [
+            "TEACH1",
+            "CHEER",
+            "HALLOWEEN1",
+            "DECIDE1",
+            "PARTY1"
+          ],
+          "confidence": 0.4714962840080261,
+          "tensor_sha": "0cf2df95e3431cff",
+          "tensor_sum": -465.4068908691406,
+          "landmarks_sha": "632e776167407096",
+          "stages": {
+            "pipelined_total_ms": 76.209458,
+            "decode_in_producer_ms": 15.464333,
+            "read_ms": 15.464333,
+            "detect_ms": 60.745125,
+            "features_ms": 0.283542,
+            "ensemble_ms": 0.3375
+          }
+        },
+        {
+          "clip": "4254167262351618-CHEW 2.mp4",
+          "ms": 77.99670799431624,
+          "prediction": "CHEW1",
+          "top5": [
+            "CHEW1",
+            "PATIENT2",
+            "BASEBALLCAP",
+            "TAIL1",
+            "ANYONE"
+          ],
+          "confidence": 0.52422034740448,
+          "tensor_sha": "080ee4906fdbc271",
+          "tensor_sum": -151.1184844970703,
+          "landmarks_sha": "903793725deff639",
+          "stages": {
+            "pipelined_total_ms": 77.3275,
+            "decode_in_producer_ms": 26.57875,
+            "read_ms": 26.57875,
+            "detect_ms": 50.74875,
+            "features_ms": 0.208583,
+            "ensemble_ms": 0.395459
+          }
+        },
+        {
+          "clip": "4481998873282871-PONDER.mp4",
+          "ms": 87.1670000051381,
+          "prediction": "PONDER",
+          "top5": [
+            "PONDER",
+            "AXE1",
+            "BACKPACK1",
+            "DARK1",
+            "JEWELRY"
+          ],
+          "confidence": 0.4829208254814148,
+          "tensor_sha": "4faf079492d4525a",
+          "tensor_sum": -377.57061767578125,
+          "landmarks_sha": "e18cc7f3a14c040c",
+          "stages": {
+            "pipelined_total_ms": 86.502875,
+            "decode_in_producer_ms": 24.119958,
+            "read_ms": 24.119958,
+            "detect_ms": 62.382917000000006,
+            "features_ms": 0.256916,
+            "ensemble_ms": 0.343917
+          }
+        },
+        {
+          "clip": "5004269948712425-SOCCER 2.mp4",
+          "ms": 75.97195799462497,
+          "prediction": "SOCCER2",
+          "top5": [
+            "SOCCER2",
+            "DEAF1",
+            "GOODYGOODYSHOEOPPOSITE",
+            "DECIDE1",
+            "MOVIE1"
+          ],
+          "confidence": 0.39567017555236816,
+          "tensor_sha": "af39a1836578f26f",
+          "tensor_sum": 13.356063842773438,
+          "landmarks_sha": "543b9e26d2830cc2",
+          "stages": {
+            "pipelined_total_ms": 75.377625,
+            "decode_in_producer_ms": 16.420333,
+            "read_ms": 16.420333,
+            "detect_ms": 58.957291999999995,
+            "features_ms": 0.201583,
+            "ensemble_ms": 0.333083
+          }
+        },
+        {
+          "clip": "5008852988399453-MYSELF.mp4",
+          "ms": 69.9490419938229,
+          "prediction": "PATIENT2",
+          "top5": [
+            "PATIENT2",
+            "MYSELF",
+            "CHEEK",
+            "ANYONE",
+            "KNIGHT1"
+          ],
+          "confidence": 0.46905717253685,
+          "tensor_sha": "20f8c938a7f1543e",
+          "tensor_sum": -30.915283203125,
+          "landmarks_sha": "be5ce999f415d611",
+          "stages": {
+            "pipelined_total_ms": 69.322542,
+            "decode_in_producer_ms": 23.279208,
+            "read_ms": 23.279208,
+            "detect_ms": 46.043334,
+            "features_ms": 0.190375,
+            "ensemble_ms": 0.372291
+          }
+        },
+        {
+          "clip": "5784034175717614-EASY.mp4",
+          "ms": 96.36416700232076,
+          "prediction": "EASY",
+          "top5": [
+            "EASY",
+            "DARK1",
+            "HOW1",
+            "KNIGHT1",
+            "CALENDAR1"
+          ],
+          "confidence": 0.9028089046478271,
+          "tensor_sha": "2c97489b2e168fcd",
+          "tensor_sum": -533.2008056640625,
+          "landmarks_sha": "0af7f8e0b3ee9e1e",
+          "stages": {
+            "pipelined_total_ms": 95.675708,
+            "decode_in_producer_ms": 17.908375,
+            "read_ms": 17.908375,
+            "detect_ms": 77.76733300000001,
+            "features_ms": 0.2975,
+            "ensemble_ms": 0.327042
+          }
+        }
+      ],
+      "clip_count": 12,
+      "round": 0,
+      "round_p50": [
+        77.42722899638466,
+        79.80127050177543,
+        88.66104199842084
+      ],
+      "round_p95": [
+        93.03593329859723,
+        96.38825159890985,
+        104.42131859927031
+      ]
+    },
+    "pipeline_8": {
+      "variant": "pipeline_8",
+      "config": {
+        "workers": 8,
+        "sample_frames": 32,
+        "size": 256,
+        "pipeline": true
+      },
+      "kind": "mirror",
+      "env": {
+        "ECHOGESTURE_TRACKER": null,
+        "ECHOGESTURE_WORKERS": null,
+        "OPENBLAS_NUM_THREADS": null
+      },
+      "warm": {
+        "count": 36,
+        "p50_ms": 65.47072849571123,
+        "p95_ms": 85.05683400107955,
+        "min_ms": 48.68891699879896,
+        "max_ms": 90.91420800541528,
+        "mean_ms": 65.9898888603089
+      },
+      "peak_rss_mib": 598.5625,
+      "records": [
+        {
+          "clip": "0283886564670357-WHAT FOR.mp4",
+          "ms": 48.68891699879896,
+          "prediction": "WHATFOR1",
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "KNIGHT1",
+            "SCROLLDOWN",
+            "DECIDE1"
+          ],
+          "confidence": 0.882110595703125,
+          "tensor_sha": "8c42643554db7973",
+          "tensor_sum": 14.721639633178711,
+          "landmarks_sha": "55195d1f57a9b734",
+          "stages": {
+            "pipelined_total_ms": 48.0885,
+            "decode_in_producer_ms": 26.62725,
+            "read_ms": 26.62725,
+            "detect_ms": 21.461250000000003,
+            "features_ms": 0.192833,
+            "ensemble_ms": 0.340708
+          }
+        },
+        {
+          "clip": "032677896012150764-WHAT FOR.mp4",
+          "ms": 55.440209005610086,
+          "prediction": "WHATFOR1",
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "DEAF1",
+            "TAIL1",
+            "ANYONE"
+          ],
+          "confidence": 0.2843070924282074,
+          "tensor_sha": "c3a1cb8908ff956e",
+          "tensor_sum": -62.38705825805664,
+          "landmarks_sha": "852d5b05ad11cca2",
+          "stages": {
+            "pipelined_total_ms": 54.8565,
+            "decode_in_producer_ms": 22.82475,
+            "read_ms": 22.82475,
+            "detect_ms": 32.031749999999995,
+            "features_ms": 0.187459,
+            "ensemble_ms": 0.331916
+          }
+        },
+        {
+          "clip": "15347326711184706-NOON.mp4",
+          "ms": 56.131792000087444,
+          "prediction": "BREAKFAST1",
+          "top5": [
+            "BREAKFAST1",
+            "NOON1",
+            "AUTISM1",
+            "BEE1",
+            "GUESS1"
+          ],
+          "confidence": 0.12205135077238083,
+          "tensor_sha": "94fe8234c8af4a55",
+          "tensor_sum": -159.78077697753906,
+          "landmarks_sha": "972ef27bd0344a20",
+          "stages": {
+            "pipelined_total_ms": 54.964291,
+            "decode_in_producer_ms": 19.627125,
+            "read_ms": 19.627125,
+            "detect_ms": 35.337166,
+            "features_ms": 0.567291,
+            "ensemble_ms": 0.515625
+          }
+        },
+        {
+          "clip": "17092802473126545-SQUEEZE.mp4",
+          "ms": 70.34933300019475,
+          "prediction": "SQUEEZE",
+          "top5": [
+            "SQUEEZE",
+            "SOCCER2",
+            "SCROLLDOWN",
+            "CHEESEGRATER",
+            "ADVERTISE"
+          ],
+          "confidence": 0.11642233282327652,
+          "tensor_sha": "9909cc5cfddfb650",
+          "tensor_sum": -163.9489288330078,
+          "landmarks_sha": "8280418968ed98ad",
+          "stages": {
+            "pipelined_total_ms": 69.710041,
+            "decode_in_producer_ms": 30.561666,
+            "read_ms": 30.561666,
+            "detect_ms": 39.148375,
+            "features_ms": 0.2355,
+            "ensemble_ms": 0.339625
+          }
+        },
+        {
+          "clip": "25500869855740893-ANYONE.mp4",
+          "ms": 57.96941599692218,
+          "prediction": "ANYONE",
+          "top5": [
+            "ANYONE",
+            "PATIENT2",
+            "SOCIETY",
+            "ALLOFSUDDEN",
+            "OFFEND"
+          ],
+          "confidence": 0.7421548366546631,
+          "tensor_sha": "81e770089479218e",
+          "tensor_sum": -145.3413848876953,
+          "landmarks_sha": "10abcac3be6ed96a",
+          "stages": {
+            "pipelined_total_ms": 57.266916,
+            "decode_in_producer_ms": 28.71125,
+            "read_ms": 28.71125,
+            "detect_ms": 28.555666000000002,
+            "features_ms": 0.224542,
+            "ensemble_ms": 0.409958
+          }
+        },
+        {
+          "clip": "3191470037860531-8 HOUR.mp4",
+          "ms": 67.73254199652001,
+          "prediction": "8HOUR",
+          "top5": [
+            "8HOUR",
+            "MAPLE",
+            "ELEVATOR1",
+            "BEE1",
+            "DOG1"
+          ],
+          "confidence": 0.31917548179626465,
+          "tensor_sha": "40215546670d2662",
+          "tensor_sum": -214.07855224609375,
+          "landmarks_sha": "d96ec748db63c97f",
+          "stages": {
+            "pipelined_total_ms": 67.108209,
+            "decode_in_producer_ms": 18.716416,
+            "read_ms": 18.716416,
+            "detect_ms": 48.39179300000001,
+            "features_ms": 0.218459,
+            "ensemble_ms": 0.341125
+          }
+        },
+        {
+          "clip": "3738312466703404-TEACH.mp4",
+          "ms": 57.74095800006762,
+          "prediction": "TEACH1",
+          "top5": [
+            "TEACH1",
+            "CHEER",
+            "HALLOWEEN1",
+            "DECIDE1",
+            "PARTY1"
+          ],
+          "confidence": 0.4714962840080261,
+          "tensor_sha": "0cf2df95e3431cff",
+          "tensor_sum": -465.4068908691406,
+          "landmarks_sha": "632e776167407096",
+          "stages": {
+            "pipelined_total_ms": 57.06425,
+            "decode_in_producer_ms": 19.48725,
+            "read_ms": 19.48725,
+            "detect_ms": 37.577,
+            "features_ms": 0.272584,
+            "ensemble_ms": 0.338916
+          }
+        },
+        {
+          "clip": "4254167262351618-CHEW 2.mp4",
+          "ms": 57.196250003471505,
+          "prediction": "CHEW1",
+          "top5": [
+            "CHEW1",
+            "PATIENT2",
+            "BASEBALLCAP",
+            "TAIL1",
+            "ANYONE"
+          ],
+          "confidence": 0.52422034740448,
+          "tensor_sha": "080ee4906fdbc271",
+          "tensor_sum": -151.1184844970703,
+          "landmarks_sha": "903793725deff639",
+          "stages": {
+            "pipelined_total_ms": 56.582291,
+            "decode_in_producer_ms": 29.464125,
+            "read_ms": 29.464125,
+            "detect_ms": 27.118166,
+            "features_ms": 0.220084,
+            "ensemble_ms": 0.332292
+          }
+        },
+        {
+          "clip": "4481998873282871-PONDER.mp4",
+          "ms": 65.09879099758109,
+          "prediction": "PONDER",
+          "top5": [
+            "PONDER",
+            "AXE1",
+            "BACKPACK1",
+            "DARK1",
+            "JEWELRY"
+          ],
+          "confidence": 0.4829208254814148,
+          "tensor_sha": "4faf079492d4525a",
+          "tensor_sum": -377.57061767578125,
+          "landmarks_sha": "e18cc7f3a14c040c",
+          "stages": {
+            "pipelined_total_ms": 64.4505,
+            "decode_in_producer_ms": 28.3975,
+            "read_ms": 28.3975,
+            "detect_ms": 36.053000000000004,
+            "features_ms": 0.249,
+            "ensemble_ms": 0.335958
+          }
+        },
+        {
+          "clip": "5004269948712425-SOCCER 2.mp4",
+          "ms": 54.55375000019558,
+          "prediction": "SOCCER2",
+          "top5": [
+            "SOCCER2",
+            "DEAF1",
+            "GOODYGOODYSHOEOPPOSITE",
+            "DECIDE1",
+            "MOVIE1"
+          ],
+          "confidence": 0.39567017555236816,
+          "tensor_sha": "af39a1836578f26f",
+          "tensor_sum": 13.356063842773438,
+          "landmarks_sha": "543b9e26d2830cc2",
+          "stages": {
+            "pipelined_total_ms": 53.948958,
+            "decode_in_producer_ms": 18.947125,
+            "read_ms": 18.947125,
+            "detect_ms": 35.001833,
+            "features_ms": 0.201584,
+            "ensemble_ms": 0.339958
+          }
+        },
+        {
+          "clip": "5008852988399453-MYSELF.mp4",
+          "ms": 54.964541996014304,
+          "prediction": "PATIENT2",
+          "top5": [
+            "PATIENT2",
+            "MYSELF",
+            "CHEEK",
+            "ANYONE",
+            "KNIGHT1"
+          ],
+          "confidence": 0.46905717253685,
+          "tensor_sha": "20f8c938a7f1543e",
+          "tensor_sum": -30.915283203125,
+          "landmarks_sha": "be5ce999f415d611",
+          "stages": {
+            "pipelined_total_ms": 54.355333,
+            "decode_in_producer_ms": 28.196417,
+            "read_ms": 28.196417,
+            "detect_ms": 26.158916,
+            "features_ms": 0.198334,
+            "ensemble_ms": 0.345209
+          }
+        },
+        {
+          "clip": "5784034175717614-EASY.mp4",
+          "ms": 70.9337919979589,
+          "prediction": "EASY",
+          "top5": [
+            "EASY",
+            "DARK1",
+            "HOW1",
+            "KNIGHT1",
+            "CALENDAR1"
+          ],
+          "confidence": 0.9028089046478271,
+          "tensor_sha": "2c97489b2e168fcd",
+          "tensor_sum": -533.2008056640625,
+          "landmarks_sha": "0af7f8e0b3ee9e1e",
+          "stages": {
+            "pipelined_total_ms": 70.130875,
+            "decode_in_producer_ms": 21.4655,
+            "read_ms": 21.4655,
+            "detect_ms": 48.665375000000004,
+            "features_ms": 0.324333,
+            "ensemble_ms": 0.398791
+          }
+        }
+      ],
+      "clip_count": 12,
+      "round": 0,
+      "round_p50": [
+        57.46860400176956,
+        70.70527049654629,
+        67.87531199734076
+      ],
+      "round_p95": [
+        70.61233954918862,
+        84.45429785206215,
+        88.26231480379647
+      ]
+    },
+    "pipeline_12": {
+      "variant": "pipeline_12",
+      "config": {
+        "workers": 12,
+        "sample_frames": 32,
+        "size": 256,
+        "pipeline": true
+      },
+      "kind": "mirror",
+      "env": {
+        "ECHOGESTURE_TRACKER": null,
+        "ECHOGESTURE_WORKERS": null,
+        "OPENBLAS_NUM_THREADS": null
+      },
+      "warm": {
+        "count": 36,
+        "p50_ms": 58.828438002819894,
+        "p95_ms": 91.94669799944677,
+        "min_ms": 42.508833001193125,
+        "max_ms": 116.19841599895153,
+        "mean_ms": 62.9358379448806
+      },
+      "peak_rss_mib": 778.546875,
+      "records": [
+        {
+          "clip": "0283886564670357-WHAT FOR.mp4",
+          "ms": 57.84362499980489,
+          "prediction": "WHATFOR1",
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "KNIGHT1",
+            "SCROLLDOWN",
+            "DECIDE1"
+          ],
+          "confidence": 0.882110595703125,
+          "tensor_sha": "8c42643554db7973",
+          "tensor_sum": 14.721639633178711,
+          "landmarks_sha": "55195d1f57a9b734",
+          "stages": {
+            "pipelined_total_ms": 57.24425,
+            "decode_in_producer_ms": 48.913166,
+            "read_ms": 48.913166,
+            "detect_ms": 8.331084000000004,
+            "features_ms": 0.19025,
+            "ensemble_ms": 0.343875
+          }
+        },
+        {
+          "clip": "032677896012150764-WHAT FOR.mp4",
+          "ms": 51.30733300029533,
+          "prediction": "WHATFOR1",
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "DEAF1",
+            "TAIL1",
+            "ANYONE"
+          ],
+          "confidence": 0.2843070924282074,
+          "tensor_sha": "c3a1cb8908ff956e",
+          "tensor_sum": -62.38705825805664,
+          "landmarks_sha": "852d5b05ad11cca2",
+          "stages": {
+            "pipelined_total_ms": 50.712958,
+            "decode_in_producer_ms": 26.096916,
+            "read_ms": 26.096916,
+            "detect_ms": 24.616042,
+            "features_ms": 0.191291,
+            "ensemble_ms": 0.339
+          }
+        },
+        {
+          "clip": "15347326711184706-NOON.mp4",
+          "ms": 45.28474999824539,
+          "prediction": "BREAKFAST1",
+          "top5": [
+            "BREAKFAST1",
+            "NOON1",
+            "AUTISM1",
+            "BEE1",
+            "GUESS1"
+          ],
+          "confidence": 0.12205135077238083,
+          "tensor_sha": "94fe8234c8af4a55",
+          "tensor_sum": -159.78077697753906,
+          "landmarks_sha": "972ef27bd0344a20",
+          "stages": {
+            "pipelined_total_ms": 44.635583,
+            "decode_in_producer_ms": 23.170959,
+            "read_ms": 23.170959,
+            "detect_ms": 21.464623999999997,
+            "features_ms": 0.195083,
+            "ensemble_ms": 0.387333
+          }
+        },
+        {
+          "clip": "17092802473126545-SQUEEZE.mp4",
+          "ms": 47.09545800142223,
+          "prediction": "SQUEEZE",
+          "top5": [
+            "SQUEEZE",
+            "SOCCER2",
+            "SCROLLDOWN",
+            "CHEESEGRATER",
+            "ADVERTISE"
+          ],
+          "confidence": 0.11642233282327652,
+          "tensor_sha": "9909cc5cfddfb650",
+          "tensor_sum": -163.9489288330078,
+          "landmarks_sha": "8280418968ed98ad",
+          "stages": {
+            "pipelined_total_ms": 46.373875,
+            "decode_in_producer_ms": 22.794,
+            "read_ms": 22.794,
+            "detect_ms": 23.579874999999998,
+            "features_ms": 0.2635,
+            "ensemble_ms": 0.381042
+          }
+        },
+        {
+          "clip": "25500869855740893-ANYONE.mp4",
+          "ms": 42.508833001193125,
+          "prediction": "ANYONE",
+          "top5": [
+            "ANYONE",
+            "PATIENT2",
+            "SOCIETY",
+            "ALLOFSUDDEN",
+            "OFFEND"
+          ],
+          "confidence": 0.7421548366546631,
+          "tensor_sha": "81e770089479218e",
+          "tensor_sum": -145.3413848876953,
+          "landmarks_sha": "10abcac3be6ed96a",
+          "stages": {
+            "pipelined_total_ms": 41.814375,
+            "decode_in_producer_ms": 29.655125,
+            "read_ms": 29.655125,
+            "detect_ms": 12.159249999999997,
+            "features_ms": 0.237958,
+            "ensemble_ms": 0.377375
+          }
+        },
+        {
+          "clip": "3191470037860531-8 HOUR.mp4",
+          "ms": 55.73529200046323,
+          "prediction": "8HOUR",
+          "top5": [
+            "8HOUR",
+            "MAPLE",
+            "ELEVATOR1",
+            "BEE1",
+            "DOG1"
+          ],
+          "confidence": 0.31917548179626465,
+          "tensor_sha": "40215546670d2662",
+          "tensor_sum": -214.07855224609375,
+          "landmarks_sha": "d96ec748db63c97f",
+          "stages": {
+            "pipelined_total_ms": 55.115958,
+            "decode_in_producer_ms": 21.356209,
+            "read_ms": 21.356209,
+            "detect_ms": 33.759749,
+            "features_ms": 0.220125,
+            "ensemble_ms": 0.334958
+          }
+        },
+        {
+          "clip": "3738312466703404-TEACH.mp4",
+          "ms": 50.611082995601464,
+          "prediction": "TEACH1",
+          "top5": [
+            "TEACH1",
+            "CHEER",
+            "HALLOWEEN1",
+            "DECIDE1",
+            "PARTY1"
+          ],
+          "confidence": 0.4714962840080261,
+          "tensor_sha": "0cf2df95e3431cff",
+          "tensor_sum": -465.4068908691406,
+          "landmarks_sha": "632e776167407096",
+          "stages": {
+            "pipelined_total_ms": 49.878292,
+            "decode_in_producer_ms": 23.309,
+            "read_ms": 23.309,
+            "detect_ms": 26.569292,
+            "features_ms": 0.290875,
+            "ensemble_ms": 0.360625
+          }
+        },
+        {
+          "clip": "4254167262351618-CHEW 2.mp4",
+          "ms": 49.135207998915575,
+          "prediction": "CHEW1",
+          "top5": [
+            "CHEW1",
+            "PATIENT2",
+            "BASEBALLCAP",
+            "TAIL1",
+            "ANYONE"
+          ],
+          "confidence": 0.52422034740448,
+          "tensor_sha": "080ee4906fdbc271",
+          "tensor_sum": -151.1184844970703,
+          "landmarks_sha": "903793725deff639",
+          "stages": {
+            "pipelined_total_ms": 48.50475,
+            "decode_in_producer_ms": 36.415875,
+            "read_ms": 36.415875,
+            "detect_ms": 12.088875000000002,
+            "features_ms": 0.216084,
+            "ensemble_ms": 0.349125
+          }
+        },
+        {
+          "clip": "4481998873282871-PONDER.mp4",
+          "ms": 58.463334004045464,
+          "prediction": "PONDER",
+          "top5": [
+            "PONDER",
+            "AXE1",
+            "BACKPACK1",
+            "DARK1",
+            "JEWELRY"
+          ],
+          "confidence": 0.4829208254814148,
+          "tensor_sha": "4faf079492d4525a",
+          "tensor_sum": -377.57061767578125,
+          "landmarks_sha": "e18cc7f3a14c040c",
+          "stages": {
+            "pipelined_total_ms": 57.755333,
+            "decode_in_producer_ms": 34.331166,
+            "read_ms": 34.331166,
+            "detect_ms": 23.424166999999997,
+            "features_ms": 0.279375,
+            "ensemble_ms": 0.362417
+          }
+        },
+        {
+          "clip": "5004269948712425-SOCCER 2.mp4",
+          "ms": 48.73158400005195,
+          "prediction": "SOCCER2",
+          "top5": [
+            "SOCCER2",
+            "DEAF1",
+            "GOODYGOODYSHOEOPPOSITE",
+            "DECIDE1",
+            "MOVIE1"
+          ],
+          "confidence": 0.39567017555236816,
+          "tensor_sha": "af39a1836578f26f",
+          "tensor_sum": 13.356063842773438,
+          "landmarks_sha": "543b9e26d2830cc2",
+          "stages": {
+            "pipelined_total_ms": 48.051208,
+            "decode_in_producer_ms": 21.861458,
+            "read_ms": 21.861458,
+            "detect_ms": 26.189750000000004,
+            "features_ms": 0.224333,
+            "ensemble_ms": 0.385083
+          }
+        },
+        {
+          "clip": "5008852988399453-MYSELF.mp4",
+          "ms": 46.03554200002691,
+          "prediction": "PATIENT2",
+          "top5": [
+            "PATIENT2",
+            "MYSELF",
+            "CHEEK",
+            "ANYONE",
+            "KNIGHT1"
+          ],
+          "confidence": 0.46905717253685,
+          "tensor_sha": "20f8c938a7f1543e",
+          "tensor_sum": -30.915283203125,
+          "landmarks_sha": "be5ce999f415d611",
+          "stages": {
+            "pipelined_total_ms": 45.171292,
+            "decode_in_producer_ms": 30.641042,
+            "read_ms": 30.641042,
+            "detect_ms": 14.530250000000002,
+            "features_ms": 0.321292,
+            "ensemble_ms": 0.455291
+          }
+        },
+        {
+          "clip": "5784034175717614-EASY.mp4",
+          "ms": 63.88137499743607,
+          "prediction": "EASY",
+          "top5": [
+            "EASY",
+            "DARK1",
+            "HOW1",
+            "KNIGHT1",
+            "CALENDAR1"
+          ],
+          "confidence": 0.9028089046478271,
+          "tensor_sha": "2c97489b2e168fcd",
+          "tensor_sum": -533.2008056640625,
+          "landmarks_sha": "0af7f8e0b3ee9e1e",
+          "stages": {
+            "pipelined_total_ms": 63.114042,
+            "decode_in_producer_ms": 23.8245,
+            "read_ms": 23.8245,
+            "detect_ms": 39.289542,
+            "features_ms": 0.332417,
+            "ensemble_ms": 0.367042
+          }
+        }
+      ],
+      "clip_count": 12,
+      "round": 0,
+      "round_p50": [
+        49.87314549725852,
+        75.1888750019134,
+        55.81572899973253
+      ],
+      "round_p95": [
+        60.901452451071236,
+        106.95456655121232,
+        74.675202051003
+      ]
+    },
+    "workers_8": {
+      "variant": "workers_8",
+      "config": {
+        "workers": 8
+      },
+      "kind": "predict",
+      "env": {
+        "ECHOGESTURE_TRACKER": "parallel",
+        "ECHOGESTURE_WORKERS": "8",
+        "OPENBLAS_NUM_THREADS": null
+      },
+      "warm": {
+        "count": 36,
+        "p50_ms": 70.6748750017141,
+        "p95_ms": 91.4836872543674,
+        "min_ms": 57.33216700173216,
+        "max_ms": 104.32287499861559,
+        "mean_ms": 73.44493636183971
+      },
+      "peak_rss_mib": 589.96875,
+      "records": [
+        {
+          "clip": "0283886564670357-WHAT FOR.mp4",
+          "ms": 59.13324999710312,
+          "prediction": "WHATFOR1",
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "KNIGHT1",
+            "SCROLLDOWN",
+            "DECIDE1"
+          ],
+          "confidence": 0.8821,
+          "stages": {
+            "model_initialization": 0.098875,
+            "video_open_decode": 22.011292,
+            "landmark_tracking": 36.383833,
+            "feature_preparation": 0.1795,
+            "model_inference": 0.383625,
+            "output_postprocessing": 0.41225
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "032677896012150764-WHAT FOR.mp4",
+          "ms": 63.68674999976065,
+          "prediction": "WHATFOR1",
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "DEAF1",
+            "TAIL1",
+            "ANYONE"
+          ],
+          "confidence": 0.2843,
+          "stages": {
+            "model_initialization": 0.088208,
+            "video_open_decode": 15.966,
+            "landmark_tracking": 47.040833,
+            "feature_preparation": 0.180583,
+            "model_inference": 0.338875,
+            "output_postprocessing": 0.366541
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "15347326711184706-NOON.mp4",
+          "ms": 57.33216700173216,
+          "prediction": "BREAKFAST1",
+          "top5": [
+            "BREAKFAST1",
+            "NOON1",
+            "AUTISM1",
+            "BEE1",
+            "GUESS1"
+          ],
+          "confidence": 0.1221,
+          "stages": {
+            "model_initialization": 0.067583,
+            "video_open_decode": 15.382917,
+            "landmark_tracking": 41.277583,
+            "feature_preparation": 0.17675,
+            "model_inference": 0.35,
+            "output_postprocessing": 0.376875
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "17092802473126545-SQUEEZE.mp4",
+          "ms": 59.658000005583744,
+          "prediction": "SQUEEZE",
+          "top5": [
+            "SQUEEZE",
+            "SOCCER2",
+            "SCROLLDOWN",
+            "CHEESEGRATER",
+            "ADVERTISE"
+          ],
+          "confidence": 0.1164,
+          "stages": {
+            "model_initialization": 0.067042,
+            "video_open_decode": 14.4535,
+            "landmark_tracking": 44.510416,
+            "feature_preparation": 0.211583,
+            "model_inference": 0.335042,
+            "output_postprocessing": 0.371292
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "25500869855740893-ANYONE.mp4",
+          "ms": 58.59400000190362,
+          "prediction": "ANYONE",
+          "top5": [
+            "ANYONE",
+            "PATIENT2",
+            "SOCIETY",
+            "ALLOFSUDDEN",
+            "OFFEND"
+          ],
+          "confidence": 0.7422,
+          "stages": {
+            "model_initialization": 0.07825,
+            "video_open_decode": 17.695458,
+            "landmark_tracking": 40.219666,
+            "feature_preparation": 0.169125,
+            "model_inference": 0.350875,
+            "output_postprocessing": 0.384667
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "3191470037860531-8 HOUR.mp4",
+          "ms": 68.33583399566123,
+          "prediction": "8HOUR",
+          "top5": [
+            "8HOUR",
+            "MAPLE",
+            "ELEVATOR1",
+            "BEE1",
+            "DOG1"
+          ],
+          "confidence": 0.3192,
+          "stages": {
+            "model_initialization": 0.075458,
+            "video_open_decode": 14.804792,
+            "landmark_tracking": 52.856958,
+            "feature_preparation": 0.198708,
+            "model_inference": 0.329708,
+            "output_postprocessing": 0.356875
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "3738312466703404-TEACH.mp4",
+          "ms": 67.2675000023446,
+          "prediction": "TEACH1",
+          "top5": [
+            "TEACH1",
+            "CHEER",
+            "HALLOWEEN1",
+            "DECIDE1",
+            "PARTY1"
+          ],
+          "confidence": 0.4715,
+          "stages": {
+            "model_initialization": 0.071125,
+            "video_open_decode": 13.844625,
+            "landmark_tracking": 52.648375,
+            "feature_preparation": 0.277583,
+            "model_inference": 0.349125,
+            "output_postprocessing": 0.3765
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "4254167262351618-CHEW 2.mp4",
+          "ms": 89.87270800571423,
+          "prediction": "CHEW1",
+          "top5": [
+            "CHEW1",
+            "PATIENT2",
+            "BASEBALLCAP",
+            "TAIL1",
+            "ANYONE"
+          ],
+          "confidence": 0.5242,
+          "stages": {
+            "model_initialization": 0.106667,
+            "video_open_decode": 27.276167,
+            "landmark_tracking": 61.860167,
+            "feature_preparation": 0.206125,
+            "model_inference": 0.339958,
+            "output_postprocessing": 0.371
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "4481998873282871-PONDER.mp4",
+          "ms": 86.14358300110325,
+          "prediction": "PONDER",
+          "top5": [
+            "PONDER",
+            "AXE1",
+            "BACKPACK1",
+            "DARK1",
+            "JEWELRY"
+          ],
+          "confidence": 0.4829,
+          "stages": {
+            "model_initialization": 0.099625,
+            "video_open_decode": 27.648875,
+            "landmark_tracking": 57.579042,
+            "feature_preparation": 0.308667,
+            "model_inference": 0.416083,
+            "output_postprocessing": 0.449583
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "5004269948712425-SOCCER 2.mp4",
+          "ms": 64.03079100709874,
+          "prediction": "SOCCER2",
+          "top5": [
+            "SOCCER2",
+            "DEAF1",
+            "GOODYGOODYSHOEOPPOSITE",
+            "DECIDE1",
+            "MOVIE1"
+          ],
+          "confidence": 0.3957,
+          "stages": {
+            "model_initialization": 0.131833,
+            "video_open_decode": 15.880417,
+            "landmark_tracking": 47.398083,
+            "feature_preparation": 0.205458,
+            "model_inference": 0.338083,
+            "output_postprocessing": 0.367333
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "5008852988399453-MYSELF.mp4",
+          "ms": 68.41916700068396,
+          "prediction": "PATIENT2",
+          "top5": [
+            "PATIENT2",
+            "MYSELF",
+            "CHEEK",
+            "ANYONE",
+            "KNIGHT1"
+          ],
+          "confidence": 0.4691,
+          "stages": {
+            "model_initialization": 0.0775,
+            "video_open_decode": 22.77575,
+            "landmark_tracking": 44.94575,
+            "feature_preparation": 0.183833,
+            "model_inference": 0.359875,
+            "output_postprocessing": 0.387375
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "5784034175717614-EASY.mp4",
+          "ms": 88.58233300270513,
+          "prediction": "EASY",
+          "top5": [
+            "EASY",
+            "DARK1",
+            "HOW1",
+            "KNIGHT1",
+            "CALENDAR1"
+          ],
+          "confidence": 0.9028,
+          "stages": {
+            "model_initialization": 0.083125,
+            "video_open_decode": 17.1435,
+            "landmark_tracking": 70.577958,
+            "feature_preparation": 0.367375,
+            "model_inference": 0.334375,
+            "output_postprocessing": 0.363083
+          },
+          "tensor_sha": null
+        }
+      ],
+      "clip_count": 12,
+      "round": 0,
+      "round_p50": [
+        65.64914550472167,
+        78.44495850076783,
+        70.93527100005304
+      ],
+      "round_p95": [
+        89.16300175405922,
+        99.9194374995568,
+        87.25415785156656
+      ]
+    },
+    "workers_12": {
+      "variant": "workers_12",
+      "config": {
+        "workers": 12
+      },
+      "kind": "predict",
+      "env": {
+        "ECHOGESTURE_TRACKER": "parallel",
+        "ECHOGESTURE_WORKERS": "12",
+        "OPENBLAS_NUM_THREADS": null
+      },
+      "warm": {
+        "count": 36,
+        "p50_ms": 62.99245799891651,
+        "p95_ms": 82.79085400499753,
+        "min_ms": 50.06387500179699,
+        "max_ms": 83.36079100263305,
+        "mean_ms": 64.05294669457362
+      },
+      "peak_rss_mib": 744.296875,
+      "records": [
+        {
+          "clip": "0283886564670357-WHAT FOR.mp4",
+          "ms": 54.19258299662033,
+          "prediction": "WHATFOR1",
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "KNIGHT1",
+            "SCROLLDOWN",
+            "DECIDE1"
+          ],
+          "confidence": 0.8821,
+          "stages": {
+            "model_initialization": 0.098458,
+            "video_open_decode": 22.48925,
+            "landmark_tracking": 30.932,
+            "feature_preparation": 0.199708,
+            "model_inference": 0.396625,
+            "output_postprocessing": 0.425541
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "032677896012150764-WHAT FOR.mp4",
+          "ms": 57.30091599980369,
+          "prediction": "WHATFOR1",
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "DEAF1",
+            "TAIL1",
+            "ANYONE"
+          ],
+          "confidence": 0.2843,
+          "stages": {
+            "model_initialization": 0.084958,
+            "video_open_decode": 16.415,
+            "landmark_tracking": 40.108792,
+            "feature_preparation": 0.194167,
+            "model_inference": 0.414209,
+            "output_postprocessing": 0.447
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "15347326711184706-NOON.mp4",
+          "ms": 53.67304200626677,
+          "prediction": "BREAKFAST1",
+          "top5": [
+            "BREAKFAST1",
+            "NOON1",
+            "AUTISM1",
+            "BEE1",
+            "GUESS1"
+          ],
+          "confidence": 0.1221,
+          "stages": {
+            "model_initialization": 0.08,
+            "video_open_decode": 14.681791,
+            "landmark_tracking": 38.333208,
+            "feature_preparation": 0.170958,
+            "model_inference": 0.336,
+            "output_postprocessing": 0.364792
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "17092802473126545-SQUEEZE.mp4",
+          "ms": 52.32737500045914,
+          "prediction": "SQUEEZE",
+          "top5": [
+            "SQUEEZE",
+            "SOCCER2",
+            "SCROLLDOWN",
+            "CHEESEGRATER",
+            "ADVERTISE"
+          ],
+          "confidence": 0.1164,
+          "stages": {
+            "model_initialization": 0.070834,
+            "video_open_decode": 14.537292,
+            "landmark_tracking": 37.03125,
+            "feature_preparation": 0.226875,
+            "model_inference": 0.382959,
+            "output_postprocessing": 0.41625
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "25500869855740893-ANYONE.mp4",
+          "ms": 50.06387500179699,
+          "prediction": "ANYONE",
+          "top5": [
+            "ANYONE",
+            "PATIENT2",
+            "SOCIETY",
+            "ALLOFSUDDEN",
+            "OFFEND"
+          ],
+          "confidence": 0.7422,
+          "stages": {
+            "model_initialization": 0.072917,
+            "video_open_decode": 18.008042,
+            "landmark_tracking": 31.3215,
+            "feature_preparation": 0.165625,
+            "model_inference": 0.400959,
+            "output_postprocessing": 0.440042
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "3191470037860531-8 HOUR.mp4",
+          "ms": 64.01495799946133,
+          "prediction": "8HOUR",
+          "top5": [
+            "8HOUR",
+            "MAPLE",
+            "ELEVATOR1",
+            "BEE1",
+            "DOG1"
+          ],
+          "confidence": 0.3192,
+          "stages": {
+            "model_initialization": 0.08725,
+            "video_open_decode": 14.919541,
+            "landmark_tracking": 48.301584,
+            "feature_preparation": 0.23525,
+            "model_inference": 0.393666,
+            "output_postprocessing": 0.421791
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "3738312466703404-TEACH.mp4",
+          "ms": 66.39362499845447,
+          "prediction": "TEACH1",
+          "top5": [
+            "TEACH1",
+            "CHEER",
+            "HALLOWEEN1",
+            "DECIDE1",
+            "PARTY1"
+          ],
+          "confidence": 0.4715,
+          "stages": {
+            "model_initialization": 0.067666,
+            "video_open_decode": 15.817625,
+            "landmark_tracking": 49.757709,
+            "feature_preparation": 0.295709,
+            "model_inference": 0.375292,
+            "output_postprocessing": 0.404625
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "4254167262351618-CHEW 2.mp4",
+          "ms": 68.69654199545039,
+          "prediction": "CHEW1",
+          "top5": [
+            "CHEW1",
+            "PATIENT2",
+            "BASEBALLCAP",
+            "TAIL1",
+            "ANYONE"
+          ],
+          "confidence": 0.5242,
+          "stages": {
+            "model_initialization": 0.098,
+            "video_open_decode": 26.899875,
+            "landmark_tracking": 41.013333,
+            "feature_preparation": 0.196333,
+            "model_inference": 0.39475,
+            "output_postprocessing": 0.432459
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "4481998873282871-PONDER.mp4",
+          "ms": 70.7263750009588,
+          "prediction": "PONDER",
+          "top5": [
+            "PONDER",
+            "AXE1",
+            "BACKPACK1",
+            "DARK1",
+            "JEWELRY"
+          ],
+          "confidence": 0.4829,
+          "stages": {
+            "model_initialization": 0.08725,
+            "video_open_decode": 23.772417,
+            "landmark_tracking": 46.1385,
+            "feature_preparation": 0.287834,
+            "model_inference": 0.364917,
+            "output_postprocessing": 0.394667
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "5004269948712425-SOCCER 2.mp4",
+          "ms": 58.87683399487287,
+          "prediction": "SOCCER2",
+          "top5": [
+            "SOCCER2",
+            "DEAF1",
+            "GOODYGOODYSHOEOPPOSITE",
+            "DECIDE1",
+            "MOVIE1"
+          ],
+          "confidence": 0.3957,
+          "stages": {
+            "model_initialization": 0.071333,
+            "video_open_decode": 15.859667,
+            "landmark_tracking": 42.298875,
+            "feature_preparation": 0.204542,
+            "model_inference": 0.36575,
+            "output_postprocessing": 0.392541
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "5008852988399453-MYSELF.mp4",
+          "ms": 61.25241700647166,
+          "prediction": "PATIENT2",
+          "top5": [
+            "PATIENT2",
+            "MYSELF",
+            "CHEEK",
+            "ANYONE",
+            "KNIGHT1"
+          ],
+          "confidence": 0.4691,
+          "stages": {
+            "model_initialization": 0.093375,
+            "video_open_decode": 23.509958,
+            "landmark_tracking": 36.975958,
+            "feature_preparation": 0.200708,
+            "model_inference": 0.393583,
+            "output_postprocessing": 0.422791
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "5784034175717614-EASY.mp4",
+          "ms": 70.88745800137985,
+          "prediction": "EASY",
+          "top5": [
+            "EASY",
+            "DARK1",
+            "HOW1",
+            "KNIGHT1",
+            "CALENDAR1"
+          ],
+          "confidence": 0.9028,
+          "stages": {
+            "model_initialization": 0.071875,
+            "video_open_decode": 17.409958,
+            "landmark_tracking": 52.589167,
+            "feature_preparation": 0.348542,
+            "model_inference": 0.384333,
+            "output_postprocessing": 0.414
+          },
+          "tensor_sha": null
+        }
+      ],
+      "clip_count": 12,
+      "round": 0,
+      "round_p50": [
+        60.064625500672264,
+        69.7773954962031,
+        63.11704149629804
+      ],
+      "round_p95": [
+        70.79886235114827,
+        83.20761655304523,
+        77.00469115370652
+      ]
+    },
+    "workers_16": {
+      "variant": "workers_16",
+      "config": {
+        "workers": 16
+      },
+      "kind": "predict",
+      "env": {
+        "ECHOGESTURE_TRACKER": "parallel",
+        "ECHOGESTURE_WORKERS": "16",
+        "OPENBLAS_NUM_THREADS": null
+      },
+      "warm": {
+        "count": 36,
+        "p50_ms": 58.81227099962416,
+        "p95_ms": 78.80367725010728,
+        "min_ms": 47.708000005513895,
+        "max_ms": 88.11124999920139,
+        "mean_ms": 60.975163249976404
+      },
+      "peak_rss_mib": 918.640625,
+      "records": [
+        {
+          "clip": "0283886564670357-WHAT FOR.mp4",
+          "ms": 48.50912500114646,
+          "prediction": "WHATFOR1",
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "KNIGHT1",
+            "SCROLLDOWN",
+            "DECIDE1"
+          ],
+          "confidence": 0.8821,
+          "stages": {
+            "model_initialization": 0.100042,
+            "video_open_decode": 22.251083,
+            "landmark_tracking": 25.434333,
+            "feature_preparation": 0.194625,
+            "model_inference": 0.436875,
+            "output_postprocessing": 0.476208
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "032677896012150764-WHAT FOR.mp4",
+          "ms": 52.09041700436501,
+          "prediction": "WHATFOR1",
+          "top5": [
+            "WHATFOR1",
+            "OFFEND",
+            "DEAF1",
+            "TAIL1",
+            "ANYONE"
+          ],
+          "confidence": 0.2843,
+          "stages": {
+            "model_initialization": 0.066666,
+            "video_open_decode": 16.799333,
+            "landmark_tracking": 34.63425,
+            "feature_preparation": 0.175458,
+            "model_inference": 0.340375,
+            "output_postprocessing": 0.368458
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "15347326711184706-NOON.mp4",
+          "ms": 58.77454199799104,
+          "prediction": "BREAKFAST1",
+          "top5": [
+            "BREAKFAST1",
+            "NOON1",
+            "AUTISM1",
+            "BEE1",
+            "GUESS1"
+          ],
+          "confidence": 0.1221,
+          "stages": {
+            "model_initialization": 0.069208,
+            "video_open_decode": 14.636833,
+            "landmark_tracking": 43.385125,
+            "feature_preparation": 0.218167,
+            "model_inference": 0.388791,
+            "output_postprocessing": 0.417458
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "17092802473126545-SQUEEZE.mp4",
+          "ms": 53.16283299907809,
+          "prediction": "SQUEEZE",
+          "top5": [
+            "SQUEEZE",
+            "SOCCER2",
+            "SCROLLDOWN",
+            "CHEESEGRATER",
+            "ADVERTISE"
+          ],
+          "confidence": 0.1164,
+          "stages": {
+            "model_initialization": 0.085667,
+            "video_open_decode": 18.543666,
+            "landmark_tracking": 33.885125,
+            "feature_preparation": 0.220333,
+            "model_inference": 0.347792,
+            "output_postprocessing": 0.377875
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "25500869855740893-ANYONE.mp4",
+          "ms": 56.735666999884415,
+          "prediction": "ANYONE",
+          "top5": [
+            "ANYONE",
+            "PATIENT2",
+            "SOCIETY",
+            "ALLOFSUDDEN",
+            "OFFEND"
+          ],
+          "confidence": 0.7422,
+          "stages": {
+            "model_initialization": 0.069667,
+            "video_open_decode": 21.768375,
+            "landmark_tracking": 34.279334,
+            "feature_preparation": 0.201208,
+            "model_inference": 0.335333,
+            "output_postprocessing": 0.366458
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "3191470037860531-8 HOUR.mp4",
+          "ms": 65.72158299968578,
+          "prediction": "8HOUR",
+          "top5": [
+            "8HOUR",
+            "MAPLE",
+            "ELEVATOR1",
+            "BEE1",
+            "DOG1"
+          ],
+          "confidence": 0.3192,
+          "stages": {
+            "model_initialization": 0.094042,
+            "video_open_decode": 17.902958,
+            "landmark_tracking": 47.067916,
+            "feature_preparation": 0.220542,
+            "model_inference": 0.356875,
+            "output_postprocessing": 0.386541
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "3738312466703404-TEACH.mp4",
+          "ms": 55.951499998627696,
+          "prediction": "TEACH1",
+          "top5": [
+            "TEACH1",
+            "CHEER",
+            "HALLOWEEN1",
+            "DECIDE1",
+            "PARTY1"
+          ],
+          "confidence": 0.4715,
+          "stages": {
+            "model_initialization": 0.092917,
+            "video_open_decode": 16.443542,
+            "landmark_tracking": 38.545333,
+            "feature_preparation": 0.355375,
+            "model_inference": 0.4285,
+            "output_postprocessing": 0.45925
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "4254167262351618-CHEW 2.mp4",
+          "ms": 63.612417005060706,
+          "prediction": "CHEW1",
+          "top5": [
+            "CHEW1",
+            "PATIENT2",
+            "BASEBALLCAP",
+            "TAIL1",
+            "ANYONE"
+          ],
+          "confidence": 0.5242,
+          "stages": {
+            "model_initialization": 0.080917,
+            "video_open_decode": 27.644625,
+            "landmark_tracking": 35.182958,
+            "feature_preparation": 0.222667,
+            "model_inference": 0.384833,
+            "output_postprocessing": 0.424167
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "4481998873282871-PONDER.mp4",
+          "ms": 69.9054580036318,
+          "prediction": "PONDER",
+          "top5": [
+            "PONDER",
+            "AXE1",
+            "BACKPACK1",
+            "DARK1",
+            "JEWELRY"
+          ],
+          "confidence": 0.4829,
+          "stages": {
+            "model_initialization": 0.088333,
+            "video_open_decode": 26.815709,
+            "landmark_tracking": 42.148334,
+            "feature_preparation": 0.327709,
+            "model_inference": 0.428125,
+            "output_postprocessing": 0.4595
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "5004269948712425-SOCCER 2.mp4",
+          "ms": 55.153541994513944,
+          "prediction": "SOCCER2",
+          "top5": [
+            "SOCCER2",
+            "DEAF1",
+            "GOODYGOODYSHOEOPPOSITE",
+            "DECIDE1",
+            "MOVIE1"
+          ],
+          "confidence": 0.3957,
+          "stages": {
+            "model_initialization": 0.076458,
+            "video_open_decode": 17.570084,
+            "landmark_tracking": 36.7315,
+            "feature_preparation": 0.231708,
+            "model_inference": 0.433792,
+            "output_postprocessing": 0.470375
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "5008852988399453-MYSELF.mp4",
+          "ms": 56.300791999092326,
+          "prediction": "PATIENT2",
+          "top5": [
+            "PATIENT2",
+            "MYSELF",
+            "CHEEK",
+            "ANYONE",
+            "KNIGHT1"
+          ],
+          "confidence": 0.4691,
+          "stages": {
+            "model_initialization": 0.092541,
+            "video_open_decode": 25.998542,
+            "landmark_tracking": 29.506208,
+            "feature_preparation": 0.210083,
+            "model_inference": 0.406208,
+            "output_postprocessing": 0.438708
+          },
+          "tensor_sha": null
+        },
+        {
+          "clip": "5784034175717614-EASY.mp4",
+          "ms": 67.56350000068778,
+          "prediction": "EASY",
+          "top5": [
+            "EASY",
+            "DARK1",
+            "HOW1",
+            "KNIGHT1",
+            "CALENDAR1"
+          ],
+          "confidence": 0.9028,
+          "stages": {
+            "model_initialization": 0.079542,
+            "video_open_decode": 19.302958,
+            "landmark_tracking": 47.274416,
+            "feature_preparation": 0.376958,
+            "model_inference": 0.443209,
+            "output_postprocessing": 0.475542
+          },
+          "tensor_sha": null
+        }
+      ],
+      "clip_count": 12,
+      "round": 0,
+      "round_p50": [
+        56.51822949948837,
+        62.024103997828206,
+        58.77135450282367
+      ],
+      "round_p95": [
+        68.61738110201259,
+        79.28598545113346,
+        79.59484374987368
+      ]
+    }
+  },
+  "comparisons_vs_baseline": {
+    "baseline_4": {
+      "prediction_mismatches": [],
+      "top5_mismatches": [],
+      "tensor_mismatches": [],
+      "landmark_mismatches": [],
+      "p50_delta_ms": 18.13414549906156,
+      "p95_delta_ms": 42.97255175151804,
+      "worst_round_p95_ms": 152.38176249768003,
+      "control_worst_round_p95_ms": 105.9959248490486
+    },
+    "pipeline_4": {
+      "prediction_mismatches": [],
+      "top5_mismatches": [],
+      "tensor_mismatches": [],
+      "landmark_mismatches": [],
+      "p50_delta_ms": -6.900083499203902,
+      "p95_delta_ms": -2.055781747912988,
+      "worst_round_p95_ms": 104.42131859927031,
+      "control_worst_round_p95_ms": 105.9959248490486
+    },
+    "pipeline_8": {
+      "prediction_mismatches": [],
+      "top5_mismatches": [],
+      "tensor_mismatches": [],
+      "landmark_mismatches": [],
+      "p50_delta_ms": -21.64848000393249,
+      "p95_delta_ms": -19.18602049954643,
+      "worst_round_p95_ms": 88.26231480379647,
+      "control_worst_round_p95_ms": 105.9959248490486
+    },
+    "pipeline_12": {
+      "prediction_mismatches": [],
+      "top5_mismatches": [],
+      "tensor_mismatches": [],
+      "landmark_mismatches": [],
+      "p50_delta_ms": -28.290770496823825,
+      "p95_delta_ms": -12.296156501179212,
+      "worst_round_p95_ms": 106.95456655121232,
+      "control_worst_round_p95_ms": 105.9959248490486
+    },
+    "workers_8": {
+      "prediction_mismatches": [],
+      "top5_mismatches": [],
+      "tensor_mismatches": [],
+      "landmark_mismatches": [],
+      "p50_delta_ms": -16.44433349792962,
+      "p95_delta_ms": -12.759167246258585,
+      "worst_round_p95_ms": 99.9194374995568,
+      "control_worst_round_p95_ms": 105.9959248490486
+    },
+    "workers_12": {
+      "prediction_mismatches": [],
+      "top5_mismatches": [],
+      "tensor_mismatches": [],
+      "landmark_mismatches": [],
+      "p50_delta_ms": -24.126750500727212,
+      "p95_delta_ms": -21.452000495628454,
+      "worst_round_p95_ms": 83.20761655304523,
+      "control_worst_round_p95_ms": 105.9959248490486
+    },
+    "workers_16": {
+      "prediction_mismatches": [],
+      "top5_mismatches": [],
+      "tensor_mismatches": [],
+      "landmark_mismatches": [],
+      "p50_delta_ms": -28.306937500019558,
+      "p95_delta_ms": -25.439177250518696,
+      "worst_round_p95_ms": 79.59484374987368,
+      "control_worst_round_p95_ms": 105.9959248490486
+    }
+  },
+  "errors": {},
+  "machine": {
+    "platform": "macOS-26.3-arm64-arm-64bit",
+    "machine": "arm64",
+    "cpu_count": 18
+  },
+  "python": "3.11.18",
+  "measured_at": "2026-11-11T10:33:00+0530"
+}

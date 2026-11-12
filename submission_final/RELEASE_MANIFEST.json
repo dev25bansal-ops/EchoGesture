@@ -1,0 +1,297 @@
+{
+  "project": "EchoGesture",
+  "competition": "Samsung XR Hackathon 2026",
+  "track": 2,
+  "task": "on-device isolated sign recognition, 100-gloss vocabulary",
+  "manifest_generated": "2026-11-11",
+  "deadline": "2026-11-18T23:59:00+05:30",
+  "internal_deadline": "2026-11-17",
+  "public_repository": {
+    "url": "https://github.com/dev25bansal-ops/EchoGesture",
+    "branch": "hackathon/abhijeet-public",
+    "head_sha": "26b29905a072d96df31a30dbabc7dc8f322314d6",
+    "remote_verified": true,
+    "ci": "GitHub Actions success on 26b2990",
+    "pull_request": "https://github.com/dev25bansal-ops/EchoGesture/pull/1",
+    "pr_state": "draft",
+    "model_weights_published": true,
+    "exposure_correction": {
+      "previous_claim": "model_weights_published: false",
+      "why_it_was_wrong": "checked only the integration branch; the repository is PUBLIC and hackathon/dev-model exposes all four ensemble members at the exact shipped SHAs",
+      "verified": "2026-11-12 via gh repo view + git ls-tree over every remote branch",
+      "all_four_members_public": true,
+      "detector_public": true,
+      "legacy_int8_public": true,
+      "participant_ids_public": "evaluation/asl_citizen_predictions.csv - 1705 rows, 11 raw participant IDs",
+      "detail": "docs/release/PUBLIC_WEIGHT_EXPOSURE.md",
+      "status": "UNSATISFIED RELEASE GATE - owner decision required"
+    }
+  },
+  "model": {
+    "kind": "4-member FP16 TFLite ensemble, mean-logit aggregation, single softmax",
+    "quantization": "float16 weights, float32 IO",
+    "is_int8": false,
+    "metadata": "models/landmark_model_meta.json",
+    "members": [
+      {
+        "file": "landmark_ens_tcn21_fp16.tflite",
+        "bytes": 939152,
+        "sha256": "112279bc86090470b82b20b510746a946220322c25ec84cb3706a538c73dc22a",
+        "in_idx": 0,
+        "out_idx": 224
+      },
+      {
+        "file": "landmark_ens_tcnm61_fp16.tflite",
+        "bytes": 832888,
+        "sha256": "01a261d8eb6c2c4d8b501f0ce1a36db338365d17fddabc63528a7941b1390f63",
+        "in_idx": 0,
+        "out_idx": 191
+      },
+      {
+        "file": "landmark_ens_tcnm62_fp16.tflite",
+        "bytes": 832888,
+        "sha256": "27058a85e032bee3af444fb1538ff0bf32fd38fa2b01ce01a2f25c3a428d20b3",
+        "in_idx": 0,
+        "out_idx": 191
+      },
+      {
+        "file": "landmark_ens_rob71_fp16.tflite",
+        "bytes": 939152,
+        "sha256": "08417e72da59150ac9adf749e6324c30fb001d4a401394e32f125d3276d1ab21",
+        "in_idx": 0,
+        "out_idx": 224
+      }
+    ],
+    "member_bytes_total": 3544080,
+    "detector": {
+      "file": "hand_landmarker.task",
+      "bytes": 7819105,
+      "sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1"
+    },
+    "deployed_bytes_including_detector": 11363185,
+    "deployed_mb_decimal": 11.3632,
+    "tensor_index_note": "Per-member indices are read from each interpreter at load in src/main.py and unpacked per member in _run_ensemble; nothing is hardcoded. Measured values: tcn21 and rob71 expose out_idx 224, tcnm61 and tcnm62 expose 191, in_idx 0 for all."
+  },
+  "input_contract": {
+    "frames": 24,
+    "feature_dim": 255,
+    "dtype": "float32",
+    "strict_resample": false,
+    "features_sha256": "baf28d05bbd36e2783ea7ef6f78e793b89ed832d0eaad5dffed23d35c775aa84",
+    "labels_sha256": "e78f5028e97e2eaf86aff65af403af65061eebef010f0fbd41012293e8019a4a",
+    "classes": 100,
+    "public_api": "predict(video_path: str) -> dict"
+  },
+  "accuracy": {
+    "population": "ASL Citizen signer-disjoint test split",
+    "eligible_clips": 1255,
+    "scored_clips": 1249,
+    "unscored_no_hand": 6,
+    "top1_correct": 909,
+    "top1_pct_scored": 72.78,
+    "top1_pct_all_eligible": 72.43,
+    "top5_correct": 1093,
+    "top5_pct_scored": 87.51,
+    "top5_pct_all_eligible": 87.09,
+    "signers": 11,
+    "previous_single_model_top1_pct": 62.61,
+    "delta_top1_pp": 10.17,
+    "qualification": "test split was previously inspected during model selection; not a pristine blind test",
+    "unsupported_claims_removed": [
+      "validation 83.77% \u2014 no repository artifact supports it; committed predictions recompute to 75.36%"
+    ]
+  },
+  "performance": {
+    "definition": "full clip-to-JSON via predict(), macOS arm64 laptop, ai-edge-litert 2.3.0 XNNPACK CPU",
+    "not_target_hardware": true,
+    "singleton": {
+      "p50_ms": 231.8,
+      "p95_ms": 274.2,
+      "peak_rss_mib": 255.3,
+      "cold_ms": 468.0
+    },
+    "parallel_2": {
+      "p50_ms": 132.0,
+      "p95_ms": 154.8,
+      "peak_rss_mib": 300.0,
+      "cold_ms": 393.0
+    },
+    "parallel_4": {
+      "p50_ms": 79.3,
+      "p95_ms": 99.8,
+      "peak_rss_mib": 393.8,
+      "cold_ms": 352.5
+    },
+    "parity": "identical prediction on 12/12 clips across all three configurations",
+    "ensemble_inference_mean_ms": 0.41,
+    "tracking_share_pct": 90.5,
+    "target_50ms_p95_met": false,
+    "gpu_delegate": "tested, rejected: slower and not bit-identical",
+    "ensemble_inference_share_pct": 0.2,
+    "tracking_ms": 217.26,
+    "tracking_total_stage_ms": 240.16,
+    "stage_profile_source": "evaluation/device/performance_final/profile_final/stages.json"
+  },
+  "robustness": {
+    "protocol": "30 clips, 5 signers, seed 42, 210 predict calls, video-level",
+    "low_light": {
+      "drop_pp": -3.33,
+      "verdict": "PASS"
+    },
+    "motion_blur": {
+      "drop_pp": 0.0,
+      "verdict": "PASS"
+    },
+    "frame_drop": {
+      "drop_pp": 0.0,
+      "verdict": "PASS"
+    },
+    "crop": {
+      "drop_pp": 10.0,
+      "verdict": "FAIL"
+    },
+    "occlusion": {
+      "drop_pp": 6.67,
+      "verdict": "FAIL"
+    },
+    "budget_pp": 5.0
+  },
+  "android": {
+    "apk": "app/android_final/app/build/outputs/apk/debug/app-debug.apk",
+    "bytes": 75072782,
+    "signed": true,
+    "toolchain": "JDK 17, Android SDK 34, Gradle 8.10.2, AGP 8.5.2, Kotlin 2.0.20",
+    "unit_tests_passed": 9,
+    "members_embedded": 4,
+    "device_tested": false,
+    "device_note": "no Android device was attached; adb unavailable on the build machine",
+    "apk_sha256": "041e163fba2665bd33678a5463b0373c14d62b6b0c4cff28e67632aecc895b45",
+    "signature_scheme": "APK Signature Scheme v2 only (minSdk 24, so v1 not required)",
+    "zipalign": "all 11 .so entries stored uncompressed and 4096-byte aligned",
+    "embedded_members_verified": 4,
+    "embedded_detector_verified": true
+  },
+  "release_bundle": {
+    "file": "evaluation/device/release_final2/echogesture_final2_ensemble.zip",
+    "bytes": 9007144,
+    "sha256": "34a0e667634548bed0d0339622f9b15618699e0a99672a98c53ff59977a50c08",
+    "uncompressed_bytes": 11415713,
+    "entry_count": 16,
+    "contains_all_members": true,
+    "fresh_extraction_prediction": "WHATFOR1",
+    "fresh_extraction_confidence": 0.8821,
+    "rebuilt_from": "clean builder run after adding root Dockerfile; drops the superseded single-classifier model",
+    "superseded_sha256": "48a062f27492ed30bd02cb00732401d9a751b5ae02b94f837deee3835213aff7",
+    "ships_root_dockerfile": true,
+    "note": "built from the repo with the root Dockerfile and official-template results.csv; the superseded single-classifier model is no longer bundled",
+    "superseded_shas": [
+      "48a062f27492ed30bd02cb00732401d9a751b5ae02b94f837deee3835213aff7"
+    ]
+  },
+  "tests": {
+    "runner": "scripts/run_all_tests.py",
+    "local_with_weights": {
+      "run": 572,
+      "passed": 568,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 4
+    },
+    "published_source_only": {
+      "run": 500,
+      "passed": 376,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 124
+    },
+    "ci_verified": true
+  },
+  "disclosures": [
+    "50 ms full-clip p95 target is NOT met; best measured is 99.8 ms on parallel-4 on a Mac laptop",
+    "crop (-10.00 pp) and occlusion (-6.67 pp) exceed the 5 pp robustness budget",
+    "the 1249-clip test split was inspected during model selection; not a pristine blind evaluation",
+    "no physical Android device was available, so on-device camera latency, power draw and thermal drift are NOT measured",
+    "no demo video has been recorded",
+    "model weights have no confirmed redistribution permission and are excluded from the public repository",
+    "the shipped artifact is FP16, not INT8; an organizer clarification is outstanding"
+  ],
+  "not_claimed": [
+    "official submission completed",
+    "submission receipt received",
+    "organizer approval of FP16",
+    "weight redistribution permission",
+    "on-device latency compliance",
+    "continuous full-sentence ASL translation (the model performs isolated 100-gloss recognition)"
+  ],
+  "results_sheet": {
+    "file": "results/results.csv",
+    "metric_names": "official p.11 template: top1_accuracy, latency_p95, model_size, accuracy_drop_robustness, avg_power, thermal_drift_10min",
+    "columns": "official p.11 template: metric,target,measured,unit,device,runtime,pass,notes",
+    "rows": 6
+  },
+  "predictions_file": {
+    "file": "results/predictions.jsonl",
+    "rows": 1249,
+    "schema": "clip_id,prediction(top-5,uppercase),top5,confidence,latency_ms",
+    "matches_official_p11_schema": true,
+    "research_predictions_moved_to": "results/research/predictions.jsonl"
+  },
+  "demo": {
+    "offline_demo_verified": true,
+    "clip": "5784034175717614-EASY.mp4",
+    "prediction": "EASY",
+    "confidence": 0.9028,
+    "second_clip": {
+      "clip": "3738312466703404-TEACH.mp4",
+      "prediction": "TEACH1",
+      "confidence": 0.4715
+    },
+    "video_recorded": false,
+    "recording_guide": "docs/demo/DEMO_RECORDING_GUIDE.md"
+  },
+  "release_candidate": {
+    "generated": "2026-11-12",
+    "git_head": "932db68",
+    "latency_remeasured": {
+      "date": "2026-11-12",
+      "tracker_module": "src/parallel_tracker.py (vendored, shipped in the bundle)",
+      "host": "macOS arm64 laptop, ai-edge-litert 2.3.0, XNNPACK CPU",
+      "singleton": {
+        "p50_ms": 235.6,
+        "p95_ms": 275.8,
+        "cold_ms": 463.8,
+        "peak_rss_mib": 259.4
+      },
+      "parallel_2": {
+        "p50_ms": 130.8,
+        "p95_ms": 152.5,
+        "cold_ms": 389.3,
+        "peak_rss_mib": 299.3
+      },
+      "parallel_4": {
+        "p50_ms": 78.2,
+        "p95_ms": 93.9,
+        "cold_ms": 359.9,
+        "peak_rss_mib": 389.0
+      },
+      "parity": "0 disagreements across 12 clips, 3 configurations",
+      "target_50ms_p95_met": false,
+      "note": "the 99.8 ms figure reported earlier is superseded by 93.9 ms from a fresh run of the vendored module"
+    },
+    "shipped_closure_verified": {
+      "extracted_contains": "src/{main,features,landmark_frontend,parallel_tracker}.py, requirements.txt, README.md",
+      "evaluation_dir_present": false,
+      "parallel_mode_works_without_evaluation": true,
+      "reference_prediction": "WHATFOR1 @ 0.8821"
+    },
+    "gates": {
+      "source_only_ci": "PASS",
+      "local_suite": "582 run / 579 pass / 0 fail / 3 skip",
+      "official_builder": "implemented; blocked only on a real organizer manifest",
+      "docker": "see evaluation/device/DOCKER_ACCEPTANCE.md",
+      "android_emulator": "4 instrumentation tests pass (Android 14 arm64)",
+      "android_physical_device": "NOT_TESTED - no device attached",
+      "demo_video": "NOT_RECORDED"
+    }
+  }
+}

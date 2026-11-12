@@ -1,0 +1,53 @@
+{
+  "video": "/tmp/echogesture-real-fixture/0009701491968876486-PULL CONVINCE.mp4",
+  "total_frames_declared": 103,
+  "fps_declared": 30.002912904165452,
+  "frames_streamed": 103,
+  "prediction": "PULLCONVINCE",
+  "confidence": 0.6142476201057434,
+  "top5": [
+    "PULLCONVINCE",
+    "BACKPACK1",
+    "PARTY1",
+    "LOCK1",
+    "CAPTURE"
+  ],
+  "warmup_ms": 0.129833,
+  "frame_processing_ms": {
+    "n": 103,
+    "p50": 5.070542,
+    "p95": 7.585778899999999,
+    "max": 10.263125,
+    "mean": 5.500162223300972
+  },
+  "camera_to_caption_ms": 526.670125,
+  "sign_end_to_caption_ms": 0.669583,
+  "classifier_ms": 0.101625,
+  "clip_to_json_ms": 838.833292,
+  "buffer": {
+    "capacity": 96,
+    "size": 0,
+    "pushed": 103,
+    "dropped_overflow": 7,
+    "dropped_stale": 96
+  },
+  "dropped_out_of_order": 0,
+  "caption": {
+    "prediction": "PULLCONVINCE",
+    "confidence": 0.6142476201057434,
+    "top5": [
+      "PULLCONVINCE",
+      "BACKPACK1",
+      "PARTY1",
+      "LOCK1",
+      "CAPTURE"
+    ],
+    "sign_seq": 1,
+    "t_emit_ns": 82153591824583,
+    "camera_to_caption_ms": 526.670125,
+    "sign_end_to_caption_ms": 0.669583,
+    "classifier_ms": 0.101625,
+    "window_frames": 96
+  },
+  "note": "Streaming boundaries. clip_to_json_ms is the full-clip time and is NOT comparable to (nor a substitute for) clip p95 from run_manifest.py, which samples differently (uniform 32-frame sampling in image mode vs sequential VIDEO-mode streaming here)."
+}

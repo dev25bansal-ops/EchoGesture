@@ -1,3 +1,7 @@
 numpy>=1.24.0
-opencv-python>=4.8.0
+# headless, not opencv-python: the GUI build links against libxcb/libGL, which a
+# python:3.11-slim container does not ship, and predict() only ever decodes
+# video. The desktop build of the same version stays installed locally.
+opencv-python-headless>=4.8.0
 ai-edge-litert>=2.3.0
+mediapipe>=1.2.2

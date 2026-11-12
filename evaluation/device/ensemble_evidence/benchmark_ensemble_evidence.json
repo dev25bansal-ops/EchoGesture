@@ -1,0 +1,70 @@
+{
+  "candidate": "landmark 4-model FP16 ensemble (Dev DEV-05)",
+  "model_sha256": "08417e72da59150ac9adf749e6324c30fb001d4a401394e32f125d3276d1ab21",
+  "members": {
+    "landmark_ens_tcn21_fp16.tflite": "112279bc86090470b82b20b510746a946220322c25ec84cb3706a538c73dc22a",
+    "landmark_ens_tcnm61_fp16.tflite": "01a261d8eb6c2c4d8b501f0ce1a36db338365d17fddabc63528a7941b1390f63",
+    "landmark_ens_tcnm62_fp16.tflite": "27058a85e032bee3af444fb1538ff0bf32fd38fa2b01ce01a2f25c3a428d20b3",
+    "landmark_ens_rob71_fp16.tflite": "08417e72da59150ac9adf749e6324c30fb001d4a401394e32f125d3276d1ab21"
+  },
+  "member_bytes_total": 3544080,
+  "detector": {
+    "path": "models/hand_landmarker.task",
+    "sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1",
+    "bytes": 7819105
+  },
+  "labels_sha256": "e78f5028e97e2eaf86aff65af403af65061eebef010f0fbd41012293e8019a4a",
+  "features_sha256": "baf28d05bbd36e2783ea7ef6f78e793b89ed832d0eaad5dffed23d35c775aa84",
+  "quantization": "float16 weights, float32 IO",
+  "runtime": "ai-edge-litert 2.3.0, XNNPACK CPU",
+  "device": "macOS arm64 laptop (not target hardware)",
+  "accuracy": {
+    "population": "ASL Citizen signer-disjoint test split, 100-gloss vocabulary",
+    "eligible_clips": 1255,
+    "scored_clips": 1249,
+    "unscored_eligible": 6,
+    "top1_correct": 909,
+    "top5_correct": 1093,
+    "top1_pct_scored": 72.78,
+    "top5_pct_scored": 87.51,
+    "top1_pct_all_eligible": 72.43,
+    "top5_pct_all_eligible": 87.09,
+    "signers": 11,
+    "per_signer_mean_pct": 73.36,
+    "per_signer_min_pct": 53.52,
+    "per_signer_max_pct": 87.63,
+    "previous_single_model_top1_pct": 62.61,
+    "delta_top1_pp": 10.17,
+    "qualification": "test split was previously inspected during model selection; not a pristine blind test",
+    "evidence": "evaluation/device/ensemble_evidence/RESULT.md"
+  },
+  "latency": {
+    "definition": "full clip-to-JSON through predict(), 12 permitted val_30 clips, 1 cold + 12 measured warm",
+    "singleton": {
+      "p50_ms": 235.6,
+      "p95_ms": 275.8,
+      "peak_rss_mib": 259.4,
+      "cold_ms": 463.8
+    },
+    "parallel_2": {
+      "p50_ms": 130.8,
+      "p95_ms": 152.5,
+      "peak_rss_mib": 299.3,
+      "cold_ms": 389.3
+    },
+    "parallel_4": {
+      "p50_ms": 78.2,
+      "p95_ms": 93.9,
+      "peak_rss_mib": 389.0,
+      "cold_ms": 359.9
+    },
+    "parity": "identical prediction on 12/12 clips across all three configurations (0 disagreements)",
+    "ensemble_inference_mean_ms": 0.36,
+    "tracks_are_bottleneck": true,
+    "target_50ms_p95_met": false,
+    "evidence": "evaluation/device/performance_final/results_ensemble/benchmark.json",
+    "remeasured": "2026-11-12 from src/parallel_tracker.py (the vendored module shipped in the bundle), git e2b22af"
+  },
+  "model_size_mb": 11.37,
+  "power_thermal": "NOT_MEASURED (no target device)"
+}

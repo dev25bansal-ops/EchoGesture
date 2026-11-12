@@ -1,0 +1,33 @@
+{
+  "schema": "echogesture-v8-final-evidence/1.0",
+  "scope_note": "Work confined to /tmp/echogesture-v8-final-agents/evidence/evaluation/device/v8_evidence/. Original checkout and Dev model code read-only, not edited. No installs, no nested agents.",
+  "primary_result": {
+    "dataset": "Official ASL Citizen validation split, 346 vocab-eligible clips, 5 signers (P5/P12/P21/P26/P39)",
+    "n_total": 346,
+    "n_successful": 345,
+    "n_failed": 1,
+    "fp16_top1": {"correct": 272, "total": 346, "accuracy": 0.7861271676300579, "wilson_95": [0.7399025495676037, 0.8260678781917024]},
+    "int8_top1": {"correct": 254, "total": 346, "accuracy": 0.7341040462427746, "wilson_95": [0.6851648107396099, 0.7779019028816404]},
+    "paired_difference_pp": 5.202312138728327,
+    "fp16_top5": {"correct": 309, "total": 346, "accuracy": 0.8930635838150289, "wilson_95": [0.8560774465044514, 0.9214172825386355]},
+    "int8_top5": {"correct": 298, "total": 346, "accuracy": 0.861271676300578, "wilson_95": [0.8208659196627441, 0.8937432062959754]}
+  },
+  "paired_345": {
+    "both_correct": 242, "fp16_only": 30, "int8_only": 12, "both_wrong": 61,
+    "exact_mcnemar_two_sided_p": 0.007915897334896727,
+    "clip_bootstrap_paired_difference_95": [0.017391304347826087, 0.08985507246376812],
+    "argmax_agreement": "281/345 = 81.4%"
+  },
+  "failure": {"clip_id": "5989539775823847-INTUITIVE", "signer_id": "signer_2f68a231", "ground_truth": "INTUITIVE", "error_type": "ValueError", "error": "No hand detected in any frame", "counted_incorrect_for_both": true, "in_primary_denominator": 346},
+  "sensitivity_345": {"fp16": "272/345=78.84%", "int8": "254/345=73.62%", "note": "1 failure excluded only in sensitivity; primary counts it incorrect"},
+  "label_map": {"n_classes": 100, "permutation_0_99": true, "sha256": "e78f5028e97e2eaf86aff65af403af65061eebef010f0fbd41012293e8019a4a"},
+  "hashes_verified": {
+    "fp16_model": "a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4",
+    "int8_model": "9d24640a23244a3cd00c9fa62257733819f86ed1da5a10194c9b1cb64323700b",
+    "predictions346": "8d980fbe5ae41613b578f411855e0d1d96e4ac178ac5a84d9aae5f1a65546555",
+    "manifest346": "6b9a6a253a5d3edc55ca8bbb5ae138c832e8b0f5ac0f374fdc1df12085c3ab85",
+    "hand_landmarker_task": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1"
+  },
+  "split_integrity": {"status": "PASS_WITH_LIMITATIONS", "eligible_train": 1789, "eligible_val": 346, "eligible_test": 1255, "exact_overlaps": "empty full+eligible", "signers": "32/5/11", "covers_100_classes_each": true},
+  "verification_method": "Independent frozen-prediction recomputation (python -I, stdlib only): manifest==predictions==ledger clip sets (346 unique), FP16 272/346, INT8 254/346, top5 309/298, paired 242/30/12/61, per-class sums 272/254, confusion totals 74/92, Wilson matches."
+}

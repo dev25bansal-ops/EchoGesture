@@ -1,0 +1,47 @@
+{
+  "clip": "evaluation/device/v5_accuracy/data/val_30/0283886564670357-WHAT FOR.mp4",
+  "feature_shape": [
+    1,
+    24,
+    255
+  ],
+  "feature_sha_like": 14.72164,
+  "members_io": [
+    {
+      "member": "landmark_ens_tcn21_fp16.tflite",
+      "in_idx": 0,
+      "out_idx": 224
+    },
+    {
+      "member": "landmark_ens_tcnm61_fp16.tflite",
+      "in_idx": 0,
+      "out_idx": 191
+    },
+    {
+      "member": "landmark_ens_tcnm62_fp16.tflite",
+      "in_idx": 0,
+      "out_idx": 191
+    },
+    {
+      "member": "landmark_ens_rob71_fp16.tflite",
+      "in_idx": 0,
+      "out_idx": 224
+    }
+  ],
+  "ensemble_top1": "WHATFOR1",
+  "ensemble_conf": 0.882111,
+  "ensemble_top5": [
+    "WHATFOR1",
+    "OFFEND",
+    "KNIGHT1",
+    "SCROLLDOWN",
+    "DECIDE1"
+  ],
+  "per_member_argmax": [
+    "WHATFOR1",
+    "WHATFOR1",
+    "WHATFOR1",
+    "WHATFOR1"
+  ],
+  "note": "independent lead oracle; A01 integration must produce the same top1/conf"
+}

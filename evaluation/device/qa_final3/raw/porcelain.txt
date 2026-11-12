@@ -1,0 +1,65 @@
+ M README.md
+ M app/android_final/README.md
+ M app/android_final/app/build.gradle.kts
+ M app/android_final/app/src/main/java/org/echogesture/finalapp/LandmarkClassifier.kt
+ M app/android_final/app/src/main/java/org/echogesture/finalapp/MainActivity.kt
+ M app/android_final/app/src/main/java/org/echogesture/finalapp/ModelContract.kt
+ M app/android_final/app/src/main/res/values/strings.xml
+ M app/offline_demo.py
+ M docs/demo/DEMO_CHECKLIST.md
+ M evaluation/device/quantization_final/README.md
+ M evaluation/device/quantization_final/fixtures/provenance.json
+ M evaluation/device/v7_int8/test_v7_int8.py
+ M models/README.md
+ M models/landmark_model_meta.json
+ M results/results.csv
+ M scripts/release/build_bundle.py
+ M src/main.py
+?? app/android_final/app/src/main/java/org/echogesture/finalapp/EnsembleAggregation.kt
+?? app/android_final/app/src/test/java/org/echogesture/finalapp/EnsembleParityTest.kt
+?? app/android_final/app/src/test/resources/parity_ensemble_logits.txt
+?? app/android_final/gradle/wrapper/gradle-wrapper.jar
+?? app/android_final/gradlew
+?? app/android_final/gradlew.bat
+?? docs/demo/DEMO_RUNBOOK.md
+?? docs/demo/SHOT_LIST_FINAL.md
+?? docs/release/DEV_HANDOFF_PUBLISHED.md
+?? docs/submission/REQUIREMENTS_MATRIX.md
+?? evaluation/device/demo_final/easy_hud.png
+?? evaluation/device/demo_final/easy_run.err
+?? evaluation/device/demo_final/easy_run.json
+?? evaluation/device/demo_final/teach_hud.png
+?? evaluation/device/demo_final/teach_run.err
+?? evaluation/device/demo_final/teach_run.json
+?? evaluation/device/ensemble_evidence/RESULT.md
+?? evaluation/device/ensemble_evidence/VAL_RESULT.md
+?? evaluation/device/ensemble_evidence/benchmark_ensemble_evidence.json
+?? evaluation/device/ensemble_evidence/lead_oracle.json
+?? evaluation/device/ensemble_evidence/predictions_ensemble.jsonl
+?? evaluation/device/ensemble_evidence/predictions_ensemble_val.jsonl
+?? evaluation/device/ensemble_evidence/recompute.py
+?? evaluation/device/ensemble_evidence/test_recompute.py
+?? evaluation/device/performance_final/benchmark_ensemble.py
+?? evaluation/device/performance_final/concurrency_a02.py
+?? evaluation/device/performance_final/delegate_a02.py
+?? evaluation/device/performance_final/experiments_a02.py
+?? evaluation/device/performance_final/profile_final/stages.json
+?? evaluation/device/performance_final/profile_stages.py
+?? evaluation/device/performance_final/results_candidates/concurrency.json
+?? evaluation/device/performance_final/results_candidates/experiments.json
+?? evaluation/device/performance_final/results_ensemble/benchmark.json
+?? evaluation/device/performance_final/results_profile/stages.json
+?? evaluation/device/performance_final/summarize_candidates.py
+?? evaluation/device/performance_final/test_ensemble_runtime.py
+?? evaluation/device/qa_final3/raw/porcelain.txt
+?? evaluation/device/release_ensemble/test_build_ensemble.py
+?? evaluation/device/robustness_ensemble/make_report.py
+?? evaluation/device/robustness_ensemble/results/clean.json
+?? evaluation/device/robustness_ensemble/results/crop.json
+?? evaluation/device/robustness_ensemble/results/frame_drop.json
+?? evaluation/device/robustness_ensemble/results/low_light.json
+?? evaluation/device/robustness_ensemble/results/motion_blur.json
+?? evaluation/device/robustness_ensemble/results/occlusion.json
+?? evaluation/device/robustness_ensemble/results/runtime.json
+?? evaluation/device/robustness_ensemble/run_ensemble_robustness.py
+?? evaluation/device/robustness_ensemble/test_robustness_ensemble.py

@@ -1,0 +1,108 @@
+{
+  "clips": [
+    "evaluation/device/v5_accuracy/data/val_30/0283886564670357-WHAT FOR.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/032677896012150764-WHAT FOR.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/15347326711184706-NOON.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/17092802473126545-SQUEEZE.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/25500869855740893-ANYONE.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/3191470037860531-8 HOUR.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/3738312466703404-TEACH.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/4254167262351618-CHEW 2.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/4481998873282871-PONDER.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/5004269948712425-SOCCER 2.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/5008852988399453-MYSELF.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/5784034175717614-EASY.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/6142521746642153-WHAT FOR.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/6416983573445294-SHAVE.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/647818976594698-BABY 2.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/6495415212975224-UNDERWEAR.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/6523145816470133-WHAT FOR.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/6961575623504714-SHAVE.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/697572736827275-COMB.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/6987156871330971-BEE.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/7355641552290353-MECHANIC.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/7629092396207264-MAPLE.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/7713194149900888-CEMETERY.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/7873618416168222-TICKLE.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/8166700420399404-CHEEK.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/8213787748653953-PENNY.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/8581142177964065-AXE.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/9336391016353045-FLIP.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/9474917526716478-BASKETBALL.mp4",
+    "evaluation/device/v5_accuracy/data/val_30/9990244640190733-BACKPACK.mp4"
+  ],
+  "workers": {
+    "1": {
+      "cold": {
+        "count": 30,
+        "p50_ms": 211.20208299998922,
+        "p95_ms": 258.5695359002784,
+        "mean_ms": 214.35744159989554
+      },
+      "warm": {
+        "count": 30,
+        "p50_ms": 210.55762499963748,
+        "p95_ms": 258.67358110062924,
+        "mean_ms": 213.84511246687907
+      },
+      "tracking_stage_p50_ms": 210.23562500067783,
+      "tracking_stage_p95_ms": 262.5238499996158,
+      "tracking_stage_mean_ms": 213.7053423669689,
+      "peak_rss_kib": 330383360
+    },
+    "2": {
+      "cold": {
+        "count": 30,
+        "p50_ms": 115.5488755002807,
+        "p95_ms": 141.8147064002369,
+        "mean_ms": 116.47995703345562
+      },
+      "warm": {
+        "count": 30,
+        "p50_ms": 115.2559169995584,
+        "p95_ms": 142.7119897999546,
+        "mean_ms": 115.90650696665155
+      },
+      "tracking_stage_p50_ms": 115.17079150053178,
+      "tracking_stage_p95_ms": 143.08103955008846,
+      "tracking_stage_mean_ms": 115.7949048500086,
+      "peak_rss_kib": 380682240
+    },
+    "4": {
+      "cold": {
+        "count": 30,
+        "p50_ms": 63.16352100111544,
+        "p95_ms": 79.65649740035587,
+        "mean_ms": 64.6152000001166
+      },
+      "warm": {
+        "count": 30,
+        "p50_ms": 64.50977100030286,
+        "p95_ms": 79.47956279949722,
+        "mean_ms": 64.6587458331851
+      },
+      "tracking_stage_p50_ms": 63.586562500859145,
+      "tracking_stage_p95_ms": 80.44479020109065,
+      "tracking_stage_mean_ms": 64.24208198338117,
+      "peak_rss_kib": 472907776
+    }
+  },
+  "baseline": {
+    "count": 60,
+    "p50_ms": 210.7241250005245,
+    "p95_ms": 262.73474759973396,
+    "mean_ms": 215.143344350084
+  },
+  "parity": {
+    "checked": 60,
+    "exact_landmarks": 60,
+    "exact_present": 60,
+    "any_landmark_diff": 0,
+    "same_prediction": 60
+  },
+  "wall_seconds": 64.1406936250005,
+  "hardware": {
+    "platform": "darwin",
+    "python": "3.11.18"
+  }
+}

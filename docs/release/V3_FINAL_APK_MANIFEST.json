@@ -1,0 +1,100 @@
+{
+  "schema": "echogesture.v3.final_apk_manifest/1",
+  "generated_utc": "2026-11-13T18:42:16Z",
+  "apk": {
+    "path": "dist/echogesture-v3-12feeef-pretap.apk",
+    "sha256": "ce83cf4c0e080b210f3b3cb160d650177cf759f29e190b8951730dcbbdda8aa4",
+    "bytes": 77716903,
+    "applicationId": "org.echogesture.finalapp",
+    "minSdk": 24,
+    "targetSdk": 34,
+    "compileSdk": 34
+  },
+  "source": {
+    "branch": "diag/live-phone-recognition-v3",
+    "base_commit": "12feeef",
+    "uncommitted_changes": true,
+    "note": "built from a working tree on top of the base commit"
+  },
+  "models": {
+    "quantization": "float16",
+    "frames": 24,
+    "feature_dim": 255,
+    "classes": 100,
+    "members": [
+      {
+        "name": "landmark_ens_tcn21_fp16.tflite",
+        "sha256": "112279bc86090470b82b20b510746a946220322c25ec84cb3706a538c73dc22a",
+        "bytes": 939152
+      },
+      {
+        "name": "landmark_ens_tcnm61_fp16.tflite",
+        "sha256": "01a261d8eb6c2c4d8b501f0ce1a36db338365d17fddabc63528a7941b1390f63",
+        "bytes": 832888
+      },
+      {
+        "name": "landmark_ens_tcnm62_fp16.tflite",
+        "sha256": "27058a85e032bee3af444fb1538ff0bf32fd38fa2b01ce01a2f25c3a428d20b3",
+        "bytes": 832888
+      },
+      {
+        "name": "landmark_ens_rob71_fp16.tflite",
+        "sha256": "08417e72da59150ac9adf749e6324c30fb001d4a401394e32f125d3276d1ab21",
+        "bytes": 939152
+      }
+    ],
+    "ensemble_sha256": "0e4c392732e7da7e77632620dc72e4afce8b1a5aa00234dbf7a13a1049a7ad93",
+    "matches_contract": true
+  },
+  "detector": {
+    "name": "hand_landmarker.task",
+    "sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1",
+    "matches_contract": true
+  },
+  "vocabulary": {
+    "count": 100,
+    "sample_first_ten": [
+      "DOG1",
+      "HURDLE/TRIP1",
+      "DEMAND1",
+      "BREAKFAST1",
+      "DARK1",
+      "BITE1",
+      "ROCKINGCHAIR1",
+      "DEAF1",
+      "WHATFOR1",
+      "DECIDE1"
+    ],
+    "unchanged": true,
+    "source": "app/src/main/assets/landmark_labels.json"
+  },
+  "capture_contract": {
+    "span_ms": 3700,
+    "sampled_frames": 32,
+    "min_usable_span_ms": 1200,
+    "stale_gap_ms": 700,
+    "min_repeat_gap_ms": 1200,
+    "post_tap_frames_allowed": false,
+    "waiting_path": false,
+    "stale_fallback": false
+  },
+  "verification": {
+    "jvm_unit_tests": {
+      "total": 64,
+      "failed": 0
+    },
+    "instrumentation": {
+      "device": "emulator-5554 (sdk_gphone64_arm64, android-34)",
+      "total": 5,
+      "failed": 0,
+      "note": "emulator, not a physical phone"
+    },
+    "lint": "no new findings",
+    "physical_phone_tested": false
+  },
+  "restrictions": {
+    "contains_model_weights": true,
+    "redistribute_publicly": false,
+    "note": "model-bearing APK; do not publish without an approved model version"
+  }
+}

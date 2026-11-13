@@ -4,14 +4,15 @@ No physical Android device is attached to this machine (`adb devices -l` shows
 only `emulator-5554`). Nothing in this file is a measurement. It is the exact
 sequence that produces one.
 
-**APK:** `dist/echogesture-rc-a2c0a6c.apk`
-SHA-256 `abe6b24ba3f0cca9860ce08cb1562fb0312e020261027988fba522b10aa43bdd`
-Commit `a2c0a6c`, branch `diag/training-clip-repro`, 77,710,351 bytes.
+**APK:** `dist/echogesture-v3-12feeef-pretap.apk`
+SHA-256 `ce83cf4c0e080b210f3b3cb160d650177cf759f29e190b8951730dcbbdda8aa4`
+Base commit `12feeef`, branch `diag/live-phone-recognition-v3`, 77,716,903 bytes.
 
-This APK is byte-identical to the one built at `87e3835`, because nothing in
-production source changed between them — the MediaCodec decoder repair lives in
-the **test harness**, not in the CameraX path. Your phone will behave exactly as
-it did before. That is the honest starting condition for this test.
+This is the **strict pre-tap capture contract** build. It differs from the
+previous candidate (`echogesture-rc-a2c0a6c.apk`) in the capture path, not the
+models: the window is the 3.7 s ending at your tap, there is no waiting after
+the tap, and a thin or stalled buffer is refused with a message instead of being
+classified anyway. See `PHONE_BUILD_IDENTITY.md` for the full build list.
 
 ---
 
@@ -36,7 +37,7 @@ adb shell getprop ro.product.cpu.abi
 ## 2. Install
 
 ```bash
-adb install -r dist/echogesture-rc-a2c0a6c.apk
+adb install -r dist/echogesture-v3-12feeef-pretap.apk
 ```
 
 If it fails with `INSTALL_FAILED_UPDATE_INCOMPATIBLE`, a differently-signed
@@ -95,6 +96,15 @@ written gloss measures nothing.
 **Keep every failed capture.** A capture that reports "not clear enough to read"
 is a data point, not something to retry away. The retry rate is part of what is
 being measured.
+
+Three refusals are now possible and mean different things — record which one you
+saw, because they diagnose different problems:
+
+| Message | Meaning |
+| --- | --- |
+| "Not enough of the sign was recorded yet…" | The buffer was cold. Wait a second after opening the camera. |
+| "The camera stopped sending frames during that sign…" | The analyser stalled mid-sign. Note it; this is a device finding. |
+| "That sign was just read…" | You tapped twice inside 1.2 s. Space the attempts out. |
 
 Keep an annotations file, one line per capture, in capture order:
 

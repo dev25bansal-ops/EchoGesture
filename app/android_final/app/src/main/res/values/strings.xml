@@ -17,14 +17,11 @@
     <string name="camera_state_searching">Searching for hands</string>
     <string name="camera_state_detected">Hands detected</string>
     <string name="camera_state_preparing">Preparing camera</string>
-    <string name="camera_state_capturing">Reading the sign you just made…</string>
-    <string name="camera_state_capturing_left">Reading the sign you just made… %1$d s</string>
     <string name="camera_state_processing">Reading the sign…</string>
     <string name="camera_state_no_hands">No hands in view</string>
     <string name="camera_state_low_frames">Hand not visible for most of the capture</string>
     <string name="low_frames_detail">This capture was not clear enough to read. Keep both hands inside the guide for the whole capture, then try again.</string>
     <string name="capture_action">Recognise sign</string>
-    <string name="capture_action_capturing">Capturing…</string>
     <string name="capture_action_processing">Reading…</string>
     <string name="flip_camera">Switch camera</string>
     <string name="flip_camera_desc">Switch between front and back camera</string>
@@ -34,6 +31,9 @@
     <string name="camera_front">Front camera</string>
     <string name="camera_auto">Automatic</string>
     <string name="no_hands_detail_for_state">Keep both hands inside the frame guide and try again.</string>
+    <string name="capture_too_soon">Not enough of the sign was recorded yet. Perform the whole sign, then tap straight away.</string>
+    <string name="capture_stale">The camera stopped sending frames during that sign. Hold still for a moment, then sign again.</string>
+    <string name="capture_repeated">That sign was just read. Pause a moment, perform the next sign, then tap again.</string>
     <string name="error_generic">Something interrupted recognition. You can try again.</string>
 
     <!-- Permission / errors -->

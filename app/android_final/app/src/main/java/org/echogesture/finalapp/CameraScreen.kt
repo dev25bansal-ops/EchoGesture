@@ -60,7 +60,7 @@ class CameraScreen(
     private val diagnostics: DiagnosticsLog
 ) {
 
-    enum class UiState { INIT, WAITING, CAPTURING, PROCESSING, RESULT, NO_HANDS, LOW_FRAMES, ERROR }
+    enum class UiState { INIT, WAITING, PROCESSING, RESULT, NO_HANDS, LOW_FRAMES, ERROR }
 
     companion object {
         /**
@@ -171,7 +171,6 @@ class CameraScreen(
     fun onUnbind() {
         if (!bound) return
         bound = false
-        runCatching { tracker?.cancelCapture() }
         runCatching { cameraProvider?.unbindAll() }
         camera = null
         imageAnalysis = null
@@ -281,14 +280,11 @@ class CameraScreen(
 
             val cameraLive = hasCameraPermission() && camera != null
             captureButton.isEnabled =
-                modelReady && cameraLive && state != UiState.CAPTURING && state != UiState.PROCESSING
+                modelReady && cameraLive && state != UiState.PROCESSING
 
             captureButton.text = activity.getString(
-                when (state) {
-                    UiState.CAPTURING -> R.string.capture_action_capturing
-                    UiState.PROCESSING -> R.string.capture_action_processing
-                    else -> R.string.capture_action
-                }
+                if (state == UiState.PROCESSING) R.string.capture_action_processing
+                else R.string.capture_action
             )
 
             when (state) {
@@ -314,10 +310,6 @@ class CameraScreen(
                             R.color.text_on_dark
                         )
                     }
-                }
-                UiState.CAPTURING -> {
-                    hideStatus()
-                    setLiveStatus(R.string.camera_state_capturing, R.color.text_on_dark)
                 }
                 UiState.PROCESSING -> {
                     hideStatus()
@@ -605,17 +597,33 @@ class CameraScreen(
         if (processing) return
         processing = true
         resultCard.visibility = View.GONE
-        render(UiState.CAPTURING)
         haptic(HapticFeedbackConstants.KEYBOARD_TAP)
 
-        // Collect a fresh window starting now, not whatever was already in the
-        // ring. The callback fires on the analysis thread once the window is
-        // full, then inference moves to its own executor.
-        t.beginCapture {
-            if (!processing) return@beginCapture
-            val capture = t.captureSnapshot()
-            val frames = capture.frames
-            activity.runOnUiThread { if (processing) render(UiState.PROCESSING) }
+        // Classify the window that ENDS at this tap. No waiting: the sign is
+        // already over, so anything after the tap is a different gesture.
+        val request = t.beginCapture()
+        if (request is HandTracker.CaptureRequest.Insufficient) {
+            processing = false
+            haptic(HapticFeedbackConstants.KEYBOARD_TAP)
+            val msg = when (request.reason) {
+                // Nothing buffered yet, or the camera has only just started.
+                HandTracker.CaptureRequest.Insufficient.Reason.NO_FRAMES,
+                HandTracker.CaptureRequest.Insufficient.Reason.TOO_SHORT ->
+                    activity.getString(R.string.capture_too_soon)
+                // The analyser stopped delivering frames mid-sign.
+                HandTracker.CaptureRequest.Insufficient.Reason.STALE ->
+                    activity.getString(R.string.capture_stale)
+                // A second tap on the same sign would just repeat the answer.
+                HandTracker.CaptureRequest.Insufficient.Reason.REPEATED ->
+                    activity.getString(R.string.capture_repeated)
+            }
+            render(UiState.NO_HANDS, detail = msg)
+            return
+        }
+        val capture = (request as HandTracker.CaptureRequest.Ready).capture
+        val frames = capture.frames
+        activity.runOnUiThread { if (processing) render(UiState.PROCESSING) }
+        run {
             inferExecutor.execute {
                 try {
                     if (capture.handFrames == 0) {

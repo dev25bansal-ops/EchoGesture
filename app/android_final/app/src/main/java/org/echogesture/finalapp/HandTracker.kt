@@ -30,14 +30,11 @@ class HandTracker private constructor(
     private val lock = Any()
 
     /**
-     * A capture collects frames over [CAPTURE_SPAN_MS] starting from the
-     * moment the user asks for one. Without this the ring would already be
-     * full of frames from before the user raised their hand, so the 24-frame
-     * sequence the model sees would mix an old window with the new sign.
+     * When the last capture was classified, or [Long.MIN_VALUE] if none yet.
+     * A tap too soon after this would re-read the window that still contains
+     * the sign just classified, so it is refused rather than answered again.
      */
-    private var capturing = false
-    private var captureStartedMs = 0L
-    private var captureCallback: (() -> Unit)? = null
+    private var lastCapturedAtMs = Long.MIN_VALUE
 
     /** Consecutive failed frames; reset to 0 on any successful analysis. */
     private val consecutiveFailures = AtomicInteger(0)
@@ -61,6 +58,23 @@ class HandTracker private constructor(
         val handFrames: Int
     ) {
         val frameCount: Int get() = frames.size
+    }
+
+    /** Outcome of a capture request. Never carries post-tap frames. */
+    sealed interface CaptureRequest {
+        data class Ready(val capture: Capture) : CaptureRequest
+        data class Insufficient(val reason: Reason, val spanMs: Long = 0L) : CaptureRequest {
+            enum class Reason {
+                /** No analysed frame at or before the tap. */
+                NO_FRAMES,
+                /** History exists but covers less than [MIN_USABLE_SPAN_MS]. */
+                TOO_SHORT,
+                /** Newest frame predates the tap by more than [STALE_GAP_MS]. */
+                STALE,
+                /** Another sign was read too recently to read a new one. */
+                REPEATED,
+            }
+        }
     }
 
     companion object {
@@ -100,6 +114,97 @@ class HandTracker private constructor(
          * stalled or runaway analyser from growing memory without limit.
          */
         const val MAX_CAPTURE_FRAMES = 200
+
+        /** Minimum buffered history before a tap can be classified at all. */
+        const val MIN_USABLE_SPAN_MS = 1200L
+
+        /** A newest frame older than this means the analyser has stalled. */
+        const val STALE_GAP_MS = 700L
+
+        /**
+         * Minimum real time between two classified captures. Two taps closer
+         * than this select overlapping windows from the same sign, so the
+         * second would re-report the first sign as if it were a new one.
+         */
+        const val MIN_REPEAT_GAP_MS = 1200L
+
+        /**
+         * The whole capture decision, as a pure function of the buffered frames,
+         * the tap instant and the previous capture instant.
+         *
+         * Tests feed real [Frame] lists with chosen timestamps and get the
+         * production answer, rather than re-asserting constants.
+         *
+         * The contract is strict and has NO waiting path. An earlier version fell
+         * back to "keep capturing for another span" when the buffer looked thin,
+         * which silently re-introduced the original defect: the user had already
+         * finished signing, so the extra window recorded an empty room. If the
+         * history is not usable the caller is told so and must ask the user to try
+         * again; it is never satisfied with post-tap frames.
+         */
+        internal fun selectCapture(
+            frames: List<Frame>,
+            tappedAt: Long,
+            previousCaptureAtMs: Long
+        ): HandTracker.CaptureRequest {
+            if (frames.isEmpty()) {
+                return HandTracker.CaptureRequest.Insufficient(HandTracker.CaptureRequest.Insufficient.Reason.NO_FRAMES)
+            }
+            // Only frames at or before the tap are eligible: a frame that arrived
+            // while the tap was being handled belongs to whatever the signer does
+            // next, not to the sign. The ring is ordered oldest-first.
+            val preTap = frames.filter { it.capturedAtMs <= tappedAt }
+            if (preTap.isEmpty()) {
+                return HandTracker.CaptureRequest.Insufficient(HandTracker.CaptureRequest.Insufficient.Reason.NO_FRAMES)
+            }
+            val span = tappedAt - preTap.first().capturedAtMs
+            if (span < MIN_USABLE_SPAN_MS) {
+                // A cold start, a camera switch, or a paused analyser. Say so
+                // rather than classifying a fraction of a sign.
+                return HandTracker.CaptureRequest.Insufficient(HandTracker.CaptureRequest.Insufficient.Reason.TOO_SHORT, span)
+            }
+            val newest = preTap.last().capturedAtMs
+            if (tappedAt - newest > STALE_GAP_MS) {
+                // The analyser stopped delivering; the newest frame predates the
+                // sign, so the window would describe something that is already over.
+                return HandTracker.CaptureRequest.Insufficient(HandTracker.CaptureRequest.Insufficient.Reason.STALE)
+            }
+            // Two taps closer than MIN_REPEAT_GAP_MS select overlapping windows
+            // from the same sign, so the second would re-report the first sign as
+            // if it were a new one. Refuse rather than answer twice.
+            if (previousCaptureAtMs != Long.MIN_VALUE &&
+                tappedAt - previousCaptureAtMs < MIN_REPEAT_GAP_MS
+            ) {
+                return HandTracker.CaptureRequest.Insufficient(
+                    HandTracker.CaptureRequest.Insufficient.Reason.REPEATED,
+                    tappedAt - previousCaptureAtMs
+                )
+            }
+            return HandTracker.CaptureRequest.Ready(buildWindow(preTap, tappedAt))
+        }
+
+    /**
+         * Builds the window ending at [tappedAt] from [preTap] (already known to
+         * be at or before the tap): the most recent [CAPTURE_SPAN_MS] of it,
+         * resampled to [RING_CAPACITY] points. Never falls back to frames
+         * outside the span — a thin window is reported as what it is, not
+         * padded with older frames.
+         */
+        internal fun buildWindow(preTap: List<Frame>, tappedAt: Long): Capture {
+            val cutoff = tappedAt - CAPTURE_SPAN_MS
+            val raw = preTap.filter { it.capturedAtMs >= cutoff }
+            val first = raw.firstOrNull()?.capturedAtMs ?: tappedAt
+            val last = raw.lastOrNull()?.capturedAtMs ?: tappedAt
+            val duration = if (raw.size >= 2) last - first else 0L
+            val fps = if (duration > 0) (raw.size - 1) * 1000f / duration else 0f
+            val sampled = evenlySpacedFrames(raw, RING_CAPACITY)
+            return Capture(sampled, duration, fps, sampled.count { it.hands.isNotEmpty() })
+        }
+
+        private fun evenlySpacedFrames(raw: List<Frame>, target: Int): List<Frame> {
+            val idx = evenlySpacedIndices(LongArray(raw.size) { raw[it].capturedAtMs }, target)
+            return idx.map { raw[it] }
+        }
 
         /**
          * Indices of [target] frames spread evenly across the window by capture
@@ -181,30 +286,17 @@ class HandTracker private constructor(
                     .build(),
                 nextFrameTs.getAndAdd(FRAME_INTERVAL_MS)
             )
-            val now = SystemClock.elapsedRealtime()
             val frame = Frame(toHands(result), frameAtMs)
-            var completed: (() -> Unit)? = null
+            // The ring is a rolling buffer of the recent past. It is never
+            // gated on a capture state: the sign happens BEFORE the tap, so the
+            // frames that describe it are already behind us when the user
+            // presses the button. Discarding pre-tap frames here (as an earlier
+            // version did) left the window holding only the seconds AFTER the
+            // sign — usually an empty room.
             synchronized(lock) {
-                // The ring is a rolling buffer of the recent past. It is NOT
-                // gated on `capturing`: the sign happens BEFORE the tap, so the
-                // frames that describe it are already behind us when the user
-                // presses the button. Discarding pre-tap frames here (as an
-                // earlier version did) meant the window contained only the
-                // seconds AFTER the sign — usually an empty room.
                 ring.addLast(frame)
                 while (ring.size > MAX_CAPTURE_FRAMES) ring.removeFirst()
-                val elapsed = now - captureStartedMs
-                // End on time; the frame cap is only a memory backstop for a
-                // device so slow that the span barely fills.
-                if (capturing && (elapsed >= CAPTURE_SPAN_MS || ring.size >= MAX_CAPTURE_FRAMES)) {
-                    capturing = false
-                    completed = captureCallback
-                    captureCallback = null
-                }
             }
-            // Invoked outside the lock: the callback hands the finished window
-            // to the inference executor and must not hold the ring's monitor.
-            completed?.invoke()
             consecutiveFailures.set(0)
             true
         } catch (t: Throwable) {
@@ -232,78 +324,32 @@ class HandTracker private constructor(
         ring.size to ring.count { it.hands.isNotEmpty() }
     }
 
-    fun clear() = synchronized(lock) { ring.clear() }
+    /**
+     * Drops buffered frames. Also forgets the repeat guard: a camera switch or
+     * lifecycle reset is a new context, not a rapid re-tap.
+     */
+    fun clear() = synchronized(lock) {
+        ring.clear()
+        lastCapturedAtMs = Long.MIN_VALUE
+    }
 
     /**
      * Classifies the sign that just happened.
      *
-     * The signer performs, THEN taps. So the frames describing the sign are
-     * already in the rolling ring when this is called, and the window is the
-     * [CAPTURE_SPAN_MS] of real time immediately BEFORE the tap — not after it.
+     * The signer performs, THEN taps, so the frames describing the sign are
+     * already in the rolling ring. The window is the [CAPTURE_SPAN_MS] of real
+     * time ending at the tap — never anything after it.
      *
-     * An earlier version cleared the ring and waited for a fresh window. That
-     * required the signer to keep performing after tapping, which the on-screen
-     * instruction never asked for: it said "perform one sign, then tap
-     * Recognise sign". Measured on a training clip, the hand occupies frames
-     * 23–54 of 75; a window starting after the sign contains zero sign frames.
-     * That is a capture defect, not a model defect.
-     *
-     * The callback runs synchronously on the caller's thread if enough history
-     * already exists, otherwise after the first frame that completes the window.
-     * Returns immediately.
+     * Returns the outcome synchronously so the UI can react immediately; the
+     * decision itself lives in [selectCapture], which is pure.
      */
-    fun beginCapture(onComplete: () -> Unit) {
-        var readyNow = false
+    fun beginCapture(): HandTracker.CaptureRequest {
+        val tappedAt = SystemClock.elapsedRealtime()
         synchronized(lock) {
-            captureStartedMs = SystemClock.elapsedRealtime()
-            captureCallback = onComplete
-            // Enough buffered history to classify right away?
-            val first = ring.firstOrNull()?.capturedAtMs
-            readyNow = ring.size >= RING_CAPACITY &&
-                first != null && (captureStartedMs - first) >= CAPTURE_SPAN_MS * 3 / 4
-            capturing = !readyNow
-            if (readyNow) captureCallback = null
+            val outcome = selectCapture(ring.toList(), tappedAt, lastCapturedAtMs)
+            if (outcome is CaptureRequest.Ready) lastCapturedAtMs = tappedAt
+            return outcome
         }
-        if (readyNow) onComplete()
-    }
-
-    fun cancelCapture() = synchronized(lock) {
-        capturing = false
-        captureCallback = null
-    }
-
-    /** True while a capture window is still filling. */
-    fun isCapturing(): Boolean = synchronized(lock) { capturing }
-
-    /**
-     * The window ending now: the most recent [CAPTURE_SPAN_MS] of analysed
-     * frames, with real elapsed time and achieved FPS measured from per-frame
-     * timestamps.
-     *
-     * Because the window ends at the tap rather than starting there, it
-     * contains the sign the user just performed. [RING_CAPACITY] frames are
-     * chosen evenly across that span by timestamp, reproducing the uniform
-     * sampling training used; passing every buffered frame would let the
-     * analyser's frame rate, rather than the time base, decide what the model
-     * sees.
-     *
-     * [durationMs] and [fps] describe the raw analysed window, so the card and
-     * the diagnostic report what the camera really delivered.
-     */
-    fun captureSnapshot(): Capture = synchronized(lock) {
-        val newline = SystemClock.elapsedRealtime()
-        val cutoff = newline - CAPTURE_SPAN_MS
-        // Trailing window only: frames older than the span are from before the
-        // sign and would dilute it.
-        val raw = ring.filter { it.capturedAtMs >= cutoff }.ifEmpty { ring.toList() }
-        val first = raw.firstOrNull()?.capturedAtMs ?: 0L
-        val last = raw.lastOrNull()?.capturedAtMs ?: 0L
-        val duration = if (raw.size >= 2) last - first else 0L
-        val fps = if (duration > 0) (raw.size - 1) * 1000f / duration else 0f
-        // Report coverage over the frames the model actually receives, so the
-        // card's "N frames / M with a hand" describes one window, not two.
-        val sampled = evenlySpaced(raw, RING_CAPACITY)
-        Capture(sampled, duration, fps, sampled.count { it.hands.isNotEmpty() })
     }
 
     private fun evenlySpaced(raw: List<Frame>, target: Int): List<Frame> {
@@ -316,8 +362,7 @@ class HandTracker private constructor(
             landmarker.close()
             synchronized(lock) {
                 ring.clear()
-                capturing = false
-                captureCallback = null
+                lastCapturedAtMs = Long.MIN_VALUE
             }
         }
     }

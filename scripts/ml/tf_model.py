@@ -73,7 +73,7 @@ class QueryConst(tf.keras.layers.Layer):
 
 
 def build_tf_model(num_classes, dim=192, frames=24, feature_dim=255, dropout=0.2,
-                   backbone="conv"):
+                   backbone="conv", with_mask=False):
     """Functional model matching train.TemporalModel.
 
     Layer names mirror the PyTorch state_dict keys so `copy_weights` can map
@@ -82,6 +82,13 @@ def build_tf_model(num_classes, dim=192, frames=24, feature_dim=255, dropout=0.2
     k=17 depthwise filter, the tcn variant a narrow k=3 dilated one. Getting
     this wrong fails loudly at set_weights, which is why it is a parameter and
     not a guess.
+
+    `with_mask` adds a second input, the (T,) hand-presence mask, and applies
+    it to the attention scores exactly as the torch model does. It has to be
+    opt-in because it changes the graph signature: a model built without it
+    takes one input and any caller passing two will fail. The mask is not
+    cosmetic - `train.py` always passes it, and scoring a checkpoint without
+    it changes the operating point (measured: 1.84 pts on test, 2.90 on val).
     """
     k = 17 if backbone == "conv" else 3
     # torch builds 3 blocks for 'conv' and 4 for 'tcn' (its dilation tuple has
@@ -89,6 +96,8 @@ def build_tf_model(num_classes, dim=192, frames=24, feature_dim=255, dropout=0.2
     # k=3 convs). The count has to match or the state_dict keys do not line up.
     n_blocks = 3 if backbone == "conv" else 4
     inp = tf.keras.Input(shape=(frames, feature_dim), name="features")
+    if with_mask:
+        mask_in = tf.keras.Input(shape=(frames,), name="mask")
 
     x = inp                                            # (B,T,F)
     x = tf.keras.layers.Conv1D(dim, 1, name="stem")(x)  # (B,T,C)
@@ -118,6 +127,19 @@ def build_tf_model(num_classes, dim=192, frames=24, feature_dim=255, dropout=0.2
     v = AttnProject(n_heads, head_dim, name="v_proj")(x)
 
     scores = AttnScores(head_dim, name="attn_scores")([q, k])      # (B,H,1,T)
+    if with_mask:
+        # Mirror torch's key_padding_mask. torch masks with -inf before the
+        # softmax, so an absent frame gets exactly zero attention weight. The
+        # additive constant only has to be large enough to dominate the score
+        # range; it never reaches the output because exp(-1e9) underflows.
+        # A clip whose mask is entirely zero would softmax over all -1e9 and
+        # produce a uniform distribution rather than NaNs, which is the same
+        # degenerate fallback torch's `all(dim=1)` guard produces.
+        # Scores are (B,H,1,T); the mask must arrive as (B,1,1,T) to broadcast
+        # across heads AND across the query axis. Reshaping to (B,1,T) alone
+        # fails with "Dimensions must be equal, but are 4 and 32".
+        keep = tf.keras.layers.Reshape((1, 1, frames), name="mask_keep")(mask_in)
+        scores = AddMaskConst(name="attn_mask")([scores, keep])
     w = tf.keras.layers.Softmax(axis=-1, name="attn_softmax")(scores)
     ctx = AttnContext(name="attn_context")([w, v])                 # (B,1,H,d)
     ctx = tf.keras.layers.Reshape((1, dim), name="attn_merge")(ctx)
@@ -125,7 +147,27 @@ def build_tf_model(num_classes, dim=192, frames=24, feature_dim=255, dropout=0.2
 
     pooled = tf.keras.layers.Dropout(dropout, name="drop")(ctx)
     out = tf.keras.layers.Dense(num_classes, name="head")(pooled[:, 0, :])
-    return tf.keras.Model(inp, out, name="landmark_classifier")
+    inputs = [inp, mask_in] if with_mask else inp
+    return tf.keras.Model(inputs, out, name="landmark_classifier")
+
+
+class AddMaskConst(tf.keras.layers.Layer):
+    """Add a large negative constant where the hand-presence mask is 0.
+
+    Scores are (B,H,1,T) and the mask is (B,1,T); broadcasting gives (B,H,1,T).
+    Kept as a layer with no weights so it survives TF -> TFLite conversion.
+
+    A clip with every frame absent is passed through unmasked, matching the
+    `key_pad = key_pad & ~key_pad.all(dim=1)` guard in train.TemporalModel.
+    Without it, masking everything makes the softmax uniform, which is a
+    different (and previously unreachable) code path.
+    """
+
+    def call(self, inputs, **kw):
+        scores, keep = inputs
+        all_absent = tf.reduce_max(keep, axis=-1, keepdims=True) < 0.5
+        keep = tf.where(all_absent, tf.ones_like(keep), keep)
+        return scores + (1.0 - keep) * (-1e9)
 
 
 class AttnProject(tf.keras.layers.Layer):

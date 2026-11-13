@@ -323,3 +323,72 @@ test z against no-z as a paired sample on test, not to compare finished
 ensembles. That is the experiment this data can actually support, and it was
 not affordable before the deadline. Recorded here so it is the first thing
 tried next time rather than the last.
+
+## 13 Nov: the attention mask was trained but never exported — +4.24 points
+
+This is the largest single gain of the project, and it is a **correctness fix,
+not a tuning result**. No new data, no new architecture, no hyperparameter
+search.
+
+### The defect
+
+`train.TemporalModel.forward` takes a `mask` and passes it to the attention as
+`key_padding_mask`, so frames with no detected hand contribute *zero* attention
+weight. `train.py` always supplies it. But `tf_model.build_tf_model` declared a
+single input — `features` — and no mask at all. So every TFLite artifact ever
+shipped was a **different model** from the one that was trained: it attended
+over absent-hand frames with `present=0` and all-zero coordinates.
+
+`src/main.py:139` shows the consequence directly:
+
+```python
+feats, _mask = build_features(lm, present, expected_frames=target_frames)
+```
+
+The mask was computed and thrown away, because nothing downstream could accept it.
+
+### What it was worth, measured on the checkpoint itself
+
+Same weights, same features, mask vs no mask:
+
+| model | val | test |
+| --- | --: | --: |
+| mirror_handdrop_tcn_z_s0, no mask | 80.87% | 70.30% |
+| mirror_handdrop_tcn_z_s0, **with mask** | **83.77%** | **72.14%** |
+
++2.90 val, +1.84 test on a single member. Saved training logits matched the
+with-mask path at 100% argmax, which is what proved the diagnosis.
+
+### What it was worth end to end, through the real artifacts
+
+| ensemble (9 members) | val | test |
+| --- | --: | --: |
+| shipped 4, no mask | 83.77% | 72.78% |
+| 4 shipped members, exported **with mask** | — | **74.06%** |
+| + 5 z-channel members, all masked | **87.25%** | **77.02%** |
+
+Verified by reloading every `.tflite` from `models/` and re-running it, not
+from cached logits. All 9 members report 2 inputs and 100% argmax parity with
+PyTorch (`max|d|` 3.8e-06 to 6.1e-05, gate 1e-2).
+
+**+4.24 points on test, +3.48 on val.** The TFLite figure (77.02%) sits 0.08
+above PyTorch (76.94%), i.e. FP16 rounding flipping a clip or two — a
+systematic gap would mean a porting bug, this does not.
+
+### The two fixes were both required
+
+Neither alone reaches 77.02%: the mask lifts the 4 shipped members to 74.06%,
+and the z members add the rest. They are independent — one is a missing input
+in the export, the other a missing channel in the features.
+
+### Why the export's own gate did not catch this
+
+`export_ensemble.py` checked *parity between two implementations of the same
+graph*. Both sides lacked the mask, so they agreed perfectly. The gate was
+correct and useless: it validated the port against PyTorch-*without-mask*,
+which was never the trained model. A parity gate can only catch drift between
+two paths; it cannot catch both paths being wrong.
+
+The general lesson, and the reason this sat undetected: **parity is not
+correctness.** What exposed it was comparing the exported artifact's accuracy
+against the number the training run had already printed.

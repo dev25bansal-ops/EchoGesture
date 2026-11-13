@@ -57,8 +57,14 @@ convert new ones.
 ## Reproduce the shipped numbers
 
 This is the check that the download is intact. It must print
-**83.77% val / 72.78% test**; anything else means the cache or the models did
+**87.25% val / 77.02% test**; anything else means the cache or the models did
 not land correctly.
+
+> If you are reading this before 13 Nov 2026: the number used to be
+> 83.77% / 72.78%. The models changed — they now take a hand-presence mask,
+> and five of the nine take 381-wide x,y,z features. The script below handles
+> both. Anything *other* than one of those two pairs means the download is
+> wrong.
 
 ```python
 import os, sys, json, numpy as np
@@ -68,26 +74,37 @@ from features import build_features
 import ai_edge_litert.interpreter as lit
 
 meta = json.load(open(os.path.join(B, "models/landmark_model_meta.json")))
+detail = {d["file"]: d["use_z"] for d in meta.get("members_detail", [])}
+
 models = []
 for m in meta["members"]:
     it = lit.Interpreter(model_path=os.path.join(B, "models", m))
     it.allocate_tensors()
-    models.append((it, it.get_input_details()[0]["index"],
-                   it.get_output_details()[0]["index"]))
+    # Match inputs by NAME. The converter reports the mask as input 0, so
+    # positional indexing feeds a (1,24) mask where (1,24,F) features belong.
+    dets = {d["name"]: d for d in it.get_input_details()}
+    f_det = next(d for n, d in dets.items() if "features" in n)
+    m_det = next((d for n, d in dets.items() if "mask" in n), None)
+    models.append((it, f_det["index"], m_det["index"] if m_det else -1,
+                   it.get_output_details()[0]["index"], detail.get(m, False)))
 
 vocab = json.load(open(os.path.join(B, "models/landmark_labels.json")))
 labels = [g for g, _ in sorted(vocab.items(), key=lambda kv: kv[1])]
 idx = {g: i for i, g in enumerate(labels)}
 
-def logits(f):
+def logits(feats, mask):
     lg = []
-    for it, ii, oi in models:
-        it.set_tensor(ii, f[None].astype(np.float32)); it.invoke()
+    for it, fi, mi, oi, _uz in models:
+        it.set_tensor(fi, feats[None].astype(np.float32))
+        if mi >= 0:
+            it.set_tensor(mi, mask[None].astype(np.float32))
+        it.invoke()
         lg.append(it.get_tensor(oi)[0].astype(np.float32))
     return np.mean(lg, axis=0)
 
 for split in ("val", "test"):
-    d = os.path.join(B, ".scratch/landmarks", split); ok = n = 0
+    d = os.path.join(B, ".scratch/landmarks", split)
+    ok = n = 0
     for fn in sorted(os.listdir(d)):
         z = np.load(os.path.join(d, fn), allow_pickle=False)
         if float(z["present"].max()) < 0.5:
@@ -95,12 +112,24 @@ for split in ("val", "test"):
         g = str(z["gloss"])
         if g not in idx:
             continue
-        f, _ = build_features(z["landmarks"], z["present"], expected_frames=24)
-        ok += int(np.argmax(logits(f)) == idx[g]); n += 1
+        # Build each width once; a member's own graph declares which it needs.
+        W = {uz: build_features(z["landmarks"], z["present"],
+                                expected_frames=24, use_z=uz)
+             for uz in {uz for *_x, uz in models}}
+        per_member = []
+        for it, fi, mi, oi, uz in models:
+            f, m = W[uz]
+            it.set_tensor(fi, f[None].astype(np.float32))
+            if mi >= 0:
+                it.set_tensor(mi, m[None].astype(np.float32))
+            it.invoke()
+            per_member.append(it.get_tensor(oi)[0])
+        ok += int(np.argmax(np.mean(per_member, axis=0)) == idx[g])
+        n += 1
     print(split, ok, n, round(100 * ok / n, 2))
 ```
 
-Measured on the pod: `val 289 345 83.77`, `test 909 1249 72.78`.
+Measured on the pod: `val 301 345 87.25`, `test 962 1249 77.02`.
 
 ## Training from the cache
 
@@ -118,7 +147,7 @@ from the phone.
 
 ## What the pod cannot give you
 
-- **More accuracy on its own.** The 72.78% is limited by data, not compute:
+- **More accuracy on its own.** The 77.02% is limited by data, not compute:
   about 17 clips per class from 32 training signers, evaluated on 11 unseen
   signers. A bigger GPU trains the same model faster; it does not add signers.
 - **A device number.** Everything here is desktop-class x86 with an A10.

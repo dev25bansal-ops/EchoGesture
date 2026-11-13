@@ -283,14 +283,30 @@ prior does not obviously transfer, which is why it needed measuring.
 
 | seed | val no-z | val +z | Δ | test no-z | test +z | Δ |
 | --: | --: | --: | --: | --: | --: | --: |
-| 0 | 82.90% | 83.77% | **+0.87** | 70.62% | 72.14% | **+1.52** |
-| 7 | 81.16% | 82.61% | **+1.45** | 69.98% | 69.74% | −0.24 |
-| 13 | 82.61% | 84.35% | **+1.74** | 71.90% | 72.22% | **+0.32** |
-| mean | | | **+1.35** | | | **+0.53** |
+| 0 | 82.90% | 83.77% | +0.87 | 70.62% | 72.14% | **+1.52** |
+| 1 | 84.06% | 83.19% | −0.87 | 70.94% | 73.50% | **+2.56** |
+| 2 | 84.64% | 84.06% | −0.58 | 72.62% | 72.86% | +0.24 |
+| 7 | 81.16% | 82.61% | +1.45 | 69.98% | 69.74% | −0.24 |
+| 13 | 82.61% | 84.35% | +1.74 | 71.90% | 72.22% | +0.32 |
+| **mean** | | | **+0.52** | | | **+0.88** |
 
-z helps **val on 3 of 3 seeds** and never hurts it. On test it is 2 of 3, with
-one seed going backwards. Per-clip McNemar on the best pair (seed 0):
-val `+17/-14 z=0.54`, test `+90/-71 z=1.50`.
+z helps **test on 4 of 5 seeds (+0.88)** and val on 3 of 5 (+0.52).
+
+**An earlier, 3-seed version of this table is what led me to call z "a val
+effect that does not hold on test". That reading was wrong, and so was the
+briefing written from it** — with seeds 1 and 2 added, the two splits swap
+places. The lesson is the one this file already records twice: three seeds
+cannot settle a sub-1-point effect, and I drew a conclusion from them anyway.
+
+What survives at five seeds is weaker and simpler than either reading: z helps
+**test** a little and is roughly neutral on val. Neither split reaches
+significance on its own (paired t = 1.72 on test, 0.98 on val, df=4), which is
+why it did not ship alone — it is in the ensemble because the *combination*
+reaches z=3.80 against the shipped four (66 fixed / 29 broken, reloaded from
+`models/`), not because z alone earns its place.
+
+Per-clip McNemar on the best pair (seed 0): val `+17/-14 z=0.54`,
+test `+90/-71 z=1.50`.
 
 The base recipe agrees: `base` 66.13% → `base_z` 67.33% on test (+1.20).
 

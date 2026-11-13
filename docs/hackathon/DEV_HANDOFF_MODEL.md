@@ -215,7 +215,7 @@ through the release bundle instead.
 
 1. Does the organizer manifest use clip IDs matching the **video stem**? We key
    `clip_id` on `Path(video_path).stem`.
-2. Is **72.78%** the number to report, or does the device evaluation re-measure on a
+2. Is **77.02%** the number to report, or does the device evaluation re-measure on a
    different clip set? If the latter, note that robustness is still unmeasured —
    see `RESULTS.md`.
 3. Should `predict()` **raise** or return a low-confidence sentinel when no hand is

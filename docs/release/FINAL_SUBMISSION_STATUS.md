@@ -145,6 +145,19 @@ evaluator path — `src/`, `results/`, `Dockerfile` and `README.md` scan clean.
 | Worker-scaling prediction consistency | **PASS** — identical to 4 dp, 1 vs 12 workers, 7 clips |
 | Evaluator path privacy scan | **PASS** — no home paths in `src/`, `results/`, `README.md`, `Dockerfile` |
 | Android APK identity | `530f5ec4…`, 77,710,351 B, CAMERA-only, no INTERNET |
+| Provisional release bundle | **9,013,350 B**, `status: structure_verified`, all 4 member hashes recorded, includes `results/predictions.jsonl` + `.json` + `results.csv` + Dockerfile + conversion script |
+| Official bundle path | **Correctly refuses** without `manifest.json` — verified by test, not assumed |
+| Bundle builder tests | 13/13 with weights staged, 13 skipped source-only |
+
+### A test-configuration fact worth knowing
+
+The Python suite is **conditional on which restricted models are staged in
+`models/`**. In the source-only configuration that actually ships, it reports
+**PASS with 119 skipped**. If the four ensemble members and detector are staged
+locally, one extra test runs and three tests fail that reference
+`landmark_classifier_fp16.tflite` — a different, also-restricted model we do not
+ship. Those three failures are pre-existing and environmental, not regressions.
+Verify the suite with `models/` holding only the tracked files.
 
 ---
 

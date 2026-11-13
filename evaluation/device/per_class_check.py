@@ -54,6 +54,27 @@ def wilson(k: int, n: int, z: float = 1.96) -> tuple[float, float]:
     return (max(0.0, centre - half), min(1.0, centre + half))
 
 
+def _margin_for(path: Path) -> float | None:
+    """Top-1 minus top-2 softmax probability, using the pipeline's own stages."""
+    import numpy as np
+    import landmark_frontend as lf
+    import features as ft
+    import main as model
+
+    frames = lf.read_frames(str(path), max_frames=32)
+    if not frames:
+        return None
+    landmarks, present = lf.detect_hands(frames, mode="image")
+    if float(present.max()) < 0.5:
+        return None
+    feats, _ = ft.build_features(landmarks, present, expected_frames=24)
+    logits, _ = model._run_ensemble(feats[None, ...].astype(np.float32))
+    e = np.exp(logits - logits.max())
+    p = e / e.sum()
+    order = np.argsort(p)[::-1]
+    return float(p[order[0]] - p[order[1]])
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--split", type=Path, required=True)
@@ -123,17 +144,17 @@ def main(argv: list[str] | None = None) -> int:
                 continue
             scores.append(r["confidence"])
             top = r["top5"]
-            m = r.get("margin")
-            if m is None and "top5_scores" in r:
-                s = r["top5_scores"]
-                m = s[0] - s[1] if len(s) > 1 else s[0]
+            # predict() returns only the five contract fields, so the top-1/top-2
+            # margin must be computed here. It is the app's real acceptance rule;
+            # inventing a margin from absent fields silently rejected everything.
+            m = _margin_for(path)
             if m is not None:
-                margins.append(float(m))
+                margins.append(m)
             if r["prediction"] == label:
                 ok += 1
             if label in top:
                 top5_ok += 1
-            is_accepted = (m is not None and float(m) >= MARGIN_CUT
+            is_accepted = (m is not None and m >= MARGIN_CUT
                            and r["confidence"] >= SCORE_FLOOR)
             if is_accepted:
                 accepted += 1

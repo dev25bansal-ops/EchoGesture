@@ -146,3 +146,29 @@ evidence supports neither READY FOR BROADER TESTING (the phone failures are
 unexplained by anything measurable here) nor NEEDS DEV RETRAINING (the model
 classifies in-vocabulary footage correctly, so retraining is not yet
 justified).
+
+## Two-window agreement (measured, not implemented)
+
+Splitting each clip into two disjoint halves and classifying each as its own
+window — a stand-in for the user performing the sign twice — separates strongly
+(n=113):
+
+| Outcome | n | Share | top-1 on first window |
+| --- | --: | --: | --: |
+| Both windows agree | 46 | 41% | **98%** |
+| Windows disagree | 67 | 59% | 55% |
+
+Agreement is a better correctness signal than any threshold on a single
+window. It is **not implemented**, deliberately:
+
+- It costs a second 3.7 s capture, so it doubles the time before a result on
+  every use, including the 41% the current app already reads out correctly on
+  the first attempt.
+- The 59% disagreement rate on clip halves is inflated relative to a real
+  repeat: a signer performing deliberately always covers the whole sign, while
+  a clip half often contains only part of the motion.
+- It needs its own phone measurement before it can be justified.
+
+The honest framing: if phone data shows low accuracy at accepted coverage, a
+"perform once more" confirm step is the best-supported next lever, and this
+table is the evidence for it.

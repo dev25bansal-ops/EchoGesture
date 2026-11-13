@@ -60,7 +60,13 @@ class CameraScreen(
     private val diagnostics: DiagnosticsLog
 ) {
 
-    enum class UiState { INIT, WAITING, PROCESSING, RESULT, NO_HANDS, LOW_FRAMES, ERROR }
+    /**
+     * RECORDING is the explicit mode: the signer started a recording, is
+     * performing one sign, and will press Finish. It is a first-class state
+     * rather than a flag so the button, the live pill and the timer cannot
+     * disagree about whether capture is in progress.
+     */
+    enum class UiState { INIT, WAITING, RECORDING, PROCESSING, RESULT, NO_HANDS, LOW_FRAMES, ERROR }
 
     companion object {
         /**
@@ -123,6 +129,9 @@ class CameraScreen(
     private val trackerExecutor = Executors.newSingleThreadExecutor()
     private val inferExecutor = Executors.newSingleThreadExecutor()
 
+    /** Main-thread handler for the record-mode elapsed-time ticker. */
+    private val handler = android.os.Handler(android.os.Looper.getMainLooper())
+
     private var cameraProvider: ProcessCameraProvider? = null
     private var camera: Camera? = null
     private var imageAnalysis: ImageAnalysis? = null
@@ -137,6 +146,17 @@ class CameraScreen(
     @Volatile private var boundSelector: CameraSelector? = null
 
     private var currentState = UiState.INIT
+
+    /** True while the explicit record-mode timer is posted. */
+    private var recordingTicker: Runnable? = null
+
+    /**
+     * How long the recording has been running, as the UI shows it. Kept in
+     * elapsed real time from the same clock the frames are stamped with, so
+     * the number on screen and the interval the model receives are the same
+     * interval — not two clock domains that happen to look similar.
+     */
+    private var recordingStartedAtMs = 0L
     private var lastFrames = 0
     private var lastHandFrames = 0
     private var bound = false
@@ -216,14 +236,24 @@ class CameraScreen(
     // ---- wiring -------------------------------------------------------------
 
     private fun wireControls() {
-        captureButton.setOnClickListener { beginCapture() }
+        captureButton.setOnClickListener {
+            when (currentState) {
+                UiState.RECORDING -> finishRecording()
+                UiState.PROCESSING -> Unit // button is disabled, but be explicit
+                else -> startRecording()
+            }
+        }
         helpButton.setOnClickListener { showHelp() }
         retryButton.setOnClickListener {
             haptic(HapticFeedbackConstants.KEYBOARD_TAP)
-            beginCapture()
+            startRecording()
         }
         clearButton.setOnClickListener { clearResult() }
         statusAction.setOnClickListener {
+            if (currentState == UiState.RECORDING) {
+                cancelRecording()
+                return@setOnClickListener
+            }
             when (currentState) {
                 UiState.ERROR -> {
                     trackerFailureReported = false
@@ -283,8 +313,11 @@ class CameraScreen(
                 modelReady && cameraLive && state != UiState.PROCESSING
 
             captureButton.text = activity.getString(
-                if (state == UiState.PROCESSING) R.string.capture_action_processing
-                else R.string.capture_action
+                when (state) {
+                    UiState.PROCESSING -> R.string.capture_action_processing
+                    UiState.RECORDING -> R.string.record_finish
+                    else -> R.string.record_start
+                }
             )
 
             when (state) {
@@ -298,6 +331,8 @@ class CameraScreen(
                     setLiveStatus(R.string.camera_state_preparing, R.color.text_on_dark)
                 }
                 UiState.WAITING -> {
+                    guidanceText.visibility =
+                        if (prefs.showGuidance) View.VISIBLE else View.GONE
                     if (permissionBlocked) {
                         hideStatus()
                         setLiveStatus(R.string.permission_title, R.color.warning)
@@ -310,6 +345,24 @@ class CameraScreen(
                             R.color.text_on_dark
                         )
                     }
+                }
+                UiState.RECORDING -> {
+                    // The live pill carries the running time; guidance sits
+                    // under the preview rather than over the signer's hands.
+                    hideStatus()
+                    setLiveStatus(R.string.record_prompt, R.color.danger)
+                    guidanceText.visibility = View.VISIBLE
+                    // The primary button is Finish; Cancel is the status
+                    // card's secondary action, so a mis-tap costs one press.
+                    showStatus(
+                        R.string.record_prompt,
+                        R.string.record_cancel_hint,
+                        icon = R.drawable.ic_hand,
+                        tint = R.color.danger,
+                        tone = Tone.DANGER,
+                        action = true
+                    )
+                    statusAction.setText(R.string.record_cancel)
                 }
                 UiState.PROCESSING -> {
                     hideStatus()
@@ -663,6 +716,177 @@ class CameraScreen(
                 }
             }
         }
+    }
+
+    // ---- explicit record mode ----------------------------------------------
+
+    /**
+     * START: collect a fresh temporal sequence from this instant.
+     *
+     * Nothing from before the press can enter it. The tracker's rolling ring
+     * is left alone (quick scan still needs it) and the recorder starts empty,
+     * so a previous sign cannot leak into this one.
+     */
+    private fun startRecording() {
+        if (!modelReady || processing) return
+        if (!hasCameraPermission()) {
+            render(UiState.WAITING, permissionBlocked = true)
+            return
+        }
+        val t = tracker
+        if (t == null) {
+            render(UiState.ERROR, detail = activity.getString(R.string.error_model_load))
+            return
+        }
+        resultCard.visibility = View.GONE
+        recordingStartedAtMs = SystemClock.elapsedRealtime()
+        // The recorder uses the same clock instant as the timer below, so the
+        // reported duration and the captured interval are the same interval.
+        t.startRecording(recordingStartedAtMs)
+        haptic(HapticFeedbackConstants.KEYBOARD_TAP)
+        render(UiState.RECORDING)
+        startRecordingTicker()
+    }
+
+    /** FINISH: freeze the interval and classify exactly it. */
+    private fun finishRecording() {
+        val t = tracker ?: return
+        val c = classifier ?: return
+        if (processing) return
+        stopRecordingTicker()
+        processing = true
+        val stoppedAt = SystemClock.elapsedRealtime()
+        val outcome = t.stopRecording(stoppedAt)
+        haptic(HapticFeedbackConstants.KEYBOARD_TAP)
+
+        if (outcome is SignRecorder.Result.Unusable) {
+            processing = false
+            if (prefs.diagnostics) logRecordingUnusable(outcome)
+            render(UiState.NO_HANDS, detail = activity.getString(messageFor(outcome.reason)))
+            return
+        }
+        val recording = (outcome as SignRecorder.Result.Usable).recording
+        render(UiState.PROCESSING)
+        inferExecutor.execute { runInference(recording, c) }
+    }
+
+    private fun cancelRecording() {
+        stopRecordingTicker()
+        tracker?.cancelRecording()
+        processing = false
+        haptic(HapticFeedbackConstants.KEYBOARD_TAP)
+        Toast.makeText(activity, R.string.record_discarded, Toast.LENGTH_SHORT).show()
+        render(UiState.WAITING)
+    }
+
+    private fun messageFor(reason: SignRecorder.Rejection): Int = when (reason) {
+        SignRecorder.Rejection.TOO_SHORT -> R.string.record_too_short
+        SignRecorder.Rejection.NO_FRAMES -> R.string.record_no_frames
+        SignRecorder.Rejection.NOT_STARTED -> R.string.record_no_frames
+        SignRecorder.Rejection.CAMERA_STALLED -> R.string.record_stalled
+        SignRecorder.Rejection.LOW_COVERAGE -> R.string.record_low_coverage
+        SignRecorder.Rejection.TOO_LONG -> R.string.record_too_short
+    }
+
+    /**
+     * Drives the on-screen elapsed time and enforces the upper bound. Posting
+     * at 100 ms is enough for a seconds counter and keeps the main thread free.
+     */
+    private fun startRecordingTicker() {
+        stopRecordingTicker()
+        val tick = object : Runnable {
+            override fun run() {
+                if (currentState != UiState.RECORDING) return
+                val t = tracker
+                val now = SystemClock.elapsedRealtime()
+                if (t != null && t.shouldAutoStopRecording(now)) {
+                    // Ran past the ceiling: finish with what was captured
+                    // rather than growing the buffer without limit.
+                    finishRecording()
+                    return
+                }
+                val elapsed = now - recordingStartedAtMs
+                liveStatus.text = activity.getString(
+                    R.string.record_recording,
+                    String.format(java.util.Locale.US, "%.1fs", elapsed / 1000f)
+                )
+                liveStatus.setTextColor(ContextCompat.getColor(activity, R.color.danger))
+                captureButton.text = activity.getString(R.string.record_finish)
+                handler.postDelayed(this, 100L)
+            }
+        }
+        recordingTicker = tick
+        handler.post(tick)
+    }
+
+    private fun stopRecordingTicker() {
+        recordingTicker?.let { handler.removeCallbacks(it) }
+        recordingTicker = null
+    }
+
+    /**
+     * The one inference path. Both modes end here: same FeatureTransform, same
+     * four pinned interpreters, same mean-logit → single-softmax aggregation.
+     * Record mode differs only in which frames it hands over.
+     */
+    private fun runInference(recording: SignRecorder.Recording, c: LandmarkClassifier) {
+        try {
+            if (recording.frameCount == 0) {
+                processing = false
+                render(UiState.NO_HANDS, detail = activity.getString(R.string.record_no_frames))
+                return
+            }
+            val sampled = RecordingFeatures.sample(recording)
+            val handFrames = sampled.count { it.hands.isNotEmpty() }
+            val capture = HandTracker.Capture(
+                sampled,
+                recording.durationMs,
+                if (recording.durationMs > 0)
+                    (sampled.size - 1) * 1000f / recording.durationMs else 0f,
+                handFrames
+            )
+            if (handFrames == 0) {
+                processing = false
+                if (prefs.diagnostics) logDiagnostic(capture, null, 0L)
+                render(UiState.NO_HANDS)
+                return
+            }
+            val coverage = handFrames.toFloat() / sampled.size.coerceAtLeast(1)
+            if (coverage < MIN_HAND_FRACTION) {
+                processing = false
+                if (prefs.diagnostics) logDiagnostic(capture, null, 0L)
+                render(UiState.LOW_FRAMES)
+                return
+            }
+            val started = System.nanoTime()
+            val features = RecordingFeatures.build(recording)
+            val result = c.predict(features)
+            val totalMs = (System.nanoTime() - started) / 1_000_000L
+            processing = false
+            if (prefs.diagnostics) logDiagnostic(capture, result, totalMs)
+            activity.runOnUiThread { renderResult(result, totalMs, capture) }
+        } catch (t: Throwable) {
+            processing = false
+            render(UiState.ERROR, detail = activity.getString(R.string.error_inference))
+        }
+    }
+
+    private fun logRecordingUnusable(outcome: SignRecorder.Result.Unusable) {
+        // Diagnostics record the interval and the reason, never pixels. A
+        // rejected recording is logged as a capture with no prediction so the
+        // rejection rate is measurable alongside accepted captures.
+        val r = outcome.recording
+        val sampled = r?.let { RecordingFeatures.sample(it) } ?: emptyList()
+        diagnostics.record(
+            HandTracker.Capture(
+                sampled,
+                r?.durationMs ?: 0L,
+                0f,
+                sampled.count { it.hands.isNotEmpty() }
+            ),
+            null,
+            0L
+        )
     }
 
     private fun finishProcessing() {

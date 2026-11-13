@@ -22,6 +22,17 @@
     <string name="camera_state_low_frames">Hand not visible for most of the capture</string>
     <string name="low_frames_detail">This capture was not clear enough to read. Keep both hands inside the guide for the whole capture, then try again.</string>
     <string name="capture_action">Recognise sign</string>
+    <string name="record_start">Start sign</string>
+    <string name="record_finish">Finish sign</string>
+    <string name="record_cancel">Cancel</string>
+    <string name="record_recording">Recording %1$s</string>
+    <string name="record_prompt">Perform one sign, then tap Finish</string>
+    <string name="record_cancel_hint">Signing now. Cancel discards this recording without recognising anything.</string>
+    <string name="record_too_short">That recording was too short to read. Start, perform the whole sign, then finish.</string>
+    <string name="record_no_frames">The camera did not send any frames during that recording. Try again.</string>
+    <string name="record_stalled">The camera stopped during that sign. Hold still for a moment, then record again.</string>
+    <string name="record_low_coverage">Hands were visible for too little of that recording. Keep both hands in the guide while you sign.</string>
+    <string name="record_discarded">Recording discarded. Nothing was recognised.</string>
     <string name="capture_action_processing">Reading…</string>
     <string name="flip_camera">Switch camera</string>
     <string name="flip_camera_desc">Switch between front and back camera</string>

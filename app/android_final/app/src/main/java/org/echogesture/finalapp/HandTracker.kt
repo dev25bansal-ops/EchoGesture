@@ -30,6 +30,14 @@ class HandTracker private constructor(
     private val lock = Any()
 
     /**
+     * Explicit record mode (START → sign → STOP). Separate from [ring]: the
+     * ring is always rolling, a recording exists only between two presses.
+     * Guarded by [lock] like the ring, so a frame can never be offered to a
+     * recording while the UI is finalising the previous one.
+     */
+    private val recorder = SignRecorder()
+
+    /**
      * When the last capture was classified, or [Long.MIN_VALUE] if none yet.
      * A tap too soon after this would re-read the window that still contains
      * the sign just classified, so it is refused rather than answered again.
@@ -296,6 +304,10 @@ class HandTracker private constructor(
             synchronized(lock) {
                 ring.addLast(frame)
                 while (ring.size > MAX_CAPTURE_FRAMES) ring.removeFirst()
+                // Offer the SAME frame to an in-progress recording. One
+                // analysed frame, one place it arrives, so quick scan and
+                // record mode can never see different sequences.
+                recorder.offer(frame)
             }
             consecutiveFailures.set(0)
             true
@@ -327,11 +339,36 @@ class HandTracker private constructor(
     /**
      * Drops buffered frames. Also forgets the repeat guard: a camera switch or
      * lifecycle reset is a new context, not a rapid re-tap.
+     *
+     * A camera switch mid-recording therefore ends it: the frames before and
+     * after a rebind come from different sensors and must never be spliced
+     * into one sequence.
      */
     fun clear() = synchronized(lock) {
         ring.clear()
         lastCapturedAtMs = Long.MIN_VALUE
+        recorder.cancel()
     }
+
+    // ---- explicit recording mode -------------------------------------------
+
+    /** Starts a fresh recording at [nowMs]. Discards any in-progress one. */
+    fun startRecording(nowMs: Long): Unit = synchronized(lock) { recorder.start(nowMs) }
+
+    fun isRecording(): Boolean = synchronized(lock) { recorder.isRecording }
+
+    fun recordingStartedAt(): Long? = synchronized(lock) { recorder.startedAt() }
+
+    fun recordingFrameCount(): Int = synchronized(lock) { recorder.frameCount() }
+
+    fun shouldAutoStopRecording(nowMs: Long): Boolean =
+        synchronized(lock) { recorder.shouldAutoStop(nowMs) }
+
+    fun cancelRecording(): Unit = synchronized(lock) { recorder.cancel() }
+
+    /** Ends the recording at [nowMs] and reports whether it is usable. */
+    fun stopRecording(nowMs: Long): SignRecorder.Result =
+        synchronized(lock) { recorder.stop(nowMs) }
 
     /**
      * Classifies the sign that just happened.

@@ -31,20 +31,21 @@ commit `a6cf722` and at the candidate commit over the same clips.
 
 | Figure | Value | Population |
 | --- | --- | --- |
-| Candidate top-1 | **84.48%** (283/335) | in-vocab validation clips |
-| Candidate top-5 | **94.03%** (315/335) | same |
-| Frozen-file top-1 | 75.15% | same 334 scored clips |
-| Paired delta | **+9.58 pt top-1, +7.49 pt top-5** | same 334 clips |
+| Candidate top-1 | **84.39%** (292/346) | all in-vocab validation clips |
+| Candidate top-5 | **93.93%** (325/346) | same |
+| Frozen-file top-1 | 75.36% | same 345 scored clips |
+| Paired delta | **+9.28 pt top-1, +6.96 pt top-5** | same 345 clips |
 | Accuracy at accepted coverage (margin ≥ 0.15) | **95.2%, coverage 71.2%** | 146 clips |
 | Accuracy at accepted coverage (old score ≥ 0.35) | 95.4%, coverage 59.6% | same 146 |
 | Clip-to-JSON latency | p50 241 ms / p95 309 ms | macOS arm64, **not** target-device |
 
 The figure moved as the population grew (88.9% at n=18, 78.7% at n=141,
-85.2% at n=297, 84.5% at n=335) and has settled near 84–85%. Reporting the
+85.2% at n=297, 84.5% at n=335, 84.4% at n=346) and settled at 84.4%
+on the complete population. Reporting the
 first number would have been wrong; that is why the protocol demands n≥50
 before any figure is quoted.
 
-On the paired 334-clip set the candidate fixes 40 clips the frozen file gets
+On the complete paired 345-clip set the candidate fixes 40 clips the frozen file gets
 wrong and breaks 8 it gets right. All 8 regressions score below the acceptance
 cut (0.07–0.19) and the correct label is rank-2 in each, so they are rejected
 rather than shown as confident wrong answers.
@@ -57,12 +58,12 @@ They are not a generalisation claim.
 
 | Requirement | Clip footage | Real phone |
 | --- | --- | --- |
-| Top-1 accuracy | 84.48% (n=335) | **AWAITING PHONE DATA** |
-| Top-5 accuracy | 94.03% (n=335) | **AWAITING PHONE DATA** |
+| Top-1 accuracy | 84.39% (n=346, complete) | **AWAITING PHONE DATA** |
+| Top-5 accuracy | 93.93% (n=346, complete) | **AWAITING PHONE DATA** |
 | Per-class recall | partial (small n) | **AWAITING PHONE DATA** |
 | False-positive rate | **AWAITING PHONE DATA** — needs intended-vs-predicted on unwritten attempts | **AWAITING PHONE DATA** |
-| Rejection rate | 37.0% at the 0.35 score cut (n=335) | **AWAITING PHONE DATA** |
-| Accuracy at accepted coverage | **97.16%** (coverage 63.0%) | **AWAITING PHONE DATA** |
+| Rejection rate | 36.99% at the 0.35 score cut (n=346) | **AWAITING PHONE DATA** |
+| Accuracy at accepted coverage | **97.25%** (coverage 63.0%) | **AWAITING PHONE DATA** |
 | Capture-to-caption latency | n/a — no camera | **AWAITING PHONE DATA** |
 | APK / model sizes | APK 77,710,351 B; 4 members, 832,888 B each-shape pinned | unchanged |
 | Performance by signer | **AWAITING** — needs ≥2 signers | **AWAITING PHONE DATA** |

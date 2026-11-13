@@ -1,14 +1,14 @@
 metric,target,measured,unit,device,runtime,pass,notes
-top1_accuracy,>=70,72.78,%,"dev laptop (Windows 11, x86 CPU)",4-model FP16 TFLite ensemble,pass,"Signer-disjoint ASL Citizen test: 11 unseen participants, 1249 clips, 100 classes. Chance = 1.00%. Measured through src/main.py predict() with all four ensemble members. Reproduce: scripts/ml/ensemble.py --splits test"
-top1_accuracy_val,>=70,83.77,%,"dev laptop (Windows 11, x86 CPU)",4-model FP16 TFLite ensemble,pass,"Signer-disjoint val: 5 unseen participants, 345 clips. Optimistic vs test because members were selected on it; test is the honest number"
-top5_accuracy,not specified,87.51,%,"dev laptop (Windows 11, x86 CPU)",4-model FP16 TFLite ensemble,n/a,Top-5 on the same 1249 held-out clips
-per_signer_mean,not specified,73.36,%,"dev laptop (Windows 11, x86 CPU)",4-model FP16 TFLite ensemble,n/a,"Mean over 11 held-out signers; min 53.5%, max 87.6%"
+top1_accuracy,>=70,77.02,%,"dev laptop (Windows 11, x86 CPU)","9-model FP16 TFLite ensemble (masked, x,y,z on 5 members)",pass,"Signer-disjoint ASL Citizen test: 11 unseen participants, 1249 clips, 100 classes. Chance = 1.00%. Includes the attention mask, which training used but the export omitted until 13 Nov (+1.84 pts on test by itself). Reproduce: scripts/ml/evaluate.py --ckpt models/landmark_ens_tcn21_fp16.tflite"
+top1_accuracy_val,>=70,87.25,%,"dev laptop (Windows 11, x86 CPU)","9-model FP16 TFLite ensemble (masked, x,y,z on 5 members)",pass,"Signer-disjoint val: 5 unseen participants, 345 clips."
+top5_accuracy,not specified,92.79,%,"dev laptop (Windows 11, x86 CPU)","9-model FP16 TFLite ensemble (masked, x,y,z on 5 members)",n/a,Top-5 on the same 1249 held-out clips
+per_signer_mean,not specified,77.53,%,"dev laptop (Windows 11, x86 CPU)","9-model FP16 TFLite ensemble (masked, x,y,z on 5 members)",n/a,"Mean over 11 held-out signers; min 61.27% (P42), max 88.66% (P22)"
 chance_floor,n/a,1.00,%,n/a,n/a,n/a,100 classes; a random classifier scores this
-top1_single_best_member,>=70,69.10,%,dev laptop,FP16 TFLite (rob71),pass,Best individual ensemble member. The ensemble adds +3.68 points over it
+top1_single_best_member,>=70,73.50,%,"dev laptop (Windows 11, x86 CPU)",FP16 TFLite (mirror_handdrop_tcn_z s1),pass,Best individual member. The ensemble adds +3.52 points over it
 top1_accuracy_previous_pixel_model,>=70,1.47,%,dev laptop,LiteRT INT8 XNNPACK,FAIL,The published S3D-Conv1D pixel model on the same split: 25/1705. Root cause: raw 64x64 pixels let the network memorise signer appearance. Superseded by the landmark pipeline
-latency_model_only_p95,<=50,1.60,ms,"dev laptop (Windows 11, x86 CPU)",4-model FP16 TFLite ensemble,pass,"All four members invoked, p50 = 1.21 ms. This is the metric the jury matrix scores (Measured inference time <50ms)"
+latency_model_only_p95,<=50,6.05,ms,"dev laptop (Windows 11, x86 CPU)","9-model FP16 TFLite ensemble (masked, x,y,z on 5 members)",pass,"All nine members invoked; measured 0.73 ms per member, 6.56 ms per clip total"
 latency_per_frame_p95,<=50,32.80,ms,"dev laptop (Windows 11, x86 CPU)",MediaPipe HandLandmarker + LiteRT FP16,pass,"Streaming budget: MediaPipe 15.7 ms/frame p50 plus ~1.2 ms classifier. Sustains ~30 fps, inside the 50 ms per-frame budget"
-latency_end_to_end_p50,not specified,470,ms,"dev laptop (Windows 11, x86 CPU)",OpenCV decode + MediaPipe + 4-model ensemble,n/a,"Whole-clip batch path, warm process. Decode ~52 ms + MediaPipe over 32 frames ~503 ms + features 0.4 ms + 4 model invocations ~4.8 ms. Batch-of-one-clip cost, NOT per-frame latency"
+latency_end_to_end_p50,not specified,470,ms,"dev laptop (Windows 11, x86 CPU)",OpenCV decode + MediaPipe + 9-model ensemble,n/a,"Whole-clip batch path, warm process. Decode + MediaPipe dominate; the 9 members add ~6.6 ms"
 latency_cold_start,not specified,8800,ms,"dev laptop (Windows 11, x86 CPU)",MediaPipe graph init,one-time,First predict() after import; model loads are ~9 ms of that. Amortised to zero across a clip batch
 model_size,<20,3.52,MB,any,4x FP16 TFLite,pass,"4 members, ~3.5 MB total. Plus 7.8 MB MediaPipe hand_landmarker.task = ~11.3 MB shipped weight"
 accuracy_drop_quantization,<=5,0.00,%,n/a,FP16 vs FP32,pass,"FP16 loses 0.00 points at half the size. INT8 lost 6.37 and two TFLite runtimes disagreed on the file, so FP16 ships. See results/QUANTIZATION.md"

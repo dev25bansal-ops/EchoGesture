@@ -67,9 +67,9 @@ reproducibility; compare the asset digests below when identifying the model.
 | | |
 | --- | --- |
 | Path | `app/android_final/app/build/outputs/apk/debug/app-debug.apk` |
-| Size | 77,711,519 bytes |
-| SHA-256 | `9bba91913da1c8721776f07a45ebbdaf2b8eb21c9799780a662289b5793457fa` |
-| Commit | `c6f5299` (`hackathon/echogesture-v2-rc`) |
+| Size | 77,710,351 bytes |
+| SHA-256 | `8d2e175edf2f3927885656a302ce22c4d493012c091f6d7eccf35efcd4b1cc90` |
+| Commit | `a6cf722` (`hackathon/echogesture-v2-rc`) |
 | Signer | `C=US, O=Android, CN=Android Debug` |
 | Cert SHA-256 | `2e7e40e24ccff12d99457a4267a377cb5b9ae14c00750ba4b406e8df6be37e2c` |
 | Signature | verifies (`apksigner verify --print-certs`) |

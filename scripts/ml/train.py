@@ -64,9 +64,14 @@ class TemporalModel(nn.Module):
     switchable so the comparison is one flag, not a rewrite.
     """
 
-    def __init__(self, num_classes, dim=192, frames=24, backbone="conv", dropout=0.2):
+    def __init__(self, num_classes, dim=192, frames=24, backbone="conv", dropout=0.2,
+                 in_dim=FEATURE_DIM):
+        # in_dim is explicit because the feature width is not a constant: the
+        # `use_z` ablation widens it from 255 to 381, and hardcoding it here
+        # made that ablation impossible to run even though features.py had
+        # supported the flag all along.
         super().__init__()
-        self.stem = nn.Conv1d(FEATURE_DIM, dim, 1)
+        self.stem = nn.Conv1d(in_dim, dim, 1)
         self.norm = nn.BatchNorm1d(dim)
 
         blocks = []

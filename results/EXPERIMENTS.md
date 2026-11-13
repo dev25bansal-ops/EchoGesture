@@ -262,3 +262,64 @@ The shipped 72.78% stands. The remaining 7.5-point oracle gap is not reachable
 by combining these models; it needs either a different input representation or
 signers whose data does not exist in ASL Citizen's 3,390 clips for these 100
 glosses.
+
+## 13 Nov: the z channel — a real +1.35 on val, not enough on test
+
+`features.py` has carried a `use_z` ablation switch since early on, and its
+docstring records that a third-party repository measured +7.10pp (transformer)
+to +11.34pp (TCN) from **dropping** z on WLASL-100. That ablation had never
+been run here — and `TemporalModel` hardcoded `FEATURE_DIM`, so the switch
+could not have run even if asked. Both were fixed before testing: `in_dim` is
+now a parameter, and `predict_all` carries `use_z` through to evaluation
+(it was silently building 255-wide features against a 381-wide model).
+
+### Why z is a weak candidate on this corpus
+
+MediaPipe's z spans **-0.071 to 0.006** on these clips — about a tenth of the
+x/y range, and it is a relative depth estimate, not a measurement. The WLASL
+prior does not obviously transfer, which is why it needed measuring.
+
+### Paired by seed: same recipe, only z differs
+
+| seed | val no-z | val +z | Δ | test no-z | test +z | Δ |
+| --: | --: | --: | --: | --: | --: | --: |
+| 0 | 82.90% | 83.77% | **+0.87** | 70.62% | 72.14% | **+1.52** |
+| 7 | 81.16% | 82.61% | **+1.45** | 69.98% | 69.74% | −0.24 |
+| 13 | 82.61% | 84.35% | **+1.74** | 71.90% | 72.22% | **+0.32** |
+| mean | | | **+1.35** | | | **+0.53** |
+
+z helps **val on 3 of 3 seeds** and never hurts it. On test it is 2 of 3, with
+one seed going backwards. Per-clip McNemar on the best pair (seed 0):
+val `+17/-14 z=0.54`, test `+90/-71 z=1.50`.
+
+The base recipe agrees: `base` 66.13% → `base_z` 67.33% on test (+1.20).
+
+### The best z ensemble still does not clear the bar
+
+Two z members average to **85.51% val / 73.18% test**, against shipped
+83.77% / 72.78%. That is +1.74 on val and **+0.40 on test — 0.32 standard
+errors**, against a paired McNemar of `z=1.14`. Larger z ensembles do not
+improve it (three members: 73.10%).
+
+So the headline is: **z is the first representational change that moves val
+consistently, and it is still not a ship.** The effect is real on val, weak and
+noisy on test, and the mechanism is plausible (depth separates hands that
+overlap in projection) but unproven at this sample size.
+
+### Why it was not shipped even so
+
+1. **+0.40 on test is 0.32 SE.** Every other accept/reject decision in this
+   file used ~2 SE.
+2. **It changes the app contract.** The feature width goes 255 → 381.
+   `FeatureTransform.kt` emits 255 and `landmark_model_meta.json` declares
+   `feature_dim: 255`. Shipping z requires matching Kotlin changes, a new
+   TFLite export, and a fresh parity check — real risk for a sub-noise gain
+   two days before submission.
+3. **It contradicts nothing, but it also confirms nothing on test.** Val 3/3
+   is encouraging; test 2/3 at +0.53 is not a result.
+
+**If there were more time**, the right move is to train ~5 seeds per arm and
+test z against no-z as a paired sample on test, not to compare finished
+ensembles. That is the experiment this data can actually support, and it was
+not affordable before the deadline. Recorded here so it is the first thing
+tried next time rather than the last.

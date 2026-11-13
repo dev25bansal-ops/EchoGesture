@@ -41,7 +41,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts" / "ml"))
 
-from features import build_features, FEATURE_DIM  # noqa: E402
+from features import build_features, FEATURE_DIM, feature_dim  # noqa: E402
 from train import TemporalModel, index_split, LANDMARKS, VOCAB  # noqa: E402
 
 import torch  # noqa: E402
@@ -103,6 +103,16 @@ RECIPES = {
     "mirror_handdrop_drop3": dict(mirror_p=0.5, handdrop_p=0.7, handdrop_strength=0.85,
                                   noise=0.5, jitter=0.1, backbone="conv", dim=192,
                                   epochs=60, dropout=0.3),
+    # The representation ablation. A third-party repo reports dropping z is
+    # worth +7.1pp (transformer) to +11.3pp (TCN) on WLASL-100, but that is a
+    # different corpus and we have never reproduced it. Our z spans -0.071 to
+    # 0.006, about a tenth of the x/y range, so the signal may not transfer.
+    "mirror_handdrop_tcn_z": dict(mirror_p=0.5, handdrop_p=0.7, handdrop_strength=0.85,
+                                  noise=0.5, jitter=0.1, backbone="tcn", dim=192,
+                                  epochs=60, use_z=True),
+    "base_z": dict(mirror_p=0.0, handdrop_p=0.5, handdrop_strength=0.5,
+                   noise=0.5, jitter=0.1, backbone="conv", dim=192, epochs=60,
+                   use_z=True),
 }
 
 
@@ -169,7 +179,8 @@ class ClipDataset(Dataset):
                 lm[..., :2] += noise
                 np.clip(lm[..., :2], 0.0, 1.0, out=lm[..., :2])
 
-        feats, mask = build_features(lm, pres, expected_frames=self.frames)
+        feats, mask = build_features(lm, pres, expected_frames=self.frames,
+                                     use_z=bool(self.r.get("use_z", False)))
         return torch.from_numpy(feats), torch.from_numpy(mask), label, signer
 
 
@@ -179,12 +190,16 @@ def load_items(vocab_idx, split):
 
 # ------------------------------------------------------------------ evaluate
 
-def predict_all(model, items, frames, device, batch=64):
+def predict_all(model, items, frames, device, batch=64, use_z=False):
     ensure_cached(items)
     model.eval()
     feats, ys = [], []
+    # use_z must match training: it changes the feature WIDTH, not just values.
+    # Building the eval set with the default here silently fed a 255-wide input
+    # to a 381-wide model.
     ds = ClipDataset(items, frames, {"mirror_p": 0, "handdrop_p": 0, "noise": 0,
-                                     "jitter": 0, "handdrop_strength": 0}, train=False)
+                                     "jitter": 0, "handdrop_strength": 0,
+                                     "use_z": use_z}, train=False)
     dl = DataLoader(ds, batch_size=batch, shuffle=False, num_workers=0)
     with torch.no_grad():
         for f, m, y, _s in dl:
@@ -213,7 +228,9 @@ def train_one(cfg, seed, train_items, val_items, vocab, device, quiet=False):
     frames = cfg.get("frames", 24)
     model = TemporalModel(len(vocab), dim=cfg["dim"], frames=frames,
                           backbone=cfg["backbone"],
-                          dropout=cfg.get("dropout", 0.2)).to(device)
+                          dropout=cfg.get("dropout", 0.2),
+                          in_dim=feature_dim(bool(cfg.get("use_z", False)))
+                          ).to(device)
     # One pass over the .npz files instead of one per sample per epoch.
     preload(train_items); preload(val_items)
     tr = DataLoader(ClipDataset(train_items, frames, cfg, train=True),
@@ -298,8 +315,9 @@ def main():
               f"{cfg['backbone']} ===", flush=True)
         model, bestv = train_one(cfg, args.seed, train_items, val_items,
                                  vocab, device)
-        lv, yv = predict_all(model, val_items, cfg.get("frames", 24), device)
-        lt, yt = predict_all(model, test_items, cfg.get("frames", 24), device)
+        uz = bool(cfg.get("use_z", False))
+        lv, yv = predict_all(model, val_items, cfg.get("frames", 24), device, use_z=uz)
+        lt, yt = predict_all(model, test_items, cfg.get("frames", 24), device, use_z=uz)
         av, at = acc(lv, yv), acc(lt, yt)
         print(f"  val {av*100:6.2f}%  test {at*100:6.2f}%  "
               f"({(time.time()-t0)/60:.1f} min)", flush=True)

@@ -392,3 +392,75 @@ two paths; it cannot catch both paths being wrong.
 The general lesson, and the reason this sat undetected: **parity is not
 correctness.** What exposed it was comparing the exported artifact's accuracy
 against the number the training run had already printed.
+
+## 13 Nov: can it actually detect a hand, and does it know when it cannot?
+
+Asked directly, so measured directly rather than asserted. Both halves are fine,
+and one of them matters for the demo.
+
+### Detection: yes, and the "missing" frames are the clips' own margins
+
+Frame-level hand presence over all 1,249 test clips (39,793 sampled frames):
+
+| | frames | share |
+| --- | --: | --: |
+| both hands | 6,234 | 15.7% |
+| exactly one hand | 12,103 | 30.4% |
+| no hand | 21,456 | **53.9%** |
+| at least one hand | | 46.1% |
+
+A 54% miss rate reads alarming until you ask *where* those frames are. By
+decile of clip position:
+
+| decile | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+| --- | --: | --: | --: | --: | --: | --: | --: | --: | --: | --: |
+| >=1 hand | 6.1% | 32.2% | 59.6% | 69.5% | **77.0%** | 73.0% | 54.3% | 36.7% | 29.6% | 27.1% |
+
+A clean inverted U: 6% in the first decile, 77% at the middle. The clips carry
+their own lead-in and lead-out — a signer standing, raising hands, lowering
+them. MediaPipe is working; ASL Citizen's clips are not pre-trimmed to the
+sign. That is also why the shipped `read_frames` samples evenly across the
+whole clip instead of from the start.
+
+### Classification: yes, 77.02%, and harder when hands are scarcer
+
+| both-hand frames in clip | clips | acc |
+| --- | --: | --: |
+| never | 504 | 70.0% |
+| <25% | 367 | 76.6% |
+| 25-50% | 302 | 87.1% |
+| >75% | 4 | 75.0% |
+
+Accuracy tracks hand visibility, which is the expected direction.
+
+### It knows when it does not know — usable for a live demo
+
+Softmax confidence is well calibrated across the 9-member ensemble:
+
+| confidence | clips | acc | share of all errors |
+| --- | --: | --: | --: |
+| 0.0-0.2 | 148 | 31.1% | **35.5%** |
+| 0.2-0.4 | 211 | 47.4% | **38.7%** |
+| 0.4-0.6 | 196 | 75.5% | 16.7% |
+| 0.6-0.8 | 232 | 90.9% | 7.3% |
+| 0.8-1.0 | 462 | **98.9%** | 1.7% |
+
+74% of all errors carry confidence below 0.4. Abstaining on those:
+
+| threshold | answers | accuracy on what it answers |
+| --- | --: | --: |
+| 0.2 | 88% | 83.2% |
+| 0.3 | 78% | 88.6% |
+| 0.4 | 71% | 91.7% |
+| 0.5 | 63% | **94.3%** |
+
+The top1-minus-top2 **margin** separates even more cleanly:
+
+| margin | clips | acc |
+| --- | --: | --: |
+| 0.00-0.05 | 138 | 26.8% |
+| 0.50-1.00 | 685 | **96.8%** |
+
+So a demo can show a confident answer only when there is one, and ask for a
+repeat otherwise. That converts the most visible failure mode — a
+fluent-looking wrong label — into an honest "sign again".

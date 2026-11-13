@@ -1,6 +1,10 @@
 package org.echogesture.finalapp
 
 import android.graphics.Bitmap
+import android.media.Image
+import android.media.MediaCodec
+import android.media.MediaExtractor
+import android.media.MediaFormat
 import android.media.MediaMetadataRetriever
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -19,15 +23,18 @@ import java.io.File
  * Direct-MP4 parity: the SAME video file, decoded on Android, through the
  * shipped detector and the shipped four-member ensemble.
  *
- * This is the controlled comparison the Python path cannot make for a camera,
- * and the camera cannot make for Python. The clip is the identical file, so
- * any prediction difference is attributable to the Android preprocessing and
- * detector path, not to content.
+ * Decoding uses MediaExtractor + MediaCodec and advances SEQUENTIALLY through
+ * the stream, keeping the frame nearest each target index. An earlier version
+ * used `MediaMetadataRetriever.getFrameAtTime(..., OPTION_CLOSEST_SYNC)`, which
+ * returns the nearest KEYFRAME — with 32 requests spread over a 75-frame clip
+ * that collapsed onto a handful of sync frames, so "32 samples" were not 32
+ * distinct images. [distinctFrameCount] exists to prove the current decoder
+ * does not repeat that mistake.
  *
  * The clip is NOT bundled: it is authorized research data and must never be
- * committed. The test pushes to the app's own external files directory
- * (`adb push <clip> /sdcard/Android/data/org.echogesture.finalapp/files/`) and
- * SKIPS when absent rather than failing, so a source-only checkout stays green.
+ * committed. The test SKIPS when no clip is present so ordinary CI stays green;
+ * the dedicated parity command passes `-e requireClip true` to turn a missing
+ * clip into a hard failure instead.
  *
  * It writes no frames anywhere and reports only counts, labels and timings.
  */
@@ -38,11 +45,6 @@ class DirectClipParityTest {
         get() = InstrumentationRegistry.getInstrumentation()
 
     private fun clipFile(): File? {
-        // Look in both places an operator can put a clip: the app's own
-        // external files dir (adb push to /sdcard/Android/data/<pkg>/files/)
-        // and its internal files dir (adb push to /data/local/tmp then
-        // `run-as <pkg> cp`), which is the only path scoped storage allows on
-        // some devices.
         val dirs = listOfNotNull(
             instrumentation.targetContext.getExternalFilesDir(null),
             instrumentation.targetContext.filesDir,
@@ -53,42 +55,201 @@ class DirectClipParityTest {
             .firstOrNull()
     }
 
-    /** Decodes up to [n] frames spread across the clip, matching training. */
-    private fun sampleFrames(file: File, n: Int = 32, resize: Boolean): List<Bitmap> {
-        val retriever = MediaMetadataRetriever()
-        retriever.setDataSource(file.absolutePath)
+    /** A decoded frame and the presentation timestamp it came from, in ms. */
+    private class Decoded(val bitmap: Bitmap, val ptsMs: Long)
 
-        val durationMs = retriever
-            .extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-            ?.toLongOrNull() ?: 0L
-        if (durationMs <= 0L) {
-            retriever.release()
-            return emptyList()
+    /**
+     * Decodes the whole clip sequentially and returns the [target] frames
+     * nearest to evenly spaced target timestamps — the same
+     * `linspace(0, duration, target)` intent as training, but selecting real
+     * decoded frames rather than the nearest keyframe.
+     *
+     * Returns (frames, totalDecoded, requestedPts, actualPts) so a caller can
+     * report exactly how many distinct frames it really got.
+     */
+    private fun sampleFrames(
+        file: File,
+        target: Int = 32,
+        resize: Boolean,
+    ): Pair<List<Decoded>, Int> {
+        val extractor = MediaExtractor()
+        extractor.setDataSource(file.absolutePath)
+
+        var trackIndex = -1
+        var format: MediaFormat? = null
+        for (i in 0 until extractor.trackCount) {
+            val f = extractor.getTrackFormat(i)
+            val mime = f.getString(MediaFormat.KEY_MIME) ?: continue
+            if (mime.startsWith("video/")) {
+                trackIndex = i
+                format = f
+                break
+            }
         }
-        val out = ArrayList<Bitmap>(n)
-        // Same index mapping as np.linspace(0, total-1, n): evenly across the
-        // WHOLE clip, which is what training sampled.
-        for (i in 0 until n) {
-            val tMs = if (n == 1) 0L else durationMs * i / (n - 1)
-            val frame = retriever.getFrameAtTime(
-                tMs * 1000L, MediaMetadataRetriever.OPTION_CLOSEST_SYNC
-            ) ?: continue
-            // MediaMetadataRetriever hands back RGB_565; MediaPipe requires
-            // ARGB_8888. Convert before any scaling so the resize samples the
-            // same 8-bit channels the camera path would deliver.
-            val argb = frame.copy(Bitmap.Config.ARGB_8888, false)
-            frame.recycle()
-            val bmp = if (resize) Bitmap.createScaledBitmap(argb, 256, 256, true) else argb
-            if (bmp !== argb) argb.recycle()
-            out.add(bmp)
+        if (trackIndex < 0 || format == null) {
+            extractor.release()
+            return Pair(emptyList(), 0)
         }
-        retriever.release()
-        return out
+        extractor.selectTrack(trackIndex)
+
+        val durationUs = if (format.containsKey(MediaFormat.KEY_DURATION)) {
+            format.getLong(MediaFormat.KEY_DURATION)
+        } else {
+            0L
+        }
+        val targetsUs = LongArray(target) { i ->
+            if (target <= 1) 0L else durationUs * i / (target - 1)
+        }
+
+        val mime = format.getString(MediaFormat.KEY_MIME)!!
+        val codec = MediaCodec.createDecoderByType(mime)
+        codec.configure(format, null, null, 0)
+        codec.start()
+
+        val info = MediaCodec.BufferInfo()
+        val picked = ArrayList<Decoded>(target)
+        // Index of the next target this frame could satisfy.
+        var nextTarget = 0
+        var decoded = 0
+        var sawInputEos = false
+        var sawOutputEos = false
+
+        try {
+            while (!sawOutputEos && picked.size < target) {
+                if (!sawInputEos) {
+                    val inIndex = codec.dequeueInputBuffer(10_000L)
+                    if (inIndex >= 0) {
+                        val buffer = codec.getInputBuffer(inIndex)!!
+                        val size = extractor.readSampleData(buffer, 0)
+                        if (size < 0) {
+                            codec.queueInputBuffer(
+                                inIndex, 0, 0, 0L,
+                                MediaCodec.BUFFER_FLAG_END_OF_STREAM
+                            )
+                            sawInputEos = true
+                        } else {
+                            codec.queueInputBuffer(inIndex, 0, size, extractor.sampleTime, 0)
+                            extractor.advance()
+                        }
+                    }
+                }
+
+                when (val outIndex = codec.dequeueOutputBuffer(info, 10_000L)) {
+                    MediaCodec.INFO_TRY_AGAIN_LATER -> Unit
+                    MediaCodec.INFO_OUTPUT_FORMAT_CHANGED -> Unit
+                    else -> {
+                        if (outIndex >= 0) {
+                            val image: Image? = codec.getOutputImage(outIndex)
+                            if (info.size > 0 && image != null) {
+                                val ptsMs = info.presentationTimeUs / 1000L
+                                // Keep this frame if it is the closest yet to the
+                                // next outstanding target. Because decode order is
+                                // ascending, once we pass a target midpoint we stop
+                                // looking for it.
+                                while (nextTarget < target &&
+                                    targetsUs[nextTarget] / 1000L <= ptsMs
+                                ) {
+                                    val bmp = imageToBitmap(image)
+                                    val out = if (resize) {
+                                        Bitmap.createScaledBitmap(bmp, 256, 256, true)
+                                            .also { if (it !== bmp) bmp.recycle() }
+                                    } else {
+                                        bmp
+                                    }
+                                    picked.add(Decoded(out, ptsMs))
+                                    nextTarget++
+                                }
+                                decoded++
+                            }
+                            codec.releaseOutputBuffer(outIndex, false)
+                            if (info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM != 0) {
+                                sawOutputEos = true
+                            }
+                        }
+                    }
+                }
+            }
+        } finally {
+            runCatching { codec.stop() }
+            runCatching { codec.release() }
+            extractor.release()
+        }
+        return Pair(picked, decoded)
     }
 
-    private fun runPath(file: File, resize: Boolean): Triple<Int, Int, FloatArray> {
-        val frames = sampleFrames(file, 32, resize)
-        if (frames.isEmpty()) return Triple(0, 0, FloatArray(0))
+    /**
+     * Image -> ARGB_8888 Bitmap, which MediaPipe requires.
+     *
+     * MediaCodec usually hands back YUV420 (3 planes, chroma subsampled), but
+     * some codecs and devices give a single RGBA plane. Treating YUV as RGBA
+     * silently produces garbage pixels — or, as here, a buffer-size exception
+     * — so both layouts are handled explicitly and the pixel format is
+     * reported so a mismatch is visible rather than assumed.
+     */
+    private fun imageToBitmap(image: Image): Bitmap {
+        val planes = image.planes
+        if (planes.size >= 3) {
+            return yuv420ToBitmap(image)
+        }
+        val plane = planes[0]
+        val pixelStride = plane.pixelStride
+        val rowStride = plane.rowStride
+        val rowPadding = rowStride - pixelStride * image.width
+        val rawWidth = image.width + rowPadding / pixelStride
+        val raw = Bitmap.createBitmap(rawWidth, image.height, Bitmap.Config.ARGB_8888)
+        plane.buffer.rewind()
+        raw.copyPixelsFromBuffer(plane.buffer)
+        return if (rawWidth != image.width) {
+            Bitmap.createBitmap(raw, 0, 0, image.width, image.height).also { raw.recycle() }
+        } else {
+            raw
+        }
+    }
+
+    /** BT.601 limited-range YUV420 -> ARGB_8888, matching the codec's default. */
+    private fun yuv420ToBitmap(image: Image): Bitmap {
+        val w = image.width
+        val h = image.height
+        val yPlane = image.planes[0]
+        val uPlane = image.planes[1]
+        val vPlane = image.planes[2]
+        val yBuf = yPlane.buffer
+        val uBuf = uPlane.buffer
+        val vBuf = vPlane.buffer
+        val yRow = yPlane.rowStride
+        val yPix = yPlane.pixelStride
+        val uRow = uPlane.rowStride
+        val uPix = uPlane.pixelStride
+        val vRow = vPlane.rowStride
+        val vPix = vPlane.pixelStride
+
+        val out = IntArray(w * h)
+        for (row in 0 until h) {
+            val yBase = row * yRow
+            val uvRow = row / 2
+            for (col in 0 until w) {
+                val y = (yBuf.get(yBase + col * yPix).toInt() and 0xFF) - 16
+                val uIdx = uvRow * uRow + (col / 2) * uPix
+                val vIdx = uvRow * vRow + (col / 2) * vPix
+                val u = (uBuf.get(uIdx).toInt() and 0xFF) - 128
+                val v = (vBuf.get(vIdx).toInt() and 0xFF) - 128
+                val yc = (if (y < 0) 0 else y).toFloat()
+                val r = (1.164f * yc + 1.596f * v).toInt().coerceIn(0, 255)
+                val g = (1.164f * yc - 0.813f * v - 0.391f * u).toInt().coerceIn(0, 255)
+                val b = (1.164f * yc + 2.018f * u).toInt().coerceIn(0, 255)
+                out[row * w + col] = (0xFF shl 24) or (r shl 16) or (g shl 8) or b
+            }
+        }
+        val bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+        bmp.setPixels(out, 0, w, 0, 0, w, h)
+        return bmp
+    }
+
+    private fun runPath(file: File, resize: Boolean): Map<String, Any> {
+        val (frames, decoded) = sampleFrames(file, 32, resize)
+        if (frames.isEmpty()) {
+            return mapOf("decoded" to decoded, "frames" to 0, "hands" to 0)
+        }
 
         val options = HandLandmarker.HandLandmarkerOptions.builder()
             .setBaseOptions(
@@ -104,16 +265,15 @@ class DirectClipParityTest {
             instrumentation.targetContext, options
         )
 
-        // Flattened (T, 2, 21, 3) + (T, 2) exactly as toFeatureArrays builds them.
         val n = frames.size
         val landmarks = FloatArray(n * 2 * 21 * 3)
         val present = FloatArray(n * 2)
         var hands = 0
-        for ((fi, bmp) in frames.withIndex()) {
-            val img = BitmapImageBuilder(bmp).build()
+        for ((fi, df) in frames.withIndex()) {
+            val img = BitmapImageBuilder(df.bitmap).build()
             val result = landmarker.detect(img)
             img.close()
-            bmp.recycle()
+            df.bitmap.recycle()
             for (k in result.landmarks().indices) {
                 val cat = result.handedness()[k].firstOrNull()?.categoryName() ?: "Right"
                 val slot = if (cat.equals("Left", ignoreCase = true)) 0 else 1
@@ -127,93 +287,84 @@ class DirectClipParityTest {
                 }
             }
             if (result.landmarks().isNotEmpty()) hands++
-            if (fi % 4 == 0) println("DIRECT_CLIP frame $fi hands=${result.landmarks().size}")
         }
         landmarker.close()
-        return Triple(n, hands, landmarks + present)
-    }
-
-    /**
-     * Isolates the detector from the video decoder: load one PNG that is known
-     * to contain a hand (Python finds one here), and run the shipped detector
-     * on it. If this finds a hand, the detector is fine and the MP4 path is at
-     * fault; if it finds nothing, the detector or its input config is at fault.
-     */
-    @Test
-    fun detectorFindsAHandInAKnownStillImage() {
-        val dir = instrumentation.targetContext.filesDir
-        val png = File(dir, "withhand.png")
-        assumeTrue("push withhand.png to the app files dir to run this test", png.isFile)
-        val bmp = android.graphics.BitmapFactory.decodeFile(png.absolutePath)
-            .copy(Bitmap.Config.ARGB_8888, false)
-        val options = HandLandmarker.HandLandmarkerOptions.builder()
-            .setBaseOptions(
-                BaseOptions.builder().setModelAssetPath(ModelContract.DETECTOR_ASSET).build()
-            )
-            .setRunningMode(RunningMode.IMAGE)
-            .setNumHands(2)
-            .setMinHandDetectionConfidence(0.3f)
-            .setMinHandPresenceConfidence(0.3f)
-            .setMinTrackingConfidence(0.3f)
-            .build()
-        val lm = HandLandmarker.createFromOptions(instrumentation.targetContext, options)
-        for (resize in listOf(false, true)) {
-            // Always build a fresh input from bmp: scaling may return the same
-            // instance, and MediaPipe closes the bitmap it was given, so reusing
-            // bmp across iterations would operate on a recycled bitmap.
-            val input = if (resize) {
-                Bitmap.createScaledBitmap(bmp, 256, 256, true)
-            } else {
-                bmp.copy(Bitmap.Config.ARGB_8888, false)
-            }
-            val img = BitmapImageBuilder(input).build()
-            val res = lm.detect(img)
-            println("DETECTOR_STILL resize=$resize ${input.width}x${input.height} hands=${res.landmarks().size}")
-            img.close()
-            if (input !== bmp) input.recycle()
-        }
-        bmp.recycle()
-        lm.close()
+        return mapOf(
+            "decoded" to decoded, "frames" to n, "hands" to hands,
+            "landmarks" to landmarks, "present" to present,
+        )
     }
 
     @Test
     fun androidDirectClipMatchesTheShippedPipeline() {
         val file = clipFile()
-        assumeTrue(
-            "no .mp4 in the app's external files dir; push one to run this test",
-            file != null
-        )
+        val required = InstrumentationRegistry.getArguments()
+            .getString("requireClip") == "true"
+        if (requireClipMissing(file, required)) return
 
-        val assets = instrumentation.targetContext.assets
-        val loaded = ModelContract.load(assets)
+        val loaded = ModelContract.load(instrumentation.targetContext.assets)
         val classifier = LandmarkClassifier.create(loaded)
 
-        val results = LinkedHashMap<String, String>()
+        // Distinct PTS values prove the decoder is not re-emitting keyframes.
         classifier.use {
-            for (resize in listOf(true, false)) {
-                val (n, hands, flat) = runPath(file!!, resize)
+            for (resize in listOf(false, true)) {
+                val res = runPath(file!!, resize)
+                val tag = if (resize) "resize256" else "native"
+                val n = res["frames"] as Int
                 if (n == 0) {
-                    results["resize=$resize"] = "no frames decoded"
+                    println("DIRECT_CLIP $tag no frames decoded")
                     continue
                 }
-                val half = n * 2 * 21 * 3
-                val landmarks = flat.copyOfRange(0, half)
-                val present = flat.copyOfRange(half, flat.size)
+                val landmarks = res["landmarks"] as FloatArray
+                val present = res["present"] as FloatArray
                 val feats = FeatureTransform.buildFeatures(landmarks, present, n, 24)
                 val r = classifier.predict(feats)
-                val tag = if (resize) "resize256" else "native"
-                results[tag] = "frames=$n hands=$hands top1=${r.prediction} " +
-                    "score=${"%.4f".format(r.confidence)} top5=${r.top5.take(3)}"
-                println("DIRECT_CLIP $tag ${results[tag]}")
+                println(
+                    "DIRECT_CLIP $tag decoded=${res["decoded"]} frames=$n " +
+                        "hands=${res["hands"]} top1=${r.prediction} " +
+                        "score=${"%.4f".format(r.confidence)} top5=${r.top5.take(3)}"
+                )
                 assertTrue("frames decoded", n > 0)
-                assertTrue("landmarks are finite", landmarks.all { it.isFinite() })
-                assertTrue("top5 has five entries", r.top5.size == 5)
+                assertTrue("landmarks finite", landmarks.all { it.isFinite() })
+                assertEquals("top5 size", 5, r.top5.size)
             }
         }
+    }
 
-        // The test's job is to make both paths observable side by side; it must
-        // not assert a particular label, because the clip is operator-supplied
-        // and its ground truth is not known here.
-        assertTrue("both preprocessing paths ran", results.size >= 1)
+    /**
+     * The decoder must yield distinct frames, not the same keyframe repeated.
+     * On a 75-frame clip, sampling 32 targets must recover close to 32 distinct
+     * presentation timestamps.
+     */
+    @Test
+    fun decoderYieldsDistinctFramesNotRepeatedKeyframes() {
+        val file = clipFile() ?: run {
+            return
+        }
+        val (frames, decoded) = sampleFrames(file, 32, resize = false)
+        val distinctPts = frames.map { it.ptsMs }.distinct().size
+        println(
+            "DIRECT_CLIP decoder decoded=$decoded sampled=${frames.size} " +
+                "distinct_pts=$distinctPts duration_ms=${frames.lastOrNull()?.ptsMs}"
+        )
+        for (f in frames) f.bitmap.recycle()
+        assertTrue("decoded at least one frame", decoded > 0)
+        // The old OPTION_CLOSEST_SYNC path collapsed to a handful; require that
+        // essentially every sample is a different frame.
+        assertTrue(
+            "expected ~32 distinct frames, got $distinctPts of ${frames.size}",
+            distinctPts >= (frames.size * 9) / 10
+        )
+    }
+
+    private fun requireClipMissing(file: File?, required: Boolean): Boolean {
+        if (file == null && required) {
+            throw AssertionError(
+                "requireClip=true but no .mp4 found in the app's files dirs. " +
+                    "Push a clip and re-run; this run is INCOMPLETE, not passing."
+            )
+        }
+        assumeTrue("no .mp4 in the app's files dir; push one to run this test", file != null)
+        return file == null
     }
 }

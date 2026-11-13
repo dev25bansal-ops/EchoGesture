@@ -111,10 +111,11 @@ class OfficialBuildTest(unittest.TestCase):
                     "latency_ms": 1.0,
                 }) + "\n")
 
-    def build(self, official=True):
+    def build(self, official=True, predictions=None):
         return bb.build(self.source, MODEL, LABELS, self.source / "results" / "results.csv",
                         self.root / "out.zip", official=official,
-                        extra=[self.source / CONVERSION])
+                        extra=[self.source / CONVERSION],
+                        predictions=predictions)
 
     # -- the happy path ----------------------------------------------------
 
@@ -222,9 +223,44 @@ class OfficialBuildTest(unittest.TestCase):
         import zipfile
         with zipfile.ZipFile(self.root / "out.zip") as z:
             names = set(z.namelist())
-        # No manifest to validate against, so none of the official artifacts ship.
+        # Without --predictions nothing claims to be organizer predictions.
         self.assertNotIn("results/predictions.jsonl", names)
         self.assertNotIn("manifest.json", names)
+
+    def test_provisional_build_can_stage_explicit_predictions(self):
+        # Deck p.11 requires predictions in results/ even though their clip IDs
+        # cannot be checked without an organizer manifest. The flag stages them
+        # for a PROVISIONAL bundle only; the bundle stays unofficial.
+        self.write_predictions()
+        info = self.build(official=False,
+                          predictions=self.source / "results" / "predictions.jsonl")
+        self.assertEqual(info["status"], "structure_verified")
+        self.assertFalse(info.get("official_submission", False))
+        import zipfile
+        with zipfile.ZipFile(self.root / "out.zip") as z:
+            names = set(z.namelist())
+        self.assertIn("results/predictions.jsonl", names)
+        self.assertIn("results/predictions.json", names)
+        # No manifest was supplied, so none may be invented.
+        self.assertNotIn("manifest.json", names)
+
+    def test_provisional_predictions_with_unknown_label_are_refused(self):
+        # The structural check must catch a label outside the shipped
+        # vocabulary even when there is no manifest to check IDs against.
+        self.write_predictions(label="NOTAREALGLOSS")
+        with self.assertRaises(ValueError) as ctx:
+            self.build(official=False,
+                       predictions=self.source / "results" / "predictions.jsonl")
+        self.assertIn("uppercase label", str(ctx.exception))
+
+    def test_official_build_still_refuses_predictions_without_a_manifest(self):
+        # The flag must not open a back door: official builds still require the
+        # manifest that makes ID validation possible.
+        self.write_predictions()
+        with self.assertRaises(ValueError) as ctx:
+            self.build(official=True,
+                       predictions=self.source / "results" / "predictions.jsonl")
+        self.assertIn("manifest", str(ctx.exception).lower())
 
 
 if __name__ == "__main__":

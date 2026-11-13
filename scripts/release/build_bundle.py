@@ -253,6 +253,45 @@ def _validate_results(root, digest):
             raise ValueError("Result evidence belongs to another model")
 
 
+def _validate_predictions_file(path, labels_path):
+    """Structural validation of a caller-supplied predictions file.
+
+    Checks what can be checked without an organizer manifest: every row parses
+    as JSON, carries the five contract fields, has a unique clip_id, predicts a
+    label that exists in the shipped vocabulary, is uppercase, and appears in
+    its own top5. It deliberately does NOT validate clip IDs against a manifest
+    — that is why a bundle built this way stays provisional.
+    """
+    labels = set(_load_json(Path(labels_path), "Labels"))
+    required = ("clip_id", "prediction", "top5", "confidence", "latency_ms")
+    seen = set()
+    rows = 0
+    for lineno, line in enumerate(Path(path).read_text(encoding="utf-8").splitlines(), 1):
+        if not line.strip():
+            continue
+        try:
+            rec = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"{path}:{lineno}: not valid JSON ({exc.msg})") from exc
+        missing = [k for k in required if k not in rec]
+        if missing:
+            raise ValueError(f"{path}:{lineno}: missing fields {missing}")
+        cid = rec["clip_id"]
+        if cid in seen:
+            raise ValueError(f"{path}:{lineno}: duplicate clip_id {cid!r}")
+        seen.add(cid)
+        pred = rec["prediction"]
+        if not isinstance(pred, str) or pred != pred.upper() or pred not in labels:
+            raise ValueError(
+                f"{path}:{lineno}: prediction {pred!r} is not an uppercase "
+                f"label from the shipped vocabulary")
+        if pred not in rec["top5"]:
+            raise ValueError(f"{path}:{lineno}: prediction absent from its own top5")
+        rows += 1
+    if rows == 0:
+        raise ValueError(f"{path}: contains no prediction rows")
+
+
 def _validate_predictions(root, allowed_labels, official, digest, manifest_model_sha=None):
     predictions = Path(root) / "results/predictions.jsonl"
     if official and not predictions.is_file():
@@ -278,7 +317,13 @@ def _validate_predictions(root, allowed_labels, official, digest, manifest_model
         if not actual:
             raise ValueError("predictions.jsonl contains no prediction rows")
         if manifest_ids is None:
-            raise ValueError("predictions.jsonl requires manifest.json for ID validation")
+            # An official bundle must prove its clip IDs. A provisional bundle
+            # may carry predictions whose rows were validated structurally but
+            # whose IDs cannot be checked; it is stamped unofficial and this
+            # branch is only reachable when not official.
+            if official:
+                raise ValueError("predictions.jsonl requires manifest.json for ID validation")
+            return
         if actual != manifest_ids:
             raise ValueError("Prediction IDs do not match the manifest exactly")
 
@@ -428,7 +473,8 @@ def verify_zip(path, clip=None, model_sha=None, official=False):
         return verify_directory(dest_root, clip, model_sha, official)
 
 
-def build(source, model, labels, results, output, official=False, extra=(), metadata=None):
+def build(source, model, labels, results, output, official=False, extra=(), metadata=None,
+          predictions=None):
     """Stage, verify and ZIP one bundle; returns the clean-extraction result.
 
     ``metadata`` optionally overrides the ``landmark_model_meta.json`` sidecar
@@ -566,13 +612,34 @@ def build(source, model, labels, results, output, official=False, extra=(), meta
         # manifest cannot be checked, and a fabricated manifest would defeat the
         # ID check this builder exists to perform.
         sibling_predictions = results.parent / "predictions.jsonl"
+        # A provisional build may stage predictions explicitly. They are
+        # validated structurally against the shipped vocabulary, but clip IDs
+        # cannot be checked without a manifest, so the bundle stays
+        # official_submission: false.
+        if predictions is not None and not official:
+            supplied = Path(predictions).resolve()
+            if not supplied.is_file():
+                raise ValueError(f"--predictions file is missing: {supplied}")
+            _validate_predictions_file(supplied, labels)
+            sibling_predictions = supplied
         source_manifest = source / "manifest.json"
-        if sibling_predictions.is_file() and source_manifest.is_file():
+        # Two ways predictions may be staged:
+        #  - with an organizer manifest, so the clip IDs are checked exactly
+        #    (the official path), or
+        #  - supplied explicitly for a PROVISIONAL bundle, where the rows are
+        #    validated structurally and the bundle is stamped unofficial.
+        stage_predictions = (
+            sibling_predictions.is_file()
+            and (source_manifest.is_file() or (predictions is not None and not official))
+        )
+        if stage_predictions:
             shutil.copy2(sibling_predictions, staging / "results/predictions.jsonl")
+        if sibling_predictions.is_file() and source_manifest.is_file():
             # _load_manifest_ids reads manifest.json from the bundle root, so it
             # must be staged or official verification fails on the copied tree
             # even though the source tree validated.
             shutil.copy2(source_manifest, staging / "manifest.json")
+        if stage_predictions:
             # p.12 names predictions.json; p.11 mandates a JSON-Lines payload.
             # Emit both so either reading of the deck resolves, with identical
             # content: JSON Lines is valid as newline-delimited JSON.
@@ -631,6 +698,12 @@ def main(argv=None):
     build_parser.add_argument("--metadata", type=Path,
                               help="override the shipped landmark_model_meta.json sidecar")
     build_parser.add_argument("--official", action="store_true")
+    build_parser.add_argument(
+        "--predictions", type=Path, default=None,
+        help="Provisional builds only: a predictions file to stage in results/. "
+             "It is validated for vocabulary, uniqueness and contract shape, but "
+             "its clip IDs cannot be checked without an organizer manifest, so "
+             "the bundle is stamped official_submission: false regardless.")
     verify_parser = subparsers.add_parser("verify")
     verify_parser.add_argument("bundle", type=Path)
     verify_parser.add_argument("--clip", type=Path)
@@ -639,7 +712,8 @@ def main(argv=None):
     args = parser.parse_args(argv)
     try:
         if args.command == "build":
-            result = build(args.source, args.model, args.labels, args.results, args.output, args.official, args.extra, args.metadata)
+            result = build(args.source, args.model, args.labels, args.results, args.output,
+                           args.official, args.extra, args.metadata, args.predictions)
         else:
             result = verify_zip(args.bundle, args.clip, args.model_sha, args.official)
     except (OSError, ValueError, KeyError, TypeError, zipfile.BadZipFile, subprocess.SubprocessError) as exc:

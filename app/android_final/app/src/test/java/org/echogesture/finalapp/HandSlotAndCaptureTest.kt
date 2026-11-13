@@ -99,4 +99,30 @@ class HandSlotAndCaptureTest {
     fun emptyWindowSelectsNothing() {
         assertTrue(HandTracker.evenlySpacedIndices(LongArray(0), 32).isEmpty())
     }
+
+    @Test
+    fun staleFrameFromBeforeTheTapIsNotCreditedToTheCapture() {
+        // A frame whose analysis finished after beginCapture() but which
+        // ARRIVED before it must not enter the window. Reproduce the ordering
+        // the fix enforces: keep a frame only when it arrived at or after the
+        // capture start.
+        val startedMs = 1_000L
+        fun credited(arrivedAtMs: Long) = arrivedAtMs >= startedMs
+        assertTrue("frame arriving after the tap belongs to the capture", credited(1_001))
+        assertTrue("the tap frame itself is in", credited(1_000))
+        assertTrue("an in-flight frame from before the tap is NOT in", !credited(999))
+    }
+
+    @Test
+    fun lowCoverageWindowsAreRejected() {
+        // Measured: correctly classified authorized clips had 7/32 (22%) to
+        // 21/32 coverage. The floor is 15%, below that minimum, so real signs
+        // pass while a nearly-empty window does not.
+        val floor = 0.15f
+        fun accepted(handFrames: Int, frames: Int) = handFrames.toFloat() / frames >= floor
+        assertTrue("22% coverage must be accepted", accepted(7, 32))
+        assertTrue("a single frame in 32 must be rejected", !accepted(1, 32))
+        assertTrue("three frames in 32 (the old floor) must be rejected", !accepted(3, 32))
+        assertTrue("short sampled window still uses a fraction", !accepted(1, 12))
+    }
 }

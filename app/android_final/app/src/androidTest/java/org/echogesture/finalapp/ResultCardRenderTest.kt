@@ -172,10 +172,16 @@ class ResultCardRenderTest {
             )
 
             val reliability = activity.findViewById<TextView>(R.id.confidenceLabel)
+            val captureDetail = activity.findViewById<TextView>(R.id.captureDetailText)
             assertTrue(
-                "card must state capture facts, not only inference time, was '${latency.text}'",
-                latency.text.toString().contains("32 frames") &&
-                    latency.text.toString().contains("1023 ms")
+                "card must state capture facts separately from latency, was '${captureDetail.text}'",
+                captureDetail.text.toString().contains("32 frames") &&
+                    captureDetail.text.toString().contains("1023 ms")
+            )
+            assertTrue(
+                "latency must be its own classifier measurement, was '${latency.text}'",
+                latency.text.toString().contains(result.inferenceMillis.toString()) &&
+                    !latency.text.toString().contains("frames")
             )
             assertTrue(
                 "card must label reliability, was '${reliability.text}'",

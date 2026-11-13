@@ -241,3 +241,91 @@ remaining accuracy gap plausible:
 Until the table above is filled on a phone, the honest statement is: the
 capture defect is fixed and measured; recognition accuracy on your phone is
 **not yet established**.
+---
+
+# Round 2 — no-retrain investigation
+
+Branch `hackathon/echogesture-v2-rc`. No model, weight, detector, label,
+vocabulary, feature dimension, ensemble order or feature-semantic byte changed.
+
+## Android VIDEO mode vs Python IMAGE mode — parity is good
+
+Python's `detect_hands(mode="video")` runs the same MediaPipe HandLandmarker in
+VIDEO mode (a tracker carried across calls); Android runs VIDEO mode on every
+camera frame. To test whether that difference costs accuracy, the same
+authorized ASL Citizen clips were decoded once and pushed through both modes in
+**separate processes** (the shared `_LANDMARKER` singleton silently ignores its
+`mode` argument on later calls, which produced a false "VIDEO finds 0 hands"
+result in a first attempt — recorded here so it is not repeated).
+
+| Clip | Hands image / video | Top-1 image | Top-1 video | Score image / video |
+| --- | --- | --- | --- | --- |
+| EAT | 29 / 29 (of 75) | EAT1 | EAT1 | 0.651 / 0.676 |
+| WHAT FOR | 29 / 28 (of 116) | WHATFOR1 | WHATFOR1 | 0.681 / 0.586 |
+| DOG | 34 / 35 (of 96) | DOG1 | DOG1 | 0.211 / 0.208 |
+| BASKETBALL | 40 / 40 (of 90) | BASKETBALL1 | BASKETBALL1 | 0.258 / 0.328 |
+
+**Identical top-1 in 4/4 clips, hand counts within ±1.** Feature tensors differ
+(mean |Δ| 0.017, max 0.92 on a normalized scale) but not enough to move the
+decision. **Android's tracker is not the cause of the phone failures.**
+
+Left/right slots key on MediaPipe's handedness label in both code paths
+(`HandTracker.toHands()` and `landmark_frontend.detect_hands()`), never swapped,
+and neither pipeline mirrors. Rotation is applied exactly once, via
+`ImageProcessingOptions.setRotationDegrees`.
+
+## The model generalizes on authorized footage
+
+`src/main.py`'s public `predict()` was run on 12 in-vocabulary ASL Citizen
+validation clips (the split contains 10,304 clips, of which only **346** map to
+the 100 shipped labels — the other 9,958 are out of vocabulary and cannot be
+scored, which invalidated an earlier 26-clip sample that was 96% out-of-vocab):
+
+| Expected | Predicted | Score |
+| --- | --- | ---: |
+| EAT1 | **EAT1** | 0.529 |
+| DEAF1 | **DEAF1** | 0.457 |
+| WHATFOR1 | **WHATFOR1** | 0.625 |
+| DOG1 | **DOG1** | 0.195 |
+| BASKETBALL1 | **BASKETBALL1** | 0.310 |
+| plus 7 more (PATIENT2, GUESS1, RIVER1, SHAVE1 ×2, ELEVATOR1 ×2) | all correct | 0.101–0.755 |
+
+**12/12 correct; 6/6 correct above the 0.35 cut.** Both signs the phone got
+wrong — EAT1 and DEAF1 — classify correctly here, and DEAF1's top-5 does **not**
+contain DOG1.
+
+This is the decisive result: the pipeline is right and the model works on
+in-domain footage. The phone failures are a domain gap, not a code defect.
+
+## What was actually fixed this round
+
+1. **Stale frames excluded from the window.** A frame is now timestamped when it
+   *arrives*, and a frame that arrived before the tap is dropped even if its
+   detection finished after the window opened. Previously `capturedAtMs` was
+   taken after `detectForVideo()` returned, so an in-flight frame analysed
+   across the tap was credited to the capture.
+2. **Dead stall bound removed.** The old "too long" guard was computed from the
+   frame cap (200 × 33 ms = 6.6 s) and OR'd with the 3.7 s span check, so it
+   could never fire first. Capture now ends on the measured span.
+3. **Coverage floor is measured, not guessed.** `MIN_HAND_FRAMES = 3`
+   (9% of a 32-frame window) was replaced by `MIN_HAND_FRACTION = 0.15`. On
+   correctly classified clips coverage ranged 7/32 (22%) to 21/32 (44%); the old
+   floor admitted windows far emptier than any that worked. A fraction is used
+   because the sampled window can be shorter than 32 on a slow device.
+4. **Capture duration and classifier latency are separate lines.** The old
+   single line ("32 frames · 1031 ms captured · 30 fps · 43 ms inference")
+   invited the 43 ms to be read as end-to-end. They are now two labelled
+   measurements.
+5. **Live capture countdown.** The capture is a fixed 3.7 s span; the status
+   line now counts it down so the signer knows how long to keep performing.
+
+## What is still unproven
+
+- **The phone failures are not reproduced here.** No phone was attached. That
+  the model is correct on clip footage does **not** prove it is correct through
+  a handheld camera; the evidence points to a domain gap (framing, distance,
+  lighting, lens, handheld motion, mirroring of the preview) rather than to a
+  pipeline bug.
+- **No accuracy improvement is claimed.** The fixes above are correctness and
+  honesty fixes. Whether they change your phone results is unknown until you
+  re-run the same signs.

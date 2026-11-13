@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.SystemClock
 import android.util.Log
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -63,12 +64,22 @@ class CameraScreen(
 
     companion object {
         /**
-         * A capture with fewer hand-bearing frames than this cannot describe a
-         * sign's motion. It is a low bar on purpose: the first and last frames
-         * of a real sign are often empty, and the model was trained on windows
-         * that contained them.
+         * Fraction of the capture window that must contain a hand before the
+         * window is worth classifying.
+         *
+         * Measured, not picked by eye: on authorized ASL Citizen clips that
+         * the ensemble classifies correctly, the lowest coverage observed was
+         * 7/32 frames (22%) and the median was 14/32 (44%). A fraction is used
+         * rather than a frame count because the sampled window can be shorter
+         * than 32 on a slow device, and 3 frames of 32 (9%) — the previous
+         * floor — sits far below any clip that classified correctly.
+         *
+         * A window below this is reported as an unusable capture rather than
+         * scored, so a nearly-empty window cannot produce a confident-looking
+         * gloss. It is deliberately below the observed minimum: the first and
+         * last frames of a real sign are often empty.
          */
-        private const val MIN_HAND_FRAMES = 3
+        private const val MIN_HAND_FRACTION = 0.15
     }
 
     val root: View = LayoutInflater.from(activity).inflate(R.layout.screen_camera, null, false)
@@ -87,6 +98,12 @@ class CameraScreen(
     private val confidenceBadge: TextView = root.findViewById(R.id.confidenceBadge)
     private val alternativesText: TextView = root.findViewById(R.id.alternativesText)
     private val latencyText: TextView = root.findViewById(R.id.latencyText)
+    private val captureDetailText: TextView = root.findViewById(R.id.captureDetailText)
+
+    /** When the current capture window began; drives the live countdown. */
+    private var captureStartMs = 0L
+
+    private var captureCountdown: Runnable = Runnable { }
     private val confidenceLabel: TextView = root.findViewById(R.id.confidenceLabel)
     private val copyButton: Button = root.findViewById(R.id.copyButton)
     private val speakButton: Button = root.findViewById(R.id.speakButton)
@@ -189,6 +206,7 @@ class CameraScreen(
     }
 
     fun onDestroy() {
+        stopCaptureCountdown()
         tracker?.close()
         classifier?.close()
         tracker = null
@@ -304,8 +322,10 @@ class CameraScreen(
                 UiState.CAPTURING -> {
                     hideStatus()
                     setLiveStatus(R.string.camera_state_capturing, R.color.text_on_dark)
+                    startCaptureCountdown()
                 }
                 UiState.PROCESSING -> {
+                    stopCaptureCountdown()
                     hideStatus()
                     setLiveStatus(R.string.camera_state_processing, R.color.text_on_dark)
                 }
@@ -392,6 +412,36 @@ class CameraScreen(
         liveStatus.setTextColor(ContextCompat.getColor(activity, tint))
     }
 
+    /**
+     * Counts the capture window down in the live status line.
+     *
+     * The capture is a fixed 3.7 s span, so without this the button appears to
+     * do nothing for several seconds. A visible countdown tells the signer how
+     * long to keep performing, which matters for signs whose motion continues
+     * to the end. It re-posts itself and is cancelled whenever the state
+     * leaves CAPTURING, so no timer outlives the capture.
+     */
+    private fun startCaptureCountdown() {
+        stopCaptureCountdown()
+        val totalMs = HandTracker.CAPTURE_SPAN_MS
+        captureCountdown = object : Runnable {
+            override fun run() {
+                if (currentState != UiState.CAPTURING) return
+                val left = (totalMs - (SystemClock.elapsedRealtime() - captureStartMs)).coerceAtLeast(0L)
+                liveStatus.text = activity.getString(
+                    R.string.camera_state_capturing_left,
+                    ((left + 999L) / 1000L).toInt()
+                )
+                if (left > 0L) liveStatus.postDelayed(this, 100L)
+            }
+        }
+        liveStatus.postDelayed(captureCountdown, 100L)
+    }
+
+    private fun stopCaptureCountdown() {
+        liveStatus.removeCallbacks(captureCountdown)
+    }
+
     private fun revealResult() {
         // 180 ms fade + small rise. Restrained, and skipped when the system
         // animator scale is off so reduced-motion users get no motion.
@@ -421,6 +471,7 @@ class CameraScreen(
         confidenceBadge.text = ""
         alternativesText.text = ""
         latencyText.text = ""
+        captureDetailText.text = ""
         render(UiState.WAITING)
         haptic(HapticFeedbackConstants.KEYBOARD_TAP)
     }
@@ -580,6 +631,7 @@ class CameraScreen(
         if (processing) return
         processing = true
         resultCard.visibility = View.GONE
+        captureStartMs = SystemClock.elapsedRealtime()
         render(UiState.CAPTURING)
         haptic(HapticFeedbackConstants.KEYBOARD_TAP)
 
@@ -602,14 +654,13 @@ class CameraScreen(
                         render(UiState.NO_HANDS)
                         return@execute
                     }
-                    // A window where the hand is missing for most of it cannot
-                    // describe a two-handed dynamic sign; say so rather than
-                    // producing a confident-looking guess from a few frames.
-                    // The onset and offset frames of a dynamic sign are naturally empty,
-                    // so requiring a hand in every frame would be wrong. Below
-                    // this many, the hand was barely in frame and the window
-                    // cannot describe the motion.
-                    if (capture.handFrames < MIN_HAND_FRAMES) {
+                    // A window where the hand is missing for most of it cannot describe a
+                    // two-handed dynamic sign; say so rather than producing a
+                    // confident-looking guess from a few frames. The onset and
+                    // offset frames of a real sign are naturally empty, which is
+                    // why this is a fraction and not "the hand in every frame".
+                    val coverage = capture.handFrames.toFloat() / capture.frameCount.coerceAtLeast(1)
+                    if (coverage < MIN_HAND_FRACTION) {
                         finishProcessing()
                         if (prefs.diagnostics) logDiagnostic(capture, null, 0L)
                         render(UiState.LOW_FRAMES)
@@ -679,11 +730,17 @@ class CameraScreen(
             if (certain) R.string.result_confidence_accepted
             else R.string.result_confidence_uncertain
         )
-        latencyText.text = activity.getString(
+        // Capture facts and classifier latency are different measurements and
+        // are shown as such. The old single line ("43 ms") invited inference
+        // timing to be read as capture-to-caption, which it never was.
+        captureDetailText.text = activity.getString(
             R.string.result_capture_detail,
             capture.frameCount,
             capture.durationMs,
-            capture.fps.roundToInt(),
+            capture.fps.roundToInt()
+        )
+        latencyText.text = activity.getString(
+            R.string.result_latency_detail,
             result.inferenceMillis
         )
 

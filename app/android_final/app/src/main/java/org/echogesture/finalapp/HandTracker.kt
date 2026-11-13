@@ -160,6 +160,11 @@ class HandTracker private constructor(
             return false
         }
         var mpImage: MPImage? = null
+        // Timestamp when the frame ARRIVED, not when detection finished.
+        // detectForVideo is synchronous and can take tens of milliseconds; a
+        // frame that arrived before the user tapped must not be credited to
+        // the capture window just because its analysis finished after it.
+        val frameAtMs = SystemClock.elapsedRealtime()
         return try {
             // toBitmap() copies the YUV planes into a fresh ARGB_8888 bitmap
             // and does NOT apply rotation; rotation is passed to MediaPipe via
@@ -177,19 +182,23 @@ class HandTracker private constructor(
                 nextFrameTs.getAndAdd(FRAME_INTERVAL_MS)
             )
             val now = SystemClock.elapsedRealtime()
-            val frame = Frame(toHands(result), now)
+            val frame = Frame(toHands(result), frameAtMs)
             var completed: (() -> Unit)? = null
             synchronized(lock) {
-                ring.addLast(frame)
+                // A frame that arrived before the tap belongs to the preview,
+                // not to this capture. Dropping it here is what makes the
+                // window provably start at the user's tap even when a
+                // detection was in flight while beginCapture() ran.
+                if (!capturing || frameAtMs >= captureStartedMs) {
+                    ring.addLast(frame)
+                }
                 // The ring holds the whole span; capacity is only a memory
                 // backstop, not the window length.
                 while (ring.size > MAX_CAPTURE_FRAMES) ring.removeFirst()
                 val elapsed = now - captureStartedMs
-                // End on time, or early if a stalled analyser fills the
-                // backstop. Frame count alone must never close the window:
-                // that is what tied the temporal span to device speed.
-                val tooLong = elapsed >= MAX_CAPTURE_FRAMES.toLong() * FRAME_INTERVAL_MS
-                if (capturing && (elapsed >= CAPTURE_SPAN_MS || ring.size >= MAX_CAPTURE_FRAMES || tooLong)) {
+                // End on time; the frame cap is only a memory backstop for a
+                // device so slow that the span barely fills.
+                if (capturing && (elapsed >= CAPTURE_SPAN_MS || ring.size >= MAX_CAPTURE_FRAMES)) {
                     capturing = false
                     completed = captureCallback
                     captureCallback = null

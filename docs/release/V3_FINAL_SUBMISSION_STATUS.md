@@ -43,12 +43,12 @@ The model, vocabulary, features and ensemble ordering are untouched.
 
 ### Candidate APK
 
-`dist/echogesture-v3-12feeef-pretap.apk`
+`dist/echogesture-v3-87efd29.apk`
 SHA-256 `ce83cf4c0e080b210f3b3cb160d650177cf759f29e190b8951730dcbbdda8aa4`,
 77,716,903 bytes. Full manifest in `docs/release/V3_FINAL_APK_MANIFEST.json`.
 
-**This is built from an uncommitted working tree.** Commit it before
-distributing, so the APK corresponds to a SHA anyone can check out.
+Built from clean commit `87efd29`; rebuilding from that commit reproduces the
+same SHA-256.
 
 ## 3. Remaining blockers
 

@@ -2,7 +2,7 @@
   "schema": "echogesture.v3.final_apk_manifest/1",
   "generated_utc": "2026-11-13T18:42:16Z",
   "apk": {
-    "path": "dist/echogesture-v3-12feeef-pretap.apk",
+    "path": "dist/echogesture-v3-87efd29.apk",
     "sha256": "ce83cf4c0e080b210f3b3cb160d650177cf759f29e190b8951730dcbbdda8aa4",
     "bytes": 77716903,
     "applicationId": "org.echogesture.finalapp",
@@ -12,9 +12,9 @@
   },
   "source": {
     "branch": "diag/live-phone-recognition-v3",
-    "base_commit": "12feeef",
-    "uncommitted_changes": true,
-    "note": "built from a working tree on top of the base commit"
+    "commit": "87efd29",
+    "uncommitted_changes": false,
+    "note": "rebuilt from the clean commit; same SHA-256 as the working-tree build"
   },
   "models": {
     "quantization": "float16",

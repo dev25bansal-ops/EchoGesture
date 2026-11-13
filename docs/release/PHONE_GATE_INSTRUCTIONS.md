@@ -4,9 +4,9 @@ No physical Android device is attached to this machine (`adb devices -l` shows
 only `emulator-5554`). Nothing in this file is a measurement. It is the exact
 sequence that produces one.
 
-**APK:** `dist/echogesture-v3-12feeef-pretap.apk`
+**APK:** `dist/echogesture-v3-87efd29.apk`
 SHA-256 `ce83cf4c0e080b210f3b3cb160d650177cf759f29e190b8951730dcbbdda8aa4`
-Base commit `12feeef`, branch `diag/live-phone-recognition-v3`, 77,716,903 bytes.
+Commit `87efd29`, branch `diag/live-phone-recognition-v3`, 77,716,903 bytes.
 
 This is the **strict pre-tap capture contract** build. It differs from the
 previous candidate (`echogesture-rc-a2c0a6c.apk`) in the capture path, not the
@@ -37,7 +37,7 @@ adb shell getprop ro.product.cpu.abi
 ## 2. Install
 
 ```bash
-adb install -r dist/echogesture-v3-12feeef-pretap.apk
+adb install -r dist/echogesture-v3-87efd29.apk
 ```
 
 If it fails with `INSTALL_FAILED_UPDATE_INCOMPATIBLE`, a differently-signed

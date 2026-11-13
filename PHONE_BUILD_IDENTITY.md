@@ -11,10 +11,12 @@ says which build is which, so no measurement can be attributed to the wrong one.
 | 2 | `dist/echogesture-diag-87e3835.apk` | `abe6b24b…` | `diag/training-clip-repro` | `87e3835` | Diagnostics log, latency split | No |
 | 3 | `dist/echogesture-rc-a2c0a6c.apk` | `abe6b24ba3f0cca9860ce08cb1562fb0312e020261027988fba522b10aa43bdd` | `diag/training-clip-repro` | `a2c0a6c` | **Byte-identical to #2**: the MediaCodec decoder fix lives in the test harness, not the app | **No physical device attached** |
 | 4 | `dist/echogesture-phone-test.apk` | `429f7c4d713bdc7ca59da6a7b6cabacd3b0b60cb74c1ea5ec8db2eddd2d30f90` | `diag/training-clip-repro` | `12feeef` | Pre-tap rolling window: the tap now classifies the 3.7 s **ending** at the tap instead of starting there | **No physical device attached** |
-| 5 | `dist/echogesture-v3-12feeef-pretap.apk` | `ce83cf4c0e080b210f3b3cb160d650177cf759f29e190b8951730dcbbdda8aa4` | `diag/live-phone-recognition-v3` | `12feeef` + working tree | Strict capture contract: no waiting path, stale/short history rejected with a message, repeat-tap guard | **No physical device attached** |
+| 5 | `dist/echogesture-v3-87efd29.apk` | `ce83cf4c0e080b210f3b3cb160d650177cf759f29e190b8951730dcbbdda8aa4` | `diag/live-phone-recognition-v3` | `87efd29` | Strict capture contract: no waiting path, stale/short history rejected with a message, repeat-tap guard | **No physical device attached** |
 
 Build 5 is the current candidate. It is the only build that contains the
-hardening described in `docs/release/V3_PHONE_ACCURACY_REPORT.md`.
+hardening described in `docs/release/V3_PHONE_ACCURACY_REPORT.md`. It was built
+twice — once from the working tree and once from clean commit `87efd29` — and
+both produced the same SHA-256, so the APK provably corresponds to the commit.
 
 Builds 4 and 5 both derive from commit `12feeef`. Build 4 is the pre-tap fix
 alone; build 5 adds the strict contract, the repeat guard and the removal of

@@ -163,7 +163,7 @@ from this change.
 
 ```bash
 adb devices -l
-adb install -r dist/echogesture-v3-12feeef-pretap.apk
+adb install -r dist/echogesture-v3-87efd29.apk
 ```
 
 then Settings → Capture diagnostics → on, perform 10 signs × 5 conditions from

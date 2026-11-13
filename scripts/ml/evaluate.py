@@ -55,17 +55,36 @@ def load_classifier(model_path):
 
     interp = Interpreter(model_path=str(model_path))
     interp.allocate_tensors()
-    inp = interp.get_input_details()[0]
+    # Match on the NAME, not the position. The TFLite converter does not
+    # preserve the order the Keras model declared its inputs in, and it
+    # reports the mask first - indexing [0] as "features" feeds a (1,24) mask
+    # where a (1,24,F) feature matrix belongs.
+    dets = interp.get_input_details()
+    f_det = next((d for d in dets if "features" in d["name"]), dets[0])
+    m_det = next((d for d in dets if "mask" in d["name"]), None)
     out = interp.get_output_details()[0]
 
-    def invoke(feats):
-        interp.set_tensor(inp["index"], feats[None, ...].astype(np.float32))
+    def invoke(feats, mask=None):
+        interp.set_tensor(f_det["index"], feats[None, ...].astype(np.float32))
+        if m_det is not None:
+            if mask is None:
+                raise ValueError(
+                    f"{Path(model_path).name} takes a mask input; scoring it "
+                    f"without one measures a different model than was trained")
+            interp.set_tensor(m_det["index"], mask[None, ...].astype(np.float32))
         interp.invoke()
         logits = interp.get_tensor(out["index"])[0].astype(np.float32)
         e = np.exp(logits - logits.max())
         return e / e.sum()
 
-    return invoke, vocab, frames
+    # Width is read off the graph, not from the sidecar: a model file is the
+    # one thing that cannot disagree with the features it needs. The feature
+    # axis is last, so a 255-wide member takes x,y and a 381-wide one x,y,z.
+    width = int(f_det["shape"][-1])
+    use_z = width != 255
+    if width not in (255, 381):
+        raise ValueError(f"{Path(model_path).name}: unexpected feature width {width}")
+    return invoke, vocab, frames, use_z
 
 
 def main():
@@ -79,7 +98,7 @@ def main():
 
     from features import build_features
 
-    invoke, vocab, ck_frames = load_classifier(ROOT / args.ckpt)
+    invoke, vocab, ck_frames, use_z = load_classifier(ROOT / args.ckpt)
     vocab_idx = {g: i for i, g in enumerate(vocab)}
     idx_label = {i: g for g, i in vocab_idx.items()}
     frames = args.frames or ck_frames
@@ -106,8 +125,10 @@ def main():
             continue
 
         t0 = time.perf_counter()
-        feats, _mask = build_features(lm, pres, expected_frames=frames)
-        probs = invoke(feats)
+        # use_z follows the model's own width, read from the graph rather than
+        # assumed: five of the nine shipped members take 381-wide x,y,z.
+        feats, mask = build_features(lm, pres, expected_frames=frames, use_z=use_z)
+        probs = invoke(feats, mask)
         lat = (time.perf_counter() - t0) * 1000.0
         latencies.append(lat)
 

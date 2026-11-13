@@ -31,17 +31,23 @@ commit `a6cf722` and at the candidate commit over the same clips.
 
 | Figure | Value | Population |
 | --- | --- | --- |
-| Candidate top-1 | 85.19% (253/297) | in-vocab validation clips |
-| Candidate top-5 | 94.95% (282/297) | same |
-| Frozen-file top-1 | 76.01% | same 296 scored clips |
+| Candidate top-1 | **84.48%** (283/335) | in-vocab validation clips |
+| Candidate top-5 | **94.03%** (315/335) | same |
+| Frozen-file top-1 | 75.15% | same 334 scored clips |
+| Paired delta | **+9.58 pt top-1, +7.49 pt top-5** | same 334 clips |
 | Accuracy at accepted coverage (margin ≥ 0.15) | **95.2%, coverage 71.2%** | 146 clips |
 | Accuracy at accepted coverage (old score ≥ 0.35) | 95.4%, coverage 59.6% | same 146 |
 | Clip-to-JSON latency | p50 241 ms / p95 309 ms | macOS arm64, **not** target-device |
 
 The figure moved as the population grew (88.9% at n=18, 78.7% at n=141,
-85.2% at n=297) and is now stable. Reporting the first number would have been
-wrong in both directions; that is why the protocol demands n≥50 before any
-figure is quoted.
+85.2% at n=297, 84.5% at n=335) and has settled near 84–85%. Reporting the
+first number would have been wrong; that is why the protocol demands n≥50
+before any figure is quoted.
+
+On the paired 334-clip set the candidate fixes 40 clips the frozen file gets
+wrong and breaks 8 it gets right. All 8 regressions score below the acceptance
+cut (0.07–0.19) and the correct label is rank-2 in each, so they are rejected
+rather than shown as confident wrong answers.
 
 These are still clip footage from one corpus, not phone input, and the 100
 classes have only 2–6 clips each, so per-class figures are indicative only.
@@ -51,12 +57,12 @@ They are not a generalisation claim.
 
 | Requirement | Clip footage | Real phone |
 | --- | --- | --- |
-| Top-1 accuracy | 85.19% (n=297) | **AWAITING PHONE DATA** |
-| Top-5 accuracy | 94.95% (n=297) | **AWAITING PHONE DATA** |
+| Top-1 accuracy | 84.48% (n=335) | **AWAITING PHONE DATA** |
+| Top-5 accuracy | 94.03% (n=335) | **AWAITING PHONE DATA** |
 | Per-class recall | partial (small n) | **AWAITING PHONE DATA** |
 | False-positive rate | **AWAITING PHONE DATA** — needs intended-vs-predicted on unwritten attempts | **AWAITING PHONE DATA** |
-| Rejection rate | 36.4% at the score cut (n=297) | **AWAITING PHONE DATA** |
-| Accuracy at accepted coverage | 96.83% (coverage 63.6%) | **AWAITING PHONE DATA** |
+| Rejection rate | 37.0% at the 0.35 score cut (n=335) | **AWAITING PHONE DATA** |
+| Accuracy at accepted coverage | **97.16%** (coverage 63.0%) | **AWAITING PHONE DATA** |
 | Capture-to-caption latency | n/a — no camera | **AWAITING PHONE DATA** |
 | APK / model sizes | APK 77,710,351 B; 4 members, 832,888 B each-shape pinned | unchanged |
 | Performance by signer | **AWAITING** — needs ≥2 signers | **AWAITING PHONE DATA** |
@@ -142,11 +148,36 @@ needs several signers before it is worth a training intervention.
 
 ## Decision
 
-**NEEDS PHONE DATA** before any of the three verdicts can be given. The clip
-evidence supports neither READY FOR BROADER TESTING (the phone failures are
-unexplained by anything measurable here) nor NEEDS DEV RETRAINING (the model
-classifies in-vocabulary footage correctly, so retraining is not yet
-justified).
+**NEEDS PHONE DATA.**
+
+That is not a dodge. It is the specific finding: every cause of the phone
+failures that *could* be measured off-phone has been measured and cleared.
+
+- Android tracking matches Python tracking (identical top-1, 4/4 clips).
+- Hand slots, rotation and mirroring are consistent between the paths.
+- Feature construction is fixture-asserted to 1e-4 against the Python
+  reference.
+- Capture is a measured 3.7 s window with pre-tap frames excluded.
+- The shipped pipeline scores 84.5% top-1 / 94.0% top-5 on 335 authorized
+  clips, and 97.2% on the 63% it accepts.
+
+What remains is the one thing that cannot be simulated: a phone camera pointed
+at a human signer. **NEEDS DEV RETRAINING is not justified** — 40 clips improve
+and 8 regress against the previous pipeline over the same clips, and no
+measured failure is attributable to the model rather than to capture. **READY
+FOR BROADER TESTING is not justified either** — nothing here demonstrates the
+phone works, and the two reported phone errors remain unexplained.
+
+The next highest-value action is a phone session with
+[ACCURACY_PROTOCOL.md](ACCURACY_PROTOCOL.md), not more off-phone tuning.
+
+### If the phone session fails
+
+The measured evidence already points at the most likely lever: per-signer
+accuracy ranges 69–90% on the shipped pipeline, and a second-window agreement
+check separates correct from incorrect far more sharply than any single-window
+threshold. If phone accuracy at accepted coverage is poor, a confirm-once
+capture step is better supported by this data than any model change.
 
 ## Two-window agreement (measured, not implemented)
 

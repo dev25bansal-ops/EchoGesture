@@ -196,6 +196,29 @@ mean score tracks the accuracy almost exactly (0.21 for the weakest signer,
    clips are genuinely harder for this model, and the app's rejection rule
    would turn many of them into "uncertain" rather than wrong answers.
 
-An unknown new signer should be assumed closer to the weak end until measured.
-The 95%+ top-1 target in the program goal is not supported by this data for an
-unseen signer; it may hold for a signer who happens to be closer to P39.
+### The shipped pipeline narrows that spread
+
+The same breakdown run through the shipped `predict()` on 313 fetched clips:
+
+| Signer | n | top-1 | top-5 | mean score |
+| --- | --: | --: | --: | --: |
+| P26 | 69 | **90%** | 100% | 0.545 |
+| P39 | 103 | **90%** | 96% | 0.517 |
+| P21 | 104 | 82% | 91% | 0.518 |
+| P12 | 24 | 79% | 96% | 0.352 |
+| P5 | 13 | 69% | 100% | 0.333 |
+| **all** | 313 | **86%** | 96% | 0.503 |
+
+Weak-signer accuracy improves most (P5 38%→69%, P12 46%→79%) and the spread
+narrows from 38–84 to 69–90. Since the two runs use the same models, this is a
+difference in *input construction*, not model quality — the strongest
+indication yet that the pipeline work mattered.
+
+Caveat: these are different clip subsets per run (the frozen file scores 345
+of 346; the local run scored 313 of the clips fetched so far), so the two
+tables are indicative rather than a paired comparison. The paired comparison
+is in the gate table above, which scores both on the identical clip set.
+
+An unknown new signer should still be assumed closer to the weak end until
+measured. The 95%+ top-1 goal is not supported for an unseen signer by this
+data.

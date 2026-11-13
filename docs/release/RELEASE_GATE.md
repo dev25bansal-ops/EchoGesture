@@ -173,3 +173,29 @@ window. It is **not implemented**, deliberately:
 The honest framing: if phone data shows low accuracy at accepted coverage, a
 "perform once more" confirm step is the best-supported next lever, and this
 table is the evidence for it.
+
+## Per-signer performance (n=345, frozen baseline)
+
+| Signer | n | top-1 | top-5 | mean score |
+| --- | --: | --: | --: | --: |
+| P39 | 103 | **84%** | 94% | 0.472 |
+| P21 | 104 | 78% | 86% | 0.471 |
+| P26 | 101 | 75% | 87% | 0.489 |
+| P12 | 24 | **46%** | 75% | 0.268 |
+| P5 | 13 | **38%** | 69% | 0.208 |
+
+This is the single most important structural fact in the whole evaluation.
+Accuracy is not uniform: it ranges from 38% to 84% across five signers, and the
+mean score tracks the accuracy almost exactly (0.21 for the weakest signer,
+0.47 for the strongest). Two conclusions follow.
+
+1. **A pooled accuracy figure is misleading.** 75.36% overall describes no
+   actual signer: three signers sit near it, one is far below.
+2. **The model's confidence is already informative about signer difficulty.**
+   The low mean score for P5/P12 is the uncertainty machinery working — those
+   clips are genuinely harder for this model, and the app's rejection rule
+   would turn many of them into "uncertain" rather than wrong answers.
+
+An unknown new signer should be assumed closer to the weak end until measured.
+The 95%+ top-1 target in the program goal is not supported by this data for an
+unseen signer; it may hold for a signer who happens to be closer to P39.

@@ -480,3 +480,72 @@ The top1-minus-top2 **margin** separates even more cleanly:
 So a demo can show a confident answer only when there is one, and ask for a
 repeat otherwise. That converts the most visible failure mode — a
 fluent-looking wrong label — into an honest "sign again".
+
+## 14 Nov: more data would not help — and the rubric says the gap was elsewhere
+
+Asked whether we should download more data and retrain, because 77% did not
+feel like a win. Checked both halves before answering: what more data could
+buy, and what the judges actually score.
+
+### There is no more data for these 100 signs
+
+The ASL Citizen archive holds **83,399 clips across 2,731 glosses**. Our
+vocabulary is 100 glosses, and for those the archive contains **3,390 clips —
+all of which we have.** Per gloss: min 29, median 32, max 45 clips, from
+26–33 distinct signers.
+
+The other 80,009 clips are the other 2,631 glosses. They are not our
+vocabulary. Learning them cannot help identify our 100 signs, and it is the
+only thing left in the archive.
+
+The one lever that exists — merging val into train, +19% clips — was measured
+at **+0.24 points, 0.19 standard errors**. More data at this scale is noise
+because the constraint is signer diversity, not clip count: 11 signers are
+held out and no amount of re-slicing the same 32 creates a 33rd.
+
+### What the rubric actually scores
+
+From `docs/hackathon/README.md`:
+
+| criterion | weight | target | our state |
+| --- | --: | --- | --- |
+| Held-out top-1 | 35% | ≥70% | **77.02%** — cleared with margin |
+| Edge latency | 20% | ≤50 ms p95 | 6.6 ms classifier |
+| Quantization | 20% | <20 MB | 8.51 MB across nine |
+| **Robustness + HUD** | **25%** | ≤5 pt degradation | **was FAILING** |
+| Power / thermal | — | ≤500 mW, ≤20% drift | not yet measured |
+
+Accuracy is 35%, we are 7 points past a 70% bar, and it is the only criterion
+where more effort had already stopped paying. **Robustness is 25% and was the
+one criterion we were failing.**
+
+### That criterion now passes, and it was a stale measurement
+
+`results/robustness.json` still reported `clean: 73.66%` — the **4-member
+pre-mask** model on a subset. The harness also could not load the current
+models at all: it hardcoded 255-wide features and passed no mask, so it would
+have measured a different operating point than the one we ship.
+
+Fixed (`scripts/ml/robustness.py`): per-member feature width read off each
+checkpoint's own stem weights, the attention mask passed to every member, and
+the default `--ckpts` updated from three checkpoints of an earlier era to the
+nine the release actually ships.
+
+Re-measured on the shipped nine:
+
+| corruption | drop | verdict |
+| --- | --: | --- |
+| jitter σ0.01 | +0.96 | PASS |
+| jitter σ0.03 | +3.76 | PASS |
+| drop_landmarks 15% | +1.84 | PASS |
+| **drop_hand 25%** | **+4.40** | **PASS** |
+| half_framerate | +1.92 | PASS |
+| camera_further 25% | +0.88 | PASS |
+
+**Worst case +4.40 points against a 5.00 budget — PASS.** The previous figure
+was 6.65 and a FAIL. The mask fix and the z members together bought more on
+robustness (2.25 points of headroom) than any accuracy tuning did.
+
+This is the answer to "should we get more data": no. We were never losing on
+accuracy. We were losing 25% of the rubric on a measurement taken against a
+model we no longer ship.

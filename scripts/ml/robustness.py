@@ -150,13 +150,41 @@ def load_split(split, vocab_idx):
 
 
 def ensemble_probs(models, lm, pres, frames):
-    feats, _ = build_features(lm, pres, expected_frames=frames)
-    out = []
+    """Mean probability over members, each fed at ITS OWN width and WITH the mask.
+
+    Both details are load-bearing and both were wrong here until 14 Nov:
+      * width  - a z member takes 381 features, a legacy one 255. Building one
+                 255-wide tensor for all of them cannot represent the ensemble.
+      * mask   - the models are trained with the hand-presence mask applied to
+                 attention; scoring without it measures a different model
+                 (~1.8 points low on test).
+    A robustness number computed at the wrong operating point is not a
+    conservative estimate, it is a different experiment.
+    """
     import torch
-    for m in models:
+    widths = {}
+    for uz in {m_use_z(m) for m, _b in models}:
+        widths[uz] = build_features(lm, pres, expected_frames=frames, use_z=uz)
+    out = []
+    for m, backbone in models:
+        use_z = m_use_z(m)
+        feats, mask = widths[use_z]
         with torch.no_grad():
-            out.append(torch.softmax(m(torch.from_numpy(feats)[None], None), 1)[0].numpy())
+            lg = m(torch.from_numpy(feats)[None],
+                   torch.from_numpy(mask)[None])
+            out.append(torch.softmax(lg, 1)[0].numpy())
     return np.mean(out, axis=0)
+
+
+def m_use_z(model):
+    """Feature width is read off the model's own stem, not from metadata.
+
+    A checkpoint records its recipe as a string, so a `recipe.get("use_z")`
+    lookup silently returns False and hands 255-wide features to a 381-wide
+    model. The weight shape cannot disagree with the weights it describes.
+    """
+    stem = dict(model.named_parameters()).get("stem.weight")
+    return bool(stem is not None and int(stem.shape[1]) != 255)
 
 
 def run_landmark(ckpts, split, limit):
@@ -168,11 +196,12 @@ def run_landmark(ckpts, split, limit):
         ck = torch.load(c, map_location="cpu", weights_only=True)
         frames = int(ck["frames"])
         vocab = ck["vocab"] if vocab is None else vocab
+        in_dim = int(ck["model"]["stem.weight"].shape[1])
         m = TemporalModel(len(ck["vocab"]), dim=int(ck["dim"]), frames=frames,
-                          backbone=str(ck["backbone"]))
+                          backbone=str(ck["backbone"]), in_dim=in_dim)
         m.load_state_dict(ck["model"])
         m.eval()
-        models.append(m)
+        models.append((m, str(ck["backbone"])))
     vocab_idx = {g: i for i, g in enumerate(vocab)}
 
     items = load_split(split, vocab_idx)
@@ -278,11 +307,12 @@ def run_pixel(ckpts, split, limit):
         ck = torch.load(c, map_location="cpu", weights_only=True)
         frames = int(ck["frames"])
         vocab = ck["vocab"] if vocab is None else vocab
+        in_dim = int(ck["model"]["stem.weight"].shape[1])
         m = TemporalModel(len(ck["vocab"]), dim=int(ck["dim"]), frames=frames,
-                          backbone=str(ck["backbone"]))
+                          backbone=str(ck["backbone"]), in_dim=in_dim)
         m.load_state_dict(ck["model"])
         m.eval()
-        models.append(m)
+        models.append((m, str(ck["backbone"])))
     vocab_idx = {g: i for i, g in enumerate(vocab)}
 
     items = load_split(split, vocab_idx)[:limit]
@@ -335,8 +365,17 @@ def run_pixel(ckpts, split, limit):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--level", default="landmark", choices=["landmark", "pixel"])
+    # The nine members the release actually ships. The old default named three
+    # checkpoints from an earlier 4-model era, so a plain run measured a model
+    # nobody deploys.
     ap.add_argument("--ckpts", nargs="+", default=[
-        ".scratch/runs/tcn21.pt", ".scratch/runs/tcn42.pt", ".scratch/runs/mirror05_s0.pt"])
+        ".scratch/runs/tcn21.pt", ".scratch/runs/tcnm61.pt",
+        ".scratch/runs/tcnm62.pt", ".scratch/runs/rob71.pt",
+        ".scratch/search/mirror_handdrop_tcn_z_s0.pt",
+        ".scratch/search/mirror_handdrop_tcn_z_s1.pt",
+        ".scratch/search/mirror_handdrop_tcn_z_s2.pt",
+        ".scratch/search/mirror_handdrop_tcn_z_s7.pt",
+        ".scratch/search/mirror_handdrop_tcn_z_s13.pt"])
     ap.add_argument("--split", default="test")
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--out", default="results/robustness.json")

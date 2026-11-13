@@ -185,15 +185,13 @@ class HandTracker private constructor(
             val frame = Frame(toHands(result), frameAtMs)
             var completed: (() -> Unit)? = null
             synchronized(lock) {
-                // A frame that arrived before the tap belongs to the preview,
-                // not to this capture. Dropping it here is what makes the
-                // window provably start at the user's tap even when a
-                // detection was in flight while beginCapture() ran.
-                if (!capturing || frameAtMs >= captureStartedMs) {
-                    ring.addLast(frame)
-                }
-                // The ring holds the whole span; capacity is only a memory
-                // backstop, not the window length.
+                // The ring is a rolling buffer of the recent past. It is NOT
+                // gated on `capturing`: the sign happens BEFORE the tap, so the
+                // frames that describe it are already behind us when the user
+                // presses the button. Discarding pre-tap frames here (as an
+                // earlier version did) meant the window contained only the
+                // seconds AFTER the sign — usually an empty room.
+                ring.addLast(frame)
                 while (ring.size > MAX_CAPTURE_FRAMES) ring.removeFirst()
                 val elapsed = now - captureStartedMs
                 // End on time; the frame cap is only a memory backstop for a
@@ -237,18 +235,36 @@ class HandTracker private constructor(
     fun clear() = synchronized(lock) { ring.clear() }
 
     /**
-     * Starts a fresh capture window: clears the ring and calls [onComplete]
-     * once [CAPTURE_SPAN_MS] of real time has been analysed. Any previous
-     * capture in flight is cancelled. Returns immediately; the callback runs
-     * on the analysis thread.
+     * Classifies the sign that just happened.
+     *
+     * The signer performs, THEN taps. So the frames describing the sign are
+     * already in the rolling ring when this is called, and the window is the
+     * [CAPTURE_SPAN_MS] of real time immediately BEFORE the tap — not after it.
+     *
+     * An earlier version cleared the ring and waited for a fresh window. That
+     * required the signer to keep performing after tapping, which the on-screen
+     * instruction never asked for: it said "perform one sign, then tap
+     * Recognise sign". Measured on a training clip, the hand occupies frames
+     * 23–54 of 75; a window starting after the sign contains zero sign frames.
+     * That is a capture defect, not a model defect.
+     *
+     * The callback runs synchronously on the caller's thread if enough history
+     * already exists, otherwise after the first frame that completes the window.
+     * Returns immediately.
      */
     fun beginCapture(onComplete: () -> Unit) {
+        var readyNow = false
         synchronized(lock) {
-            ring.clear()
             captureStartedMs = SystemClock.elapsedRealtime()
             captureCallback = onComplete
-            capturing = true
+            // Enough buffered history to classify right away?
+            val first = ring.firstOrNull()?.capturedAtMs
+            readyNow = ring.size >= RING_CAPACITY &&
+                first != null && (captureStartedMs - first) >= CAPTURE_SPAN_MS * 3 / 4
+            capturing = !readyNow
+            if (readyNow) captureCallback = null
         }
+        if (readyNow) onComplete()
     }
 
     fun cancelCapture() = synchronized(lock) {
@@ -260,20 +276,26 @@ class HandTracker private constructor(
     fun isCapturing(): Boolean = synchronized(lock) { capturing }
 
     /**
-     * The finished capture window, with the real elapsed time and effective
-     * analysis FPS measured from per-frame timestamps.
+     * The window ending now: the most recent [CAPTURE_SPAN_MS] of analysed
+     * frames, with real elapsed time and achieved FPS measured from per-frame
+     * timestamps.
      *
-     * [frames] holds [RING_CAPACITY] frames chosen evenly across the captured
-     * span by timestamp, which reproduces the uniform sampling training used.
-     * The ring itself holds far more frames than that; passing all of them
-     * would let the frame rate rather than the time base decide what the model
-     * sees, which is the defect this window exists to remove.
+     * Because the window ends at the tap rather than starting there, it
+     * contains the sign the user just performed. [RING_CAPACITY] frames are
+     * chosen evenly across that span by timestamp, reproducing the uniform
+     * sampling training used; passing every buffered frame would let the
+     * analyser's frame rate, rather than the time base, decide what the model
+     * sees.
      *
-     * [durationMs] and [fps] describe the RAW analysed window, so the card and
+     * [durationMs] and [fps] describe the raw analysed window, so the card and
      * the diagnostic report what the camera really delivered.
      */
     fun captureSnapshot(): Capture = synchronized(lock) {
-        val raw = ring.toList()
+        val newline = SystemClock.elapsedRealtime()
+        val cutoff = newline - CAPTURE_SPAN_MS
+        // Trailing window only: frames older than the span are from before the
+        // sign and would dilute it.
+        val raw = ring.filter { it.capturedAtMs >= cutoff }.ifEmpty { ring.toList() }
         val first = raw.firstOrNull()?.capturedAtMs ?: 0L
         val last = raw.lastOrNull()?.capturedAtMs ?: 0L
         val duration = if (raw.size >= 2) last - first else 0L

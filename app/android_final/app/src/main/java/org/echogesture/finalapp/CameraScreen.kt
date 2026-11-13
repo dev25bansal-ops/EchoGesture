@@ -100,9 +100,6 @@ class CameraScreen(
     private val latencyText: TextView = root.findViewById(R.id.latencyText)
     private val captureDetailText: TextView = root.findViewById(R.id.captureDetailText)
 
-    /** When the current capture window began; drives the live countdown. */
-    private var captureStartMs = 0L
-
     private var captureCountdown: Runnable = Runnable { }
     private val confidenceLabel: TextView = root.findViewById(R.id.confidenceLabel)
     private val copyButton: Button = root.findViewById(R.id.copyButton)
@@ -206,7 +203,6 @@ class CameraScreen(
     }
 
     fun onDestroy() {
-        stopCaptureCountdown()
         tracker?.close()
         classifier?.close()
         tracker = null
@@ -322,10 +318,8 @@ class CameraScreen(
                 UiState.CAPTURING -> {
                     hideStatus()
                     setLiveStatus(R.string.camera_state_capturing, R.color.text_on_dark)
-                    startCaptureCountdown()
                 }
                 UiState.PROCESSING -> {
-                    stopCaptureCountdown()
                     hideStatus()
                     setLiveStatus(R.string.camera_state_processing, R.color.text_on_dark)
                 }
@@ -412,35 +406,6 @@ class CameraScreen(
         liveStatus.setTextColor(ContextCompat.getColor(activity, tint))
     }
 
-    /**
-     * Counts the capture window down in the live status line.
-     *
-     * The capture is a fixed 3.7 s span, so without this the button appears to
-     * do nothing for several seconds. A visible countdown tells the signer how
-     * long to keep performing, which matters for signs whose motion continues
-     * to the end. It re-posts itself and is cancelled whenever the state
-     * leaves CAPTURING, so no timer outlives the capture.
-     */
-    private fun startCaptureCountdown() {
-        stopCaptureCountdown()
-        val totalMs = HandTracker.CAPTURE_SPAN_MS
-        captureCountdown = object : Runnable {
-            override fun run() {
-                if (currentState != UiState.CAPTURING) return
-                val left = (totalMs - (SystemClock.elapsedRealtime() - captureStartMs)).coerceAtLeast(0L)
-                liveStatus.text = activity.getString(
-                    R.string.camera_state_capturing_left,
-                    ((left + 999L) / 1000L).toInt()
-                )
-                if (left > 0L) liveStatus.postDelayed(this, 100L)
-            }
-        }
-        liveStatus.postDelayed(captureCountdown, 100L)
-    }
-
-    private fun stopCaptureCountdown() {
-        liveStatus.removeCallbacks(captureCountdown)
-    }
 
     private fun revealResult() {
         // 180 ms fade + small rise. Restrained, and skipped when the system
@@ -640,7 +605,6 @@ class CameraScreen(
         if (processing) return
         processing = true
         resultCard.visibility = View.GONE
-        captureStartMs = SystemClock.elapsedRealtime()
         render(UiState.CAPTURING)
         haptic(HapticFeedbackConstants.KEYBOARD_TAP)
 

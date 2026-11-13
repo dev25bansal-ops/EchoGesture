@@ -17,8 +17,8 @@
     <string name="camera_state_searching">Searching for hands</string>
     <string name="camera_state_detected">Hands detected</string>
     <string name="camera_state_preparing">Preparing camera</string>
-    <string name="camera_state_capturing">Capturing… keep still</string>
-    <string name="camera_state_capturing_left">Capturing… %1$d s</string>
+    <string name="camera_state_capturing">Reading the sign you just made…</string>
+    <string name="camera_state_capturing_left">Reading the sign you just made… %1$d s</string>
     <string name="camera_state_processing">Reading the sign…</string>
     <string name="camera_state_no_hands">No hands in view</string>
     <string name="camera_state_low_frames">Hand not visible for most of the capture</string>
@@ -131,11 +131,11 @@
 
     <!-- Help -->
     <string name="help_quick_title">New here?</string>
-    <string name="help_quick_body">Hold your hands inside the frame, perform one sign, then tap Recognise sign.</string>
+    <string name="help_quick_body">Hold your hands inside the frame and perform one sign. Tap Recognise sign as soon as you finish — the app reads the moment you just signed.</string>
     <string name="help_title">How to use EchoGesture</string>
     <string name="help_step_1">Point the camera so the signer’s hands are clearly visible.</string>
     <string name="help_step_2">Keep both hands inside the frame guide.</string>
-    <string name="help_step_3">Perform one supported sign, then tap Recognise sign.</string>
+    <string name="help_step_3">Perform one supported sign, then tap Recognise sign straight away. The app analyses the last few seconds, so the sign you just made is the one it reads.</string>
     <string name="help_step_4">Hold the sign steady while it captures.</string>
     <string name="help_step_5">Read the recognised sign and the alternatives offered.</string>
     <string name="help_privacy">Everything runs on this phone. Nothing is uploaded.</string>

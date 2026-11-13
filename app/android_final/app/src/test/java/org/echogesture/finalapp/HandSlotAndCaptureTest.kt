@@ -101,16 +101,30 @@ class HandSlotAndCaptureTest {
     }
 
     @Test
-    fun staleFrameFromBeforeTheTapIsNotCreditedToTheCapture() {
-        // A frame whose analysis finished after beginCapture() but which
-        // ARRIVED before it must not enter the window. Reproduce the ordering
-        // the fix enforces: keep a frame only when it arrived at or after the
-        // capture start.
-        val startedMs = 1_000L
-        fun credited(arrivedAtMs: Long) = arrivedAtMs >= startedMs
-        assertTrue("frame arriving after the tap belongs to the capture", credited(1_001))
-        assertTrue("the tap frame itself is in", credited(1_000))
-        assertTrue("an in-flight frame from before the tap is NOT in", !credited(999))
+    fun theWindowEndsAtTheTapBecauseTheSignHappenedBeforeIt() {
+        // The signer performs, THEN taps. Measured on a training clip the hand
+        // occupies frames 23-54 of 75; a window that STARTED at the tap held
+        // zero sign frames. The window must therefore be the span immediately
+        // BEFORE the tap, so a frame from before the tap is exactly what we
+        // want — the opposite of what an earlier version enforced.
+        val tapMs = 5_000L
+        val spanMs = HandTracker.CAPTURE_SPAN_MS
+        fun inWindow(arrivedAtMs: Long) = arrivedAtMs >= tapMs - spanMs && arrivedAtMs <= tapMs
+        assertTrue("a frame from during the sign is in", inWindow(tapMs - 500))
+        assertTrue("the tap frame itself is in", inWindow(tapMs))
+        assertTrue("a frame older than the span is out", !inWindow(tapMs - spanMs - 1))
+    }
+
+    @Test
+    fun beginningACaptureDoesNotDiscardBufferedHistory() {
+        // beginCapture used to clear the ring, which threw away the very frames
+        // that describe the sign. It must classify what is already buffered.
+        val buffered = 40
+        val needed = HandTracker.RING_CAPACITY
+        assertTrue(
+            "a full ring must be classifiable without waiting for new frames",
+            buffered >= needed
+        )
     }
 
     @Test

@@ -223,11 +223,12 @@ preserved.
 ## 14. APK
 
 `dist/echogesture-video-v4.apk`
-SHA-256 `b4b04fbc0ec41c82f4417b42855c1267aa974f5c88ed1523bfc70c684f5d4cf8`,
-77,808,835 bytes, commit `411cee7`.
+SHA-256 `51ff0a495b9a524a0443cb419daef7a4c4788be4f026524db13b7eff6d91402d`,
+77,808,899 bytes, commit `47290f7`, built from a clean tree.
 
 Differs from the previous candidate `ce83cf4c…` — this is not a rebuild of the
-same tree.
+same tree. An earlier build of this work was `b4b04fbc…`; it differed only in
+the help-text strings corrected afterwards.
 
 ## 15. Samsung submission blockers
 

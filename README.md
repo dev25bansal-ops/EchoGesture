@@ -42,6 +42,62 @@ Run the offline demo (real inference, no camera, no network):
 See [models/README.md](models/README.md) for the artifact contract and
 [TEAM_WORKFLOW.md](docs/TEAM_WORKFLOW.md) for branching and handoff rules.
 
+## Evaluator contract
+
+Track 02 requires one function that takes a clip path and returns a JSON object
+(deck p.11):
+
+```python
+from src.main import predict
+
+predict("path/to/clip.mp4")
+# {
+#   "clip_id":    "744008724339543-EAT",
+#   "prediction": "EAT1",
+#   "top5":       ["EAT1", "UNDERWEAR1", "BREAKFAST1", "VOICE", "BEE1"],
+#   "confidence": 0.5274,
+#   "latency_ms": 23.4
+# }
+```
+
+`clip_id` defaults to the filename stem; pass `predict(path, clip_id="...")` when
+driving it from an organizer manifest. `prediction` is always one of the 100
+uppercase vocabulary labels in `models/landmark_labels.json` — the evaluator path
+never emits an abstention label. Interactive rejection lives in the Android app,
+not here.
+
+From the command line the same contract is printed as JSON:
+
+```bash
+python -m src.main /absolute/path/to/clip.mp4 [clip_id]
+```
+
+`latency_ms` is measured inside `predict()` and is self-reported. The organizers
+re-measure on their own device.
+
+## Docker
+
+The repository root carries a `Dockerfile` (deck p.25 requires one). It builds
+the Python 3.11 evaluator environment:
+
+```bash
+docker build -t echogesture-eval .
+
+# Prints the contract and exits 0
+docker run --rm echogesture-eval
+
+# Real inference — model weights are mounted, never baked into the image
+docker run --rm \
+  -v /authorized/models:/app/models:ro \
+  -v /path/to/clips:/data:ro \
+  echogesture-eval /data/clip.mp4 [clip_id]
+```
+
+Weights are **not** in the image or the repository: they are not
+redistributable, so a source-only checkout fails loudly with the missing
+filename rather than silently running fewer models. See
+[models/README.md](models/README.md).
+
 ---
 
 ## Status: integrated and packaged, external actions remaining

@@ -24,12 +24,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 LABELS = ROOT / "models/landmark_labels.json"
-# The frozen baseline lives outside Git (it names private clip ids), so its
-# location is a flag rather than a fixed path.
-DEFAULT_FROZEN = Path(
-    "/Users/abhijeetmiskin/AppData/EchoGesture/"
-    "evaluation/device/ensemble_evidence/predictions_ensemble_val.jsonl"
-)
+# The frozen baseline lives outside Git (it names private clip ids). Resolved
+# relative to the checkout so no developer's home directory appears here.
+DEFAULT_FROZEN = ROOT / "evaluation/device/ensemble_evidence/predictions_ensemble_val.jsonl"
 
 SCORE_CUT = 0.35
 

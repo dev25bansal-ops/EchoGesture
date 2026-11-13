@@ -1,0 +1,131 @@
+{
+  "schema": "echogesture.baseline_inventory/1",
+  "generated_for": "Samsung XR Hackathon Challenge 2026 — Track 02",
+  "branch": "hackathon/solo-final-submission",
+  "base_commit": "cc00f6a762cd707be02930167508ed4807b8cfee",
+  "base_branch": "hackathon/echogesture-v2-rc",
+  "android": {
+    "app_module": "app/android_final",
+    "package": "org.echogesture.finalapp",
+    "apk_sha256": "530f5ec4174d3f2028c3f062ea37455366a0d8bcdbc38475632a9c762d600a2d",
+    "apk_bytes": 77710351,
+    "versionName": "1.0",
+    "versionCode": 1,
+    "permissions": ["android.permission.CAMERA"],
+    "has_internet_permission": false,
+    "min_sdk": 24,
+    "target_sdk": 34,
+    "compile_sdk": 34
+  },
+  "evaluator": {
+    "entrypoint": "src/main.py",
+    "function": "predict(video_path: str) -> dict",
+    "contract_fields": ["clip_id", "prediction", "top5", "confidence", "latency_ms"],
+    "predict_accepts_extra_clip_id_kwarg": true,
+    "src_main_sha256": "4de195323296fb58a8771198667e0a005a50e2c8f756b05068a3a5b41b683b4d",
+    "src_features_sha256": "baf28d05bbd36e2783ea7ef6f78e793b89ed832d0eaad5dffed23d35c775aa84",
+    "python": "3.11",
+    "offline": true
+  },
+  "vocabulary": {
+    "file": "models/landmark_labels.json",
+    "sha256": "e78f5028e97e2eaf86aff65af403af65061eebef010f0fbd41012293e8019a4a",
+    "classes": 100,
+    "all_uppercase": true,
+    "unique": true,
+    "matches_model_meta_classes": true,
+    "is_organizer_official": false,
+    "note": "This is the project's own 100-gloss vocabulary. The organizer has not supplied a fixed vocabulary for Track 02; see ACCEPTANCE_MATRIX.md item I."
+  },
+  "models": {
+    "release_baseline": "4-member FP16 ensemble + FP16 detector",
+    "members": {
+      "landmark_ens_tcn21_fp16.tflite": {
+        "bytes": 939152,
+        "sha256": "112279bc86090470b82b20b510746a946220322c25ec84cb3706a538c73dc22a"
+      },
+      "landmark_ens_tcnm61_fp16.tflite": {
+        "bytes": 832888,
+        "sha256": "01a261d8eb6c2c4d8b501f0ce1a36db338365d17fddabc63528a7941b1390f63"
+      },
+      "landmark_ens_tcnm62_fp16.tflite": {
+        "bytes": 832888,
+        "sha256": "27058a85e032bee3af444fb1538ff0bf32fd38fa2b01ce01a2f25c3a428d20b3"
+      },
+      "landmark_ens_rob71_fp16.tflite": {
+        "bytes": 939152,
+        "sha256": "08417e72da59150ac9adf749e6324c30fb001d4a401394e32f125d3276d1ab21"
+      }
+    },
+    "detector": {
+      "file": "hand_landmarker.task",
+      "bytes": 7819105,
+      "sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1",
+      "quantization": "FP16 (both sub-models contain 0 quantized tensors)"
+    },
+    "meta": {
+      "file": "models/landmark_model_meta.json",
+      "sha256": "945150120f4a8eecec406ca1d2012fb405b39072b8e9c6f42e5b7295ee9a380d",
+      "frames": 24,
+      "feature_dim": 255,
+      "classes": 100,
+      "quantization": "float16"
+    },
+    "total_shipped_bytes_including_detector": 11363185
+  },
+  "int8_candidates": {
+    "ptq_100_int8.tflite": {
+      "bytes": 904256,
+      "role": "post-training quantization of a single classifier; NOT the 4-member ensemble",
+      "measured_top1": 0.7341,
+      "measured_top5": 0.8613,
+      "paired_fp16_top1": 0.7861,
+      "paired_fp16_top5": 0.8931,
+      "accuracy_delta_pp": -5.20,
+      "evidence": "evaluation/device/v7_int8/results/summary.json",
+      "selected_as_default": false
+    },
+    "s3d_conv1d_qat_int8.tflite": {
+      "bytes": 901200,
+      "role": "older S3D-Conv1D route, not the shipped landmark ensemble",
+      "selected_as_default": false
+    },
+    "whole_pipeline_int8": "NOT_ESTABLISHED — detector remains FP16; classifier INT8 has float32 IO"
+  },
+  "submission_artifacts": {
+    "results/predictions.jsonl": {
+      "bytes": 216094,
+      "sha256": "1aacbacbc5da9c3ddc2bd7f796f8a73f7199ebaa020de430848ca4035e48ad4a",
+      "rows": 1249
+    },
+    "results/results.csv": {
+      "bytes": 2615,
+      "sha256": "b2de494bf57b06057bc4739771efc66a61e8298872c883b5e9329741a172f29d",
+      "rows": 6
+    },
+    "results/predictions.json": {
+      "present": false,
+      "note": "Deck p.12 asks for predictions.json; deck p.11 specifies predictions.jsonl. Both are cheap to emit; see ACCEPTANCE_MATRIX.md item K."
+    }
+  },
+  "runtime_verified": {
+    "docker_image_builds": true,
+    "docker_help_contract": true,
+    "docker_real_inference": {
+      "clip": "744008724339543-EAT",
+      "prediction": "EAT1",
+      "expected": "EAT1",
+      "confidence": 0.5274,
+      "latency_ms_first_call_incl_model_load": 981.27
+    }
+  },
+  "known_gaps": [
+    "Track 02 organizer vocabulary not supplied — project vocabulary used, flagged for clarification",
+    "Track 02 test manifest / evaluation clip IDs not supplied — results/ uses the project's own ASL Citizen test split",
+    "INT8 requirement: candidates exist but lose 5.2 pt top-1 and the detector stays FP16",
+    "latency_p95 275.8 ms on laptop CPU vs the <=50 ms target — FAIL, not met at any tested configuration",
+    "avg_power and thermal_drift_10min are NOT_MEASURED",
+    "No physical-phone accuracy session has been run",
+    "Model weights are not redistributable; the public repo carries source only"
+  ]
+}

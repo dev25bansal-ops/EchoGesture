@@ -21,7 +21,7 @@
     <string name="camera_state_no_hands">No hands in view</string>
     <string name="camera_state_low_frames">Hand not visible for most of the capture</string>
     <string name="low_frames_detail">This capture was not clear enough to read. Keep both hands inside the guide for the whole capture, then try again.</string>
-    <string name="capture_action">Recognise sign</string>
+    <string name="capture_action">Start sign</string>
     <string name="record_start">Start sign</string>
     <string name="record_finish">Finish sign</string>
     <string name="record_cancel">Cancel</string>
@@ -142,12 +142,12 @@
 
     <!-- Help -->
     <string name="help_quick_title">New here?</string>
-    <string name="help_quick_body">Hold your hands inside the frame and perform one sign. Tap Recognise sign as soon as you finish — the app reads the moment you just signed.</string>
+    <string name="help_quick_body">Hold your hands inside the frame. Tap Start sign, perform one sign, then tap Finish sign — the app reads exactly what you recorded.</string>
     <string name="help_title">How to use EchoGesture</string>
     <string name="help_step_1">Point the camera so the signer’s hands are clearly visible.</string>
     <string name="help_step_2">Keep both hands inside the frame guide.</string>
-    <string name="help_step_3">Perform one supported sign, then tap Recognise sign straight away. The app analyses the last few seconds, so the sign you just made is the one it reads.</string>
-    <string name="help_step_4">Hold the sign steady while it captures.</string>
+    <string name="help_step_3">Tap Start sign, perform one supported sign from beginning to end, then tap Finish sign. The app analyses exactly that interval and nothing outside it.</string>
+    <string name="help_step_4">Keep both hands in view for the whole sign. If the recording is too short or shows no hands, the app says so instead of guessing.</string>
     <string name="help_step_5">Read the recognised sign and the alternatives offered.</string>
     <string name="help_privacy">Everything runs on this phone. Nothing is uploaded.</string>
 

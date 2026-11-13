@@ -1,0 +1,2442 @@
+[
+ {
+  "file": "5803218002565746-DOWNSIZE.mp4",
+  "gloss": "DOWNSIZE1",
+  "signer": "P26",
+  "clip_frames": 89,
+  "clip_fps": 29.996629592180653,
+  "clip_duration_ms": 2967.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.4375,
+    "mean_abs_vel": 0.12026150524616241,
+    "sampled": 32,
+    "span_ms": 2933.6629213483147,
+    "pred": "DOWNSIZE1",
+    "correct": true,
+    "score": 0.8000867366790771,
+    "margin": 0.7747425436973572,
+    "top5": [
+     "DOWNSIZE1",
+     "CHEER",
+     "CAPTURE",
+     "GRAMMAR",
+     "SHOCKED"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.4375,
+    "mean_abs_vel": 0.12026150524616241,
+    "sampled": 32,
+    "span_ms": 2933.6629213483147,
+    "pred": "DOWNSIZE1",
+    "correct": true,
+    "score": 0.8000867366790771,
+    "margin": 0.7747425436973572,
+    "top5": [
+     "DOWNSIZE1",
+     "CHEER",
+     "CAPTURE",
+     "GRAMMAR",
+     "SHOCKED"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.84375,
+    "mean_abs_vel": 0.16836145520210266,
+    "sampled": 32,
+    "span_ms": 1433.4943820224719,
+    "pred": "DOWNSIZE1",
+    "correct": true,
+    "score": 0.7406381368637085,
+    "margin": 0.6990119218826294,
+    "top5": [
+     "DOWNSIZE1",
+     "CHEER",
+     "SHOCKED",
+     "GRAMMAR",
+     "LONGLINE"
+    ]
+   }
+  }
+ },
+ {
+  "file": "8922394464987926-8 HOUR.mp4",
+  "gloss": "8HOUR",
+  "signer": "P26",
+  "clip_frames": 67,
+  "clip_fps": 30.663,
+  "clip_duration_ms": 2185.0438639402537,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.5,
+    "mean_abs_vel": 0.061046160757541656,
+    "sampled": 32,
+    "span_ms": 2152.4312689560707,
+    "pred": "MAPLE",
+    "correct": false,
+    "score": 0.7563987374305725,
+    "margin": 0.706975519657135,
+    "top5": [
+     "MAPLE",
+     "8HOUR",
+     "BEE1",
+     "HALLOWEEN1",
+     "CHEW1"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.5,
+    "mean_abs_vel": 0.061046160757541656,
+    "sampled": 32,
+    "span_ms": 2152.4312689560707,
+    "pred": "MAPLE",
+    "correct": false,
+    "score": 0.7563987374305725,
+    "margin": 0.706975519657135,
+    "top5": [
+     "MAPLE",
+     "8HOUR",
+     "BEE1",
+     "HALLOWEEN1",
+     "CHEW1"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.6190476417541504,
+    "mean_abs_vel": 0.07045257091522217,
+    "sampled": 21,
+    "span_ms": 652.2518996836578,
+    "pred": "MAPLE",
+    "correct": false,
+    "score": 0.5226501822471619,
+    "margin": 0.2147722840309143,
+    "top5": [
+     "MAPLE",
+     "8HOUR",
+     "HALLOWEEN1",
+     "ANYONE",
+     "DOG1"
+    ]
+   }
+  }
+ },
+ {
+  "file": "6416983573445294-SHAVE.mp4",
+  "gloss": "SHAVE1",
+  "signer": "P26",
+  "clip_frames": 95,
+  "clip_fps": 30.293,
+  "clip_duration_ms": 3136.0380285874626,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.53125,
+    "mean_abs_vel": 0.3416803777217865,
+    "sampled": 32,
+    "span_ms": 3103.0271019707525,
+    "pred": "RAZOR2",
+    "correct": false,
+    "score": 0.15386876463890076,
+    "margin": 0.07820895314216614,
+    "top5": [
+     "RAZOR2",
+     "SHAVE1",
+     "KNIGHT1",
+     "FLIP",
+     "UNDERWEAR1"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.53125,
+    "mean_abs_vel": 0.3416803777217865,
+    "sampled": 32,
+    "span_ms": 3103.0271019707525,
+    "pred": "RAZOR2",
+    "correct": false,
+    "score": 0.15386876463890076,
+    "margin": 0.07820895314216614,
+    "top5": [
+     "RAZOR2",
+     "SHAVE1",
+     "KNIGHT1",
+     "FLIP",
+     "UNDERWEAR1"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.75,
+    "mean_abs_vel": 0.3671921491622925,
+    "sampled": 32,
+    "span_ms": 1617.5354042187964,
+    "pred": "SHAVE1",
+    "correct": true,
+    "score": 0.08195850998163223,
+    "margin": 0.0004738345742225647,
+    "top5": [
+     "SHAVE1",
+     "RAZOR2",
+     "SLIDE2",
+     "DRAG1",
+     "INTUITIVE"
+    ]
+   }
+  }
+ },
+ {
+  "file": "971003020665846-HOW.mp4",
+  "gloss": "HOW1",
+  "signer": "P26",
+  "clip_frames": 71,
+  "clip_fps": 30.524,
+  "clip_duration_ms": 2326.0385270606735,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.40625,
+    "mean_abs_vel": 0.1570586860179901,
+    "sampled": 32,
+    "span_ms": 2293.2774210457346,
+    "pred": "HOW1",
+    "correct": true,
+    "score": 0.8238996267318726,
+    "margin": 0.8109444975852966,
+    "top5": [
+     "HOW1",
+     "8HOUR",
+     "AUTISM1",
+     "EASY",
+     "SOCIETY"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.40625,
+    "mean_abs_vel": 0.1570586860179901,
+    "sampled": 32,
+    "span_ms": 2293.2774210457346,
+    "pred": "HOW1",
+    "correct": true,
+    "score": 0.8238996267318726,
+    "margin": 0.8109444975852966,
+    "top5": [
+     "HOW1",
+     "8HOUR",
+     "AUTISM1",
+     "EASY",
+     "SOCIETY"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.4399999976158142,
+    "mean_abs_vel": 0.131952702999115,
+    "sampled": 25,
+    "span_ms": 786.2665443585375,
+    "pred": "PATIENT2",
+    "correct": false,
+    "score": 0.12138639390468597,
+    "margin": 0.012422226369380951,
+    "top5": [
+     "PATIENT2",
+     "PARTY1",
+     "LOCK1",
+     "HURDLE/TRIP1",
+     "AUTISM1"
+    ]
+   }
+  }
+ },
+ {
+  "file": "5208069588201667-DOG.mp4",
+  "gloss": "DOG1",
+  "signer": "P26",
+  "clip_frames": 64,
+  "clip_fps": 30.418,
+  "clip_duration_ms": 2104.0173581432045,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.375,
+    "mean_abs_vel": 0.04594291374087334,
+    "sampled": 32,
+    "span_ms": 2071.142086922217,
+    "pred": "DOG1",
+    "correct": true,
+    "score": 0.30533653497695923,
+    "margin": 0.16444744169712067,
+    "top5": [
+     "DOG1",
+     "ALLOFSUDDEN",
+     "ANYONE",
+     "GOODYGOODYSHOEOPPOSITE",
+     "PULLCONVINCE"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.375,
+    "mean_abs_vel": 0.04594291374087334,
+    "sampled": 32,
+    "span_ms": 2071.142086922217,
+    "pred": "DOG1",
+    "correct": true,
+    "score": 0.30533653497695923,
+    "margin": 0.16444744169712067,
+    "top5": [
+     "DOG1",
+     "ALLOFSUDDEN",
+     "ANYONE",
+     "GOODYGOODYSHOEOPPOSITE",
+     "PULLCONVINCE"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.6666666865348816,
+    "mean_abs_vel": 0.060186076909303665,
+    "sampled": 18,
+    "span_ms": 558.8796107567887,
+    "pred": "DOG1",
+    "correct": true,
+    "score": 0.7335865497589111,
+    "margin": 0.6420183181762695,
+    "top5": [
+     "DOG1",
+     "ALLOFSUDDEN",
+     "DOWNSIZE1",
+     "PULLCONVINCE",
+     "DEAF1"
+    ]
+   }
+  }
+ },
+ {
+  "file": "22732217637347518-NOON.mp4",
+  "gloss": "NOON1",
+  "signer": "P26",
+  "clip_frames": 64,
+  "clip_fps": 29.920523609163162,
+  "clip_duration_ms": 2139.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.4375,
+    "mean_abs_vel": 0.06083409860730171,
+    "sampled": 32,
+    "span_ms": 2105.578125,
+    "pred": "NOON1",
+    "correct": true,
+    "score": 0.6543816328048706,
+    "margin": 0.5940871834754944,
+    "top5": [
+     "NOON1",
+     "BREAKFAST1",
+     "HOSPITAL1",
+     "AUTISM1",
+     "FINE1"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.4375,
+    "mean_abs_vel": 0.06083409860730171,
+    "sampled": 32,
+    "span_ms": 2105.578125,
+    "pred": "NOON1",
+    "correct": true,
+    "score": 0.6543816328048706,
+    "margin": 0.5940871834754944,
+    "top5": [
+     "NOON1",
+     "BREAKFAST1",
+     "HOSPITAL1",
+     "AUTISM1",
+     "FINE1"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.9473684430122375,
+    "mean_abs_vel": 0.0776442363858223,
+    "sampled": 19,
+    "span_ms": 601.5937499999999,
+    "pred": "NOON1",
+    "correct": true,
+    "score": 0.8077172636985779,
+    "margin": 0.7227423191070557,
+    "top5": [
+     "NOON1",
+     "HOSPITAL1",
+     "BREAKFAST1",
+     "FINE1",
+     "BEE1"
+    ]
+   }
+  }
+ },
+ {
+  "file": "4672262692116116-CHEEK.mp4",
+  "gloss": "CHEEK",
+  "signer": "P26",
+  "clip_frames": 59,
+  "clip_fps": 30.585,
+  "clip_duration_ms": 1929.0501880006539,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.21875,
+    "mean_abs_vel": 0.09274408966302872,
+    "sampled": 32,
+    "span_ms": 1896.3544221023376,
+    "pred": "MYSELF",
+    "correct": false,
+    "score": 0.13410604000091553,
+    "margin": 0.0010329335927963257,
+    "top5": [
+     "MYSELF",
+     "ANYONE",
+     "DEAF1",
+     "PATIENT2",
+     "PENNY"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.21875,
+    "mean_abs_vel": 0.09274408966302872,
+    "sampled": 32,
+    "span_ms": 1896.3544221023376,
+    "pred": "MYSELF",
+    "correct": false,
+    "score": 0.13410604000091553,
+    "margin": 0.0010329335927963257,
+    "top5": [
+     "MYSELF",
+     "ANYONE",
+     "DEAF1",
+     "PATIENT2",
+     "PENNY"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.3076923191547394,
+    "mean_abs_vel": 0.10399818420410156,
+    "sampled": 13,
+    "span_ms": 392.349190779794,
+    "pred": "ANYONE",
+    "correct": false,
+    "score": 0.07971195876598358,
+    "margin": 0.01868288964033127,
+    "top5": [
+     "ANYONE",
+     "RAZOR2",
+     "KNIGHT1",
+     "MYSELF",
+     "AUTISM1"
+    ]
+   }
+  }
+ },
+ {
+  "file": "8525896955242771-DRAG.mp4",
+  "gloss": "DRAG1",
+  "signer": "P26",
+  "clip_frames": 90,
+  "clip_fps": 30.405,
+  "clip_duration_ms": 2960.039467192896,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.0625,
+    "mean_abs_vel": 0.023650212213397026,
+    "sampled": 32,
+    "span_ms": 2927.1501397796414,
+    "pred": "BREAKFAST1",
+    "correct": false,
+    "score": 0.07079125195741653,
+    "margin": 0.003981932997703552,
+    "top5": [
+     "BREAKFAST1",
+     "ANYONE",
+     "KNIGHT1",
+     "OFFEND",
+     "AUTISM1"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.0625,
+    "mean_abs_vel": 0.023650212213397026,
+    "sampled": 32,
+    "span_ms": 2927.1501397796414,
+    "pred": "BREAKFAST1",
+    "correct": false,
+    "score": 0.07079125195741653,
+    "margin": 0.003981932997703552,
+    "top5": [
+     "BREAKFAST1",
+     "ANYONE",
+     "KNIGHT1",
+     "OFFEND",
+     "AUTISM1"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.09375,
+    "mean_abs_vel": 0.011825107038021088,
+    "sampled": 32,
+    "span_ms": 1414.2410787699391,
+    "pred": "BREAKFAST1",
+    "correct": false,
+    "score": 0.10501030832529068,
+    "margin": 0.02055380493402481,
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "ANYONE",
+     "AUTISM1",
+     "OFFEND"
+    ]
+   }
+  }
+ },
+ {
+  "file": "6331495804836855-LOCK.mp4",
+  "gloss": "LOCK1",
+  "signer": "P12",
+  "clip_frames": 74,
+  "clip_fps": 29.995946493717064,
+  "clip_duration_ms": 2467.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.375,
+    "mean_abs_vel": 0.12435230612754822,
+    "sampled": 32,
+    "span_ms": 2433.6621621621625,
+    "pred": "LOCK1",
+    "correct": true,
+    "score": 0.3785112798213959,
+    "margin": 0.22613385319709778,
+    "top5": [
+     "LOCK1",
+     "BREAKFAST1",
+     "SHAVE1",
+     "CHEESEGRATER",
+     "DRAG1"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.375,
+    "mean_abs_vel": 0.12435230612754822,
+    "sampled": 32,
+    "span_ms": 2433.6621621621625,
+    "pred": "LOCK1",
+    "correct": true,
+    "score": 0.3785112798213959,
+    "margin": 0.22613385319709778,
+    "top5": [
+     "LOCK1",
+     "BREAKFAST1",
+     "SHAVE1",
+     "CHEESEGRATER",
+     "DRAG1"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.17241379618644714,
+    "mean_abs_vel": 0.030313821509480476,
+    "sampled": 29,
+    "span_ms": 933.4594594594595,
+    "pred": "TAIL1",
+    "correct": false,
+    "score": 0.08099082857370377,
+    "margin": 0.009291298687458038,
+    "top5": [
+     "TAIL1",
+     "SHAVE1",
+     "AUTISM1",
+     "RAZOR2",
+     "BREAKFAST1"
+    ]
+   }
+  }
+ },
+ {
+  "file": "3054167723169219-RIVER.mp4",
+  "gloss": "RIVER1",
+  "signer": "P12",
+  "clip_frames": 75,
+  "clip_fps": 30.0,
+  "clip_duration_ms": 2500.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.5625,
+    "mean_abs_vel": 0.17198963463306427,
+    "sampled": 32,
+    "span_ms": 2466.666666666667,
+    "pred": "RIVER1",
+    "correct": true,
+    "score": 0.29457780718803406,
+    "margin": 0.23100176453590393,
+    "top5": [
+     "RIVER1",
+     "SINK",
+     "COPY",
+     "IMPOSSIBLE",
+     "FINE1"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.5625,
+    "mean_abs_vel": 0.17198963463306427,
+    "sampled": 32,
+    "span_ms": 2466.666666666667,
+    "pred": "RIVER1",
+    "correct": true,
+    "score": 0.29457780718803406,
+    "margin": 0.23100176453590393,
+    "top5": [
+     "RIVER1",
+     "SINK",
+     "COPY",
+     "IMPOSSIBLE",
+     "FINE1"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.7666666507720947,
+    "mean_abs_vel": 0.09882200509309769,
+    "sampled": 30,
+    "span_ms": 966.6666666666666,
+    "pred": "MOVIE1",
+    "correct": false,
+    "score": 0.15744894742965698,
+    "margin": 0.055820904672145844,
+    "top5": [
+     "MOVIE1",
+     "RIVER1",
+     "FINE1",
+     "COPY",
+     "CHEW1"
+    ]
+   }
+  }
+ },
+ {
+  "file": "39474504957896217-MOVIE.mp4",
+  "gloss": "MOVIE1",
+  "signer": "P12",
+  "clip_frames": 64,
+  "clip_fps": 30.563,
+  "clip_duration_ms": 2094.035271406603,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.5625,
+    "mean_abs_vel": 0.11522302031517029,
+    "sampled": 32,
+    "span_ms": 2061.3159702908747,
+    "pred": "MOVIE1",
+    "correct": true,
+    "score": 0.29100939631462097,
+    "margin": 0.19706258177757263,
+    "top5": [
+     "MOVIE1",
+     "SINK",
+     "CALENDAR1",
+     "COPY",
+     "MEAT1"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.5625,
+    "mean_abs_vel": 0.11522302031517029,
+    "sampled": 32,
+    "span_ms": 2061.3159702908747,
+    "pred": "MOVIE1",
+    "correct": true,
+    "score": 0.29100939631462097,
+    "margin": 0.19706258177757263,
+    "top5": [
+     "MOVIE1",
+     "SINK",
+     "CALENDAR1",
+     "COPY",
+     "MEAT1"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.6111111044883728,
+    "mean_abs_vel": 0.09325479716062546,
+    "sampled": 18,
+    "span_ms": 556.2281189673789,
+    "pred": "SINK",
+    "correct": false,
+    "score": 0.1603202223777771,
+    "margin": 0.0737995132803917,
+    "top5": [
+     "SINK",
+     "DEMAND1",
+     "MOVIE1",
+     "IMPOSSIBLE",
+     "MEACULPA"
+    ]
+   }
+  }
+ },
+ {
+  "file": "06585822033156608-PATIENT 2.mp4",
+  "gloss": "PATIENT2",
+  "signer": "P12",
+  "clip_frames": 49,
+  "clip_fps": 29.96941896024465,
+  "clip_duration_ms": 1635.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.46875,
+    "mean_abs_vel": 0.07248885929584503,
+    "sampled": 32,
+    "span_ms": 1601.6326530612243,
+    "pred": "PATIENT2",
+    "correct": true,
+    "score": 0.7550746202468872,
+    "margin": 0.7234233021736145,
+    "top5": [
+     "PATIENT2",
+     "CHEEK",
+     "MYSELF",
+     "ANYONE",
+     "ALLOFSUDDEN"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.46875,
+    "mean_abs_vel": 0.07248885929584503,
+    "sampled": 32,
+    "span_ms": 1601.6326530612243,
+    "pred": "PATIENT2",
+    "correct": true,
+    "score": 0.7550746202468872,
+    "margin": 0.7234233021736145,
+    "top5": [
+     "PATIENT2",
+     "CHEEK",
+     "MYSELF",
+     "ANYONE",
+     "ALLOFSUDDEN"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.0,
+    "mean_abs_vel": 0.0,
+    "sampled": 4,
+    "span_ms": 100.10204081632652,
+    "pred": "BREAKFAST1",
+    "correct": false,
+    "score": 0.23255318403244019,
+    "margin": 0.11914059519767761,
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "ANYONE",
+     "AUTISM1",
+     "OFFEND"
+    ]
+   }
+  }
+ },
+ {
+  "file": "7779283353983693-ELEVATOR.mp4",
+  "gloss": "ELEVATOR1",
+  "signer": "P12",
+  "clip_frames": 80,
+  "clip_fps": 29.996250468691414,
+  "clip_duration_ms": 2667.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.65625,
+    "mean_abs_vel": 0.22716644406318665,
+    "sampled": 32,
+    "span_ms": 2633.6625,
+    "pred": "ELEVATOR1",
+    "correct": true,
+    "score": 0.10086455196142197,
+    "margin": 0.011461399495601654,
+    "top5": [
+     "ELEVATOR1",
+     "FLOAT1",
+     "BACKPACK1",
+     "ZEBRA",
+     "FOREIGNER1"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.65625,
+    "mean_abs_vel": 0.22716644406318665,
+    "sampled": 32,
+    "span_ms": 2633.6625,
+    "pred": "ELEVATOR1",
+    "correct": true,
+    "score": 0.10086455196142197,
+    "margin": 0.011461399495601654,
+    "top5": [
+     "ELEVATOR1",
+     "FLOAT1",
+     "BACKPACK1",
+     "ZEBRA",
+     "FOREIGNER1"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.6875,
+    "mean_abs_vel": 0.21210497617721558,
+    "sampled": 32,
+    "span_ms": 1133.475,
+    "pred": "ELEVATOR1",
+    "correct": true,
+    "score": 0.09181301295757294,
+    "margin": 0.001801222562789917,
+    "top5": [
+     "ELEVATOR1",
+     "ZEBRA",
+     "BACKPACK1",
+     "FLOAT1",
+     "SCROLLDOWN"
+    ]
+   }
+  }
+ },
+ {
+  "file": "3423044704100937-SHAVE.mp4",
+  "gloss": "SHAVE1",
+  "signer": "P12",
+  "clip_frames": 84,
+  "clip_fps": 30.0,
+  "clip_duration_ms": 2800.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.4375,
+    "mean_abs_vel": 0.028319327160716057,
+    "sampled": 32,
+    "span_ms": 2766.6666666666665,
+    "pred": "SHAVE1",
+    "correct": true,
+    "score": 0.18040640652179718,
+    "margin": 0.003564774990081787,
+    "top5": [
+     "SHAVE1",
+     "PATIENT2",
+     "CHEW1",
+     "TAIL1",
+     "ANYONE"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.4375,
+    "mean_abs_vel": 0.028319327160716057,
+    "sampled": 32,
+    "span_ms": 2766.6666666666665,
+    "pred": "SHAVE1",
+    "correct": true,
+    "score": 0.18040640652179718,
+    "margin": 0.003564774990081787,
+    "top5": [
+     "SHAVE1",
+     "PATIENT2",
+     "CHEW1",
+     "TAIL1",
+     "ANYONE"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.625,
+    "mean_abs_vel": 0.03878570720553398,
+    "sampled": 32,
+    "span_ms": 1266.6666666666665,
+    "pred": "SHAVE1",
+    "correct": true,
+    "score": 0.3457968235015869,
+    "margin": 0.027875453233718872,
+    "top5": [
+     "SHAVE1",
+     "PATIENT2",
+     "CHEW1",
+     "TAIL1",
+     "BASEBALLCAP"
+    ]
+   }
+  }
+ },
+ {
+  "file": "8261637986943131-CALENDAR.mp4",
+  "gloss": "CALENDAR1",
+  "signer": "P12",
+  "clip_frames": 69,
+  "clip_fps": 30.479,
+  "clip_duration_ms": 2263.8538009777226,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.46875,
+    "mean_abs_vel": 0.10555954277515411,
+    "sampled": 32,
+    "span_ms": 2231.0443256012336,
+    "pred": "FINE1",
+    "correct": false,
+    "score": 0.3058205246925354,
+    "margin": 0.21206113696098328,
+    "top5": [
+     "FINE1",
+     "VOICE",
+     "CALENDAR1",
+     "JEWELRY",
+     "SCARF2"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.46875,
+    "mean_abs_vel": 0.10555954277515411,
+    "sampled": 32,
+    "span_ms": 2231.0443256012336,
+    "pred": "FINE1",
+    "correct": false,
+    "score": 0.3058205246925354,
+    "margin": 0.21206113696098328,
+    "top5": [
+     "FINE1",
+     "VOICE",
+     "CALENDAR1",
+     "JEWELRY",
+     "SCARF2"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.5652173757553101,
+    "mean_abs_vel": 0.09903273731470108,
+    "sampled": 23,
+    "span_ms": 721.8084582827521,
+    "pred": "FINE1",
+    "correct": false,
+    "score": 0.24210546910762787,
+    "margin": 0.13774484395980835,
+    "top5": [
+     "FINE1",
+     "DOG1",
+     "HOSPITAL1",
+     "NOON1",
+     "VOICE"
+    ]
+   }
+  }
+ },
+ {
+  "file": "13539919271011525-SPECIAL.mp4",
+  "gloss": "SPECIAL1",
+  "signer": "P12",
+  "clip_frames": 62,
+  "clip_fps": 30.347,
+  "clip_duration_ms": 2043.035555409101,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.46875,
+    "mean_abs_vel": 0.10557954758405685,
+    "sampled": 32,
+    "span_ms": 2010.0833690315349,
+    "pred": "JEWELRY",
+    "correct": false,
+    "score": 0.10686834901571274,
+    "margin": 0.021041594445705414,
+    "top5": [
+     "JEWELRY",
+     "TAIL1",
+     "HALLOWEEN1",
+     "HURDLE/TRIP1",
+     "JOKE"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.46875,
+    "mean_abs_vel": 0.10557954758405685,
+    "sampled": 32,
+    "span_ms": 2010.0833690315349,
+    "pred": "JEWELRY",
+    "correct": false,
+    "score": 0.10686834901571274,
+    "margin": 0.021041594445705414,
+    "top5": [
+     "JEWELRY",
+     "TAIL1",
+     "HALLOWEEN1",
+     "HURDLE/TRIP1",
+     "JOKE"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.0,
+    "mean_abs_vel": 0.0,
+    "sampled": 16,
+    "span_ms": 494.28279566349227,
+    "pred": "BREAKFAST1",
+    "correct": false,
+    "score": 0.23255318403244019,
+    "margin": 0.11914059519767761,
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "ANYONE",
+     "AUTISM1",
+     "OFFEND"
+    ]
+   }
+  }
+ },
+ {
+  "file": "8877316023603796-HOSPITAL.mp4",
+  "gloss": "HOSPITAL1",
+  "signer": "P21",
+  "clip_frames": 46,
+  "clip_fps": 29.92843201040989,
+  "clip_duration_ms": 1537.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.59375,
+    "mean_abs_vel": 0.10048498958349228,
+    "sampled": 32,
+    "span_ms": 1503.5869565217392,
+    "pred": "HOSPITAL1",
+    "correct": true,
+    "score": 0.3085384964942932,
+    "margin": 0.2001236379146576,
+    "top5": [
+     "HOSPITAL1",
+     "MOUTH",
+     "SCARF2",
+     "MYSELF",
+     "BACKPACK1"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.59375,
+    "mean_abs_vel": 0.10048498958349228,
+    "sampled": 32,
+    "span_ms": 1503.5869565217392,
+    "pred": "HOSPITAL1",
+    "correct": true,
+    "score": 0.3085384964942932,
+    "margin": 0.2001236379146576,
+    "top5": [
+     "HOSPITAL1",
+     "MOUTH",
+     "SCARF2",
+     "MYSELF",
+     "BACKPACK1"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.0,
+    "mean_abs_vel": 0.0,
+    "sampled": 1,
+    "span_ms": 0.0,
+    "pred": "BREAKFAST1",
+    "correct": false,
+    "score": 0.23255318403244019,
+    "margin": 0.11914059519767761,
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "ANYONE",
+     "AUTISM1",
+     "OFFEND"
+    ]
+   }
+  }
+ },
+ {
+  "file": "08349310104991292-GUESS.mp4",
+  "gloss": "GUESS1",
+  "signer": "P21",
+  "clip_frames": 50,
+  "clip_fps": 29.99400119976005,
+  "clip_duration_ms": 1667.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.3125,
+    "mean_abs_vel": 0.09388834238052368,
+    "sampled": 32,
+    "span_ms": 1633.6599999999999,
+    "pred": "GUESS1",
+    "correct": true,
+    "score": 0.6872408390045166,
+    "margin": 0.6449570059776306,
+    "top5": [
+     "GUESS1",
+     "COMB2",
+     "AUTISM1",
+     "BREAKFAST1",
+     "DARK1"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.3125,
+    "mean_abs_vel": 0.09388834238052368,
+    "sampled": 32,
+    "span_ms": 1633.6599999999999,
+    "pred": "GUESS1",
+    "correct": true,
+    "score": 0.6872408390045166,
+    "margin": 0.6449570059776306,
+    "top5": [
+     "GUESS1",
+     "COMB2",
+     "AUTISM1",
+     "BREAKFAST1",
+     "DARK1"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.0,
+    "mean_abs_vel": 0.0,
+    "sampled": 5,
+    "span_ms": 133.36,
+    "pred": "BREAKFAST1",
+    "correct": false,
+    "score": 0.23255318403244019,
+    "margin": 0.11914059519767761,
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "ANYONE",
+     "AUTISM1",
+     "OFFEND"
+    ]
+   }
+  }
+ },
+ {
+  "file": "5673060607110498-CHEER.mp4",
+  "gloss": "CHEER",
+  "signer": "P21",
+  "clip_frames": 61,
+  "clip_fps": 30.00491883915396,
+  "clip_duration_ms": 2033.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.59375,
+    "mean_abs_vel": 0.24679870903491974,
+    "sampled": 32,
+    "span_ms": 1999.672131147541,
+    "pred": "CHEER",
+    "correct": true,
+    "score": 0.6741161346435547,
+    "margin": 0.655549168586731,
+    "top5": [
+     "CHEER",
+     "PONDER",
+     "SWEATER2",
+     "SOCIETY",
+     "DOWNSIZE1"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.59375,
+    "mean_abs_vel": 0.24679870903491974,
+    "sampled": 32,
+    "span_ms": 1999.672131147541,
+    "pred": "CHEER",
+    "correct": true,
+    "score": 0.6741161346435547,
+    "margin": 0.655549168586731,
+    "top5": [
+     "CHEER",
+     "PONDER",
+     "SWEATER2",
+     "SOCIETY",
+     "DOWNSIZE1"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.625,
+    "mean_abs_vel": 0.2033996880054474,
+    "sampled": 16,
+    "span_ms": 499.91803278688525,
+    "pred": "CHEER",
+    "correct": true,
+    "score": 0.2857359051704407,
+    "margin": 0.2351817935705185,
+    "top5": [
+     "CHEER",
+     "HALLOWEEN1",
+     "DECIDE1",
+     "BASKETBALL1",
+     "TEACH1"
+    ]
+   }
+  }
+ },
+ {
+  "file": "9418564246987629-IMPOSSIBLE.mp4",
+  "gloss": "IMPOSSIBLE",
+  "signer": "P21",
+  "clip_frames": 82,
+  "clip_fps": 30.00365898280278,
+  "clip_duration_ms": 2733.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.375,
+    "mean_abs_vel": 0.16702957451343536,
+    "sampled": 32,
+    "span_ms": 2699.6707317073174,
+    "pred": "IMPOSSIBLE",
+    "correct": true,
+    "score": 0.7669302821159363,
+    "margin": 0.7348896861076355,
+    "top5": [
+     "IMPOSSIBLE",
+     "SINK",
+     "MEACULPA",
+     "DARK1",
+     "DEMAND1"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.375,
+    "mean_abs_vel": 0.16702957451343536,
+    "sampled": 32,
+    "span_ms": 2699.6707317073174,
+    "pred": "IMPOSSIBLE",
+    "correct": true,
+    "score": 0.7669302821159363,
+    "margin": 0.7348896861076355,
+    "top5": [
+     "IMPOSSIBLE",
+     "SINK",
+     "MEACULPA",
+     "DARK1",
+     "DEMAND1"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.25,
+    "mean_abs_vel": 0.11014590412378311,
+    "sampled": 32,
+    "span_ms": 1199.8536585365853,
+    "pred": "IMPOSSIBLE",
+    "correct": true,
+    "score": 0.1433565616607666,
+    "margin": 0.08473338186740875,
+    "top5": [
+     "IMPOSSIBLE",
+     "KNIGHT1",
+     "PATIENT2",
+     "ANYONE",
+     "TAIL1"
+    ]
+   }
+  }
+ },
+ {
+  "file": "7166028187687812-SHOCKED.mp4",
+  "gloss": "SHOCKED",
+  "signer": "P21",
+  "clip_frames": 58,
+  "clip_fps": 30.00517330574237,
+  "clip_duration_ms": 1932.9999999999998,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.40625,
+    "mean_abs_vel": 0.3847636878490448,
+    "sampled": 32,
+    "span_ms": 1899.6724137931033,
+    "pred": "SHOCKED",
+    "correct": true,
+    "score": 0.16411764919757843,
+    "margin": 0.11742763966321945,
+    "top5": [
+     "SHOCKED",
+     "DECIDE1",
+     "FLIP",
+     "UNDERWEAR1",
+     "RAZOR2"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.40625,
+    "mean_abs_vel": 0.3847636878490448,
+    "sampled": 32,
+    "span_ms": 1899.6724137931033,
+    "pred": "SHOCKED",
+    "correct": true,
+    "score": 0.16411764919757843,
+    "margin": 0.11742763966321945,
+    "top5": [
+     "SHOCKED",
+     "DECIDE1",
+     "FLIP",
+     "UNDERWEAR1",
+     "RAZOR2"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.38461539149284363,
+    "mean_abs_vel": 0.015771931037306786,
+    "sampled": 13,
+    "span_ms": 399.93103448275855,
+    "pred": "DEAF1",
+    "correct": false,
+    "score": 0.5707659125328064,
+    "margin": 0.5243851542472839,
+    "top5": [
+     "DEAF1",
+     "WHATFOR1",
+     "PENNY",
+     "RAZOR2",
+     "METAL"
+    ]
+   }
+  }
+ },
+ {
+  "file": "41119821062785955-GRAMMAR.mp4",
+  "gloss": "GRAMMAR",
+  "signer": "P21",
+  "clip_frames": 58,
+  "clip_fps": 29.927760577915375,
+  "clip_duration_ms": 1938.0000000000002,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.4375,
+    "mean_abs_vel": 0.12667398154735565,
+    "sampled": 32,
+    "span_ms": 1904.5862068965519,
+    "pred": "GRAMMAR",
+    "correct": true,
+    "score": 0.8227242827415466,
+    "margin": 0.813947856426239,
+    "top5": [
+     "GRAMMAR",
+     "SQUEEZE",
+     "SHARPEN2",
+     "PENNY",
+     "METAL"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.4375,
+    "mean_abs_vel": 0.12667398154735565,
+    "sampled": 32,
+    "span_ms": 1904.5862068965519,
+    "pred": "GRAMMAR",
+    "correct": true,
+    "score": 0.8227242827415466,
+    "margin": 0.813947856426239,
+    "top5": [
+     "GRAMMAR",
+     "SQUEEZE",
+     "SHARPEN2",
+     "PENNY",
+     "METAL"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.4615384638309479,
+    "mean_abs_vel": 0.06290429830551147,
+    "sampled": 13,
+    "span_ms": 400.96551724137936,
+    "pred": "WALK-TIGHTROPE-CL",
+    "correct": false,
+    "score": 0.17191475629806519,
+    "margin": 0.014907926321029663,
+    "top5": [
+     "WALK-TIGHTROPE-CL",
+     "GRAMMAR",
+     "HURDLE/TRIP1",
+     "DOWNSIZE1",
+     "SLIDE2"
+    ]
+   }
+  }
+ },
+ {
+  "file": "16945051524554744-DEVELOP.mp4",
+  "gloss": "DEVELOP1",
+  "signer": "P21",
+  "clip_frames": 52,
+  "clip_fps": 30.005770340450088,
+  "clip_duration_ms": 1732.9999999999998,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.5,
+    "mean_abs_vel": 0.198086217045784,
+    "sampled": 32,
+    "span_ms": 1699.6730769230767,
+    "pred": "DEVELOP1",
+    "correct": true,
+    "score": 0.4444125294685364,
+    "margin": 0.3832630515098572,
+    "top5": [
+     "DEVELOP1",
+     "CALENDAR1",
+     "FINE1",
+     "ELEVATOR1",
+     "CLOSE"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.5,
+    "mean_abs_vel": 0.198086217045784,
+    "sampled": 32,
+    "span_ms": 1699.6730769230767,
+    "pred": "DEVELOP1",
+    "correct": true,
+    "score": 0.4444125294685364,
+    "margin": 0.3832630515098572,
+    "top5": [
+     "DEVELOP1",
+     "CALENDAR1",
+     "FINE1",
+     "ELEVATOR1",
+     "CLOSE"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.0,
+    "mean_abs_vel": 0.0,
+    "sampled": 7,
+    "span_ms": 199.96153846153845,
+    "pred": "BREAKFAST1",
+    "correct": false,
+    "score": 0.23255318403244019,
+    "margin": 0.11914059519767761,
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "ANYONE",
+     "AUTISM1",
+     "OFFEND"
+    ]
+   }
+  }
+ },
+ {
+  "file": "20198961584817-BACKPACK.mp4",
+  "gloss": "BACKPACK1",
+  "signer": "P21",
+  "clip_frames": 48,
+  "clip_fps": 30.0,
+  "clip_duration_ms": 1600.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.5,
+    "mean_abs_vel": 0.16507010161876678,
+    "sampled": 32,
+    "span_ms": 1566.6666666666667,
+    "pred": "BACKPACK1",
+    "correct": true,
+    "score": 0.5927544236183167,
+    "margin": 0.5658655166625977,
+    "top5": [
+     "BACKPACK1",
+     "COMB2",
+     "MEACULPA",
+     "BREAKFAST1",
+     "AUTISM1"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.5,
+    "mean_abs_vel": 0.16507010161876678,
+    "sampled": 32,
+    "span_ms": 1566.6666666666667,
+    "pred": "BACKPACK1",
+    "correct": true,
+    "score": 0.5927544236183167,
+    "margin": 0.5658655166625977,
+    "top5": [
+     "BACKPACK1",
+     "COMB2",
+     "MEACULPA",
+     "BREAKFAST1",
+     "AUTISM1"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.0,
+    "mean_abs_vel": 0.0,
+    "sampled": 3,
+    "span_ms": 66.66666666666667,
+    "pred": "BREAKFAST1",
+    "correct": false,
+    "score": 0.23255318403244019,
+    "margin": 0.11914059519767761,
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "ANYONE",
+     "AUTISM1",
+     "OFFEND"
+    ]
+   }
+  }
+ },
+ {
+  "file": "3049387689711547-GUESS.mp4",
+  "gloss": "GUESS1",
+  "signer": "P5",
+  "clip_frames": 60,
+  "clip_fps": 29.925187032418954,
+  "clip_duration_ms": 2005.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.4375,
+    "mean_abs_vel": 0.08961860090494156,
+    "sampled": 32,
+    "span_ms": 1971.5833333333333,
+    "pred": "GUESS1",
+    "correct": true,
+    "score": 0.5381830334663391,
+    "margin": 0.4955166280269623,
+    "top5": [
+     "GUESS1",
+     "DRAG1",
+     "BREAKFAST1",
+     "BITE1",
+     "MAPLE"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.4375,
+    "mean_abs_vel": 0.08961860090494156,
+    "sampled": 32,
+    "span_ms": 1971.5833333333333,
+    "pred": "GUESS1",
+    "correct": true,
+    "score": 0.5381830334663391,
+    "margin": 0.4955166280269623,
+    "top5": [
+     "GUESS1",
+     "DRAG1",
+     "BREAKFAST1",
+     "BITE1",
+     "MAPLE"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.0,
+    "mean_abs_vel": 0.0,
+    "sampled": 15,
+    "span_ms": 467.8333333333333,
+    "pred": "BREAKFAST1",
+    "correct": false,
+    "score": 0.23255318403244019,
+    "margin": 0.11914059519767761,
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "ANYONE",
+     "AUTISM1",
+     "OFFEND"
+    ]
+   }
+  }
+ },
+ {
+  "file": "8894617756348819-APPLE.mp4",
+  "gloss": "APPLE",
+  "signer": "P5",
+  "clip_frames": 70,
+  "clip_fps": 29.914529914529915,
+  "clip_duration_ms": 2340.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.34375,
+    "mean_abs_vel": 0.04548264294862747,
+    "sampled": 32,
+    "span_ms": 2306.5714285714284,
+    "pred": "APPLE",
+    "correct": true,
+    "score": 0.5874737501144409,
+    "margin": 0.5350744724273682,
+    "top5": [
+     "APPLE",
+     "METAL",
+     "RAZOR2",
+     "SHAVE1",
+     "PENNY"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.34375,
+    "mean_abs_vel": 0.04548264294862747,
+    "sampled": 32,
+    "span_ms": 2306.5714285714284,
+    "pred": "APPLE",
+    "correct": true,
+    "score": 0.5874737501144409,
+    "margin": 0.5350744724273682,
+    "top5": [
+     "APPLE",
+     "METAL",
+     "RAZOR2",
+     "SHAVE1",
+     "PENNY"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.3199999928474426,
+    "mean_abs_vel": 0.023232853040099144,
+    "sampled": 25,
+    "span_ms": 802.2857142857142,
+    "pred": "APPLE",
+    "correct": true,
+    "score": 0.42452704906463623,
+    "margin": 0.3594026565551758,
+    "top5": [
+     "APPLE",
+     "SHAVE1",
+     "RAZOR2",
+     "WHATFOR1",
+     "DEAF1"
+    ]
+   }
+  }
+ },
+ {
+  "file": "744008724339543-EAT.mp4",
+  "gloss": "EAT1",
+  "signer": "P5",
+  "clip_frames": 75,
+  "clip_fps": 30.0,
+  "clip_duration_ms": 2500.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.375,
+    "mean_abs_vel": 0.055121444165706635,
+    "sampled": 32,
+    "span_ms": 2466.666666666667,
+    "pred": "EAT1",
+    "correct": true,
+    "score": 0.5294166803359985,
+    "margin": 0.4791948199272156,
+    "top5": [
+     "EAT1",
+     "UNDERWEAR1",
+     "BREAKFAST1",
+     "VOICE",
+     "BEE1"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.375,
+    "mean_abs_vel": 0.055121444165706635,
+    "sampled": 32,
+    "span_ms": 2466.666666666667,
+    "pred": "EAT1",
+    "correct": true,
+    "score": 0.5294166803359985,
+    "margin": 0.4791948199272156,
+    "top5": [
+     "EAT1",
+     "UNDERWEAR1",
+     "BREAKFAST1",
+     "VOICE",
+     "BEE1"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.23333333432674408,
+    "mean_abs_vel": 0.03406313434243202,
+    "sampled": 30,
+    "span_ms": 966.6666666666666,
+    "pred": "EAT1",
+    "correct": true,
+    "score": 0.2042974829673767,
+    "margin": 0.13572917878627777,
+    "top5": [
+     "EAT1",
+     "BREAKFAST1",
+     "ANYONE",
+     "FLIP",
+     "BEE1"
+    ]
+   }
+  }
+ },
+ {
+  "file": "9990244640190733-BACKPACK.mp4",
+  "gloss": "BACKPACK1",
+  "signer": "P5",
+  "clip_frames": 93,
+  "clip_fps": 29.922779922779924,
+  "clip_duration_ms": 3108.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.46875,
+    "mean_abs_vel": 0.12496496737003326,
+    "sampled": 32,
+    "span_ms": 3074.5806451612902,
+    "pred": "CHEER",
+    "correct": false,
+    "score": 0.4652164578437805,
+    "margin": 0.3874514102935791,
+    "top5": [
+     "CHEER",
+     "PARTY1",
+     "GRAMMAR",
+     "BACKPACK1",
+     "ALLOFSUDDEN"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.46875,
+    "mean_abs_vel": 0.12496496737003326,
+    "sampled": 32,
+    "span_ms": 3074.5806451612902,
+    "pred": "CHEER",
+    "correct": false,
+    "score": 0.4652164578437805,
+    "margin": 0.3874514102935791,
+    "top5": [
+     "CHEER",
+     "PARTY1",
+     "GRAMMAR",
+     "BACKPACK1",
+     "ALLOFSUDDEN"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.375,
+    "mean_abs_vel": 0.07237900048494339,
+    "sampled": 32,
+    "span_ms": 1570.7096774193546,
+    "pred": "CHEER",
+    "correct": false,
+    "score": 0.4556451141834259,
+    "margin": 0.3679552972316742,
+    "top5": [
+     "CHEER",
+     "PARTY1",
+     "BACKPACK1",
+     "GRAMMAR",
+     "ALLOFSUDDEN"
+    ]
+   }
+  }
+ },
+ {
+  "file": "8230215745582212-BEE.mp4",
+  "gloss": "BEE1",
+  "signer": "P5",
+  "clip_frames": 105,
+  "clip_fps": 30.393,
+  "clip_duration_ms": 3454.74286842365,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.40625,
+    "mean_abs_vel": 0.09268064051866531,
+    "sampled": 32,
+    "span_ms": 3421.840555391044,
+    "pred": "BEE1",
+    "correct": true,
+    "score": 0.12072768807411194,
+    "margin": 0.0481584370136261,
+    "top5": [
+     "BEE1",
+     "HALLOWEEN1",
+     "MAPLE",
+     "AXE1",
+     "PONDER"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.40625,
+    "mean_abs_vel": 0.09268064051866531,
+    "sampled": 32,
+    "span_ms": 3421.840555391044,
+    "pred": "BEE1",
+    "correct": true,
+    "score": 0.12072768807411194,
+    "margin": 0.0481584370136261,
+    "top5": [
+     "BEE1",
+     "HALLOWEEN1",
+     "MAPLE",
+     "AXE1",
+     "PONDER"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.4375,
+    "mean_abs_vel": 0.030571481212973595,
+    "sampled": 32,
+    "span_ms": 1908.334155891159,
+    "pred": "MAPLE",
+    "correct": false,
+    "score": 0.2312944084405899,
+    "margin": 0.11922506242990494,
+    "top5": [
+     "MAPLE",
+     "BEE1",
+     "AXE1",
+     "FLIP",
+     "TAIL1"
+    ]
+   }
+  }
+ },
+ {
+  "file": "6523145816470133-WHAT FOR.mp4",
+  "gloss": "WHATFOR1",
+  "signer": "P5",
+  "clip_frames": 116,
+  "clip_fps": 29.9974140160331,
+  "clip_duration_ms": 3867.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.21875,
+    "mean_abs_vel": 0.03981921076774597,
+    "sampled": 32,
+    "span_ms": 3833.6637931034484,
+    "pred": "WHATFOR1",
+    "correct": true,
+    "score": 0.6248214840888977,
+    "margin": 0.5719594955444336,
+    "top5": [
+     "WHATFOR1",
+     "KNIGHT1",
+     "OFFEND",
+     "TAIL1",
+     "BREAKFAST1"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.21875,
+    "mean_abs_vel": 0.03715940937399864,
+    "sampled": 32,
+    "span_ms": 3666.9827586206898,
+    "pred": "WHATFOR1",
+    "correct": true,
+    "score": 0.6222604513168335,
+    "margin": 0.5753145217895508,
+    "top5": [
+     "WHATFOR1",
+     "KNIGHT1",
+     "OFFEND",
+     "TAIL1",
+     "SCROLLDOWN"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.03125,
+    "mean_abs_vel": 0.014336311258375645,
+    "sampled": 32,
+    "span_ms": 2333.534482758621,
+    "pred": "BREAKFAST1",
+    "correct": false,
+    "score": 0.20433732867240906,
+    "margin": 0.07157841324806213,
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "ANYONE",
+     "OFFEND",
+     "MOUTH"
+    ]
+   }
+  }
+ },
+ {
+  "file": "9643359504766531-BEE.mp4",
+  "gloss": "BEE1",
+  "signer": "P5",
+  "clip_frames": 88,
+  "clip_fps": 30.363,
+  "clip_duration_ms": 2898.26433488127,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.53125,
+    "mean_abs_vel": 0.1140395924448967,
+    "sampled": 32,
+    "span_ms": 2865.329512893983,
+    "pred": "MAPLE",
+    "correct": false,
+    "score": 0.18577644228935242,
+    "margin": 0.02667395770549774,
+    "top5": [
+     "MAPLE",
+     "BEE1",
+     "ALLOFSUDDEN",
+     "GOODYGOODYSHOEOPPOSITE",
+     "FLIP"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.53125,
+    "mean_abs_vel": 0.1140395924448967,
+    "sampled": 32,
+    "span_ms": 2865.329512893983,
+    "pred": "MAPLE",
+    "correct": false,
+    "score": 0.18577644228935242,
+    "margin": 0.02667395770549774,
+    "top5": [
+     "MAPLE",
+     "BEE1",
+     "ALLOFSUDDEN",
+     "GOODYGOODYSHOEOPPOSITE",
+     "FLIP"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.3125,
+    "mean_abs_vel": 0.025492360815405846,
+    "sampled": 32,
+    "span_ms": 1350.3277014787736,
+    "pred": "MAPLE",
+    "correct": false,
+    "score": 0.1478804051876068,
+    "margin": 0.05281493812799454,
+    "top5": [
+     "MAPLE",
+     "BEE1",
+     "ALLOFSUDDEN",
+     "EAT1",
+     "BREAKFAST1"
+    ]
+   }
+  }
+ },
+ {
+  "file": "32588002483465517-SPECIAL.mp4",
+  "gloss": "SPECIAL1",
+  "signer": "P5",
+  "clip_frames": 93,
+  "clip_fps": 29.97099581050596,
+  "clip_duration_ms": 3103.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.40625,
+    "mean_abs_vel": 0.12574605643749237,
+    "sampled": 32,
+    "span_ms": 3069.6344086021504,
+    "pred": "8HOUR",
+    "correct": false,
+    "score": 0.07736393809318542,
+    "margin": 0.017086144536733627,
+    "top5": [
+     "8HOUR",
+     "SAIL2",
+     "DEVELOP1",
+     "CALENDAR1",
+     "SPECIAL1"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.40625,
+    "mean_abs_vel": 0.12574605643749237,
+    "sampled": 32,
+    "span_ms": 3069.6344086021504,
+    "pred": "8HOUR",
+    "correct": false,
+    "score": 0.07736393809318542,
+    "margin": 0.017086144536733627,
+    "top5": [
+     "8HOUR",
+     "SAIL2",
+     "DEVELOP1",
+     "CALENDAR1",
+     "SPECIAL1"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.5625,
+    "mean_abs_vel": 0.1201842799782753,
+    "sampled": 32,
+    "span_ms": 1568.1827956989248,
+    "pred": "8HOUR",
+    "correct": false,
+    "score": 0.07086885720491409,
+    "margin": 0.025318801403045654,
+    "top5": [
+     "8HOUR",
+     "MAPLE",
+     "SPECIAL1",
+     "SOCCER2",
+     "PARTY1"
+    ]
+   }
+  }
+ },
+ {
+  "file": "1013355672311258-CLOSE.mp4",
+  "gloss": "CLOSE",
+  "signer": "P39",
+  "clip_frames": 127,
+  "clip_fps": 30.002362390739428,
+  "clip_duration_ms": 4233.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.28125,
+    "mean_abs_vel": 0.16479410231113434,
+    "sampled": 32,
+    "span_ms": 4199.669291338582,
+    "pred": "CLOSE",
+    "correct": true,
+    "score": 0.24133171141147614,
+    "margin": 0.17846499383449554,
+    "top5": [
+     "CLOSE",
+     "AUTISM1",
+     "BREAKFAST1",
+     "LONGLINE",
+     "DEVELOP1"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.34375,
+    "mean_abs_vel": 0.1793016493320465,
+    "sampled": 32,
+    "span_ms": 3666.3779527559054,
+    "pred": "BREAKFAST1",
+    "correct": false,
+    "score": 0.1742686927318573,
+    "margin": 0.07649137079715729,
+    "top5": [
+     "BREAKFAST1",
+     "CLOSE",
+     "AUTISM1",
+     "ANYONE",
+     "TAIL1"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.4375,
+    "mean_abs_vel": 0.1945231854915619,
+    "sampled": 32,
+    "span_ms": 2699.7874015748034,
+    "pred": "CLOSE",
+    "correct": true,
+    "score": 0.29864421486854553,
+    "margin": 0.20184940099716187,
+    "top5": [
+     "CLOSE",
+     "DEVELOP1",
+     "BREAKFAST1",
+     "ELEVATOR1",
+     "TAIL1"
+    ]
+   }
+  }
+ },
+ {
+  "file": "19884607898478812-SAIL 2.mp4",
+  "gloss": "SAIL2",
+  "signer": "P39",
+  "clip_frames": 130,
+  "clip_fps": 30.00230786983614,
+  "clip_duration_ms": 4333.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.375,
+    "mean_abs_vel": 0.16762901842594147,
+    "sampled": 32,
+    "span_ms": 4299.669230769231,
+    "pred": "SAIL2",
+    "correct": true,
+    "score": 0.8213715553283691,
+    "margin": 0.813719630241394,
+    "top5": [
+     "SAIL2",
+     "GRAMMAR",
+     "SLIDE2",
+     "EASY",
+     "BEE1"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.40625,
+    "mean_abs_vel": 0.1380441039800644,
+    "sampled": 32,
+    "span_ms": 3666.3846153846157,
+    "pred": "SAIL2",
+    "correct": true,
+    "score": 0.9269880652427673,
+    "margin": 0.9229406714439392,
+    "top5": [
+     "SAIL2",
+     "EASY",
+     "GRAMMAR",
+     "SLIDE2",
+     "PENNY"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.46875,
+    "mean_abs_vel": 0.11637949198484421,
+    "sampled": 32,
+    "span_ms": 2799.7846153846153,
+    "pred": "SAIL2",
+    "correct": true,
+    "score": 0.9258847832679749,
+    "margin": 0.9217056035995483,
+    "top5": [
+     "SAIL2",
+     "GRAMMAR",
+     "PENNY",
+     "EASY",
+     "SLIDE2"
+    ]
+   }
+  }
+ },
+ {
+  "file": "7028620841319688-FOREIGNER.mp4",
+  "gloss": "FOREIGNER1",
+  "signer": "P39",
+  "clip_frames": 166,
+  "clip_fps": 30.001807337791433,
+  "clip_duration_ms": 5533.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.3125,
+    "mean_abs_vel": 0.19950488209724426,
+    "sampled": 32,
+    "span_ms": 5499.668674698795,
+    "pred": "FOREIGNER1",
+    "correct": true,
+    "score": 0.10405416786670685,
+    "margin": 0.04223323240876198,
+    "top5": [
+     "FOREIGNER1",
+     "INTUITIVE",
+     "IMPOSSIBLE",
+     "CHEESEGRATER",
+     "COMB2"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.46875,
+    "mean_abs_vel": 0.1661747545003891,
+    "sampled": 32,
+    "span_ms": 3666.44578313253,
+    "pred": "INTUITIVE",
+    "correct": false,
+    "score": 0.17230632901191711,
+    "margin": 0.12231002748012543,
+    "top5": [
+     "INTUITIVE",
+     "FOREIGNER1",
+     "CHEESEGRATER",
+     "FAIL",
+     "KNIGHT1"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.40625,
+    "mean_abs_vel": 0.2666110098361969,
+    "sampled": 32,
+    "span_ms": 3666.44578313253,
+    "pred": "FOREIGNER1",
+    "correct": true,
+    "score": 0.08593588322401047,
+    "margin": 0.011089399456977844,
+    "top5": [
+     "FOREIGNER1",
+     "CHEESEGRATER",
+     "INTUITIVE",
+     "DECIDE1",
+     "SCARF2"
+    ]
+   }
+  }
+ },
+ {
+  "file": "6940052288653344-MEAT.mp4",
+  "gloss": "MEAT1",
+  "signer": "P39",
+  "clip_frames": 120,
+  "clip_fps": 30.0,
+  "clip_duration_ms": 4000.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.53125,
+    "mean_abs_vel": 0.1940625160932541,
+    "sampled": 32,
+    "span_ms": 3966.666666666667,
+    "pred": "MEAT1",
+    "correct": true,
+    "score": 0.925062358379364,
+    "margin": 0.920207142829895,
+    "top5": [
+     "MEAT1",
+     "SOCCER2",
+     "FLOAT1",
+     "SPECIAL1",
+     "HURDLE/TRIP1"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.5625,
+    "mean_abs_vel": 0.16487258672714233,
+    "sampled": 32,
+    "span_ms": 3666.6666666666665,
+    "pred": "MEAT1",
+    "correct": true,
+    "score": 0.9002684950828552,
+    "margin": 0.8926182985305786,
+    "top5": [
+     "MEAT1",
+     "FLOAT1",
+     "HURDLE/TRIP1",
+     "SOCCER2",
+     "BITE1"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.59375,
+    "mean_abs_vel": 0.10234498232603073,
+    "sampled": 32,
+    "span_ms": 2466.666666666667,
+    "pred": "MEAT1",
+    "correct": true,
+    "score": 0.9626678824424744,
+    "margin": 0.9594289660453796,
+    "top5": [
+     "MEAT1",
+     "FLOAT1",
+     "SPECIAL1",
+     "OFFEND",
+     "BABY2"
+    ]
+   }
+  }
+ },
+ {
+  "file": "8576706430724641-TAIL.mp4",
+  "gloss": "TAIL1",
+  "signer": "P39",
+  "clip_frames": 143,
+  "clip_fps": 29.99790224459828,
+  "clip_duration_ms": 4767.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.28125,
+    "mean_abs_vel": 0.12055327743291855,
+    "sampled": 32,
+    "span_ms": 4733.664335664335,
+    "pred": "TAIL1",
+    "correct": true,
+    "score": 0.07274559140205383,
+    "margin": 0.031482454389333725,
+    "top5": [
+     "TAIL1",
+     "DRAG1",
+     "ANYONE",
+     "AUTISM1",
+     "OFFEND"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.375,
+    "mean_abs_vel": 0.9578728675842285,
+    "sampled": 32,
+    "span_ms": 3666.923076923077,
+    "pred": "INTUITIVE",
+    "correct": false,
+    "score": 0.1705143302679062,
+    "margin": 0.06682097166776657,
+    "top5": [
+     "INTUITIVE",
+     "FLIP",
+     "KNIGHT1",
+     "OFFEND",
+     "CHEESEGRATER"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.375,
+    "mean_abs_vel": 0.13486260175704956,
+    "sampled": 32,
+    "span_ms": 3233.5594405594406,
+    "pred": "TAIL1",
+    "correct": true,
+    "score": 0.12733347713947296,
+    "margin": 0.0858394131064415,
+    "top5": [
+     "TAIL1",
+     "OFFEND",
+     "KNIGHT1",
+     "ANYONE",
+     "SQUEEZE"
+    ]
+   }
+  }
+ },
+ {
+  "file": "14217897516103073-SCROLL DOWN.mp4",
+  "gloss": "SCROLLDOWN",
+  "signer": "P39",
+  "clip_frames": 181,
+  "clip_fps": 30.00165755014089,
+  "clip_duration_ms": 6033.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.84375,
+    "mean_abs_vel": 0.12112455815076828,
+    "sampled": 32,
+    "span_ms": 5999.668508287293,
+    "pred": "SCROLLDOWN",
+    "correct": true,
+    "score": 0.3754614591598511,
+    "margin": 0.3326365649700165,
+    "top5": [
+     "SCROLLDOWN",
+     "UNDERWEAR1",
+     "FLIP",
+     "ELEVATOR1",
+     "ANYONE"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.9375,
+    "mean_abs_vel": 0.11136355996131897,
+    "sampled": 32,
+    "span_ms": 3666.4640883977904,
+    "pred": "SCROLLDOWN",
+    "correct": true,
+    "score": 0.35646793246269226,
+    "margin": 0.29183247685432434,
+    "top5": [
+     "SCROLLDOWN",
+     "UNDERWEAR1",
+     "FLIP",
+     "DEAF1",
+     "ZEBRA"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.84375,
+    "mean_abs_vel": 0.14610587060451508,
+    "sampled": 32,
+    "span_ms": 3666.4640883977904,
+    "pred": "SCROLLDOWN",
+    "correct": true,
+    "score": 0.3923313021659851,
+    "margin": 0.27270689606666565,
+    "top5": [
+     "SCROLLDOWN",
+     "UNDERWEAR1",
+     "ROCKINGCHAIR1",
+     "ZEBRA",
+     "PARTY1"
+    ]
+   }
+  }
+ },
+ {
+  "file": "6148470977348326-METAL.mp4",
+  "gloss": "METAL",
+  "signer": "P39",
+  "clip_frames": 123,
+  "clip_fps": 30.0,
+  "clip_duration_ms": 4100.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.375,
+    "mean_abs_vel": 0.038897886872291565,
+    "sampled": 32,
+    "span_ms": 4066.6666666666665,
+    "pred": "METAL",
+    "correct": true,
+    "score": 0.8848074078559875,
+    "margin": 0.8513050675392151,
+    "top5": [
+     "METAL",
+     "PENNY",
+     "JOKE",
+     "UNDERWEAR1",
+     "MICROSCOPE1"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.40625,
+    "mean_abs_vel": 0.03605179488658905,
+    "sampled": 32,
+    "span_ms": 3666.6666666666665,
+    "pred": "METAL",
+    "correct": true,
+    "score": 0.8758482336997986,
+    "margin": 0.8400558233261108,
+    "top5": [
+     "METAL",
+     "PENNY",
+     "JOKE",
+     "UNDERWEAR1",
+     "DEAF1"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.46875,
+    "mean_abs_vel": 0.024121608585119247,
+    "sampled": 32,
+    "span_ms": 2566.666666666667,
+    "pred": "METAL",
+    "correct": true,
+    "score": 0.9363589882850647,
+    "margin": 0.9135672450065613,
+    "top5": [
+     "METAL",
+     "PENNY",
+     "JOKE",
+     "UNDERWEAR1",
+     "MICROSCOPE1"
+    ]
+   }
+  }
+ },
+ {
+  "file": "5000642478362116-BITE.mp4",
+  "gloss": "BITE1",
+  "signer": "P39",
+  "clip_frames": 125,
+  "clip_fps": 29.997600191984642,
+  "clip_duration_ms": 4167.0,
+  "modes": {
+   "explicit": {
+    "hand_coverage": 0.34375,
+    "mean_abs_vel": 0.03631245344877243,
+    "sampled": 32,
+    "span_ms": 4133.664,
+    "pred": "BITE1",
+    "correct": true,
+    "score": 0.7543355226516724,
+    "margin": 0.7214202880859375,
+    "top5": [
+     "BITE1",
+     "DUCK2",
+     "SQUEEZE",
+     "BREAKFAST1",
+     "UNDERWEAR1"
+    ]
+   },
+   "quick_tap_at_end": {
+    "hand_coverage": 0.375,
+    "mean_abs_vel": 0.08683168143033981,
+    "sampled": 32,
+    "span_ms": 3666.96,
+    "pred": "BITE1",
+    "correct": true,
+    "score": 0.5690711140632629,
+    "margin": 0.5378186702728271,
+    "top5": [
+     "BITE1",
+     "DUCK2",
+     "FLIP",
+     "BASKETBALL1",
+     "GOODYGOODYSHOEOPPOSITE"
+    ]
+   },
+   "quick_tap_late": {
+    "hand_coverage": 0.46875,
+    "mean_abs_vel": 0.02076326124370098,
+    "sampled": 32,
+    "span_ms": 2633.5440000000003,
+    "pred": "BITE1",
+    "correct": true,
+    "score": 0.83391934633255,
+    "margin": 0.8108944892883301,
+    "top5": [
+     "BITE1",
+     "DUCK2",
+     "UNDERWEAR1",
+     "BREAKFAST1",
+     "GUESS1"
+    ]
+   }
+  }
+ }
+]

@@ -173,9 +173,12 @@ This is a ranking score, not a calibrated probability, and the app now says so.
 - **Whether recognition accuracy is now sufficient is unknown.** The capture fix
   addresses a real defect; it is not a demonstrated accuracy improvement. That
   requires re-running your sign tests on a phone.
-- **Frame-drop robustness is a documented weakness.** `FINAL_EVIDENCE.md`
-  records 13.33 pt degradation under frame_drop at severity 0.5 — directly
-  relevant, since variable analysis FPS is a form of frame dropping.
+- **Robustness is uneven, and the worst axis is crop, not frame drop.**
+  `submission_final/RELEASE_MANIFEST.json` (30 clips, 5 signers, seed 42) records
+  crop **10.0 pt** and occlusion **6.67 pt** degradation, while frame_drop and
+  motion_blur measure **0.0** and low_light **−3.33** (i.e. it improves).
+  An earlier revision of this document quoted 13.33 pt for frame_drop from the
+  older `FINAL_EVIDENCE.md`; that figure is superseded and was wrong to repeat.
 
 ## What to run next, on the phone
 
@@ -221,11 +224,12 @@ remaining accuracy gap plausible:
    the wrong time base. **Suggested:** train with random temporal-span
    augmentation (`linspace` over a randomly truncated span, plus resampling to
    a random step in ~60–200 ms) so the model stops depending on one step size.
-2. **Frame-drop robustness is already measured as weak** — 13.33 pt degradation
-   at severity 0.5 in `FINAL_EVIDENCE.md`. A real phone runs at variable
-   analysis FPS, which is frame dropping. **Suggested:** include variable-rate
-   sampling in the training augmentation above, and re-measure on the
-   held-out split rather than only the synthetic corruption suite.
+2. **Crop and occlusion are the measured weak axes** — 10.0 pt and 6.67 pt
+   (`submission_final/RELEASE_MANIFEST.json`). Frame drop measures 0.0, so
+   variable-rate sampling is *not* the priority the earlier draft of this
+   document implied. **Suggested:** augmentation that changes framing and
+   self-occlusion, and re-measurement on the held-out split rather than only
+   the synthetic corruption suite.
 3. **Per-signer generalisation is the dominant error source** if the failures
    are on a signer unlike the training set. **Suggested:** report top-1 by
    signer on the validation split; if your two misclassifications are

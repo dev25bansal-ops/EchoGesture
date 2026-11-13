@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="470" viewBox="0 0 1100 470" font-family="Helvetica, Arial, sans-serif">
+  <rect width="1100" height="470" fill="#ffffff"/>
+
+  <text x="40" y="46" font-size="24" font-weight="bold" fill="#111">EchoGesture — on-device isolated sign recognition</text>
+  <text x="40" y="74" font-size="14" fill="#555">Every stage runs on the phone. No network permission is declared, so there is no cloud path to disable.</text>
+
+  <!-- Stage boxes -->
+  <g>
+    <rect x="40" y="110" width="180" height="108" rx="10" fill="#eef4fb" stroke="#3d6ea8" stroke-width="1.5"/>
+    <text x="130" y="140" font-size="14" font-weight="bold" text-anchor="middle" fill="#1c3f66">1 · Camera</text>
+    <text x="130" y="163" font-size="12" text-anchor="middle" fill="#33475b">EXOCENTRIC · third-person</text>
+    <text x="130" y="181" font-size="12" text-anchor="middle" fill="#33475b">CameraX · CAMERA only</text>
+    <text x="130" y="199" font-size="12" text-anchor="middle" fill="#33475b">no INTERNET permission</text>
+  </g>
+
+  <g>
+    <rect x="256" y="110" width="196" height="108" rx="10" fill="#eef4fb" stroke="#3d6ea8" stroke-width="1.5"/>
+    <text x="354" y="140" font-size="14" font-weight="bold" text-anchor="middle" fill="#1c3f66">2 · Hand tracking</text>
+    <text x="354" y="163" font-size="12" text-anchor="middle" fill="#33475b">MediaPipe HandLandmarker</text>
+    <text x="354" y="181" font-size="12" text-anchor="middle" fill="#33475b">FP16 · 2 hands · VIDEO mode</text>
+    <text x="354" y="199" font-size="12" text-anchor="middle" fill="#33475b">~90% of pipeline time</text>
+  </g>
+
+  <g>
+    <rect x="488" y="110" width="196" height="108" rx="10" fill="#eef4fb" stroke="#3d6ea8" stroke-width="1.5"/>
+    <text x="586" y="140" font-size="14" font-weight="bold" text-anchor="middle" fill="#1c3f66">3 · Features</text>
+    <text x="586" y="163" font-size="12" text-anchor="middle" fill="#33475b">24 frames × 255 dims</text>
+    <text x="586" y="181" font-size="12" text-anchor="middle" fill="#33475b">pos 84 · vel 84 · acc 84</text>
+    <text x="586" y="199" font-size="12" text-anchor="middle" fill="#33475b">+ 3 inter-hand geometry</text>
+  </g>
+
+  <g>
+    <rect x="720" y="110" width="196" height="108" rx="10" fill="#f3eefb" stroke="#6b4ea8" stroke-width="1.5"/>
+    <text x="818" y="140" font-size="14" font-weight="bold" text-anchor="middle" fill="#3d2a66">4 · Ensemble</text>
+    <text x="818" y="163" font-size="12" text-anchor="middle" fill="#4a3b5b">4 × FP16 TFLite</text>
+    <text x="818" y="181" font-size="12" text-anchor="middle" fill="#4a3b5b">mean logits → softmax</text>
+    <text x="818" y="199" font-size="12" text-anchor="middle" fill="#4a3b5b">0.36 ms inference</text>
+  </g>
+
+  <g>
+    <rect x="952" y="110" width="108" height="108" rx="10" fill="#eefbf2" stroke="#2f8a5b" stroke-width="1.5"/>
+    <text x="1006" y="146" font-size="14" font-weight="bold" text-anchor="middle" fill="#1d5c3d">5 · Output</text>
+    <text x="1006" y="170" font-size="12" text-anchor="middle" fill="#2c5c47">top-5</text>
+    <text x="1006" y="188" font-size="12" text-anchor="middle" fill="#2c5c47">score</text>
+    <text x="1006" y="206" font-size="12" text-anchor="middle" fill="#2c5c47">margin</text>
+  </g>
+
+  <!-- Arrows -->
+  <g stroke="#7a8a9a" stroke-width="2" fill="none">
+    <path d="M220 164 H250" marker-end="url(#a)"/>
+    <path d="M452 164 H482" marker-end="url(#a)"/>
+    <path d="M684 164 H714" marker-end="url(#a)"/>
+    <path d="M916 164 H946" marker-end="url(#a)"/>
+  </g>
+  <defs>
+    <marker id="a" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0 0 L9 4.5 L0 9 z" fill="#7a8a9a"/>
+    </marker>
+  </defs>
+
+  <!-- Capture window note -->
+  <g>
+    <rect x="40" y="256" width="500" height="76" rx="8" fill="#fff8e8" stroke="#c99a2e" stroke-width="1.2"/>
+    <text x="60" y="280" font-size="13" font-weight="bold" fill="#7a5a10">Capture window — 3.7 s of real time</text>
+    <text x="60" y="301" font-size="12" fill="#6b5518">32 frames sampled evenly across the span (linspace by timestamp),</text>
+    <text x="60" y="320" font-size="12" fill="#6b5518">matching how training sampled whole clips. Pre-tap frames are dropped.</text>
+  </g>
+
+  <!-- Decision note -->
+  <g>
+    <rect x="560" y="256" width="500" height="76" rx="8" fill="#eefbf2" stroke="#2f8a5b" stroke-width="1.2"/>
+    <text x="580" y="280" font-size="13" font-weight="bold" fill="#1d5c3d">Acceptance gate — margin, not raw score</text>
+    <text x="580" y="301" font-size="12" fill="#2c5c47">Accepted when top-1 − top-2 ≥ 0.15. Measured: 95.2% accurate at 71.2%</text>
+    <text x="580" y="320" font-size="12" fill="#2c5c47">coverage, vs 95.4% at 59.6% for a 0.35 score cut. Rejections say so.</text>
+  </g>
+
+  <!-- Bottom row -->
+  <g>
+    <rect x="40" y="356" width="1020" height="76" rx="8" fill="#f7f8fa" stroke="#c3cbd4" stroke-width="1.2"/>
+    <text x="60" y="380" font-size="13" font-weight="bold" fill="#26333f">Contract and evidence</text>
+    <text x="60" y="401" font-size="12" fill="#44525f">predict(video_path) → {clip_id, prediction, top5, confidence, latency_ms} · Python 3.11 · fully offline</text>
+    <text x="60" y="420" font-size="12" fill="#44525f">72.78% top-1 on 11 unseen signers (test split) · 84.39% top-1 / 93.93% top-5 on validation (n=346) · model footprint 11.36 MB</text>
+  </g>
+</svg>

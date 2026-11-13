@@ -54,6 +54,7 @@ class DiagnosticsLog(context: Context) {
             append(" pred=").append(result?.prediction ?: "")
             append(" score=").append(score)
             append(" top5=").append(top5)
+            append(" margin=").append(result?.margin?.let { String.format("%.4f", it) } ?: "")
             append(" infer_ms=").append(result?.inferenceMillis ?: -1)
             append(" total_ms=").append(totalMs)
         }

@@ -24,6 +24,7 @@ from pathlib import Path
 MIN_HAND_FRACTION = 0.15
 # The calibrated score cut the app uses to label a result uncertain.
 SCORE_CUT = 0.35
+MARGIN_CUT = 0.15
 
 
 def parse_diagnostics(path: Path) -> list[dict]:
@@ -46,6 +47,7 @@ def parse_diagnostics(path: Path) -> list[dict]:
                 "hand_frames": int(fields.get("hand_frames", 0)),
                 "pred": fields.get("pred", ""),
                 "score": float(fields["score"]) if fields.get("score") else 0.0,
+                "margin": float(fields["margin"]) if fields.get("margin") else None,
                 "top5": [t for t in fields.get("top5", "").split("|") if t],
                 "infer_ms": int(fields.get("infer_ms", -1)),
             }
@@ -127,14 +129,26 @@ def main(argv: list[str] | None = None) -> int:
     top1 = sum(1 for r, a in joined if r["pred"] == a["expected"] and r["pred"])
     top5 = sum(1 for r, a in joined if a["expected"] in r["top5"])
 
-    accepted = [(r, a) for r, a in joined if r["score"] >= SCORE_CUT and r["pred"]]
+    # The app accepts on the top-1/top-2 margin. Older logs have no margin
+    # field, so fall back to the score cut and say which rule was used.
+    use_margin = any(r["margin"] is not None for r, _ in joined)
+
+    def accepts(r):
+        if not r["pred"]:
+            return False
+        if use_margin and r["margin"] is not None:
+            return r["margin"] >= MARGIN_CUT
+        return r["score"] >= SCORE_CUT
+
+    accepted = [(r, a) for r, a in joined if accepts(r)]
     accepted_ok = sum(1 for r, a in accepted if r["pred"] == a["expected"])
 
     print()
     print(f"captures                 {n}")
     print(f"top-1                    {top1}/{n} = {pct(top1, n)}")
     print(f"top-5                    {top5}/{n} = {pct(top5, n)}")
-    print(f"accepted (score>={SCORE_CUT:.2f})   {len(accepted)}/{n} = coverage {pct(len(accepted), n)}")
+    rule = f"margin>={MARGIN_CUT:.2f}" if use_margin else f"score>={SCORE_CUT:.2f} (no margin in log)"
+    print(f"accepted ({rule})   {len(accepted)}/{n} = coverage {pct(len(accepted), n)}")
     print(f"accuracy at accepted     {accepted_ok}/{len(accepted)} = {pct(accepted_ok, len(accepted))}")
     print(f"rejection rate           {pct(n - len(accepted), n)}")
 

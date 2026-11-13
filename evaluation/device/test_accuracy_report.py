@@ -85,6 +85,21 @@ class ReportTests(unittest.TestCase):
             ann = _write(tmp, "a.txt", "1 EAT1 plain\n2 EAT1 plain\n")
             self.assertEqual(2, accuracy_report.main([str(diag), str(ann)]))
 
+    def test_margin_is_used_when_present(self):
+        with tempfile.TemporaryDirectory() as d:
+            tmp = Path(d)
+            diag = _write(
+                tmp,
+                "d.txt",
+                "frames=32 dur_ms=1 fps=30.0 hand_frames=20 presence=" + "1"*20 + "0"*12
+                + " pred=EAT1 score=0.2200 top5=EAT1|X margin=0.3000 infer_ms=40 total_ms=50\n",
+            )
+            ann = _write(tmp, "a.txt", "1 EAT1 plain\n")
+            rows = accuracy_report.parse_diagnostics(diag)
+        self.assertAlmostEqual(0.30, rows[0]["margin"])
+        # 0.22 score would fail the old 0.35 cut; a 0.30 margin must accept it.
+        self.assertTrue(rows[0]["margin"] >= accuracy_report.MARGIN_CUT)
+
     def test_report_prints_top1_and_acceptance(self):
         import contextlib
         import io

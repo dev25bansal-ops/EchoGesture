@@ -97,6 +97,15 @@ class EnsembleParityTest {
             "top-1 confidence drift", expectedConfidence, probs[top[0]], 1e-6f
         )
         assertEquals("confidence is 0.8821 on the reference clip", 0.8821f, probs[top[0]], 5e-5f)
+
+        // 5) The margin the app gates acceptance on is top-1 minus top-2 over
+        // the same softmax. On this clip the runner-up scores 0.0173, so the
+        // margin is 0.8648 — far above the 0.15 cut, i.e. this reference clip
+        // is accepted. Asserting the value keeps the two quantities the UI
+        // depends on tied to the real Python reference.
+        val margin = probs[top[0]] - probs[top[1]]
+        assertEquals("margin is top1-top2 on the reference clip", 0.8648f, margin, 1e-3f)
+        assertTrue("the reference clip must clear the acceptance margin", margin >= 0.15f)
     }
 
     @Test

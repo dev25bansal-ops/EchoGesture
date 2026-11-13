@@ -708,13 +708,20 @@ class CameraScreen(
     ) {
         val percent = result.confidence * 100f
 
-        // Softmax over averaged logits is a score, not a probability that the
-        // label is right. Held-out evidence (346 ASL Citizen validation clips,
-        // 5 unseen signers) says a top-1 score of 0.35 or below is close to a
-        // coin flip: clips at >=0.20 score 86.9% top-1, at >=0.30 93.3%, and
-        // the whole population 74.9%. So below 0.35 the app says "uncertain"
-        // and does not read the gloss aloud as if it were a result.
-        val certain = percent >= 35f
+        // Acceptance is decided by the top-1 minus top-2 margin, not by the
+        // score alone. Measured on 82 authorized validation clips: mean margin
+        // is 0.378 when the top-1 is correct and 0.064 when it is wrong, and a
+        // 0.15 margin cut keeps 61% of captures at 94% accuracy, where the old
+        // 0.35 score cut kept 45% at 94.6%. Same accuracy, more captures read
+        // out — so the app accepts on margin.
+        //
+        // Both are still ranking quantities, not probabilities of correctness. The
+        // 0.20 score floor is a guard against a degenerate distribution rather
+        // than a second filter: on the measured population no capture with a
+        // 0.15 margin scored below 0.20, so it does not change which captures
+        // are accepted here. It only stops a pathological flat output from
+        // being read out as a result.
+        val certain = result.margin >= 0.15f && percent >= 20f
 
         captionText.text = result.prediction
         confidenceBadge.text = activity.getString(

@@ -42,6 +42,8 @@ except ImportError:
 # versus 67.65% for the best single member, on 11 held-out signers.
 _INTERPRETERS = []
 _MEMBER_IO = []
+# Per member: does it take the 381-wide x,y,z features? Legacy members do not.
+_MEMBER_USE_Z = []
 _INPUT_DETAILS = None
 _OUTPUT_DETAILS = None
 _INPUT_SCALE = 1.0
@@ -78,13 +80,20 @@ def _init_model():
     _IDX_TO_LABEL = {int(v): k.upper() for k, v in labels_map.items()}
 
     # Members come from the meta sidecar so adding or dropping one never
-    # requires touching this file.
+    # requires touching this file. `members_detail` carries a per-member
+    # feature width, because a z-channel member is 381-wide and a legacy one
+    # is 255-wide; absent means 255.
     members = []
+    detail = {}
+    meta_obj = {}
     if meta_path.exists():
         try:
-            members = list(json.load(open(meta_path, encoding="utf-8")).get("members", []))
+            meta_obj = json.load(open(meta_path, encoding="utf-8"))
+            members = list(meta_obj.get("members", []))
+            for d in meta_obj.get("members_detail", []) or []:
+                detail[d.get("file")] = bool(d.get("use_z", False))
         except Exception:
-            members = []
+            members, detail, meta_obj = [], {}, {}
     if not members:
         # Fall back to the single-model artifact if the ensemble is absent.
         single = model_dir / "landmark_classifier_fp16.tflite"
@@ -92,7 +101,7 @@ def _init_model():
             raise FileNotFoundError(f"No model found in {model_dir}")
         members = [single.name]
 
-    for name in members:
+    for i, name in enumerate(members):
         p = model_dir / name
         if not p.exists():
             raise FileNotFoundError(f"Ensemble member missing: {p}")
@@ -103,9 +112,18 @@ def _init_model():
     # Tensor indices are per-interpreter and differ between architectures
     # (the conv member and the tcn members do not agree). Resolving them once
     # per model here avoids indexing one interpreter with another's handles.
-    for interp in _INTERPRETERS:
-        _MEMBER_IO.append((interp.get_input_details()[0]["index"],
-                           interp.get_output_details()[0]["index"]))
+    #
+    # Inputs are matched by NAME, not position: the TFLite converter does not
+    # preserve the order the Keras model declared them in, so index 0 is the
+    # mask on some members and the features on others.
+    for i, interp in enumerate(_INTERPRETERS):
+        dets = interp.get_input_details()
+        f_det = next((d for d in dets if "features" in d["name"]), dets[0])
+        m_det = next((d for d in dets if "mask" in d["name"]), None)
+        _MEMBER_IO.append((f_det["index"],
+                           interp.get_output_details()[0]["index"],
+                           m_det["index"] if m_det else -1))
+        _MEMBER_USE_Z.append(detail.get(members[i], False))
 
     _INPUT_DETAILS = _INTERPRETERS[0].get_input_details()[0]
     _OUTPUT_DETAILS = _INTERPRETERS[0].get_output_details()[0]
@@ -122,12 +140,16 @@ def _init_model():
             pass
 
 
-def _preprocess_video(video_path: str, target_frames: int = 24):
-    """Video -> the model's (T, FEATURE_DIM) landmark feature matrix.
+def _preprocess_video(video_path: str, target_frames: int = 24, use_z: bool = False):
+    """Video -> the model's (T, FEATURE_DIM) landmark feature matrix and mask.
 
     MediaPipe extracts two hands per frame into canonical left/right slots,
     then features.py normalises them. The same functions run in training, so
     the two cannot drift.
+
+    Returns (features, mask). The mask is not optional decoration: the models
+    are trained with it applied to the attention, and scoring without it
+    changes the operating point by ~1.8 points on test.
 
     Raises ValueError when no hand is visible in any sampled frame: predicting
     a gloss from an empty clip would be a guess dressed up as a measurement.
@@ -136,8 +158,9 @@ def _preprocess_video(video_path: str, target_frames: int = 24):
     if lm.shape[0] == 0 or float(present.max()) < 0.5:
         raise ValueError(f"No hand detected in any frame of: {video_path}")
 
-    feats, _mask = build_features(lm, present, expected_frames=target_frames)
-    return feats
+    feats, mask = build_features(lm, present, expected_frames=target_frames,
+                                 use_z=use_z)
+    return feats, mask
 
 
 def predict(video_path: str) -> dict:
@@ -160,18 +183,26 @@ def predict(video_path: str) -> dict:
     # Extract clip_id from video filename without extension
     clip_id = Path(video_path).stem
 
-    # Landmarks -> FEATURE_DIM-wide feature matrix
-    feats = _preprocess_video(video_path, target_frames=_FRAMES)
-
-    # The export wrapper takes (1, T, F) float32 and returns logits.
-    tensor = feats[None, ...].astype(np.float32)
+    # Landmarks are extracted and normalised ONCE, then turned into features
+    # at each width the ensemble actually uses. Building them twice would run
+    # the expensive MediaPipe pass twice for no benefit.
+    lm, present = clip_to_landmarks(video_path, max_frames=max(32, _FRAMES))
+    if lm.shape[0] == 0 or float(present.max()) < 0.5:
+        raise ValueError(f"No hand detected in any frame of: {video_path}")
+    widths = {}
+    for uz in set(_MEMBER_USE_Z) or {False}:
+        widths[uz] = build_features(lm, present, expected_frames=_FRAMES, use_z=uz)
 
     # Average logits across ensemble members, then softmax once. Averaging
     # probabilities instead would let one over-confident member dominate;
     # averaging logits keeps each member's vote proportional to its evidence.
     member_logits = []
-    for interp, (in_idx, out_idx) in zip(_INTERPRETERS, _MEMBER_IO):
-        interp.set_tensor(in_idx, tensor)
+    for interp, (in_idx, out_idx, mask_idx), use_z in zip(
+            _INTERPRETERS, _MEMBER_IO, _MEMBER_USE_Z):
+        feats, mask = widths[use_z]
+        interp.set_tensor(in_idx, feats[None, ...].astype(np.float32))
+        if mask_idx >= 0:
+            interp.set_tensor(mask_idx, mask[None, ...].astype(np.float32))
         interp.invoke()
         member_logits.append(interp.get_tensor(out_idx)[0].astype(np.float32))
     logits = np.mean(member_logits, axis=0)

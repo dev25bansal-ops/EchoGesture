@@ -73,6 +73,72 @@ python3 evaluation/device/accuracy_report.py diagnostics.txt annotations.txt
 That produces top-1, top-5, rejection rate, accuracy at accepted coverage, the
 confusion matrix and the per-sign table directly.
 
+## Error structure (full validation population, n=345)
+
+From the frozen baseline over all 345 in-vocabulary validation clips:
+
+| Outcome | Share |
+| --- | --- |
+| Correct top-1 | 75.36% |
+| Correct at rank 2–5 | 11.9% |
+| Not in top-5 at all | 12.8% |
+| Top-5 overall | 87.25% |
+
+That split is the most useful number for deciding what to build next. The
+11.9% that are rank 2–5 are *recoverable by rejection*: the correct answer is
+already computed and the app currently discards it silently. The 12.8% that
+never appear in the top-5 are the genuinely hard cases and are the only ones
+that argue for new training data.
+
+### Classes that absorb other classes' clips
+
+| Predicted wrongly | Count |
+| --- | ---: |
+| BREAKFAST1 | 7 |
+| INTUITIVE | 6 |
+| TAIL1 | 5 |
+| JEWELRY | 4 |
+| MOVIE1, RAZOR2, CHEER, SHAVE1, SCARF2 | 3 each |
+
+These are the model's "attractor" labels. TAIL1 absorbing 5 clips is directly
+consistent with the observed EAT1→TAIL1 phone error.
+
+### Weakest classes
+
+| Class | Missed | Of |
+| --- | --: | --: |
+| DOG1 | 3 | 4 |
+| LOCK1 | 3 | 5 |
+| BEE1 | 3 | 6 |
+| CHEESEGRATER | 3 | 5 |
+| FOREIGNER1 | 3 | 4 |
+| CHEEK | 3 | 4 |
+
+DOG1 at 1/4 is the weakest class in the shipping vocabulary. The phone error
+DEAF1→DOG1 is therefore *toward* a class the model itself handles poorly, which
+weakens "the model simply nailed it" and points at confusable motion rather
+than a pipeline fault.
+
+### Confusion pairs seen twice or more
+
+| Expected | Predicted | Count |
+| --- | --- | --: |
+| DOG1 | INTUITIVE | 2 |
+| ZEBRA | JEWELRY | 2 |
+| FOREIGNER1 | SCARF2 | 2 |
+
+With 2–6 clips per class these pairs are indicative, not established. A pair
+needs several signers before it is worth a training intervention.
+
+### What this does and does not say
+
+- It **does** say the failure structure is dominated by rank-2-to-5 near-misses
+  and a small set of attractor labels.
+- It **does not** say anything about phone performance: this is corpus footage.
+- It **does not** justify retraining yet. Only 12.8% of cases are outside the
+  top-5, and the phone-specific evidence needed to attribute failures to the
+  model rather than to capture does not exist yet.
+
 ## Decision
 
 **NEEDS PHONE DATA** before any of the three verdicts can be given. The clip

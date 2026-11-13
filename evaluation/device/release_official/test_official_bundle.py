@@ -244,6 +244,32 @@ class OfficialBuildTest(unittest.TestCase):
         # No manifest was supplied, so none may be invented.
         self.assertNotIn("manifest.json", names)
 
+    def test_staged_predictions_json_is_a_single_valid_json_document(self):
+        # Regression: an earlier version copied the .jsonl bytes to .json, which
+        # produces "Extra data" on parse. The .json file must be ONE JSON value.
+        self.write_predictions(ids=["a", "b"])
+        self.build(official=False,
+                   predictions=self.source / "results" / "predictions.jsonl")
+        import zipfile
+        with zipfile.ZipFile(self.root / "out.zip") as z:
+            raw = z.read("results/predictions.json").decode("utf-8")
+        parsed = json.loads(raw)          # raises if it is still JSON Lines
+        self.assertIsInstance(parsed, list)
+        self.assertEqual([r["clip_id"] for r in parsed], ["a", "b"])
+
+    def test_staged_predictions_jsonl_stays_json_lines(self):
+        # The .jsonl must remain line-delimited; one object per line.
+        self.write_predictions(ids=["a", "b"])
+        self.build(official=False,
+                   predictions=self.source / "results" / "predictions.jsonl")
+        import zipfile
+        with zipfile.ZipFile(self.root / "out.zip") as z:
+            raw = z.read("results/predictions.jsonl").decode("utf-8")
+        lines = [l for l in raw.splitlines() if l.strip()]
+        self.assertEqual(2, len(lines))
+        for line in lines:
+            self.assertIsInstance(json.loads(line), dict)
+
     def test_provisional_predictions_with_unknown_label_are_refused(self):
         # The structural check must catch a label outside the shipped
         # vocabulary even when there is no manifest to check IDs against.

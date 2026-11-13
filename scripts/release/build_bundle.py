@@ -641,9 +641,17 @@ def build(source, model, labels, results, output, official=False, extra=(), meta
             shutil.copy2(source_manifest, staging / "manifest.json")
         if stage_predictions:
             # p.12 names predictions.json; p.11 mandates a JSON-Lines payload.
-            # Emit both so either reading of the deck resolves, with identical
-            # content: JSON Lines is valid as newline-delimited JSON.
-            shutil.copy2(sibling_predictions, staging / "results/predictions.json")
+            # These are different FORMATS, not two names for one file: JSON
+            # Lines is not a valid single JSON document, so copying the .jsonl
+            # to .json produces a file that any JSON parser rejects. Emit a real
+            # JSON array with the same records, in the same order.
+            rows = [
+                json.loads(line)
+                for line in Path(sibling_predictions).read_text(encoding="utf-8").splitlines()
+                if line.strip()
+            ]
+            (staging / "results/predictions.json").write_text(
+                json.dumps(rows, indent=1) + "\n", encoding="utf-8")
         if official and not (staging / "results/predictions.jsonl").is_file():
             raise ValueError(
                 "Official bundle requires organizer-generated predictions.jsonl "

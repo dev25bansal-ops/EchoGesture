@@ -88,6 +88,7 @@ class CameraFeaturePathTest {
                         val rotation = proxy.imageInfo.rotationDegrees
                         val accepted = tracker.analyse(proxy)
                         if (accepted) {
+                            println("CAMERA_PATH image ${proxy.width}x${proxy.height} rotation=$rotation")
                             analysed.incrementAndGet()
                             synchronized(rotations) { rotations.add(rotation) }
                             if (analysed.get() >= 3) firstFrame.countDown()

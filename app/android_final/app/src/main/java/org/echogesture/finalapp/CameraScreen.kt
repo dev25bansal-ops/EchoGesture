@@ -542,6 +542,15 @@ class CameraScreen(
 
             val analysis = ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                // Bound the analysed image so hand scale does not depend on
+                // whichever resolution the device's camera happens to default
+                // to. Measured on 961 frames of 10 training clips: the detector
+                // finds MORE hands at the clip's native resolution (41.4% of
+                // frames) than at the 256x256 squash training used (37.6%), so
+                // this is a landscape target, not a square one — squashing
+                // aspect ratio is what loses detections. Not resizing in
+                // HandTracker preserves the detector's own letterboxing.
+                .setTargetResolution(android.util.Size(640, 480))
                 .build()
                 .also { a -> a.setAnalyzer(trackerExecutor) { analyserCallback(it) } }
             imageAnalysis = analysis

@@ -152,3 +152,113 @@ Two of these cost more time than any model change:
    only valid once its run has finished and printed a best-val line.
 
 Both are now why every number in `results.csv` names the split and the n.
+## 13 Nov: augmentation and diversity sweep — no gain that survives both splits
+
+The error structure was measured first, so the search was aimed rather than
+random. `scripts/ml/search.py` trains variants; `assemble.py` scores subsets.
+
+### Where the errors actually are (test, n=1249)
+
+| condition | clips | acc |
+| --- | --: | --: |
+| both hands present | 1,138 | **76.8%** |
+| one hand <25% of frames | 111 | **31.5%** |
+
+Single-hand clips are 22% of all errors (76 of 340) and are four times worse
+than the rest. That is the clearest target in the data, so the sweep attacked
+it with mirror augmentation (handedness invariance) and stronger hand dropout.
+
+### Per-clip oracle shows the ceiling is aggregation, not capacity
+
+| | |
+| --- | --- |
+| shipped ensemble | 72.78% |
+| at least one of the 4 members right | **80.30%** |
+| clips no member gets right | 246 (19.7%) |
+
+7.5 points sit between the vote and the oracle. That gap is the prize.
+
+### Rejected: mean-probability aggregation — wins test, loses val
+
+| rule | val | test |
+| --- | --: | --: |
+| mean logit (shipped) | **83.77%** | 72.78% |
+| mean probability | 82.90% | **73.66%** |
+
+Paired McNemar: test `+19/-8 z=2.12`, val `+3/-6 z=-1.00`. It wins on test and
+loses on val, which is the same failure signature the TTA result had. Rejected.
+Only 11 clips change on val, so val cannot resolve this — but it cannot confirm
+it either, and an unconfirmed change does not ship.
+
+### Rejected: mirror augmentation, stronger hand dropout, both
+
+| recipe | val | test |
+| --- | --: | --: |
+| base (shipped recipe, retrained) | 81.74% | 66.13% |
+| mirror | 82.61% | 68.37% |
+| handdrop | 82.32% | 65.41% |
+| mirror+handdrop | 81.74% | 67.89% |
+| mirror+handdrop, tcn | **82.90%** | **70.62%** |
+| mirror+handdrop, dropout 0.3 | 78.55% | 66.93% |
+
+Every single model lands **below** the shipped ensemble (72.78%). Mirror
+consistently helps the conv backbone (+2.2 test over base) but does not reach
+the ensemble. The tcn backbone is the best single family.
+
+### Rejected: the best new 4-member ensemble — +1.92 pts is selection noise
+
+Searching every subset of 10 trained members and ranking by `min(val, test)`:
+
+| ensemble | val | test |
+| --- | --: | --: |
+| shipped | 83.77% | 72.78% |
+| tcn/s0 + tcn/s7 + base/s7 + drop3/s0 | **84.06%** | **74.70%** |
+
+It wins on both splits, which no other candidate this session did — and it is
+still rejected, for three measured reasons:
+
+1. **Paired McNemar on test is z=1.99**, and val is `+14/-13 z=0.19`. Val moved
+   by one clip. The 1.99 is the threshold, not a margin.
+2. **The whole subset distribution is 0.35 SD wide** (30 subsets, 73.34–74.70%).
+   The winner is not separated from the crowd; it is the top of a narrow pile.
+3. **The gain is 1.56 standard errors** at n=1249 (SE 1.26). Under the 1.96 bar
+   used everywhere else in this file, it is not a result.
+
+The hypothesis test that settles it: TCN was a candidate *mechanism*, so it was
+tested directly rather than through subset search. TCN-only ensembles score
+71.58% and **lose** to shipped with `z=-1.16` (test) and `z=-0.49` (val). So
+the 74.70% is the luckiest mix of nine, not a backbone effect.
+
+### The real ceiling: ensemble size saturates, then hurts
+
+Members ranked by mean accuracy, added cumulatively:
+
+| members | val | test |
+| --: | --: | --: |
+| 1 | 82.90% | 70.62% |
+| 2 | 82.61% | 73.66% |
+| 3 | 82.90% | 73.90% |
+| 5 | **84.64%** | **74.06%** |
+| 6 | 84.64% | 73.26% |
+| 8 | 84.64% | 72.70% |
+| 10 | 84.64% | 72.86% |
+
+Accuracy peaks at 5 members and then **falls below the shipped 4-member
+ensemble**. Why: of 1,249 test clips, the union of clips any member gets wrong
+is 669, and **182 are wrong for every single member**. The members fail on the
+same clips, so adding them adds variance to the vote without adding
+information. That correlated-error core is the binding constraint, not
+capacity, not augmentation, not aggregation.
+
+### What this closes
+
+Every lever that a small-data ensembling problem normally offers has now been
+measured and rejected on this corpus: more data (+0.24), capacity (−15),
+frames (−8), speed perturbation (−5.45), strict resample (−8), mirror TTA
+(−1.01), INT8 (−6.37), multi-crop TTA (0), mean-prob aggregation (0),
+mirror/handdrop augmentation (0), and larger ensembles (negative).
+
+The shipped 72.78% stands. The remaining 7.5-point oracle gap is not reachable
+by combining these models; it needs either a different input representation or
+signers whose data does not exist in ASL Citizen's 3,390 clips for these 100
+glosses.

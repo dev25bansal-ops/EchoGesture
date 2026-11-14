@@ -83,8 +83,14 @@ two repetitions of the sign separated and surrounded by empty frames.
 | 2 s each side | 13/40 | **30/40** |
 | none | 31/40 | 29/40 (validation), **31/32 (train, up from 29/32)** |
 
-The trim holds its accuracy at every idle level instead of collapsing, and on
-train it *improved* clean clips from 29/32 to 31/32.
+The trim holds its accuracy at every idle level instead of collapsing.
+
+**It does not follow that trimming is free.** On clean recordings it scores
+29/40 on validation against 31/40 untrimmed (4 clips harmed, 2 helped), and
+31/32 on train against 29/32 (the opposite direction). The clean-recording
+effect is not established; the padded-recording effect is. Do not quote the
+train figure alone as evidence that trimming never hurts — that was the error
+corrected in V4.2.
 
 **It does not use model confidence.** Choosing the crop the model likes best
 would select the answer by how much the model agrees with itself, which is not
@@ -140,6 +146,14 @@ selection differs.
 Explicit recording never lost to best-case quick scan (0 regressions across both
 splits) and gained 3 validation clips against it. Against a realistic late tap
 it gained 9/32 and 13/40.
+
+> **Correction (V4.2).** This table compares *modes*, not segmentation, and
+> stands. A separate claim made elsewhere in this report — that trimming
+> "never hurt" a clean recording — was **wrong** and has been corrected. On
+> clean recordings the trim scores 29/40 on validation (against 31/40
+> untrimmed) and 31/32 on train (against 29/32 untrimmed): the effect flips
+> sign between splits and is not distinguishable from noise at these sample
+> sizes. See `V4_2_FINAL_DECISION.md`.
 
 **These are small, selected subsets and are not proof of superior real-world
 performance.** The validation split is 5 signers. Treat the direction as

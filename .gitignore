@@ -120,3 +120,9 @@ evaluation/device/benchmark_lab/results/
 # not imagery.
 evaluation/device/demo_final/*.png
 *.err
+
+# Built APKs carry the restricted model weights and must never be committed.
+# `dist/` is a local drop folder for handing a build to a device.
+/dist/
+*.apk
+*.aab

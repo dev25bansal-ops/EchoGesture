@@ -1,0 +1,368 @@
+{
+  "summary": {
+    "clips": 12,
+    "workers": 4,
+    "read_mean_ms": 13.724333166666666,
+    "read_decode_ms": 9.077826083333333,
+    "read_grab_ms": 2.4426669166666666,
+    "read_resize_ms": 2.016875166666667,
+    "read_cvt_ms": 0.186965,
+    "singleton_detect_ms": 227.22759358333332,
+    "singleton_detect_per_frame_ms": 7.100862299479166,
+    "parallel_detect_ms": 69.72878133333333,
+    "features_ms": 0.23276041666666666,
+    "ensemble_ms": 0.38446883333333337,
+    "serial_wall_ms": 241.569156,
+    "parallel4_wall_ms": 84.07034374999999
+  },
+  "per_clip": [
+    {
+      "clip": "0283886564670357-WHAT FOR.mp4",
+      "reads": [
+        {
+          "decode_ms": 10.718252,
+          "grab_ms": 4.680708999999999,
+          "resize_ms": 2.3257039999999995,
+          "cvt_ms": 0.20162599999999997,
+          "frames": 32,
+          "total_ms": 17.926291
+        }
+      ],
+      "detects": [
+        {
+          "total_ms": 191.733791,
+          "per_frame_ms": 5.99168096875
+        }
+      ],
+      "features_ms": [
+        0.250542
+      ],
+      "ensemble_ms": [
+        0.582875
+      ],
+      "parallel_detect_ms": [
+        59.777208
+      ],
+      "frames": 32
+    },
+    {
+      "clip": "032677896012150764-WHAT FOR.mp4",
+      "reads": [
+        {
+          "decode_ms": 9.20704,
+          "grab_ms": 1.7512929999999998,
+          "resize_ms": 2.045081,
+          "cvt_ms": 0.18370799999999995,
+          "frames": 32,
+          "total_ms": 13.187121999999999
+        }
+      ],
+      "detects": [
+        {
+          "total_ms": 233.24575,
+          "per_frame_ms": 7.2889296875
+        }
+      ],
+      "features_ms": [
+        0.222083
+      ],
+      "ensemble_ms": [
+        0.361083
+      ],
+      "parallel_detect_ms": [
+        73.750083
+      ],
+      "frames": 32
+    },
+    {
+      "clip": "15347326711184706-NOON.mp4",
+      "reads": [
+        {
+          "decode_ms": 7.9933320000000005,
+          "grab_ms": 0.8057490000000002,
+          "resize_ms": 2.1200819999999996,
+          "cvt_ms": 0.217417,
+          "frames": 32,
+          "total_ms": 11.13658
+        }
+      ],
+      "detects": [
+        {
+          "total_ms": 209.594166,
+          "per_frame_ms": 6.5498176875
+        }
+      ],
+      "features_ms": [
+        0.212708
+      ],
+      "ensemble_ms": [
+        0.398167
+      ],
+      "parallel_detect_ms": [
+        65.056833
+      ],
+      "frames": 32
+    },
+    {
+      "clip": "17092802473126545-SQUEEZE.mp4",
+      "reads": [
+        {
+          "decode_ms": 8.519708999999999,
+          "grab_ms": 0.4172509999999999,
+          "resize_ms": 2.001001,
+          "cvt_ms": 0.153959,
+          "frames": 32,
+          "total_ms": 11.09192
+        }
+      ],
+      "detects": [
+        {
+          "total_ms": 223.204542,
+          "per_frame_ms": 6.9751419375
+        }
+      ],
+      "features_ms": [
+        0.2285
+      ],
+      "ensemble_ms": [
+        0.338833
+      ],
+      "parallel_detect_ms": [
+        68.435625
+      ],
+      "frames": 32
+    },
+    {
+      "clip": "25500869855740893-ANYONE.mp4",
+      "reads": [
+        {
+          "decode_ms": 9.042918000000002,
+          "grab_ms": 2.5040839999999998,
+          "resize_ms": 2.1407059999999998,
+          "cvt_ms": 0.194457,
+          "frames": 32,
+          "total_ms": 13.882165000000002
+        }
+      ],
+      "detects": [
+        {
+          "total_ms": 197.558125,
+          "per_frame_ms": 6.17369140625
+        }
+      ],
+      "features_ms": [
+        0.212417
+      ],
+      "ensemble_ms": [
+        0.406666
+      ],
+      "parallel_detect_ms": [
+        57.621667
+      ],
+      "frames": 32
+    },
+    {
+      "clip": "3191470037860531-8 HOUR.mp4",
+      "reads": [
+        {
+          "decode_ms": 8.474665000000002,
+          "grab_ms": 0.4054149999999999,
+          "resize_ms": 1.723211,
+          "cvt_ms": 0.15100000000000002,
+          "frames": 32,
+          "total_ms": 10.754291000000002
+        }
+      ],
+      "detects": [
+        {
+          "total_ms": 261.167833,
+          "per_frame_ms": 8.16149478125
+        }
+      ],
+      "features_ms": [
+        0.231625
+      ],
+      "ensemble_ms": [
+        0.349042
+      ],
+      "parallel_detect_ms": [
+        79.162209
+      ],
+      "frames": 32
+    },
+    {
+      "clip": "3738312466703404-TEACH.mp4",
+      "reads": [
+        {
+          "decode_ms": 7.667831000000001,
+          "grab_ms": 0.7609220000000001,
+          "resize_ms": 2.0019610000000005,
+          "cvt_ms": 0.18500199999999997,
+          "frames": 32,
+          "total_ms": 10.615716000000003
+        }
+      ],
+      "detects": [
+        {
+          "total_ms": 232.427209,
+          "per_frame_ms": 7.26335028125
+        }
+      ],
+      "features_ms": [
+        0.287417
+      ],
+      "ensemble_ms": [
+        0.416959
+      ],
+      "parallel_detect_ms": [
+        69.176208
+      ],
+      "frames": 32
+    },
+    {
+      "clip": "4254167262351618-CHEW 2.mp4",
+      "reads": [
+        {
+          "decode_ms": 9.745246999999999,
+          "grab_ms": 7.454836000000001,
+          "resize_ms": 2.18696,
+          "cvt_ms": 0.20541600000000004,
+          "frames": 32,
+          "total_ms": 19.592458999999998
+        }
+      ],
+      "detects": [
+        {
+          "total_ms": 229.987583,
+          "per_frame_ms": 7.18711196875
+        }
+      ],
+      "features_ms": [
+        0.219083
+      ],
+      "ensemble_ms": [
+        0.376042
+      ],
+      "parallel_detect_ms": [
+        68.358792
+      ],
+      "frames": 32
+    },
+    {
+      "clip": "4481998873282871-PONDER.mp4",
+      "reads": [
+        {
+          "decode_ms": 10.484333999999999,
+          "grab_ms": 5.188834,
+          "resize_ms": 2.05517,
+          "cvt_ms": 0.18658400000000006,
+          "frames": 32,
+          "total_ms": 17.914921999999997
+        }
+      ],
+      "detects": [
+        {
+          "total_ms": 247.094125,
+          "per_frame_ms": 7.72169140625
+        }
+      ],
+      "features_ms": [
+        0.264333
+      ],
+      "ensemble_ms": [
+        0.372792
+      ],
+      "parallel_detect_ms": [
+        76.863166
+      ],
+      "frames": 32
+    },
+    {
+      "clip": "5004269948712425-SOCCER 2.mp4",
+      "reads": [
+        {
+          "decode_ms": 8.501790000000002,
+          "grab_ms": 0.447456,
+          "resize_ms": 1.802956,
+          "cvt_ms": 0.19624999999999998,
+          "frames": 32,
+          "total_ms": 10.948452000000001
+        }
+      ],
+      "detects": [
+        {
+          "total_ms": 219.616791,
+          "per_frame_ms": 6.86302471875
+        }
+      ],
+      "features_ms": [
+        0.196042
+      ],
+      "ensemble_ms": [
+        0.330583
+      ],
+      "parallel_detect_ms": [
+        65.255584
+      ],
+      "frames": 32
+    },
+    {
+      "clip": "5008852988399453-MYSELF.mp4",
+      "reads": [
+        {
+          "decode_ms": 9.830793000000002,
+          "grab_ms": 4.416248,
+          "resize_ms": 1.8560050000000006,
+          "cvt_ms": 0.19333,
+          "frames": 32,
+          "total_ms": 16.296376000000002
+        }
+      ],
+      "detects": [
+        {
+          "total_ms": 197.509666,
+          "per_frame_ms": 6.1721770625
+        }
+      ],
+      "features_ms": [
+        0.188167
+      ],
+      "ensemble_ms": [
+        0.349459
+      ],
+      "parallel_detect_ms": [
+        59.848334
+      ],
+      "frames": 32
+    },
+    {
+      "clip": "5784034175717614-EASY.mp4",
+      "reads": [
+        {
+          "decode_ms": 8.748001999999998,
+          "grab_ms": 0.4792059999999999,
+          "resize_ms": 1.9436650000000002,
+          "cvt_ms": 0.17483100000000001,
+          "frames": 32,
+          "total_ms": 11.345703999999996
+        }
+      ],
+      "detects": [
+        {
+          "total_ms": 283.591542,
+          "per_frame_ms": 8.8622356875
+        }
+      ],
+      "features_ms": [
+        0.280208
+      ],
+      "ensemble_ms": [
+        0.331125
+      ],
+      "parallel_detect_ms": [
+        93.439667
+      ],
+      "frames": 32
+    }
+  ]
+}

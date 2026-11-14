@@ -1,0 +1,8 @@
+{
+  "model_initialization": 0.08,
+  "video_open_decode": 21.78,
+  "landmark_tracking": 217.26,
+  "feature_preparation": 0.19,
+  "model_inference": 0.41,
+  "output_postprocessing": 0.44
+}

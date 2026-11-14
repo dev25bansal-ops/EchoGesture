@@ -1,0 +1,77 @@
+{
+  "mode": "file",
+  "captures": [
+    {
+      "seq": 1,
+      "state": "CAPTION",
+      "result": {
+        "clip_id": "3738312466703404-TEACH",
+        "prediction": "TEACH1",
+        "top5": [
+          "TEACH1",
+          "CHEER",
+          "DECIDE1",
+          "HALLOWEEN1",
+          "PARTY1"
+        ],
+        "confidence": 0.4221,
+        "latency_ms": 537.24,
+        "capture_to_result_ms": 582.993792,
+        "queue_wait_ms": 0.0
+      },
+      "stale_count": 0
+    }
+  ],
+  "stale_count": 0,
+  "exit_code": 0,
+  "live_camera_verified": false,
+  "model": {
+    "backend": "landmark",
+    "model": {
+      "name": "4-model ensemble",
+      "members": [
+        "landmark_ens_tcn21_fp16.tflite",
+        "landmark_ens_tcnm61_fp16.tflite",
+        "landmark_ens_tcnm62_fp16.tflite",
+        "landmark_ens_rob71_fp16.tflite"
+      ],
+      "bytes": 3544080,
+      "sha256_prefix": "0e4c392732e7"
+    },
+    "members": [
+      {
+        "name": "landmark_ens_tcn21_fp16.tflite",
+        "bytes": 939152,
+        "sha256_prefix": "112279bc8609"
+      },
+      {
+        "name": "landmark_ens_tcnm61_fp16.tflite",
+        "bytes": 832888,
+        "sha256_prefix": "01a261d8eb6c"
+      },
+      {
+        "name": "landmark_ens_tcnm62_fp16.tflite",
+        "bytes": 832888,
+        "sha256_prefix": "27058a85e032"
+      },
+      {
+        "name": "landmark_ens_rob71_fp16.tflite",
+        "bytes": 939152,
+        "sha256_prefix": "08417e72da59"
+      }
+    ],
+    "labels": {
+      "name": "landmark_labels.json",
+      "bytes": 1492,
+      "sha256_prefix": "e78f5028e97e"
+    },
+    "label_count": 100,
+    "threshold": 0.25,
+    "threshold_status": "provisional, not validation-calibrated"
+  },
+  "notes": [
+    "File-input path. NOT a live-camera claim; macOS camera access is denied on this machine.",
+    "HUD written: evaluation/device/demo_final/teach_hud.png",
+    "real predict() result surfaced; see captures[0].result"
+  ]
+}

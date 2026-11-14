@@ -1,0 +1,194 @@
+{
+  "mode": "ensemble",
+  "model_mode_evidence": [
+    "src/main.py references _MEMBER_IO=True",
+    "src/main.py loops over _INTERPRETERS=True",
+    "meta members=4"
+  ],
+  "git_head": "efaa3231110cfd9e7fb859925dac78cae75a620d",
+  "src_main_sha256": "893f92b4a6d7827e695432b44100a2d05e846f9d421d20e4e6302c19cd48be81",
+  "model_shas": {
+    "landmark_ens_rob71_fp16.tflite": "08417e72da59150ac9adf749e6324c30fb001d4a401394e32f125d3276d1ab21",
+    "landmark_ens_tcn21_fp16.tflite": "112279bc86090470b82b20b510746a946220322c25ec84cb3706a538c73dc22a",
+    "landmark_ens_tcnm61_fp16.tflite": "01a261d8eb6c2c4d8b501f0ce1a36db338365d17fddabc63528a7941b1390f63",
+    "landmark_ens_tcnm62_fp16.tflite": "27058a85e032bee3af444fb1538ff0bf32fd38fa2b01ce01a2f25c3a428d20b3",
+    "landmark_classifier_fp16.tflite": "a012f2b5f7a1110961079f19eb0e28c9abacb95e4d0787352e4157ebca7044a4"
+  },
+  "clip_dir": "evaluation/device/v5_accuracy/data/val_30",
+  "clip_count": 12,
+  "clips": [
+    "0283886564670357-WHAT FOR.mp4",
+    "032677896012150764-WHAT FOR.mp4",
+    "15347326711184706-NOON.mp4",
+    "17092802473126545-SQUEEZE.mp4",
+    "25500869855740893-ANYONE.mp4",
+    "3191470037860531-8 HOUR.mp4",
+    "3738312466703404-TEACH.mp4",
+    "4254167262351618-CHEW 2.mp4",
+    "4481998873282871-PONDER.mp4",
+    "5004269948712425-SOCCER 2.mp4",
+    "5008852988399453-MYSELF.mp4",
+    "5784034175717614-EASY.mp4"
+  ],
+  "configs": [
+    "singleton",
+    "parallel_2",
+    "parallel_4"
+  ],
+  "runs": {
+    "singleton": {
+      "config": "singleton",
+      "env": {
+        "ECHOGESTURE_TRACKER": "image",
+        "ECHOGESTURE_WORKERS": null
+      },
+      "cold_ms": 468.027416998666,
+      "warm": {
+        "count": 12,
+        "p50_ms": 231.7793120000715,
+        "p95_ms": 274.1828752985384,
+        "min_ms": 202.1629579976434,
+        "max_ms": 285.6343339990417,
+        "mean_ms": 234.2646144995039
+      },
+      "tracking_stage_mean_ms": 228.2589285,
+      "model_inference_stage_mean_ms": 0.3861517857142857,
+      "model_inference_stage_keys": [
+        "model_inference"
+      ],
+      "peak_rss_mib": 255.28125,
+      "failures": [],
+      "failure_count": 0,
+      "predictions": {
+        "0283886564670357-WHAT FOR.mp4": "WHATFOR1",
+        "032677896012150764-WHAT FOR.mp4": "WHATFOR1",
+        "15347326711184706-NOON.mp4": "BREAKFAST1",
+        "17092802473126545-SQUEEZE.mp4": "SQUEEZE",
+        "25500869855740893-ANYONE.mp4": "ANYONE",
+        "3191470037860531-8 HOUR.mp4": "8HOUR",
+        "3738312466703404-TEACH.mp4": "TEACH1",
+        "4254167262351618-CHEW 2.mp4": "CHEW1",
+        "4481998873282871-PONDER.mp4": "PONDER",
+        "5004269948712425-SOCCER 2.mp4": "SOCCER2",
+        "5008852988399453-MYSELF.mp4": "PATIENT2",
+        "5784034175717614-EASY.mp4": "EASY"
+      },
+      "stage_names": [
+        "feature_preparation",
+        "landmark_tracking",
+        "model_inference",
+        "model_initialization",
+        "output_postprocessing",
+        "video_open_decode"
+      ],
+      "wall_seconds": 3.609941999999137
+    },
+    "parallel_2": {
+      "config": "parallel_2",
+      "env": {
+        "ECHOGESTURE_TRACKER": "parallel",
+        "ECHOGESTURE_WORKERS": "2"
+      },
+      "cold_ms": 392.9536249997909,
+      "warm": {
+        "count": 12,
+        "p50_ms": 131.97460399896954,
+        "p95_ms": 154.7741833019245,
+        "min_ms": 119.3773750019318,
+        "max_ms": 161.22504200029653,
+        "mean_ms": 133.89029858323434
+      },
+      "tracking_stage_mean_ms": 133.2939375,
+      "model_inference_stage_mean_ms": 0.3631995,
+      "model_inference_stage_keys": [
+        "model_inference"
+      ],
+      "peak_rss_mib": 299.984375,
+      "failures": [],
+      "failure_count": 0,
+      "predictions": {
+        "0283886564670357-WHAT FOR.mp4": "WHATFOR1",
+        "032677896012150764-WHAT FOR.mp4": "WHATFOR1",
+        "15347326711184706-NOON.mp4": "BREAKFAST1",
+        "17092802473126545-SQUEEZE.mp4": "SQUEEZE",
+        "25500869855740893-ANYONE.mp4": "ANYONE",
+        "3191470037860531-8 HOUR.mp4": "8HOUR",
+        "3738312466703404-TEACH.mp4": "TEACH1",
+        "4254167262351618-CHEW 2.mp4": "CHEW1",
+        "4481998873282871-PONDER.mp4": "PONDER",
+        "5004269948712425-SOCCER 2.mp4": "SOCCER2",
+        "5008852988399453-MYSELF.mp4": "PATIENT2",
+        "5784034175717614-EASY.mp4": "EASY"
+      },
+      "stage_names": [
+        "feature_preparation",
+        "landmark_tracking",
+        "model_inference",
+        "model_initialization",
+        "output_postprocessing",
+        "video_open_decode"
+      ],
+      "wall_seconds": 2.248450708000746
+    },
+    "parallel_4": {
+      "config": "parallel_4",
+      "env": {
+        "ECHOGESTURE_TRACKER": "parallel",
+        "ECHOGESTURE_WORKERS": "4"
+      },
+      "cold_ms": 352.51466699992307,
+      "warm": {
+        "count": 12,
+        "p50_ms": 79.32879200052412,
+        "p95_ms": 99.81401059903874,
+        "min_ms": 71.88108300033491,
+        "max_ms": 104.08349999852362,
+        "mean_ms": 82.66673274980955
+      },
+      "tracking_stage_mean_ms": 83.00822042857143,
+      "model_inference_stage_mean_ms": 0.36486314285714283,
+      "model_inference_stage_keys": [
+        "model_inference"
+      ],
+      "peak_rss_mib": 393.78125,
+      "failures": [],
+      "failure_count": 0,
+      "predictions": {
+        "0283886564670357-WHAT FOR.mp4": "WHATFOR1",
+        "032677896012150764-WHAT FOR.mp4": "WHATFOR1",
+        "15347326711184706-NOON.mp4": "BREAKFAST1",
+        "17092802473126545-SQUEEZE.mp4": "SQUEEZE",
+        "25500869855740893-ANYONE.mp4": "ANYONE",
+        "3191470037860531-8 HOUR.mp4": "8HOUR",
+        "3738312466703404-TEACH.mp4": "TEACH1",
+        "4254167262351618-CHEW 2.mp4": "CHEW1",
+        "4481998873282871-PONDER.mp4": "PONDER",
+        "5004269948712425-SOCCER 2.mp4": "SOCCER2",
+        "5008852988399453-MYSELF.mp4": "PATIENT2",
+        "5784034175717614-EASY.mp4": "EASY"
+      },
+      "stage_names": [
+        "feature_preparation",
+        "landmark_tracking",
+        "model_inference",
+        "model_initialization",
+        "output_postprocessing",
+        "video_open_decode"
+      ],
+      "wall_seconds": 1.5448962919981568
+    }
+  },
+  "errors": {},
+  "parity": true,
+  "parity_clips_compared": 12,
+  "parity_disagreements": {},
+  "machine": {
+    "platform": "macOS-26.3-arm64-arm-64bit",
+    "machine": "arm64",
+    "processor": "arm",
+    "cpu_count": 18
+  },
+  "python": "3.11.18",
+  "measured_at": "2026-11-11T01:45:19+0530",
+  "note": "timings are full predict() clip-to-JSON with profile=True; cold is the first call in a fresh process; warm is 12 clips after one unmeasured warmup"
+}

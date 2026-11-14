@@ -15,7 +15,16 @@ Python entry point and a phone demo that displays live captions.
 
 ## Start here
 
-**If you're Abhijeet**, start with [ABH-01](ABHIJEET.md#abh-01--lock-the-evaluator-rules-by-8-november).
+**If you're Abhijeet**, and it is 14 Nov or later, read
+[DEV_UPDATE_2026-11-14.md](DEV_UPDATE_2026-11-14.md) **first**. The model
+interface changed: every ensemble member now takes two inputs and five of the
+nine take a wider feature vector, so `LandmarkClassifier.kt` will fail its own
+preconditions until it is updated. Test top-1 went 72.78% → 77.02%, and most
+of that was a bug fix rather than tuning. That document is the entry point;
+the rest of this page is the original sprint plan and is still accurate
+otherwise.
+
+Then start with [ABH-01](ABHIJEET.md#abh-01--lock-the-evaluator-rules-by-8-november).
 Get the organizer contract and physical phone in place, then open the
 evaluator branch. Send Dev the [data handoff](HANDOFF.md) so the first model
 uses the right vocabulary. Follow the [GitHub workflow](GITHUB.md) to publish

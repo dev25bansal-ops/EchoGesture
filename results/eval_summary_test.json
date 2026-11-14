@@ -1,0 +1,14 @@
+{
+  "split": "test",
+  "n": 1249,
+  "classes": 100,
+  "chance_pct": 1.0,
+  "top1_pct": 72.78,
+  "top5_pct": 87.51,
+  "signers": 11,
+  "per_signer_mean_pct": 73.36,
+  "per_signer_min_pct": 53.52,
+  "per_signer_max_pct": 87.63,
+  "latency_p50_ms": 1.205,
+  "ensemble": "tcn21+tcnm61+tcnm62+rob71 (4x fp16 tflite)"
+}

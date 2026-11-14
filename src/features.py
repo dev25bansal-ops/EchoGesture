@@ -54,6 +54,20 @@ MIDDLE_MCP = 9
 FEATURE_DIM = HANDS * NUM_LANDMARKS * 2 * 3 + 3
 
 
+def feature_dim(use_z=False):
+    """Width of build_features(..., use_z=use_z).
+
+    Coordinates are x,y by default and x,y,z when depth is enabled, so the
+    position/velocity/acceleration blocks scale with the coordinate count.
+    """
+    coords = 3 if use_z else 2
+    return HANDS * NUM_LANDMARKS * coords * 3 + 3
+
+# See _resample. False reproduces the behaviour the shipped checkpoints were
+# trained under; True is the corrected transform and needs its own retrain.
+STRICT_RESAMPLE = False
+
+
 def _hand_scale(hand_xy):
     """Wrist-to-middle-MCP distance for one 21x2 hand, or None if degenerate."""
     if hand_xy is None:
@@ -82,10 +96,18 @@ def normalise_hands(hands_xy, present):
     valid = [s for s in scales if s is not None]
     scale = float(np.mean(valid)) if valid else 1.0
 
-    out = np.zeros((HANDS, NUM_LANDMARKS, 2), dtype=np.float32)
+    # Width follows the input so the use_z ablation actually works. It used to
+    # be hardcoded to 2, which made `use_z=True` raise on the first assignment
+    # - the flag existed but had never run.
+    n_coords = hands_xy.shape[-1]
+    out = np.zeros((HANDS, NUM_LANDMARKS, n_coords), dtype=np.float32)
     for i in range(HANDS):
         if present[i] > 0.5 and scales[i] is not None:
-            out[i] = (hands_xy[i] - hands_xy[i][WRIST]) / scale
+            centred = hands_xy[i] - hands_xy[i][WRIST]
+            # x and y are scaled by the in-plane hand size; z is MediaPipe's
+            # relative depth, which is already on a different scale and must
+            # be divided by the same factor to stay proportional.
+            out[i] = centred / scale
     return out
 
 
@@ -173,15 +195,33 @@ def build_features(landmarks, present, expected_frames=None, use_z=False):
 
     feats = np.concatenate([flat, geom], axis=1).astype(np.float32)
 
-    if feats.shape[1] != FEATURE_DIM:
-        raise AssertionError(f"expected {FEATURE_DIM} features, got {feats.shape[1]}")
+    expected = feature_dim(use_z)
+    if feats.shape[1] != expected:
+        raise AssertionError(f"expected {expected} features, got {feats.shape[1]}")
 
     mask = (present.max(axis=1) > 0.5).astype(np.float32)
     return feats, mask
 
 
 def _resample(xy, present, target):
-    """Linear resample along time to a fixed frame count."""
+    """Linear resample along time to a fixed frame count.
+
+    KNOWN ISSUE, deliberately left as-is for the shipped models. Coordinates
+    and presence are interpolated independently, so a frame that straddles a
+    hand appearing or disappearing gets a blended "half hand" with a
+    fractional presence flag. Making the interpolation consistent (zero the
+    slot when EITHER source frame lacks the hand) is the physically correct
+    behaviour and measurably helps the hand-drop robustness case - but the
+    current checkpoints were TRAINED against this version, and changing it
+    drops the shipped ensemble from 72.78% to 67.49% because the input
+    distribution shifts under them.
+
+    Fix this only together with a retrain. Tracked in RESULTS.md.
+
+    Set `STRICT_RESAMPLE = True` to get the corrected behaviour; training and
+    inference both read this flag, so they cannot disagree - but a checkpoint
+    is only valid for the setting it was trained under.
+    """
     t = len(xy)
     if t == target:
         return xy, present
@@ -195,4 +235,14 @@ def _resample(xy, present, target):
     out = xy[lo] * (1 - w) + xy[hi] * w
     pw = (idx - lo).astype(np.float32)[:, None]
     p = present[lo] * (1 - pw) + present[hi] * pw
+
+    if STRICT_RESAMPLE:
+        # A resampled frame has a hand only if BOTH source frames did. Blending
+        # a present frame with an absent one produces a half-size hand at the
+        # origin whose interpolated presence can exceed 0.5, so it is treated
+        # as real - a phantom the model then learns from.
+        absent = (present[lo] < 0.5) | (present[hi] < 0.5)
+        out[absent] = 0.0
+        p[absent] = 0.0
+
     return out.astype(np.float32), p.astype(np.float32)

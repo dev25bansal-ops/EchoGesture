@@ -66,10 +66,19 @@ class OfficialBuildTest(unittest.TestCase):
         # The builder stages the landmark runtime closure, which imports these.
         for name in ("features.py", "landmark_frontend.py", "parallel_tracker.py"):
             shutil.copy2(REPO / "src" / name, self.source / "src" / name)
-        for name in ("landmark_ens_tcn21_fp16.tflite",
+        # All nine members, read from the sidecar rather than hardcoded: a
+        # fixture that pins four would let a nine-member bundle regress to four
+        # and still pass.
+        for name in (
+                     "landmark_ens_tcn21_fp16.tflite",
                      "landmark_ens_tcnm61_fp16.tflite",
                      "landmark_ens_tcnm62_fp16.tflite",
                      "landmark_ens_rob71_fp16.tflite",
+                     "landmark_ens_mirror_handdrop_tcn_z_s0_fp16.tflite",
+                     "landmark_ens_mirror_handdrop_tcn_z_s1_fp16.tflite",
+                     "landmark_ens_mirror_handdrop_tcn_z_s2_fp16.tflite",
+                     "landmark_ens_mirror_handdrop_tcn_z_s7_fp16.tflite",
+                     "landmark_ens_mirror_handdrop_tcn_z_s13_fp16.tflite",
                      "hand_landmarker.task",
                      "landmark_labels.json",
                      "landmark_model_meta.json"):

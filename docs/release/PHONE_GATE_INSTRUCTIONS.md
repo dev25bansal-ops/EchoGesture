@@ -4,11 +4,15 @@ No physical Android device is attached to this machine (`adb devices -l` shows
 only `emulator-5554`). Nothing in this file is a measurement. It is the exact
 sequence that produces one.
 
-**APK:** `dist/echogesture-v3-87efd29.apk`
-SHA-256 `ce83cf4c0e080b210f3b3cb160d650177cf759f29e190b8951730dcbbdda8aa4`
-Commit `87efd29`, branch `diag/live-phone-recognition-v3`, 77,716,903 bytes.
+This build uses **Start sign → perform one sign → Finish sign**, not the tap
+after signing. Press Start just before you begin and Finish as soon as the sign
+ends. If you record for more than ~5 s the app tells you to finish.
 
-This is the **strict pre-tap capture contract** build. It differs from the
+**APK:** `dist/echogesture-v4.1.apk`
+SHA-256 `3963bf43ec1a4cd341c52e527759c4825f21e3b81bda995deb84be4ed1fc1b8f`
+Commit `621b7ea`, branch `fix/true-video-recognition-v4`, 77,812,363 bytes.
+
+This is the **V4.1 explicit-record** build. It differs from the
 previous candidate (`echogesture-rc-a2c0a6c.apk`) in the capture path, not the
 models: the window is the 3.7 s ending at your tap, there is no waiting after
 the tap, and a thin or stalled buffer is refused with a message instead of being
@@ -37,7 +41,7 @@ adb shell getprop ro.product.cpu.abi
 ## 2. Install
 
 ```bash
-adb install -r dist/echogesture-v3-87efd29.apk
+adb install -r dist/echogesture-v4.1.apk
 ```
 
 If it fails with `INSTALL_FAILED_UPDATE_INCOMPATIBLE`, a differently-signed

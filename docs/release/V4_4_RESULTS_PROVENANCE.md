@@ -39,6 +39,28 @@ attention-mask status, dataset, split identifier, unique clip count, unique
 signer count, source preprocessing version, device and runtime, measurement
 method, execution date, and full metric definitions.
 
+## `results/predictions.jsonl` — old model, verified
+
+The 1,249 stored test-split predictions were produced by the **pre-mask
+four-member** ensemble, not the nine-member release model. Verified by
+re-running 18 of those clips:
+
+| | Result |
+| --- | --- |
+| Predictions identical to the stored file | 10/18 |
+| Predictions that differ | **8/18** |
+| Stored-file accuracy | 10/18 |
+| Current nine-model accuracy on the same clips | **14/18** |
+
+A nine-model file would match; this one does not, and the current model is
+materially better on identical clips. See
+`results/V4_2_PREDICTIONS_PROVENANCE.md`.
+
+**A full nine-model run over all 1,249 test clips was not completed** — fetching
+the corpus is a multi-hour operation and only a sample was feasible. Status:
+**NOT REGENERATED**. These predictions must not be presented as nine-model
+output.
+
 ## The 184-evaluation correction
 
 The V4.3 A/B/C report sums 184 evaluations. **That is not 184 independent sign

@@ -27,17 +27,36 @@ object RecordingFeatures {
     const val MODEL_STEPS = 24
 
     /**
-     * The frames the model will see, chosen evenly by real captured timestamp
-     * across the recorded interval.
+     * The frames the model will see: the sign-bearing part of the recording,
+     * chosen evenly by real captured timestamp.
+     *
+     * The trim matters. Measured on 40 validation clips with 2 s of idle before
+     * the sign, sampling the whole recording scored 20/40 against 29/40 for the
+     * trimmed interval (a clean recording scores 31/40). See [SignSegmenter].
      */
-    fun sample(recording: SignRecorder.Recording): List<HandTracker.Frame> {
-        val frames = recording.frames
+    fun sample(recording: SignRecorder.Recording): List<HandTracker.Frame> =
+        sample(recording, fpsOf(recording))
+
+    fun sample(recording: SignRecorder.Recording, fps: Float): List<HandTracker.Frame> {
+        val seg = SignSegmenter.choose(recording.frames, fps)
+        val frames = recording.frames.subList(seg.startIndex, seg.endIndex)
         if (frames.size <= SAMPLED) return frames
         val idx = HandTracker.evenlySpacedIndices(
             LongArray(frames.size) { frames[it].capturedAtMs },
             SAMPLED
         )
         return idx.map { frames[it] }
+    }
+
+    /** The part of the recording that was kept, for diagnostics. */
+    fun segment(recording: SignRecorder.Recording): SignSegmenter.Segment =
+        SignSegmenter.choose(recording.frames, fpsOf(recording))
+
+    /** Achieved frame rate of the recording, from its own timestamps. */
+    fun fpsOf(recording: SignRecorder.Recording): Float {
+        val n = recording.frameCount
+        if (n < 2 || recording.durationMs <= 0) return 0f
+        return (n - 1) * 1000f / recording.durationMs
     }
 
     /** Flatten sampled frames into the (T, 2, 21, 3) + (T, 2) contract. */

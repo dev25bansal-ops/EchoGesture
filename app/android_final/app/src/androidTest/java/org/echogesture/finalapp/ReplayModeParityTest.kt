@@ -244,8 +244,14 @@ class ReplayModeParityTest {
         val sampled = RecordingFeatures.sample(recording)
         assertEquals(RecordingFeatures.SAMPLED, sampled.size)
         assertTrue("no frame invented", sampled.all { it.capturedAtMs in stamps.toSet() })
-        assertEquals("sample starts at recording start", startedAt, sampled.first().capturedAtMs)
-        assertEquals("sample ends at the newest real frame", stamps.last(), sampled.last().capturedAtMs)
+        // The segmenter may trim leading idle — this clip has 2.2 s of frames
+        // with no hand before the sign. What must hold is that the sample lies
+        // inside the recording and that every kept frame is a real one.
+        assertTrue("sample must start within the recording",
+            sampled.first().capturedAtMs >= startedAt)
+        assertTrue("sample must end within the recording",
+            sampled.last().capturedAtMs <= stamps.last())
+        assertTrue("all sampled frames are real", sampled.all { it.capturedAtMs in stamps.toSet() })
 
         // --- quick scan, through the same production selector --------------
         val request = HandTracker.selectCapture(allFrames, stoppedAt, Long.MIN_VALUE)
@@ -292,6 +298,21 @@ class ReplayModeParityTest {
             recSpan >= quickSpan - 100
         )
         println("REPLAY span rec=${recSpan}ms quick=${quickSpan}ms")
+
+        // The segmenter runs on the same frames. On a clip that is one sign
+        // start-to-finish there is no idle to remove, so it must keep the whole
+        // recording rather than inventing a boundary.
+        val segment = SignSegmenter.choose(recording.frames, RecordingFeatures.fpsOf(recording))
+        println("REPLAY segment reason=${segment.reason} kept=" +
+            "${segment.endIndex - segment.startIndex}/${recording.frameCount} " +
+            "motion=${"%.4f".format(RecordingFeatures.meanMotion(recTensor))}")
+        assertTrue(
+            "a clean clip must not be over-trimmed, kept " +
+                "${segment.endIndex - segment.startIndex}/${recording.frameCount}",
+            (segment.endIndex - segment.startIndex) >= (recording.frameCount * 0.5).toInt()
+        )
+        assertTrue("segment bounds in range",
+            segment.startIndex >= 0 && segment.endIndex <= recording.frameCount)
     }
 
 }

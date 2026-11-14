@@ -836,15 +836,24 @@ class CameraScreen(
                 render(UiState.NO_HANDS, detail = activity.getString(R.string.record_no_frames))
                 return
             }
+            val segment = RecordingFeatures.segment(recording)
             val sampled = RecordingFeatures.sample(recording)
+            val keptMs = if (sampled.size >= 2)
+                sampled.last().capturedAtMs - sampled.first().capturedAtMs else 0L
             val handFrames = sampled.count { it.hands.isNotEmpty() }
+            // The card and diagnostics describe the interval actually
+            // classified, which is the trimmed one when idle was removed. The
+            // recording's full duration is reported separately.
             val capture = HandTracker.Capture(
                 sampled,
-                recording.durationMs,
-                if (recording.durationMs > 0)
-                    (sampled.size - 1) * 1000f / recording.durationMs else 0f,
+                keptMs,
+                if (keptMs > 0) (sampled.size - 1) * 1000f / keptMs else 0f,
                 handFrames
             )
+            if (segment.reason == SignSegmenter.Reason.TRIMMED) {
+                Log.i("EchoGesture", "segment trimmed to ${segment.endIndex - segment.startIndex}" +
+                    "/${recording.frameCount} frames, kept ${keptMs}ms of ${recording.durationMs}ms")
+            }
             if (handFrames == 0) {
                 processing = false
                 if (prefs.diagnostics) logDiagnostic(capture, null, 0L)

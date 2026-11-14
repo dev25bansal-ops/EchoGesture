@@ -1,0 +1,6002 @@
+[
+ {
+  "gloss": "DOWNSIZE1",
+  "signer": "P26",
+  "sign_ms": 2967.0,
+  "sign_frames": 89,
+  "sign_coverage": 0.4606741666793823,
+  "base": {
+   "prediction": "DOWNSIZE1",
+   "top5": [
+    "DOWNSIZE1",
+    "CHEER",
+    "CAPTURE",
+    "GRAMMAR",
+    "SHOCKED"
+   ],
+   "score": 0.8000867366790771,
+   "margin": 0.7747425436973572,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "DOWNSIZE1",
+    "top5": [
+     "DOWNSIZE1",
+     "CHEER",
+     "GRAMMAR",
+     "LONGLINE",
+     "AUTISM1"
+    ],
+    "score": 0.5215578079223633,
+    "margin": 0.4877891540527344,
+    "correct": true,
+    "recording_ms": 3967.112359550562,
+    "coverage": 0.3445378243923187,
+    "sign_fraction": 0.7478991596638656
+   },
+   "lead_2s": {
+    "prediction": "DOWNSIZE1",
+    "top5": [
+     "DOWNSIZE1",
+     "CHEER",
+     "AUTISM1",
+     "GRAMMAR",
+     "LONGLINE"
+    ],
+    "score": 0.5835233926773071,
+    "margin": 0.544441819190979,
+    "correct": true,
+    "recording_ms": 4967.224719101124,
+    "coverage": 0.2751677930355072,
+    "sign_fraction": 0.5973154362416108
+   },
+   "lead_3s": {
+    "prediction": "DOWNSIZE1",
+    "top5": [
+     "DOWNSIZE1",
+     "CHEER",
+     "AUTISM1",
+     "GRAMMAR",
+     "SHOCKED"
+    ],
+    "score": 0.7551160454750061,
+    "margin": 0.7159764766693115,
+    "correct": true,
+    "recording_ms": 5967.337078651686,
+    "coverage": 0.22905027866363525,
+    "sign_fraction": 0.4972067039106145
+   },
+   "trail_1s": {
+    "prediction": "DOWNSIZE1",
+    "top5": [
+     "DOWNSIZE1",
+     "CHEER",
+     "CAPTURE",
+     "AUTISM1",
+     "GRAMMAR"
+    ],
+    "score": 0.7119044661521912,
+    "margin": 0.676680862903595,
+    "correct": true,
+    "recording_ms": 3967.112359550562,
+    "coverage": 0.3445378243923187,
+    "sign_fraction": 0.7478991596638656
+   },
+   "trail_2s": {
+    "prediction": "DOWNSIZE1",
+    "top5": [
+     "DOWNSIZE1",
+     "CHEER",
+     "GRAMMAR",
+     "AUTISM1",
+     "LONGLINE"
+    ],
+    "score": 0.6451020240783691,
+    "margin": 0.6006520986557007,
+    "correct": true,
+    "recording_ms": 4967.224719101124,
+    "coverage": 0.2751677930355072,
+    "sign_fraction": 0.5973154362416108
+   },
+   "trail_3s": {
+    "prediction": "DOWNSIZE1",
+    "top5": [
+     "DOWNSIZE1",
+     "AUTISM1",
+     "CHEER",
+     "CAPTURE",
+     "SHOCKED"
+    ],
+    "score": 0.7352722883224487,
+    "margin": 0.7035325765609741,
+    "correct": true,
+    "recording_ms": 5967.337078651686,
+    "coverage": 0.22905027866363525,
+    "sign_fraction": 0.4972067039106145
+   },
+   "both_2s": {
+    "prediction": "DOWNSIZE1",
+    "top5": [
+     "DOWNSIZE1",
+     "AUTISM1",
+     "CHEER",
+     "DRAG1",
+     "SHOCKED"
+    ],
+    "score": 0.6222692728042603,
+    "margin": 0.5883777141571045,
+    "correct": true,
+    "recording_ms": 6967.449438202247,
+    "coverage": 0.19617225229740143,
+    "sign_fraction": 0.4258373205741627
+   },
+   "both_4s": {
+    "prediction": "DOWNSIZE1",
+    "top5": [
+     "DOWNSIZE1",
+     "CHEER",
+     "AUTISM1",
+     "MOUTH",
+     "AXE1"
+    ],
+    "score": 0.39754974842071533,
+    "margin": 0.36860084533691406,
+    "correct": true,
+    "recording_ms": 10967.898876404493,
+    "coverage": 0.12462005764245987,
+    "sign_fraction": 0.270516717325228
+   }
+  }
+ },
+ {
+  "gloss": "8HOUR",
+  "signer": "P26",
+  "sign_ms": 2185.0438639402537,
+  "sign_frames": 67,
+  "sign_coverage": 0.49253731966018677,
+  "base": {
+   "prediction": "MAPLE",
+   "top5": [
+    "MAPLE",
+    "8HOUR",
+    "BEE1",
+    "HALLOWEEN1",
+    "CHEW1"
+   ],
+   "score": 0.7563987374305725,
+   "margin": 0.706975519657135,
+   "correct": false
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "MAPLE",
+    "top5": [
+     "MAPLE",
+     "8HOUR",
+     "TAIL1",
+     "GUESS1",
+     "HALLOWEEN1"
+    ],
+    "score": 0.5427947044372559,
+    "margin": 0.5144900679588318,
+    "correct": false,
+    "recording_ms": 3196.0343084499236,
+    "coverage": 0.33673468232154846,
+    "sign_fraction": 0.6836734693877551
+   },
+   "lead_2s": {
+    "prediction": "MAPLE",
+    "top5": [
+     "MAPLE",
+     "TAIL1",
+     "8HOUR",
+     "GUESS1",
+     "PARTY1"
+    ],
+    "score": 0.4206320643424988,
+    "margin": 0.3747362792491913,
+    "correct": false,
+    "recording_ms": 4174.41215797541,
+    "coverage": 0.2578125,
+    "sign_fraction": 0.5234375
+   },
+   "lead_3s": {
+    "prediction": "MAPLE",
+    "top5": [
+     "MAPLE",
+     "TAIL1",
+     "GUESS1",
+     "BEE1",
+     "ANYONE"
+    ],
+    "score": 0.26200905442237854,
+    "margin": 0.2020171731710434,
+    "correct": false,
+    "recording_ms": 5185.402602485079,
+    "coverage": 0.2075471729040146,
+    "sign_fraction": 0.42138364779874216
+   },
+   "trail_1s": {
+    "prediction": "MAPLE",
+    "top5": [
+     "MAPLE",
+     "8HOUR",
+     "GUESS1",
+     "HALLOWEEN1",
+     "ANYONE"
+    ],
+    "score": 0.7050923705101013,
+    "margin": 0.6734431385993958,
+    "correct": false,
+    "recording_ms": 3196.0343084499236,
+    "coverage": 0.33673468232154846,
+    "sign_fraction": 0.6836734693877551
+   },
+   "trail_2s": {
+    "prediction": "MAPLE",
+    "top5": [
+     "MAPLE",
+     "8HOUR",
+     "GUESS1",
+     "TAIL1",
+     "BEE1"
+    ],
+    "score": 0.45064446330070496,
+    "margin": 0.4123191237449646,
+    "correct": false,
+    "recording_ms": 4174.41215797541,
+    "coverage": 0.2578125,
+    "sign_fraction": 0.5234375
+   },
+   "trail_3s": {
+    "prediction": "MAPLE",
+    "top5": [
+     "MAPLE",
+     "BEE1",
+     "GUESS1",
+     "AUTISM1",
+     "ANYONE"
+    ],
+    "score": 0.21722571551799774,
+    "margin": 0.15758031606674194,
+    "correct": false,
+    "recording_ms": 5185.402602485079,
+    "coverage": 0.2075471729040146,
+    "sign_fraction": 0.42138364779874216
+   },
+   "both_2s": {
+    "prediction": "MAPLE",
+    "top5": [
+     "MAPLE",
+     "TAIL1",
+     "GUESS1",
+     "BEE1",
+     "ANYONE"
+    ],
+    "score": 0.21808189153671265,
+    "margin": 0.1633533239364624,
+    "correct": false,
+    "recording_ms": 6163.7804520105665,
+    "coverage": 0.1746031790971756,
+    "sign_fraction": 0.3544973544973545
+   },
+   "both_4s": {
+    "prediction": "KNIGHT1",
+    "top5": [
+     "KNIGHT1",
+     "BREAKFAST1",
+     "AUTISM1",
+     "GUESS1",
+     "MAPLE"
+    ],
+    "score": 0.0877075046300888,
+    "margin": 0.015133172273635864,
+    "correct": false,
+    "recording_ms": 10207.742230049245,
+    "coverage": 0.10543131083250046,
+    "sign_fraction": 0.21405750798722045
+   }
+  }
+ },
+ {
+  "gloss": "SHAVE1",
+  "signer": "P26",
+  "sign_ms": 3136.0380285874626,
+  "sign_frames": 95,
+  "sign_coverage": 0.5157894492149353,
+  "base": {
+   "prediction": "RAZOR2",
+   "top5": [
+    "RAZOR2",
+    "SHAVE1",
+    "KNIGHT1",
+    "FLIP",
+    "UNDERWEAR1"
+   ],
+   "score": 0.15386876463890076,
+   "margin": 0.07820895314216614,
+   "correct": false
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "SHAVE1",
+    "top5": [
+     "SHAVE1",
+     "RAZOR2",
+     "FLIP",
+     "UNDERWEAR1",
+     "TAIL1"
+    ],
+    "score": 0.12666936218738556,
+    "margin": 0.008377574384212494,
+    "correct": true,
+    "recording_ms": 4126.365827088766,
+    "coverage": 0.3919999897480011,
+    "sign_fraction": 0.76
+   },
+   "lead_2s": {
+    "prediction": "RAZOR2",
+    "top5": [
+     "RAZOR2",
+     "KNIGHT1",
+     "UNDERWEAR1",
+     "SHAVE1",
+     "INTUITIVE"
+    ],
+    "score": 0.11339938640594482,
+    "margin": 0.062348607927560806,
+    "correct": false,
+    "recording_ms": 5149.70455220678,
+    "coverage": 0.31410256028175354,
+    "sign_fraction": 0.6089743589743589
+   },
+   "lead_3s": {
+    "prediction": "KNIGHT1",
+    "top5": [
+     "KNIGHT1",
+     "RAZOR2",
+     "SHAVE1",
+     "UNDERWEAR1",
+     "FLIP"
+    ],
+    "score": 0.07418480515480042,
+    "margin": 0.028753679245710373,
+    "correct": false,
+    "recording_ms": 6140.032350708085,
+    "coverage": 0.2634408473968506,
+    "sign_fraction": 0.510752688172043
+   },
+   "trail_1s": {
+    "prediction": "KNIGHT1",
+    "top5": [
+     "KNIGHT1",
+     "UNDERWEAR1",
+     "TAIL1",
+     "PARTY1",
+     "INTUITIVE"
+    ],
+    "score": 0.06349056959152222,
+    "margin": 0.003778234124183655,
+    "correct": false,
+    "recording_ms": 4126.365827088766,
+    "coverage": 0.3919999897480011,
+    "sign_fraction": 0.76
+   },
+   "trail_2s": {
+    "prediction": "SHAVE1",
+    "top5": [
+     "SHAVE1",
+     "RAZOR2",
+     "MAPLE",
+     "PARTY1",
+     "ANYONE"
+    ],
+    "score": 0.11455656588077545,
+    "margin": 0.03305010497570038,
+    "correct": true,
+    "recording_ms": 5149.70455220678,
+    "coverage": 0.31410256028175354,
+    "sign_fraction": 0.6089743589743589
+   },
+   "trail_3s": {
+    "prediction": "KNIGHT1",
+    "top5": [
+     "KNIGHT1",
+     "UNDERWEAR1",
+     "TAIL1",
+     "FLIP",
+     "SCARF2"
+    ],
+    "score": 0.0733371376991272,
+    "margin": 0.025150805711746216,
+    "correct": false,
+    "recording_ms": 6140.032350708085,
+    "coverage": 0.2634408473968506,
+    "sign_fraction": 0.510752688172043
+   },
+   "both_2s": {
+    "prediction": "UNDERWEAR1",
+    "top5": [
+     "UNDERWEAR1",
+     "KNIGHT1",
+     "SHAVE1",
+     "TAIL1",
+     "ANYONE"
+    ],
+    "score": 0.04840325936675072,
+    "margin": 0.008983273059129715,
+    "correct": false,
+    "recording_ms": 7163.371075826099,
+    "coverage": 0.22580644488334656,
+    "sign_fraction": 0.4377880184331797
+   },
+   "both_4s": {
+    "prediction": "RAZOR2",
+    "top5": [
+     "RAZOR2",
+     "ANYONE",
+     "KNIGHT1",
+     "UNDERWEAR1",
+     "PARTY1"
+    ],
+    "score": 0.10423488169908524,
+    "margin": 0.028448358178138733,
+    "correct": false,
+    "recording_ms": 11124.682269831315,
+    "coverage": 0.14540059864521027,
+    "sign_fraction": 0.2818991097922849
+   }
+  }
+ },
+ {
+  "gloss": "HOW1",
+  "signer": "P26",
+  "sign_ms": 2326.0385270606735,
+  "sign_frames": 71,
+  "sign_coverage": 0.4225352108478546,
+  "base": {
+   "prediction": "HOW1",
+   "top5": [
+    "HOW1",
+    "8HOUR",
+    "AUTISM1",
+    "EASY",
+    "SOCIETY"
+   ],
+   "score": 0.8238996267318726,
+   "margin": 0.8109444975852966,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "HOW1",
+    "top5": [
+     "HOW1",
+     "EASY",
+     "AUTISM1",
+     "ANYONE",
+     "OFFEND"
+    ],
+    "score": 0.6526947021484375,
+    "margin": 0.6165130138397217,
+    "correct": true,
+    "recording_ms": 3341.6328135237845,
+    "coverage": 0.29411765933036804,
+    "sign_fraction": 0.696078431372549
+   },
+   "lead_2s": {
+    "prediction": "HOW1",
+    "top5": [
+     "HOW1",
+     "LOCK1",
+     "AUTISM1",
+     "8HOUR",
+     "SOCIETY"
+    ],
+    "score": 0.4164991080760956,
+    "margin": 0.363511860370636,
+    "correct": true,
+    "recording_ms": 4324.465993971956,
+    "coverage": 0.22727273404598236,
+    "sign_fraction": 0.5378787878787878
+   },
+   "lead_3s": {
+    "prediction": "AUTISM1",
+    "top5": [
+     "AUTISM1",
+     "SCARF2",
+     "KNIGHT1",
+     "ANYONE",
+     "TAIL1"
+    ],
+    "score": 0.094556525349617,
+    "margin": 0.02291370928287506,
+    "correct": false,
+    "recording_ms": 5340.060280435067,
+    "coverage": 0.1840490847826004,
+    "sign_fraction": 0.43558282208588955
+   },
+   "trail_1s": {
+    "prediction": "HOW1",
+    "top5": [
+     "HOW1",
+     "EASY",
+     "AUTISM1",
+     "OFFEND",
+     "CALENDAR1"
+    ],
+    "score": 0.4199545085430145,
+    "margin": 0.33408576250076294,
+    "correct": true,
+    "recording_ms": 3341.6328135237845,
+    "coverage": 0.29411765933036804,
+    "sign_fraction": 0.696078431372549
+   },
+   "trail_2s": {
+    "prediction": "EASY",
+    "top5": [
+     "EASY",
+     "AUTISM1",
+     "HOW1",
+     "TAIL1",
+     "OFFEND"
+    ],
+    "score": 0.09913619607686996,
+    "margin": 0.02868485450744629,
+    "correct": false,
+    "recording_ms": 4324.465993971956,
+    "coverage": 0.22727273404598236,
+    "sign_fraction": 0.5378787878787878
+   },
+   "trail_3s": {
+    "prediction": "HOW1",
+    "top5": [
+     "HOW1",
+     "AUTISM1",
+     "LOCK1",
+     "EASY",
+     "CALENDAR1"
+    ],
+    "score": 0.19222033023834229,
+    "margin": 0.13711880147457123,
+    "correct": true,
+    "recording_ms": 5340.060280435067,
+    "coverage": 0.1840490847826004,
+    "sign_fraction": 0.43558282208588955
+   },
+   "both_2s": {
+    "prediction": "AUTISM1",
+    "top5": [
+     "AUTISM1",
+     "TAIL1",
+     "KNIGHT1",
+     "EASY",
+     "HOW1"
+    ],
+    "score": 0.07806464284658432,
+    "margin": 0.005707181990146637,
+    "correct": false,
+    "recording_ms": 6322.89346088324,
+    "coverage": 0.15544041991233826,
+    "sign_fraction": 0.36787564766839376
+   },
+   "both_4s": {
+    "prediction": "EASY",
+    "top5": [
+     "EASY",
+     "KNIGHT1",
+     "AUTISM1",
+     "ANYONE",
+     "SCARF2"
+    ],
+    "score": 0.10857579112052917,
+    "margin": 0.040194205939769745,
+    "correct": false,
+    "recording_ms": 10319.748394705804,
+    "coverage": 0.095238097012043,
+    "sign_fraction": 0.2253968253968254
+   }
+  }
+ },
+ {
+  "gloss": "DOG1",
+  "signer": "P26",
+  "sign_ms": 2104.0173581432045,
+  "sign_frames": 64,
+  "sign_coverage": 0.40625,
+  "base": {
+   "prediction": "DOG1",
+   "top5": [
+    "DOG1",
+    "ALLOFSUDDEN",
+    "ANYONE",
+    "GOODYGOODYSHOEOPPOSITE",
+    "PULLCONVINCE"
+   ],
+   "score": 0.30533653497695923,
+   "margin": 0.16444744169712067,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "ALLOFSUDDEN",
+    "top5": [
+     "ALLOFSUDDEN",
+     "DOG1",
+     "ANYONE",
+     "FAIL",
+     "GOODYGOODYSHOEOPPOSITE"
+    ],
+    "score": 0.17262756824493408,
+    "margin": 0.02353779971599579,
+    "correct": false,
+    "recording_ms": 3090.275494772832,
+    "coverage": 0.27659574151039124,
+    "sign_fraction": 0.6808510638297872
+   },
+   "lead_2s": {
+    "prediction": "ALLOFSUDDEN",
+    "top5": [
+     "ALLOFSUDDEN",
+     "ANYONE",
+     "DOG1",
+     "FLIP",
+     "UNDERWEAR1"
+    ],
+    "score": 0.23802542686462402,
+    "margin": 0.10860587656497955,
+    "correct": false,
+    "recording_ms": 4109.408902623446,
+    "coverage": 0.20800000429153442,
+    "sign_fraction": 0.512
+   },
+   "lead_3s": {
+    "prediction": "ANYONE",
+    "top5": [
+     "ANYONE",
+     "ALLOFSUDDEN",
+     "DOG1",
+     "FLIP",
+     "UNDERWEAR1"
+    ],
+    "score": 0.2420693188905716,
+    "margin": 0.07114000618457794,
+    "correct": false,
+    "recording_ms": 5095.667039253074,
+    "coverage": 0.16774193942546844,
+    "sign_fraction": 0.4129032258064516
+   },
+   "trail_1s": {
+    "prediction": "ALLOFSUDDEN",
+    "top5": [
+     "ALLOFSUDDEN",
+     "DOG1",
+     "ANYONE",
+     "GOODYGOODYSHOEOPPOSITE",
+     "UNDERWEAR1"
+    ],
+    "score": 0.19153448939323425,
+    "margin": 0.04587927460670471,
+    "correct": false,
+    "recording_ms": 3090.275494772832,
+    "coverage": 0.27659574151039124,
+    "sign_fraction": 0.6808510638297872
+   },
+   "trail_2s": {
+    "prediction": "ANYONE",
+    "top5": [
+     "ANYONE",
+     "ALLOFSUDDEN",
+     "DOG1",
+     "UNDERWEAR1",
+     "OFFEND"
+    ],
+    "score": 0.19662004709243774,
+    "margin": 0.06255820393562317,
+    "correct": false,
+    "recording_ms": 4109.408902623446,
+    "coverage": 0.20800000429153442,
+    "sign_fraction": 0.512
+   },
+   "trail_3s": {
+    "prediction": "ANYONE",
+    "top5": [
+     "ANYONE",
+     "ALLOFSUDDEN",
+     "BREAKFAST1",
+     "UNDERWEAR1",
+     "KNIGHT1"
+    ],
+    "score": 0.09861278533935547,
+    "margin": 0.014197342097759247,
+    "correct": false,
+    "recording_ms": 5095.667039253074,
+    "coverage": 0.16774193942546844,
+    "sign_fraction": 0.4129032258064516
+   },
+   "both_2s": {
+    "prediction": "ANYONE",
+    "top5": [
+     "ANYONE",
+     "ALLOFSUDDEN",
+     "KNIGHT1",
+     "OFFEND",
+     "FLIP"
+    ],
+    "score": 0.23657146096229553,
+    "margin": 0.14561545848846436,
+    "correct": false,
+    "recording_ms": 6114.800447103689,
+    "coverage": 0.13978494703769684,
+    "sign_fraction": 0.34408602150537637
+   },
+   "both_4s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "ANYONE",
+     "KNIGHT1",
+     "OFFEND",
+     "MOUTH"
+    ],
+    "score": 0.14335109293460846,
+    "margin": 0.006705433130264282,
+    "correct": false,
+    "recording_ms": 10125.583536064174,
+    "coverage": 0.08441558480262756,
+    "sign_fraction": 0.2077922077922078
+   }
+  }
+ },
+ {
+  "gloss": "NOON1",
+  "signer": "P26",
+  "sign_ms": 2139.0,
+  "sign_frames": 64,
+  "sign_coverage": 0.453125,
+  "base": {
+   "prediction": "NOON1",
+   "top5": [
+    "NOON1",
+    "BREAKFAST1",
+    "HOSPITAL1",
+    "AUTISM1",
+    "FINE1"
+   ],
+   "score": 0.6543816328048706,
+   "margin": 0.5940871834754944,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "NOON1",
+    "top5": [
+     "NOON1",
+     "AUTISM1",
+     "BREAKFAST1",
+     "AXE1",
+     "FINE1"
+    ],
+    "score": 0.4939782917499542,
+    "margin": 0.44061949849128723,
+    "correct": true,
+    "recording_ms": 3141.65625,
+    "coverage": 0.3085106313228607,
+    "sign_fraction": 0.6808510638297872
+   },
+   "lead_2s": {
+    "prediction": "NOON1",
+    "top5": [
+     "NOON1",
+     "BREAKFAST1",
+     "AUTISM1",
+     "FINE1",
+     "GUESS1"
+    ],
+    "score": 0.16927635669708252,
+    "margin": 0.012224733829498291,
+    "correct": true,
+    "recording_ms": 4144.3125,
+    "coverage": 0.2338709682226181,
+    "sign_fraction": 0.5161290322580645
+   },
+   "lead_3s": {
+    "prediction": "NOON1",
+    "top5": [
+     "NOON1",
+     "BREAKFAST1",
+     "AUTISM1",
+     "FINE1",
+     "GUESS1"
+    ],
+    "score": 0.17340685427188873,
+    "margin": 0.01405179500579834,
+    "correct": true,
+    "recording_ms": 5146.96875,
+    "coverage": 0.18831168115139008,
+    "sign_fraction": 0.4155844155844156
+   },
+   "trail_1s": {
+    "prediction": "NOON1",
+    "top5": [
+     "NOON1",
+     "AUTISM1",
+     "BREAKFAST1",
+     "GUESS1",
+     "AXE1"
+    ],
+    "score": 0.5354514718055725,
+    "margin": 0.467058002948761,
+    "correct": true,
+    "recording_ms": 3141.65625,
+    "coverage": 0.3085106313228607,
+    "sign_fraction": 0.6808510638297872
+   },
+   "trail_2s": {
+    "prediction": "NOON1",
+    "top5": [
+     "NOON1",
+     "BREAKFAST1",
+     "AUTISM1",
+     "GUESS1",
+     "FINE1"
+    ],
+    "score": 0.17429642379283905,
+    "margin": 0.0017768889665603638,
+    "correct": true,
+    "recording_ms": 4144.3125,
+    "coverage": 0.2338709682226181,
+    "sign_fraction": 0.5161290322580645
+   },
+   "trail_3s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "AUTISM1",
+     "NOON1",
+     "GUESS1",
+     "FINE1"
+    ],
+    "score": 0.18976643681526184,
+    "margin": 0.08140893280506134,
+    "correct": false,
+    "recording_ms": 5146.96875,
+    "coverage": 0.18831168115139008,
+    "sign_fraction": 0.4155844155844156
+   },
+   "both_2s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "NOON1",
+     "AUTISM1",
+     "FINE1",
+     "GUESS1"
+    ],
+    "score": 0.16917675733566284,
+    "margin": 0.049996837973594666,
+    "correct": false,
+    "recording_ms": 6149.624999999999,
+    "coverage": 0.15760870277881622,
+    "sign_fraction": 0.34782608695652173
+   },
+   "both_4s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "AUTISM1",
+     "KNIGHT1",
+     "NOON1",
+     "ANYONE"
+    ],
+    "score": 0.2031252533197403,
+    "margin": 0.11177386343479156,
+    "correct": false,
+    "recording_ms": 10160.25,
+    "coverage": 0.09539473801851273,
+    "sign_fraction": 0.21052631578947367
+   }
+  }
+ },
+ {
+  "gloss": "CHEEK",
+  "signer": "P26",
+  "sign_ms": 1929.0501880006539,
+  "sign_frames": 59,
+  "sign_coverage": 0.20338982343673706,
+  "base": {
+   "prediction": "MYSELF",
+   "top5": [
+    "MYSELF",
+    "ANYONE",
+    "DEAF1",
+    "PATIENT2",
+    "PENNY"
+   ],
+   "score": 0.13410604000091553,
+   "margin": 0.0010329335927963257,
+   "correct": false
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "ANYONE",
+    "top5": [
+     "ANYONE",
+     "KNIGHT1",
+     "RAZOR2",
+     "MYSELF",
+     "BREAKFAST1"
+    ],
+    "score": 0.14266563951969147,
+    "margin": 0.03538838028907776,
+    "correct": false,
+    "recording_ms": 2942.618930848455,
+    "coverage": 0.13333334028720856,
+    "sign_fraction": 0.6555555555555556
+   },
+   "lead_2s": {
+    "prediction": "KNIGHT1",
+    "top5": [
+     "KNIGHT1",
+     "BREAKFAST1",
+     "ANYONE",
+     "MOUTH",
+     "RAZOR2"
+    ],
+    "score": 0.15178610384464264,
+    "margin": 0.06102094054222107,
+    "correct": false,
+    "recording_ms": 3923.4919077979403,
+    "coverage": 0.10000000149011612,
+    "sign_fraction": 0.49166666666666664
+   },
+   "lead_3s": {
+    "prediction": "ANYONE",
+    "top5": [
+     "ANYONE",
+     "KNIGHT1",
+     "BREAKFAST1",
+     "RAZOR2",
+     "GUESS1"
+    ],
+    "score": 0.09636053442955017,
+    "margin": 0.004673868417739868,
+    "correct": false,
+    "recording_ms": 4937.060650645742,
+    "coverage": 0.0794702023267746,
+    "sign_fraction": 0.39072847682119205
+   },
+   "trail_1s": {
+    "prediction": "KNIGHT1",
+    "top5": [
+     "KNIGHT1",
+     "ANYONE",
+     "CHEEK",
+     "RAZOR2",
+     "DEAF1"
+    ],
+    "score": 0.11438900977373123,
+    "margin": 0.0038155168294906616,
+    "correct": false,
+    "recording_ms": 2942.618930848455,
+    "coverage": 0.13333334028720856,
+    "sign_fraction": 0.6555555555555556
+   },
+   "trail_2s": {
+    "prediction": "ANYONE",
+    "top5": [
+     "ANYONE",
+     "KNIGHT1",
+     "BREAKFAST1",
+     "MOUTH",
+     "METAL"
+    ],
+    "score": 0.09460487216711044,
+    "margin": 0.0035255923867225647,
+    "correct": false,
+    "recording_ms": 3923.4919077979403,
+    "coverage": 0.10000000149011612,
+    "sign_fraction": 0.49166666666666664
+   },
+   "trail_3s": {
+    "prediction": "ANYONE",
+    "top5": [
+     "ANYONE",
+     "KNIGHT1",
+     "BREAKFAST1",
+     "RAZOR2",
+     "AUTISM1"
+    ],
+    "score": 0.1207515150308609,
+    "margin": 0.009578995406627655,
+    "correct": false,
+    "recording_ms": 4937.060650645742,
+    "coverage": 0.0794702023267746,
+    "sign_fraction": 0.39072847682119205
+   },
+   "both_2s": {
+    "prediction": "KNIGHT1",
+    "top5": [
+     "KNIGHT1",
+     "ANYONE",
+     "BREAKFAST1",
+     "RAZOR2",
+     "MOUTH"
+    ],
+    "score": 0.14490844309329987,
+    "margin": 0.008769720792770386,
+    "correct": false,
+    "recording_ms": 5917.933627595226,
+    "coverage": 0.06629834324121475,
+    "sign_fraction": 0.3259668508287293
+   },
+   "both_4s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "ANYONE",
+     "AUTISM1",
+     "OFFEND"
+    ],
+    "score": 0.23255318403244019,
+    "margin": 0.11914059519767761,
+    "correct": false,
+    "recording_ms": 9906.817067189799,
+    "coverage": 0.039603959769010544,
+    "sign_fraction": 0.19471947194719472
+   }
+  }
+ },
+ {
+  "gloss": "DRAG1",
+  "signer": "P26",
+  "sign_ms": 2960.039467192896,
+  "sign_frames": 90,
+  "sign_coverage": 0.08888889104127884,
+  "base": {
+   "prediction": "BREAKFAST1",
+   "top5": [
+    "BREAKFAST1",
+    "ANYONE",
+    "KNIGHT1",
+    "OFFEND",
+    "AUTISM1"
+   ],
+   "score": 0.07079125195741653,
+   "margin": 0.003981932997703552,
+   "correct": false
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "ANYONE",
+     "OFFEND",
+     "AUTISM1"
+    ],
+    "score": 0.13751046359539032,
+    "margin": 0.026884108781814575,
+    "correct": false,
+    "recording_ms": 3946.7192895905278,
+    "coverage": 0.06666667014360428,
+    "sign_fraction": 0.75
+   },
+   "lead_2s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "ANYONE",
+     "AUTISM1",
+     "OFFEND"
+    ],
+    "score": 0.23255318403244019,
+    "margin": 0.11914059519767761,
+    "correct": false,
+    "recording_ms": 4966.2884394014145,
+    "coverage": 0.05298013240098953,
+    "sign_fraction": 0.5960264900662252
+   },
+   "lead_3s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "ANYONE",
+     "OFFEND",
+     "MOUTH"
+    ],
+    "score": 0.1295924037694931,
+    "margin": 0.012706585228443146,
+    "correct": false,
+    "recording_ms": 5952.968261799046,
+    "coverage": 0.0441988967359066,
+    "sign_fraction": 0.4972375690607735
+   },
+   "trail_1s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "ANYONE",
+     "MOUTH",
+     "AUTISM1"
+    ],
+    "score": 0.13990959525108337,
+    "margin": 0.03313923627138138,
+    "correct": false,
+    "recording_ms": 3946.7192895905278,
+    "coverage": 0.06666667014360428,
+    "sign_fraction": 0.75
+   },
+   "trail_2s": {
+    "prediction": "RAZOR2",
+    "top5": [
+     "RAZOR2",
+     "KNIGHT1",
+     "BREAKFAST1",
+     "APPLE",
+     "ANYONE"
+    ],
+    "score": 0.058808162808418274,
+    "margin": 0.009137865155935287,
+    "correct": false,
+    "recording_ms": 4966.2884394014145,
+    "coverage": 0.05298013240098953,
+    "sign_fraction": 0.5960264900662252
+   },
+   "trail_3s": {
+    "prediction": "TAIL1",
+    "top5": [
+     "TAIL1",
+     "KNIGHT1",
+     "RAZOR2",
+     "OFFEND",
+     "INTUITIVE"
+    ],
+    "score": 0.0563536211848259,
+    "margin": 0.009856108576059341,
+    "correct": false,
+    "recording_ms": 5952.968261799046,
+    "coverage": 0.0441988967359066,
+    "sign_fraction": 0.4972375690607735
+   },
+   "both_2s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "ANYONE",
+     "MOUTH",
+     "OFFEND"
+    ],
+    "score": 0.13723602890968323,
+    "margin": 0.026671193540096283,
+    "correct": false,
+    "recording_ms": 6972.537411609932,
+    "coverage": 0.03773584961891174,
+    "sign_fraction": 0.42452830188679247
+   },
+   "both_4s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "ANYONE",
+     "AUTISM1",
+     "OFFEND"
+    ],
+    "score": 0.23255318403244019,
+    "margin": 0.11914059519767761,
+    "correct": false,
+    "recording_ms": 10985.035356026969,
+    "coverage": 0.023952096700668335,
+    "sign_fraction": 0.2694610778443114
+   }
+  }
+ },
+ {
+  "gloss": "LOCK1",
+  "signer": "P12",
+  "sign_ms": 2467.0,
+  "sign_frames": 74,
+  "sign_coverage": 0.36486485600471497,
+  "base": {
+   "prediction": "LOCK1",
+   "top5": [
+    "LOCK1",
+    "BREAKFAST1",
+    "SHAVE1",
+    "CHEESEGRATER",
+    "DRAG1"
+   ],
+   "score": 0.3785112798213959,
+   "margin": 0.22613385319709778,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "LOCK1",
+     "AUTISM1",
+     "CHEESEGRATER",
+     "DRAG1"
+    ],
+    "score": 0.3724520802497864,
+    "margin": 0.28471511602401733,
+    "correct": false,
+    "recording_ms": 3467.1351351351354,
+    "coverage": 0.25961539149284363,
+    "sign_fraction": 0.7115384615384616
+   },
+   "lead_2s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "LOCK1",
+     "AUTISM1",
+     "DRAG1",
+     "CHEESEGRATER"
+    ],
+    "score": 0.14948149025440216,
+    "margin": 0.05079084634780884,
+    "correct": false,
+    "recording_ms": 4467.27027027027,
+    "coverage": 0.2014925330877304,
+    "sign_fraction": 0.5522388059701493
+   },
+   "lead_3s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "LOCK1",
+     "AUTISM1",
+     "TAIL1",
+     "HOSPITAL1"
+    ],
+    "score": 0.10300257802009583,
+    "margin": 0.04100852087140083,
+    "correct": false,
+    "recording_ms": 5467.405405405406,
+    "coverage": 0.16463415324687958,
+    "sign_fraction": 0.45121951219512196
+   },
+   "trail_1s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "LOCK1",
+     "AUTISM1",
+     "CHEESEGRATER",
+     "SHAVE1"
+    ],
+    "score": 0.3410063683986664,
+    "margin": 0.22633907198905945,
+    "correct": false,
+    "recording_ms": 3467.1351351351354,
+    "coverage": 0.25961539149284363,
+    "sign_fraction": 0.7115384615384616
+   },
+   "trail_2s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "LOCK1",
+     "AUTISM1",
+     "FINE1",
+     "RIVER1"
+    ],
+    "score": 0.1444452702999115,
+    "margin": 0.010394498705863953,
+    "correct": false,
+    "recording_ms": 4467.27027027027,
+    "coverage": 0.2014925330877304,
+    "sign_fraction": 0.5522388059701493
+   },
+   "trail_3s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "LOCK1",
+     "AUTISM1",
+     "RIVER1",
+     "KNIGHT1"
+    ],
+    "score": 0.2469082474708557,
+    "margin": 0.13248299062252045,
+    "correct": false,
+    "recording_ms": 5467.405405405406,
+    "coverage": 0.16463415324687958,
+    "sign_fraction": 0.45121951219512196
+   },
+   "both_2s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "LOCK1",
+     "AUTISM1",
+     "KNIGHT1",
+     "RIVER1"
+    ],
+    "score": 0.23823454976081848,
+    "margin": 0.19765576720237732,
+    "correct": false,
+    "recording_ms": 6467.540540540541,
+    "coverage": 0.13917525112628937,
+    "sign_fraction": 0.38144329896907214
+   },
+   "both_4s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "AUTISM1",
+     "LOCK1",
+     "KNIGHT1",
+     "RIVER1"
+    ],
+    "score": 0.265807181596756,
+    "margin": 0.2212776392698288,
+    "correct": false,
+    "recording_ms": 10468.081081081082,
+    "coverage": 0.08598726242780685,
+    "sign_fraction": 0.2356687898089172
+   }
+  }
+ },
+ {
+  "gloss": "RIVER1",
+  "signer": "P12",
+  "sign_ms": 2500.0,
+  "sign_frames": 75,
+  "sign_coverage": 0.5866666436195374,
+  "base": {
+   "prediction": "RIVER1",
+   "top5": [
+    "RIVER1",
+    "SINK",
+    "COPY",
+    "IMPOSSIBLE",
+    "FINE1"
+   ],
+   "score": 0.29457780718803406,
+   "margin": 0.23100176453590393,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "RIVER1",
+    "top5": [
+     "RIVER1",
+     "SINK",
+     "FINE1",
+     "IMPOSSIBLE",
+     "COPY"
+    ],
+    "score": 0.3795689046382904,
+    "margin": 0.3209870159626007,
+    "correct": true,
+    "recording_ms": 3500.0,
+    "coverage": 0.41904762387275696,
+    "sign_fraction": 0.7142857142857143
+   },
+   "lead_2s": {
+    "prediction": "RIVER1",
+    "top5": [
+     "RIVER1",
+     "IMPOSSIBLE",
+     "DECIDE1",
+     "SINK",
+     "EMPTY2"
+    ],
+    "score": 0.1198464035987854,
+    "margin": 0.01472383737564087,
+    "correct": true,
+    "recording_ms": 4500.0,
+    "coverage": 0.32592591643333435,
+    "sign_fraction": 0.5555555555555556
+   },
+   "lead_3s": {
+    "prediction": "RIVER1",
+    "top5": [
+     "RIVER1",
+     "FINE1",
+     "UNDERWEAR1",
+     "SINK",
+     "IMPOSSIBLE"
+    ],
+    "score": 0.2482520341873169,
+    "margin": 0.20087282359600067,
+    "correct": true,
+    "recording_ms": 5500.0,
+    "coverage": 0.2666666805744171,
+    "sign_fraction": 0.45454545454545453
+   },
+   "trail_1s": {
+    "prediction": "RIVER1",
+    "top5": [
+     "RIVER1",
+     "SINK",
+     "COPY",
+     "IMPOSSIBLE",
+     "FINE1"
+    ],
+    "score": 0.3531589210033417,
+    "margin": 0.3073658347129822,
+    "correct": true,
+    "recording_ms": 3500.0,
+    "coverage": 0.41904762387275696,
+    "sign_fraction": 0.7142857142857143
+   },
+   "trail_2s": {
+    "prediction": "RIVER1",
+    "top5": [
+     "RIVER1",
+     "IMPOSSIBLE",
+     "FINE1",
+     "SINK",
+     "DECIDE1"
+    ],
+    "score": 0.19845879077911377,
+    "margin": 0.12754668295383453,
+    "correct": true,
+    "recording_ms": 4500.0,
+    "coverage": 0.32592591643333435,
+    "sign_fraction": 0.5555555555555556
+   },
+   "trail_3s": {
+    "prediction": "RIVER1",
+    "top5": [
+     "RIVER1",
+     "IMPOSSIBLE",
+     "SINK",
+     "UNDERWEAR1",
+     "TAIL1"
+    ],
+    "score": 0.14362183213233948,
+    "margin": 0.04237762838602066,
+    "correct": true,
+    "recording_ms": 5500.0,
+    "coverage": 0.2666666805744171,
+    "sign_fraction": 0.45454545454545453
+   },
+   "both_2s": {
+    "prediction": "RIVER1",
+    "top5": [
+     "RIVER1",
+     "IMPOSSIBLE",
+     "FINE1",
+     "ALLOFSUDDEN",
+     "SINK"
+    ],
+    "score": 0.16588634252548218,
+    "margin": 0.10356296598911285,
+    "correct": true,
+    "recording_ms": 6500.0,
+    "coverage": 0.22564102709293365,
+    "sign_fraction": 0.38461538461538464
+   },
+   "both_4s": {
+    "prediction": "RIVER1",
+    "top5": [
+     "RIVER1",
+     "ALLOFSUDDEN",
+     "UNDERWEAR1",
+     "ANYONE",
+     "AUTISM1"
+    ],
+    "score": 0.06270057708024979,
+    "margin": 0.005476992577314377,
+    "correct": true,
+    "recording_ms": 10500.0,
+    "coverage": 0.13968254625797272,
+    "sign_fraction": 0.23809523809523808
+   }
+  }
+ },
+ {
+  "gloss": "MOVIE1",
+  "signer": "P12",
+  "sign_ms": 2094.035271406603,
+  "sign_frames": 64,
+  "sign_coverage": 0.578125,
+  "base": {
+   "prediction": "MOVIE1",
+   "top5": [
+    "MOVIE1",
+    "SINK",
+    "CALENDAR1",
+    "COPY",
+    "MEAT1"
+   ],
+   "score": 0.29100939631462097,
+   "margin": 0.19706258177757263,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "MOVIE1",
+    "top5": [
+     "MOVIE1",
+     "SINK",
+     "IMPOSSIBLE",
+     "MEACULPA",
+     "CALENDAR1"
+    ],
+    "score": 0.21768438816070557,
+    "margin": 0.1442069113254547,
+    "correct": true,
+    "recording_ms": 3108.333605994176,
+    "coverage": 0.38947367668151855,
+    "sign_fraction": 0.6736842105263158
+   },
+   "lead_2s": {
+    "prediction": "IMPOSSIBLE",
+    "top5": [
+     "IMPOSSIBLE",
+     "MOVIE1",
+     "SINK",
+     "CALENDAR1",
+     "TAIL1"
+    ],
+    "score": 0.13023531436920166,
+    "margin": 0.05086208134889603,
+    "correct": false,
+    "recording_ms": 4089.9126394660216,
+    "coverage": 0.29600000381469727,
+    "sign_fraction": 0.512
+   },
+   "lead_3s": {
+    "prediction": "MOVIE1",
+    "top5": [
+     "MOVIE1",
+     "IMPOSSIBLE",
+     "SINK",
+     "CALENDAR1",
+     "CHEESEGRATER"
+    ],
+    "score": 0.0900537446141243,
+    "margin": 0.0002673789858818054,
+    "correct": true,
+    "recording_ms": 5104.210974053594,
+    "coverage": 0.2371794879436493,
+    "sign_fraction": 0.41025641025641024
+   },
+   "trail_1s": {
+    "prediction": "MOVIE1",
+    "top5": [
+     "MOVIE1",
+     "IMPOSSIBLE",
+     "DEMAND1",
+     "CALENDAR1",
+     "COPY"
+    ],
+    "score": 0.11824051290750504,
+    "margin": 0.018289946019649506,
+    "correct": true,
+    "recording_ms": 3108.333605994176,
+    "coverage": 0.38947367668151855,
+    "sign_fraction": 0.6736842105263158
+   },
+   "trail_2s": {
+    "prediction": "IMPOSSIBLE",
+    "top5": [
+     "IMPOSSIBLE",
+     "MOVIE1",
+     "CALENDAR1",
+     "DEMAND1",
+     "SINK"
+    ],
+    "score": 0.11504124850034714,
+    "margin": 0.01256520301103592,
+    "correct": false,
+    "recording_ms": 4089.9126394660216,
+    "coverage": 0.29600000381469727,
+    "sign_fraction": 0.512
+   },
+   "trail_3s": {
+    "prediction": "IMPOSSIBLE",
+    "top5": [
+     "IMPOSSIBLE",
+     "CALENDAR1",
+     "INTUITIVE",
+     "TAIL1",
+     "MOVIE1"
+    ],
+    "score": 0.0785059928894043,
+    "margin": 0.02959122508764267,
+    "correct": false,
+    "recording_ms": 5104.210974053594,
+    "coverage": 0.2371794879436493,
+    "sign_fraction": 0.41025641025641024
+   },
+   "both_2s": {
+    "prediction": "IMPOSSIBLE",
+    "top5": [
+     "IMPOSSIBLE",
+     "SINK",
+     "MOVIE1",
+     "CHEESEGRATER",
+     "TAIL1"
+    ],
+    "score": 0.06793809682130814,
+    "margin": 0.006180033087730408,
+    "correct": false,
+    "recording_ms": 6085.790007525439,
+    "coverage": 0.1989247351884842,
+    "sign_fraction": 0.34408602150537637
+   },
+   "both_4s": {
+    "prediction": "TAIL1",
+    "top5": [
+     "TAIL1",
+     "CHEESEGRATER",
+     "KNIGHT1",
+     "IMPOSSIBLE",
+     "RIVER1"
+    ],
+    "score": 0.04107252135872841,
+    "margin": 0.0012912340462207794,
+    "correct": false,
+    "recording_ms": 10077.544743644277,
+    "coverage": 0.12012986838817596,
+    "sign_fraction": 0.2077922077922078
+   }
+  }
+ },
+ {
+  "gloss": "PATIENT2",
+  "signer": "P12",
+  "sign_ms": 1635.0,
+  "sign_frames": 49,
+  "sign_coverage": 0.4693877696990967,
+  "base": {
+   "prediction": "PATIENT2",
+   "top5": [
+    "PATIENT2",
+    "CHEEK",
+    "MYSELF",
+    "ANYONE",
+    "ALLOFSUDDEN"
+   ],
+   "score": 0.7550746202468872,
+   "margin": 0.7234233021736145,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "PATIENT2",
+    "top5": [
+     "PATIENT2",
+     "ANYONE",
+     "ALLOFSUDDEN",
+     "CHEEK",
+     "MYSELF"
+    ],
+    "score": 0.5242665410041809,
+    "margin": 0.47862130403518677,
+    "correct": true,
+    "recording_ms": 2636.020408163265,
+    "coverage": 0.29113924503326416,
+    "sign_fraction": 0.620253164556962
+   },
+   "lead_2s": {
+    "prediction": "PATIENT2",
+    "top5": [
+     "PATIENT2",
+     "ANYONE",
+     "KNIGHT1",
+     "AUTISM1",
+     "PARTY1"
+    ],
+    "score": 0.19714617729187012,
+    "margin": 0.0750642716884613,
+    "correct": true,
+    "recording_ms": 3637.0408163265306,
+    "coverage": 0.2110091745853424,
+    "sign_fraction": 0.44954128440366975
+   },
+   "lead_3s": {
+    "prediction": "PATIENT2",
+    "top5": [
+     "PATIENT2",
+     "ANYONE",
+     "KNIGHT1",
+     "AUTISM1",
+     "CHEEK"
+    ],
+    "score": 0.13526935875415802,
+    "margin": 0.00909695029258728,
+    "correct": true,
+    "recording_ms": 4638.061224489796,
+    "coverage": 0.16546761989593506,
+    "sign_fraction": 0.35251798561151076
+   },
+   "trail_1s": {
+    "prediction": "PATIENT2",
+    "top5": [
+     "PATIENT2",
+     "CHEEK",
+     "ANYONE",
+     "MYSELF",
+     "ALLOFSUDDEN"
+    ],
+    "score": 0.53062504529953,
+    "margin": 0.4889487624168396,
+    "correct": true,
+    "recording_ms": 2636.020408163265,
+    "coverage": 0.29113924503326416,
+    "sign_fraction": 0.620253164556962
+   },
+   "trail_2s": {
+    "prediction": "PATIENT2",
+    "top5": [
+     "PATIENT2",
+     "ANYONE",
+     "CHEEK",
+     "MYSELF",
+     "ALLOFSUDDEN"
+    ],
+    "score": 0.34194210171699524,
+    "margin": 0.2585872411727905,
+    "correct": true,
+    "recording_ms": 3637.0408163265306,
+    "coverage": 0.2110091745853424,
+    "sign_fraction": 0.44954128440366975
+   },
+   "trail_3s": {
+    "prediction": "ANYONE",
+    "top5": [
+     "ANYONE",
+     "PATIENT2",
+     "CHEEK",
+     "KNIGHT1",
+     "BREAKFAST1"
+    ],
+    "score": 0.19383975863456726,
+    "margin": 0.07664303481578827,
+    "correct": false,
+    "recording_ms": 4638.061224489796,
+    "coverage": 0.16546761989593506,
+    "sign_fraction": 0.35251798561151076
+   },
+   "both_2s": {
+    "prediction": "ANYONE",
+    "top5": [
+     "ANYONE",
+     "PATIENT2",
+     "KNIGHT1",
+     "BREAKFAST1",
+     "AUTISM1"
+    ],
+    "score": 0.12750095129013062,
+    "margin": 0.046206727623939514,
+    "correct": false,
+    "recording_ms": 5639.08163265306,
+    "coverage": 0.13609467446804047,
+    "sign_fraction": 0.28994082840236685
+   },
+   "both_4s": {
+    "prediction": "ANYONE",
+    "top5": [
+     "ANYONE",
+     "KNIGHT1",
+     "BREAKFAST1",
+     "AUTISM1",
+     "MOUTH"
+    ],
+    "score": 0.13185718655586243,
+    "margin": 0.03871849924325943,
+    "correct": false,
+    "recording_ms": 9643.16326530612,
+    "coverage": 0.07958477735519409,
+    "sign_fraction": 0.1695501730103806
+   }
+  }
+ },
+ {
+  "gloss": "ELEVATOR1",
+  "signer": "P12",
+  "sign_ms": 2667.0,
+  "sign_frames": 80,
+  "sign_coverage": 0.6625000238418579,
+  "base": {
+   "prediction": "ELEVATOR1",
+   "top5": [
+    "ELEVATOR1",
+    "FLOAT1",
+    "BACKPACK1",
+    "ZEBRA",
+    "FOREIGNER1"
+   ],
+   "score": 0.10086455196142197,
+   "margin": 0.011461399495601654,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "FLOAT1",
+    "top5": [
+     "FLOAT1",
+     "FOREIGNER1",
+     "ZEBRA",
+     "ELEVATOR1",
+     "SCARF2"
+    ],
+    "score": 0.1006750613451004,
+    "margin": 0.009167507290840149,
+    "correct": false,
+    "recording_ms": 3667.125,
+    "coverage": 0.48181816935539246,
+    "sign_fraction": 0.7272727272727273
+   },
+   "lead_2s": {
+    "prediction": "FOREIGNER1",
+    "top5": [
+     "FOREIGNER1",
+     "BACKPACK1",
+     "ELEVATOR1",
+     "FLOAT1",
+     "SCROLLDOWN"
+    ],
+    "score": 0.11488062143325806,
+    "margin": 0.05292651057243347,
+    "correct": false,
+    "recording_ms": 4667.25,
+    "coverage": 0.37857142090797424,
+    "sign_fraction": 0.5714285714285714
+   },
+   "lead_3s": {
+    "prediction": "ZEBRA",
+    "top5": [
+     "ZEBRA",
+     "DARK1",
+     "BACKPACK1",
+     "SOCCER2",
+     "AUTISM1"
+    ],
+    "score": 0.08327405154705048,
+    "margin": 0.028194107115268707,
+    "correct": false,
+    "recording_ms": 5667.375,
+    "coverage": 0.3117647171020508,
+    "sign_fraction": 0.47058823529411764
+   },
+   "trail_1s": {
+    "prediction": "BACKPACK1",
+    "top5": [
+     "BACKPACK1",
+     "ELEVATOR1",
+     "FOREIGNER1",
+     "ZEBRA",
+     "FLOAT1"
+    ],
+    "score": 0.14257630705833435,
+    "margin": 0.05556333065032959,
+    "correct": false,
+    "recording_ms": 3667.125,
+    "coverage": 0.48181816935539246,
+    "sign_fraction": 0.7272727272727273
+   },
+   "trail_2s": {
+    "prediction": "FOREIGNER1",
+    "top5": [
+     "FOREIGNER1",
+     "BACKPACK1",
+     "ZEBRA",
+     "AUTISM1",
+     "ELEVATOR1"
+    ],
+    "score": 0.0795479565858841,
+    "margin": 0.015451379120349884,
+    "correct": false,
+    "recording_ms": 4667.25,
+    "coverage": 0.37857142090797424,
+    "sign_fraction": 0.5714285714285714
+   },
+   "trail_3s": {
+    "prediction": "FOREIGNER1",
+    "top5": [
+     "FOREIGNER1",
+     "ZEBRA",
+     "SCARF2",
+     "DARK1",
+     "INTUITIVE"
+    ],
+    "score": 0.1268310546875,
+    "margin": 0.07709577679634094,
+    "correct": false,
+    "recording_ms": 5667.375,
+    "coverage": 0.3117647171020508,
+    "sign_fraction": 0.47058823529411764
+   },
+   "both_2s": {
+    "prediction": "BACKPACK1",
+    "top5": [
+     "BACKPACK1",
+     "ZEBRA",
+     "SCROLLDOWN",
+     "FOREIGNER1",
+     "ELEVATOR1"
+    ],
+    "score": 0.14213117957115173,
+    "margin": 0.08561676740646362,
+    "correct": false,
+    "recording_ms": 6667.499999999999,
+    "coverage": 0.26499998569488525,
+    "sign_fraction": 0.4
+   },
+   "both_4s": {
+    "prediction": "ZEBRA",
+    "top5": [
+     "ZEBRA",
+     "HOSPITAL1",
+     "SCARF2",
+     "KNIGHT1",
+     "TAIL1"
+    ],
+    "score": 0.11624463647603989,
+    "margin": 0.060253266245126724,
+    "correct": false,
+    "recording_ms": 10668.0,
+    "coverage": 0.16562500596046448,
+    "sign_fraction": 0.25
+   }
+  }
+ },
+ {
+  "gloss": "SHAVE1",
+  "signer": "P12",
+  "sign_ms": 2800.0,
+  "sign_frames": 84,
+  "sign_coverage": 0.4166666567325592,
+  "base": {
+   "prediction": "SHAVE1",
+   "top5": [
+    "SHAVE1",
+    "PATIENT2",
+    "CHEW1",
+    "TAIL1",
+    "ANYONE"
+   ],
+   "score": 0.18040640652179718,
+   "margin": 0.003564774990081787,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "PATIENT2",
+    "top5": [
+     "PATIENT2",
+     "TAIL1",
+     "SHAVE1",
+     "CHEW1",
+     "ANYONE"
+    ],
+    "score": 0.14054013788700104,
+    "margin": 0.04935473948717117,
+    "correct": false,
+    "recording_ms": 3800.0,
+    "coverage": 0.3070175349712372,
+    "sign_fraction": 0.7368421052631579
+   },
+   "lead_2s": {
+    "prediction": "PATIENT2",
+    "top5": [
+     "PATIENT2",
+     "TAIL1",
+     "SHAVE1",
+     "CHEW1",
+     "ANYONE"
+    ],
+    "score": 0.15257664024829865,
+    "margin": 0.06893692910671234,
+    "correct": false,
+    "recording_ms": 4800.0,
+    "coverage": 0.2430555522441864,
+    "sign_fraction": 0.5833333333333334
+   },
+   "lead_3s": {
+    "prediction": "PATIENT2",
+    "top5": [
+     "PATIENT2",
+     "TAIL1",
+     "ANYONE",
+     "SHAVE1",
+     "CHEW1"
+    ],
+    "score": 0.15657451748847961,
+    "margin": 0.08369789272546768,
+    "correct": false,
+    "recording_ms": 5800.0,
+    "coverage": 0.20114941895008087,
+    "sign_fraction": 0.4827586206896552
+   },
+   "trail_1s": {
+    "prediction": "PATIENT2",
+    "top5": [
+     "PATIENT2",
+     "SHAVE1",
+     "ANYONE",
+     "TAIL1",
+     "CHEW1"
+    ],
+    "score": 0.13831740617752075,
+    "margin": 0.047305867075920105,
+    "correct": false,
+    "recording_ms": 3800.0,
+    "coverage": 0.3070175349712372,
+    "sign_fraction": 0.7368421052631579
+   },
+   "trail_2s": {
+    "prediction": "PATIENT2",
+    "top5": [
+     "PATIENT2",
+     "ANYONE",
+     "SHAVE1",
+     "TAIL1",
+     "CHEW1"
+    ],
+    "score": 0.12890705466270447,
+    "margin": 0.06431179493665695,
+    "correct": false,
+    "recording_ms": 4800.0,
+    "coverage": 0.2430555522441864,
+    "sign_fraction": 0.5833333333333334
+   },
+   "trail_3s": {
+    "prediction": "PATIENT2",
+    "top5": [
+     "PATIENT2",
+     "ANYONE",
+     "TAIL1",
+     "SHAVE1",
+     "AUTISM1"
+    ],
+    "score": 0.10737635940313339,
+    "margin": 0.01783570647239685,
+    "correct": false,
+    "recording_ms": 5800.0,
+    "coverage": 0.20114941895008087,
+    "sign_fraction": 0.4827586206896552
+   },
+   "both_2s": {
+    "prediction": "PATIENT2",
+    "top5": [
+     "PATIENT2",
+     "ANYONE",
+     "TAIL1",
+     "SHAVE1",
+     "RAZOR2"
+    ],
+    "score": 0.08773571252822876,
+    "margin": 0.0034566596150398254,
+    "correct": false,
+    "recording_ms": 6800.0,
+    "coverage": 0.1715686321258545,
+    "sign_fraction": 0.4117647058823529
+   },
+   "both_4s": {
+    "prediction": "ANYONE",
+    "top5": [
+     "ANYONE",
+     "PATIENT2",
+     "TAIL1",
+     "KNIGHT1",
+     "BREAKFAST1"
+    ],
+    "score": 0.0935632586479187,
+    "margin": 0.040324676781892776,
+    "correct": false,
+    "recording_ms": 10800.0,
+    "coverage": 0.10802469402551651,
+    "sign_fraction": 0.25925925925925924
+   }
+  }
+ },
+ {
+  "gloss": "CALENDAR1",
+  "signer": "P12",
+  "sign_ms": 2263.8538009777226,
+  "sign_frames": 69,
+  "sign_coverage": 0.52173912525177,
+  "base": {
+   "prediction": "FINE1",
+   "top5": [
+    "FINE1",
+    "VOICE",
+    "CALENDAR1",
+    "JEWELRY",
+    "SCARF2"
+   ],
+   "score": 0.3058205246925354,
+   "margin": 0.21206113696098328,
+   "correct": false
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "FINE1",
+    "top5": [
+     "FINE1",
+     "VOICE",
+     "SCARF2",
+     "HOSPITAL1",
+     "JEWELRY"
+    ],
+    "score": 0.39410409331321716,
+    "margin": 0.2915722727775574,
+    "correct": false,
+    "recording_ms": 3248.1380622723846,
+    "coverage": 0.3636363744735718,
+    "sign_fraction": 0.696969696969697
+   },
+   "lead_2s": {
+    "prediction": "FINE1",
+    "top5": [
+     "FINE1",
+     "BREAKFAST1",
+     "VOICE",
+     "CALENDAR1",
+     "FAIL"
+    ],
+    "score": 0.09044761955738068,
+    "margin": 0.019136905670166016,
+    "correct": false,
+    "recording_ms": 4265.231798943535,
+    "coverage": 0.2769230902194977,
+    "sign_fraction": 0.5307692307692308
+   },
+   "lead_3s": {
+    "prediction": "FINE1",
+    "top5": [
+     "FINE1",
+     "VOICE",
+     "BREAKFAST1",
+     "SCARF2",
+     "HOSPITAL1"
+    ],
+    "score": 0.10352859646081924,
+    "margin": 0.026711322367191315,
+    "correct": false,
+    "recording_ms": 5249.516060238197,
+    "coverage": 0.22499999403953552,
+    "sign_fraction": 0.43125
+   },
+   "trail_1s": {
+    "prediction": "FINE1",
+    "top5": [
+     "FINE1",
+     "BREAKFAST1",
+     "VOICE",
+     "CALENDAR1",
+     "FAIL"
+    ],
+    "score": 0.09161832928657532,
+    "margin": 0.024237386882305145,
+    "correct": false,
+    "recording_ms": 3248.1380622723846,
+    "coverage": 0.3636363744735718,
+    "sign_fraction": 0.696969696969697
+   },
+   "trail_2s": {
+    "prediction": "FINE1",
+    "top5": [
+     "FINE1",
+     "VOICE",
+     "BREAKFAST1",
+     "ZEBRA",
+     "CALENDAR1"
+    ],
+    "score": 0.15502940118312836,
+    "margin": 0.08806032687425613,
+    "correct": false,
+    "recording_ms": 4265.231798943535,
+    "coverage": 0.2769230902194977,
+    "sign_fraction": 0.5307692307692308
+   },
+   "trail_3s": {
+    "prediction": "FINE1",
+    "top5": [
+     "FINE1",
+     "BREAKFAST1",
+     "VOICE",
+     "AUTISM1",
+     "COPY"
+    ],
+    "score": 0.10727480053901672,
+    "margin": 0.011776387691497803,
+    "correct": false,
+    "recording_ms": 5249.516060238197,
+    "coverage": 0.22499999403953552,
+    "sign_fraction": 0.43125
+   },
+   "both_2s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "FINE1",
+     "VOICE",
+     "SCARF2",
+     "EASY"
+    ],
+    "score": 0.10621966421604156,
+    "margin": 0.010645806789398193,
+    "correct": false,
+    "recording_ms": 6266.609796909347,
+    "coverage": 0.1884816735982895,
+    "sign_fraction": 0.3612565445026178
+   },
+   "both_4s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "VOICE",
+     "SCARF2",
+     "OFFEND"
+    ],
+    "score": 0.11617811024188995,
+    "margin": 0.0051347240805625916,
+    "correct": false,
+    "recording_ms": 10269.365792840972,
+    "coverage": 0.11501597613096237,
+    "sign_fraction": 0.22044728434504793
+   }
+  }
+ },
+ {
+  "gloss": "SPECIAL1",
+  "signer": "P12",
+  "sign_ms": 2043.035555409101,
+  "sign_frames": 62,
+  "sign_coverage": 0.4838709533214569,
+  "base": {
+   "prediction": "JEWELRY",
+   "top5": [
+    "JEWELRY",
+    "TAIL1",
+    "HALLOWEEN1",
+    "HURDLE/TRIP1",
+    "JOKE"
+   ],
+   "score": 0.10686834901571274,
+   "margin": 0.021041594445705414,
+   "correct": false
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "HURDLE/TRIP1",
+    "top5": [
+     "HURDLE/TRIP1",
+     "JEWELRY",
+     "CHEESEGRATER",
+     "BACKPACK1",
+     "TAIL1"
+    ],
+    "score": 0.13932986557483673,
+    "margin": 0.08707696944475174,
+    "correct": false,
+    "recording_ms": 3031.601146736086,
+    "coverage": 0.32608696818351746,
+    "sign_fraction": 0.6739130434782609
+   },
+   "lead_2s": {
+    "prediction": "HURDLE/TRIP1",
+    "top5": [
+     "HURDLE/TRIP1",
+     "JEWELRY",
+     "MEAT1",
+     "ZEBRA",
+     "SHARPEN2"
+    ],
+    "score": 0.07098715007305145,
+    "margin": 0.012706667184829712,
+    "correct": false,
+    "recording_ms": 4053.1189244406364,
+    "coverage": 0.24390244483947754,
+    "sign_fraction": 0.5040650406504065
+   },
+   "lead_3s": {
+    "prediction": "HURDLE/TRIP1",
+    "top5": [
+     "HURDLE/TRIP1",
+     "ZEBRA",
+     "BACKPACK1",
+     "MEAT1",
+     "JEWELRY"
+    ],
+    "score": 0.1901557594537735,
+    "margin": 0.14461319148540497,
+    "correct": false,
+    "recording_ms": 5041.684515767621,
+    "coverage": 0.19607843458652496,
+    "sign_fraction": 0.40522875816993464
+   },
+   "trail_1s": {
+    "prediction": "HURDLE/TRIP1",
+    "top5": [
+     "HURDLE/TRIP1",
+     "TAIL1",
+     "MEAT1",
+     "JOKE",
+     "MECHANIC1"
+    ],
+    "score": 0.1308843344449997,
+    "margin": 0.075476735830307,
+    "correct": false,
+    "recording_ms": 3031.601146736086,
+    "coverage": 0.32608696818351746,
+    "sign_fraction": 0.6739130434782609
+   },
+   "trail_2s": {
+    "prediction": "HURDLE/TRIP1",
+    "top5": [
+     "HURDLE/TRIP1",
+     "MEAT1",
+     "JEWELRY",
+     "MECHANIC1",
+     "SHARPEN2"
+    ],
+    "score": 0.07621759921312332,
+    "margin": 0.031893253326416016,
+    "correct": false,
+    "recording_ms": 4053.1189244406364,
+    "coverage": 0.24390244483947754,
+    "sign_fraction": 0.5040650406504065
+   },
+   "trail_3s": {
+    "prediction": "HURDLE/TRIP1",
+    "top5": [
+     "HURDLE/TRIP1",
+     "CHEESEGRATER",
+     "BACKPACK1",
+     "SHARPEN2",
+     "ZEBRA"
+    ],
+    "score": 0.12107588350772858,
+    "margin": 0.06592464447021484,
+    "correct": false,
+    "recording_ms": 5041.684515767621,
+    "coverage": 0.19607843458652496,
+    "sign_fraction": 0.40522875816993464
+   },
+   "both_2s": {
+    "prediction": "HURDLE/TRIP1",
+    "top5": [
+     "HURDLE/TRIP1",
+     "ZEBRA",
+     "RAZOR2",
+     "BACKPACK1",
+     "MEAT1"
+    ],
+    "score": 0.07945770770311356,
+    "margin": 0.034581441432237625,
+    "correct": false,
+    "recording_ms": 6063.202293472172,
+    "coverage": 0.16304348409175873,
+    "sign_fraction": 0.33695652173913043
+   },
+   "both_4s": {
+    "prediction": "ZEBRA",
+    "top5": [
+     "ZEBRA",
+     "KNIGHT1",
+     "HURDLE/TRIP1",
+     "SHARPEN2",
+     "BACKPACK1"
+    ],
+    "score": 0.0628942921757698,
+    "margin": 0.002891145646572113,
+    "correct": false,
+    "recording_ms": 10017.46465878011,
+    "coverage": 0.09868421405553818,
+    "sign_fraction": 0.20394736842105263
+   }
+  }
+ },
+ {
+  "gloss": "HOSPITAL1",
+  "signer": "P21",
+  "sign_ms": 1537.0,
+  "sign_frames": 46,
+  "sign_coverage": 0.6086956262588501,
+  "base": {
+   "prediction": "HOSPITAL1",
+   "top5": [
+    "HOSPITAL1",
+    "MOUTH",
+    "SCARF2",
+    "MYSELF",
+    "BACKPACK1"
+   ],
+   "score": 0.3085384964942932,
+   "margin": 0.2001236379146576,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "HOSPITAL1",
+    "top5": [
+     "HOSPITAL1",
+     "MOUTH",
+     "BREAKFAST1",
+     "AUTISM1",
+     "SCARF2"
+    ],
+    "score": 0.2492813915014267,
+    "margin": 0.15903416275978088,
+    "correct": true,
+    "recording_ms": 2539.391304347826,
+    "coverage": 0.3684210479259491,
+    "sign_fraction": 0.6052631578947368
+   },
+   "lead_2s": {
+    "prediction": "HOSPITAL1",
+    "top5": [
+     "HOSPITAL1",
+     "MOUTH",
+     "ANYONE",
+     "SCARF2",
+     "KNIGHT1"
+    ],
+    "score": 0.14802132546901703,
+    "margin": 0.0737091600894928,
+    "correct": true,
+    "recording_ms": 3541.782608695652,
+    "coverage": 0.2641509473323822,
+    "sign_fraction": 0.4339622641509434
+   },
+   "lead_3s": {
+    "prediction": "HOSPITAL1",
+    "top5": [
+     "HOSPITAL1",
+     "KNIGHT1",
+     "BREAKFAST1",
+     "MOUTH",
+     "ANYONE"
+    ],
+    "score": 0.18980634212493896,
+    "margin": 0.10994947701692581,
+    "correct": true,
+    "recording_ms": 4544.173913043478,
+    "coverage": 0.20588235557079315,
+    "sign_fraction": 0.3382352941176471
+   },
+   "trail_1s": {
+    "prediction": "HOSPITAL1",
+    "top5": [
+     "HOSPITAL1",
+     "MOUTH",
+     "SCARF2",
+     "KNIGHT1",
+     "BACKPACK1"
+    ],
+    "score": 0.22854286432266235,
+    "margin": 0.08253717422485352,
+    "correct": true,
+    "recording_ms": 2539.391304347826,
+    "coverage": 0.3684210479259491,
+    "sign_fraction": 0.6052631578947368
+   },
+   "trail_2s": {
+    "prediction": "HOSPITAL1",
+    "top5": [
+     "HOSPITAL1",
+     "BREAKFAST1",
+     "MOUTH",
+     "KNIGHT1",
+     "AUTISM1"
+    ],
+    "score": 0.20199939608573914,
+    "margin": 0.11844784021377563,
+    "correct": true,
+    "recording_ms": 3541.782608695652,
+    "coverage": 0.2641509473323822,
+    "sign_fraction": 0.4339622641509434
+   },
+   "trail_3s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "AUTISM1",
+     "HOSPITAL1",
+     "ANYONE",
+     "MOUTH"
+    ],
+    "score": 0.12282092124223709,
+    "margin": 0.012165330350399017,
+    "correct": false,
+    "recording_ms": 4544.173913043478,
+    "coverage": 0.20588235557079315,
+    "sign_fraction": 0.3382352941176471
+   },
+   "both_2s": {
+    "prediction": "HOSPITAL1",
+    "top5": [
+     "HOSPITAL1",
+     "MOUTH",
+     "BREAKFAST1",
+     "KNIGHT1",
+     "AUTISM1"
+    ],
+    "score": 0.16087529063224792,
+    "margin": 0.04648228734731674,
+    "correct": true,
+    "recording_ms": 5546.565217391304,
+    "coverage": 0.16867469251155853,
+    "sign_fraction": 0.27710843373493976
+   },
+   "both_4s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "ANYONE",
+     "MOUTH",
+     "AUTISM1"
+    ],
+    "score": 0.15432065725326538,
+    "margin": 0.02705472707748413,
+    "correct": false,
+    "recording_ms": 9556.13043478261,
+    "coverage": 0.0979020968079567,
+    "sign_fraction": 0.16083916083916083
+   }
+  }
+ },
+ {
+  "gloss": "GUESS1",
+  "signer": "P21",
+  "sign_ms": 1667.0,
+  "sign_frames": 50,
+  "sign_coverage": 0.3400000035762787,
+  "base": {
+   "prediction": "GUESS1",
+   "top5": [
+    "GUESS1",
+    "COMB2",
+    "AUTISM1",
+    "BREAKFAST1",
+    "DARK1"
+   ],
+   "score": 0.6872408390045166,
+   "margin": 0.6449570059776306,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "GUESS1",
+    "top5": [
+     "GUESS1",
+     "COMB2",
+     "AUTISM1",
+     "BREAKFAST1",
+     "DARK1"
+    ],
+    "score": 0.5320582389831543,
+    "margin": 0.48505204916000366,
+    "correct": true,
+    "recording_ms": 2667.2,
+    "coverage": 0.21250000596046448,
+    "sign_fraction": 0.625
+   },
+   "lead_2s": {
+    "prediction": "GUESS1",
+    "top5": [
+     "GUESS1",
+     "COMB2",
+     "BREAKFAST1",
+     "KNIGHT1",
+     "UNDERWEAR1"
+    ],
+    "score": 0.1677621454000473,
+    "margin": 0.06400537490844727,
+    "correct": true,
+    "recording_ms": 3667.3999999999996,
+    "coverage": 0.15454545617103577,
+    "sign_fraction": 0.45454545454545453
+   },
+   "lead_3s": {
+    "prediction": "COMB2",
+    "top5": [
+     "COMB2",
+     "GUESS1",
+     "BREAKFAST1",
+     "KNIGHT1",
+     "UNDERWEAR1"
+    ],
+    "score": 0.08693680912256241,
+    "margin": 0.014143086969852448,
+    "correct": false,
+    "recording_ms": 4667.6,
+    "coverage": 0.12142857164144516,
+    "sign_fraction": 0.35714285714285715
+   },
+   "trail_1s": {
+    "prediction": "GUESS1",
+    "top5": [
+     "GUESS1",
+     "KNIGHT1",
+     "BREAKFAST1",
+     "COMB2",
+     "MOUTH"
+    ],
+    "score": 0.15349183976650238,
+    "margin": 0.07738379389047623,
+    "correct": true,
+    "recording_ms": 2667.2,
+    "coverage": 0.21250000596046448,
+    "sign_fraction": 0.625
+   },
+   "trail_2s": {
+    "prediction": "GUESS1",
+    "top5": [
+     "GUESS1",
+     "COMB2",
+     "BREAKFAST1",
+     "UNDERWEAR1",
+     "AUTISM1"
+    ],
+    "score": 0.3157070577144623,
+    "margin": 0.22308048605918884,
+    "correct": true,
+    "recording_ms": 3667.3999999999996,
+    "coverage": 0.15454545617103577,
+    "sign_fraction": 0.45454545454545453
+   },
+   "trail_3s": {
+    "prediction": "KNIGHT1",
+    "top5": [
+     "KNIGHT1",
+     "BREAKFAST1",
+     "GUESS1",
+     "UNDERWEAR1",
+     "ANYONE"
+    ],
+    "score": 0.09362288564443588,
+    "margin": 0.0028384998440742493,
+    "correct": false,
+    "recording_ms": 4667.6,
+    "coverage": 0.12142857164144516,
+    "sign_fraction": 0.35714285714285715
+   },
+   "both_2s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "ANYONE",
+     "MOUTH",
+     "GUESS1"
+    ],
+    "score": 0.12965033948421478,
+    "margin": 0.014981217682361603,
+    "correct": false,
+    "recording_ms": 5667.799999999999,
+    "coverage": 0.10000000149011612,
+    "sign_fraction": 0.29411764705882354
+   },
+   "both_4s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "ANYONE",
+     "MOUTH",
+     "AUTISM1"
+    ],
+    "score": 0.1849277764558792,
+    "margin": 0.05189071595668793,
+    "correct": false,
+    "recording_ms": 9668.6,
+    "coverage": 0.05862069129943848,
+    "sign_fraction": 0.1724137931034483
+   }
+  }
+ },
+ {
+  "gloss": "CHEER",
+  "signer": "P21",
+  "sign_ms": 2033.0,
+  "sign_frames": 61,
+  "sign_coverage": 0.5409836173057556,
+  "base": {
+   "prediction": "CHEER",
+   "top5": [
+    "CHEER",
+    "PONDER",
+    "SWEATER2",
+    "SOCIETY",
+    "DOWNSIZE1"
+   ],
+   "score": 0.6741161346435547,
+   "margin": 0.655549168586731,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "CHEER",
+    "top5": [
+     "CHEER",
+     "DOWNSIZE1",
+     "SWEATER2",
+     "HALLOWEEN1",
+     "PONDER"
+    ],
+    "score": 0.6641155481338501,
+    "margin": 0.6381832361221313,
+    "correct": true,
+    "recording_ms": 3032.8360655737706,
+    "coverage": 0.36263737082481384,
+    "sign_fraction": 0.6703296703296703
+   },
+   "lead_2s": {
+    "prediction": "SWEATER2",
+    "top5": [
+     "SWEATER2",
+     "CHEER",
+     "UNDERWEAR1",
+     "BACKPACK1",
+     "DECIDE1"
+    ],
+    "score": 0.11134922504425049,
+    "margin": 0.01956842839717865,
+    "correct": false,
+    "recording_ms": 4032.6721311475417,
+    "coverage": 0.27272728085517883,
+    "sign_fraction": 0.5041322314049587
+   },
+   "lead_3s": {
+    "prediction": "CHEER",
+    "top5": [
+     "CHEER",
+     "SWEATER2",
+     "DOWNSIZE1",
+     "PONDER",
+     "HALLOWEEN1"
+    ],
+    "score": 0.39825066924095154,
+    "margin": 0.36207014322280884,
+    "correct": true,
+    "recording_ms": 5032.508196721311,
+    "coverage": 0.21854305267333984,
+    "sign_fraction": 0.40397350993377484
+   },
+   "trail_1s": {
+    "prediction": "CHEER",
+    "top5": [
+     "CHEER",
+     "SWEATER2",
+     "PONDER",
+     "TEACH1",
+     "SOCIETY"
+    ],
+    "score": 0.5237141251564026,
+    "margin": 0.4940924346446991,
+    "correct": true,
+    "recording_ms": 3032.8360655737706,
+    "coverage": 0.36263737082481384,
+    "sign_fraction": 0.6703296703296703
+   },
+   "trail_2s": {
+    "prediction": "CHEER",
+    "top5": [
+     "CHEER",
+     "SOCIETY",
+     "SWEATER2",
+     "PONDER",
+     "TEACH1"
+    ],
+    "score": 0.3676881790161133,
+    "margin": 0.3210492432117462,
+    "correct": true,
+    "recording_ms": 4032.6721311475417,
+    "coverage": 0.27272728085517883,
+    "sign_fraction": 0.5041322314049587
+   },
+   "trail_3s": {
+    "prediction": "CHEER",
+    "top5": [
+     "CHEER",
+     "SWEATER2",
+     "SOCIETY",
+     "GRAMMAR",
+     "PARTY1"
+    ],
+    "score": 0.19494974613189697,
+    "margin": 0.14456190168857574,
+    "correct": true,
+    "recording_ms": 5032.508196721311,
+    "coverage": 0.21854305267333984,
+    "sign_fraction": 0.40397350993377484
+   },
+   "both_2s": {
+    "prediction": "CHEER",
+    "top5": [
+     "CHEER",
+     "PARTY1",
+     "SWEATER2",
+     "BACKPACK1",
+     "HALLOWEEN1"
+    ],
+    "score": 0.41843339800834656,
+    "margin": 0.3617616891860962,
+    "correct": true,
+    "recording_ms": 6032.3442622950815,
+    "coverage": 0.18232044577598572,
+    "sign_fraction": 0.3370165745856354
+   },
+   "both_4s": {
+    "prediction": "CHEER",
+    "top5": [
+     "CHEER",
+     "SWEATER2",
+     "PARTY1",
+     "HALLOWEEN1",
+     "TEACH1"
+    ],
+    "score": 0.3161902129650116,
+    "margin": 0.24675187468528748,
+    "correct": true,
+    "recording_ms": 10031.688524590165,
+    "coverage": 0.10963454842567444,
+    "sign_fraction": 0.2026578073089701
+   }
+  }
+ },
+ {
+  "gloss": "IMPOSSIBLE",
+  "signer": "P21",
+  "sign_ms": 2733.0,
+  "sign_frames": 82,
+  "sign_coverage": 0.39024388790130615,
+  "base": {
+   "prediction": "IMPOSSIBLE",
+   "top5": [
+    "IMPOSSIBLE",
+    "SINK",
+    "MEACULPA",
+    "DARK1",
+    "DEMAND1"
+   ],
+   "score": 0.7669302821159363,
+   "margin": 0.7348896861076355,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "SCARF2",
+    "top5": [
+     "SCARF2",
+     "IMPOSSIBLE",
+     "PATIENT2",
+     "COMB2",
+     "DARK1"
+    ],
+    "score": 0.11803050339221954,
+    "margin": 0.019016005098819733,
+    "correct": false,
+    "recording_ms": 3732.878048780488,
+    "coverage": 0.2857142984867096,
+    "sign_fraction": 0.7321428571428571
+   },
+   "lead_2s": {
+    "prediction": "IMPOSSIBLE",
+    "top5": [
+     "IMPOSSIBLE",
+     "KNIGHT1",
+     "TAIL1",
+     "PATIENT2",
+     "SINK"
+    ],
+    "score": 0.11345129460096359,
+    "margin": 0.04998788982629776,
+    "correct": true,
+    "recording_ms": 4732.756097560976,
+    "coverage": 0.22535210847854614,
+    "sign_fraction": 0.5774647887323944
+   },
+   "lead_3s": {
+    "prediction": "IMPOSSIBLE",
+    "top5": [
+     "IMPOSSIBLE",
+     "PATIENT2",
+     "TAIL1",
+     "SINK",
+     "SCARF2"
+    ],
+    "score": 0.2692253887653351,
+    "margin": 0.20691215991973877,
+    "correct": true,
+    "recording_ms": 5732.634146341464,
+    "coverage": 0.1860465109348297,
+    "sign_fraction": 0.47674418604651164
+   },
+   "trail_1s": {
+    "prediction": "IMPOSSIBLE",
+    "top5": [
+     "IMPOSSIBLE",
+     "SINK",
+     "TAIL1",
+     "DEMAND1",
+     "COPY"
+    ],
+    "score": 0.5771439075469971,
+    "margin": 0.5052593946456909,
+    "correct": true,
+    "recording_ms": 3732.878048780488,
+    "coverage": 0.2857142984867096,
+    "sign_fraction": 0.7321428571428571
+   },
+   "trail_2s": {
+    "prediction": "IMPOSSIBLE",
+    "top5": [
+     "IMPOSSIBLE",
+     "PATIENT2",
+     "KNIGHT1",
+     "INTUITIVE",
+     "RIGHT3"
+    ],
+    "score": 0.2692939341068268,
+    "margin": 0.19032958149909973,
+    "correct": true,
+    "recording_ms": 4732.756097560976,
+    "coverage": 0.22535210847854614,
+    "sign_fraction": 0.5774647887323944
+   },
+   "trail_3s": {
+    "prediction": "KNIGHT1",
+    "top5": [
+     "KNIGHT1",
+     "ANYONE",
+     "SCARF2",
+     "PATIENT2",
+     "AUTISM1"
+    ],
+    "score": 0.11983172595500946,
+    "margin": 0.0409737229347229,
+    "correct": false,
+    "recording_ms": 5732.634146341464,
+    "coverage": 0.1860465109348297,
+    "sign_fraction": 0.47674418604651164
+   },
+   "both_2s": {
+    "prediction": "PATIENT2",
+    "top5": [
+     "PATIENT2",
+     "KNIGHT1",
+     "TAIL1",
+     "IMPOSSIBLE",
+     "PARTY1"
+    ],
+    "score": 0.08221570402383804,
+    "margin": 0.01901482790708542,
+    "correct": false,
+    "recording_ms": 6732.512195121952,
+    "coverage": 0.15841583907604218,
+    "sign_fraction": 0.40594059405940597
+   },
+   "both_4s": {
+    "prediction": "ANYONE",
+    "top5": [
+     "ANYONE",
+     "KNIGHT1",
+     "UNDERWEAR1",
+     "IMPOSSIBLE",
+     "BREAKFAST1"
+    ],
+    "score": 0.10001617670059204,
+    "margin": 0.024526558816432953,
+    "correct": false,
+    "recording_ms": 10732.024390243902,
+    "coverage": 0.09937888383865356,
+    "sign_fraction": 0.2546583850931677
+   }
+  }
+ },
+ {
+  "gloss": "SHOCKED",
+  "signer": "P21",
+  "sign_ms": 1932.9999999999998,
+  "sign_frames": 58,
+  "sign_coverage": 0.4137931168079376,
+  "base": {
+   "prediction": "SHOCKED",
+   "top5": [
+    "SHOCKED",
+    "DECIDE1",
+    "FLIP",
+    "UNDERWEAR1",
+    "RAZOR2"
+   ],
+   "score": 0.16411764919757843,
+   "margin": 0.11742763966321945,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "SHOCKED",
+    "top5": [
+     "SHOCKED",
+     "UNDERWEAR1",
+     "FLIP",
+     "DECIDE1",
+     "GOODYGOODYSHOEOPPOSITE"
+    ],
+    "score": 0.1997646987438202,
+    "margin": 0.158660426735878,
+    "correct": true,
+    "recording_ms": 2932.8275862068963,
+    "coverage": 0.27272728085517883,
+    "sign_fraction": 0.6590909090909091
+   },
+   "lead_2s": {
+    "prediction": "SHOCKED",
+    "top5": [
+     "SHOCKED",
+     "UNDERWEAR1",
+     "RAZOR2",
+     "KNIGHT1",
+     "PARTY1"
+    ],
+    "score": 0.14214831590652466,
+    "margin": 0.08557034283876419,
+    "correct": true,
+    "recording_ms": 3932.655172413793,
+    "coverage": 0.20338982343673706,
+    "sign_fraction": 0.4915254237288136
+   },
+   "lead_3s": {
+    "prediction": "UNDERWEAR1",
+    "top5": [
+     "UNDERWEAR1",
+     "TAIL1",
+     "FLIP",
+     "KNIGHT1",
+     "RAZOR2"
+    ],
+    "score": 0.05426202714443207,
+    "margin": 0.004376184195280075,
+    "correct": false,
+    "recording_ms": 4932.482758620689,
+    "coverage": 0.1621621549129486,
+    "sign_fraction": 0.3918918918918919
+   },
+   "trail_1s": {
+    "prediction": "SHOCKED",
+    "top5": [
+     "SHOCKED",
+     "FLIP",
+     "UNDERWEAR1",
+     "RAZOR2",
+     "GOODYGOODYSHOEOPPOSITE"
+    ],
+    "score": 0.24277395009994507,
+    "margin": 0.20907559990882874,
+    "correct": true,
+    "recording_ms": 2932.8275862068963,
+    "coverage": 0.27272728085517883,
+    "sign_fraction": 0.6590909090909091
+   },
+   "trail_2s": {
+    "prediction": "SHOCKED",
+    "top5": [
+     "SHOCKED",
+     "RAZOR2",
+     "KNIGHT1",
+     "UNDERWEAR1",
+     "PARTY1"
+    ],
+    "score": 0.09603682160377502,
+    "margin": 0.030222855508327484,
+    "correct": true,
+    "recording_ms": 3932.655172413793,
+    "coverage": 0.20338982343673706,
+    "sign_fraction": 0.4915254237288136
+   },
+   "trail_3s": {
+    "prediction": "FLIP",
+    "top5": [
+     "FLIP",
+     "TAIL1",
+     "KNIGHT1",
+     "RAZOR2",
+     "PARTY1"
+    ],
+    "score": 0.08247687667608261,
+    "margin": 0.022842641919851303,
+    "correct": false,
+    "recording_ms": 4932.482758620689,
+    "coverage": 0.1621621549129486,
+    "sign_fraction": 0.3918918918918919
+   },
+   "both_2s": {
+    "prediction": "SHOCKED",
+    "top5": [
+     "SHOCKED",
+     "UNDERWEAR1",
+     "DECIDE1",
+     "KNIGHT1",
+     "FLIP"
+    ],
+    "score": 0.13701438903808594,
+    "margin": 0.07621734589338303,
+    "correct": true,
+    "recording_ms": 5932.310344827586,
+    "coverage": 0.13483145833015442,
+    "sign_fraction": 0.3258426966292135
+   },
+   "both_4s": {
+    "prediction": "KNIGHT1",
+    "top5": [
+     "KNIGHT1",
+     "ANYONE",
+     "AUTISM1",
+     "BREAKFAST1",
+     "RAZOR2"
+    ],
+    "score": 0.08980829268693924,
+    "margin": 0.02458743005990982,
+    "correct": false,
+    "recording_ms": 9931.620689655172,
+    "coverage": 0.08053690940141678,
+    "sign_fraction": 0.19463087248322147
+   }
+  }
+ },
+ {
+  "gloss": "GRAMMAR",
+  "signer": "P21",
+  "sign_ms": 1938.0000000000002,
+  "sign_frames": 58,
+  "sign_coverage": 0.4482758641242981,
+  "base": {
+   "prediction": "GRAMMAR",
+   "top5": [
+    "GRAMMAR",
+    "SQUEEZE",
+    "SHARPEN2",
+    "PENNY",
+    "METAL"
+   ],
+   "score": 0.8227242827415466,
+   "margin": 0.813947856426239,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "GRAMMAR",
+    "top5": [
+     "GRAMMAR",
+     "SHARPEN2",
+     "PARTY1",
+     "DOWNSIZE1",
+     "WHATFOR1"
+    ],
+    "score": 0.7177044153213501,
+    "margin": 0.6915355920791626,
+    "correct": true,
+    "recording_ms": 2940.413793103449,
+    "coverage": 0.2954545319080353,
+    "sign_fraction": 0.6590909090909091
+   },
+   "lead_2s": {
+    "prediction": "GRAMMAR",
+    "top5": [
+     "GRAMMAR",
+     "DOWNSIZE1",
+     "HURDLE/TRIP1",
+     "PARTY1",
+     "SHARPEN2"
+    ],
+    "score": 0.6176115870475769,
+    "margin": 0.5961570143699646,
+    "correct": true,
+    "recording_ms": 3942.8275862068967,
+    "coverage": 0.22033898532390594,
+    "sign_fraction": 0.4915254237288136
+   },
+   "lead_3s": {
+    "prediction": "GRAMMAR",
+    "top5": [
+     "GRAMMAR",
+     "PARTY1",
+     "DOWNSIZE1",
+     "KNIGHT1",
+     "PULLCONVINCE"
+    ],
+    "score": 0.18418894708156586,
+    "margin": 0.11766671389341354,
+    "correct": true,
+    "recording_ms": 4945.241379310345,
+    "coverage": 0.1756756752729416,
+    "sign_fraction": 0.3918918918918919
+   },
+   "trail_1s": {
+    "prediction": "GRAMMAR",
+    "top5": [
+     "GRAMMAR",
+     "HURDLE/TRIP1",
+     "SHARPEN2",
+     "CHEESEGRATER",
+     "WALK-TIGHTROPE-CL"
+    ],
+    "score": 0.636843740940094,
+    "margin": 0.6131096482276917,
+    "correct": true,
+    "recording_ms": 2940.413793103449,
+    "coverage": 0.2954545319080353,
+    "sign_fraction": 0.6590909090909091
+   },
+   "trail_2s": {
+    "prediction": "GRAMMAR",
+    "top5": [
+     "GRAMMAR",
+     "SHARPEN2",
+     "PARTY1",
+     "HURDLE/TRIP1",
+     "CHEESEGRATER"
+    ],
+    "score": 0.464661568403244,
+    "margin": 0.42934849858283997,
+    "correct": true,
+    "recording_ms": 3942.8275862068967,
+    "coverage": 0.22033898532390594,
+    "sign_fraction": 0.4915254237288136
+   },
+   "trail_3s": {
+    "prediction": "KNIGHT1",
+    "top5": [
+     "KNIGHT1",
+     "GRAMMAR",
+     "HURDLE/TRIP1",
+     "CHEESEGRATER",
+     "CHEEK"
+    ],
+    "score": 0.08413073420524597,
+    "margin": 0.01690150797367096,
+    "correct": false,
+    "recording_ms": 4945.241379310345,
+    "coverage": 0.1756756752729416,
+    "sign_fraction": 0.3918918918918919
+   },
+   "both_2s": {
+    "prediction": "GRAMMAR",
+    "top5": [
+     "GRAMMAR",
+     "DOWNSIZE1",
+     "PARTY1",
+     "SLIDE2",
+     "HURDLE/TRIP1"
+    ],
+    "score": 0.14185500144958496,
+    "margin": 0.10333150625228882,
+    "correct": true,
+    "recording_ms": 5947.6551724137935,
+    "coverage": 0.14606741070747375,
+    "sign_fraction": 0.3258426966292135
+   },
+   "both_4s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "ANYONE",
+     "OFFEND",
+     "MOUTH"
+    ],
+    "score": 0.14474697411060333,
+    "margin": 0.011442214250564575,
+    "correct": false,
+    "recording_ms": 9957.310344827587,
+    "coverage": 0.08724832534790039,
+    "sign_fraction": 0.19463087248322147
+   }
+  }
+ },
+ {
+  "gloss": "DEVELOP1",
+  "signer": "P21",
+  "sign_ms": 1732.9999999999998,
+  "sign_frames": 52,
+  "sign_coverage": 0.5192307829856873,
+  "base": {
+   "prediction": "DEVELOP1",
+   "top5": [
+    "DEVELOP1",
+    "CALENDAR1",
+    "FINE1",
+    "ELEVATOR1",
+    "CLOSE"
+   ],
+   "score": 0.4444125294685364,
+   "margin": 0.3832630515098572,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "DEVELOP1",
+    "top5": [
+     "DEVELOP1",
+     "CLOSE",
+     "AUTISM1",
+     "FINE1",
+     "CALENDAR1"
+    ],
+    "score": 0.1404849737882614,
+    "margin": 0.06072807312011719,
+    "correct": true,
+    "recording_ms": 2732.8076923076924,
+    "coverage": 0.32926830649375916,
+    "sign_fraction": 0.6341463414634146
+   },
+   "lead_2s": {
+    "prediction": "CLOSE",
+    "top5": [
+     "CLOSE",
+     "AUTISM1",
+     "DEVELOP1",
+     "FINE1",
+     "DEAF1"
+    ],
+    "score": 0.17283938825130463,
+    "margin": 0.03984510898590088,
+    "correct": false,
+    "recording_ms": 3732.6153846153843,
+    "coverage": 0.2410714328289032,
+    "sign_fraction": 0.4642857142857143
+   },
+   "lead_3s": {
+    "prediction": "AUTISM1",
+    "top5": [
+     "AUTISM1",
+     "FINE1",
+     "CLOSE",
+     "DEVELOP1",
+     "SCARF2"
+    ],
+    "score": 0.15188150107860565,
+    "margin": 0.07092472165822983,
+    "correct": false,
+    "recording_ms": 4732.423076923076,
+    "coverage": 0.19014084339141846,
+    "sign_fraction": 0.36619718309859156
+   },
+   "trail_1s": {
+    "prediction": "DEVELOP1",
+    "top5": [
+     "DEVELOP1",
+     "CALENDAR1",
+     "FINE1",
+     "AUTISM1",
+     "CLOSE"
+    ],
+    "score": 0.2073490023612976,
+    "margin": 0.147175595164299,
+    "correct": true,
+    "recording_ms": 2732.8076923076924,
+    "coverage": 0.32926830649375916,
+    "sign_fraction": 0.6341463414634146
+   },
+   "trail_2s": {
+    "prediction": "DEVELOP1",
+    "top5": [
+     "DEVELOP1",
+     "AUTISM1",
+     "FINE1",
+     "CLOSE",
+     "CALENDAR1"
+    ],
+    "score": 0.14451177418231964,
+    "margin": 0.02719026803970337,
+    "correct": true,
+    "recording_ms": 3732.6153846153843,
+    "coverage": 0.2410714328289032,
+    "sign_fraction": 0.4642857142857143
+   },
+   "trail_3s": {
+    "prediction": "AUTISM1",
+    "top5": [
+     "AUTISM1",
+     "FINE1",
+     "DEVELOP1",
+     "CALENDAR1",
+     "CLOSE"
+    ],
+    "score": 0.16832159459590912,
+    "margin": 0.07914619147777557,
+    "correct": false,
+    "recording_ms": 4732.423076923076,
+    "coverage": 0.19014084339141846,
+    "sign_fraction": 0.36619718309859156
+   },
+   "both_2s": {
+    "prediction": "AUTISM1",
+    "top5": [
+     "AUTISM1",
+     "CLOSE",
+     "FINE1",
+     "DEVELOP1",
+     "CALENDAR1"
+    ],
+    "score": 0.18202954530715942,
+    "margin": 0.08730104565620422,
+    "correct": false,
+    "recording_ms": 5732.2307692307695,
+    "coverage": 0.15697674453258514,
+    "sign_fraction": 0.3023255813953488
+   },
+   "both_4s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "AUTISM1",
+     "KNIGHT1",
+     "ANYONE",
+     "OFFEND"
+    ],
+    "score": 0.14592276513576508,
+    "margin": 0.06632009148597717,
+    "correct": false,
+    "recording_ms": 9731.461538461537,
+    "coverage": 0.09246575087308884,
+    "sign_fraction": 0.1780821917808219
+   }
+  }
+ },
+ {
+  "gloss": "BACKPACK1",
+  "signer": "P21",
+  "sign_ms": 1600.0,
+  "sign_frames": 48,
+  "sign_coverage": 0.4791666567325592,
+  "base": {
+   "prediction": "BACKPACK1",
+   "top5": [
+    "BACKPACK1",
+    "COMB2",
+    "MEACULPA",
+    "BREAKFAST1",
+    "AUTISM1"
+   ],
+   "score": 0.5927544236183167,
+   "margin": 0.5658655166625977,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "BACKPACK1",
+    "top5": [
+     "BACKPACK1",
+     "DARK1",
+     "AUTISM1",
+     "COMB2",
+     "FOREIGNER1"
+    ],
+    "score": 0.23473159968852997,
+    "margin": 0.1738213747739792,
+    "correct": true,
+    "recording_ms": 2600.0,
+    "coverage": 0.29487180709838867,
+    "sign_fraction": 0.6153846153846154
+   },
+   "lead_2s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "COMB2",
+     "ANYONE",
+     "AUTISM1",
+     "HOSPITAL1"
+    ],
+    "score": 0.09772816300392151,
+    "margin": 0.01760976016521454,
+    "correct": false,
+    "recording_ms": 3600.0,
+    "coverage": 0.21296297013759613,
+    "sign_fraction": 0.4444444444444444
+   },
+   "lead_3s": {
+    "prediction": "BACKPACK1",
+    "top5": [
+     "BACKPACK1",
+     "AUTISM1",
+     "DARK1",
+     "ANYONE",
+     "BREAKFAST1"
+    ],
+    "score": 0.1918836385011673,
+    "margin": 0.11928623914718628,
+    "correct": true,
+    "recording_ms": 4600.0,
+    "coverage": 0.1666666716337204,
+    "sign_fraction": 0.34782608695652173
+   },
+   "trail_1s": {
+    "prediction": "BACKPACK1",
+    "top5": [
+     "BACKPACK1",
+     "AUTISM1",
+     "BREAKFAST1",
+     "COMB2",
+     "DARK1"
+    ],
+    "score": 0.30684778094291687,
+    "margin": 0.2358059138059616,
+    "correct": true,
+    "recording_ms": 2600.0,
+    "coverage": 0.29487180709838867,
+    "sign_fraction": 0.6153846153846154
+   },
+   "trail_2s": {
+    "prediction": "KNIGHT1",
+    "top5": [
+     "KNIGHT1",
+     "RAZOR2",
+     "ANYONE",
+     "HOSPITAL1",
+     "BREAKFAST1"
+    ],
+    "score": 0.12070737034082413,
+    "margin": 0.042684152722358704,
+    "correct": false,
+    "recording_ms": 3600.0,
+    "coverage": 0.21296297013759613,
+    "sign_fraction": 0.4444444444444444
+   },
+   "trail_3s": {
+    "prediction": "KNIGHT1",
+    "top5": [
+     "KNIGHT1",
+     "HOSPITAL1",
+     "BREAKFAST1",
+     "AUTISM1",
+     "ANYONE"
+    ],
+    "score": 0.1156468465924263,
+    "margin": 0.03241731971502304,
+    "correct": false,
+    "recording_ms": 4600.0,
+    "coverage": 0.1666666716337204,
+    "sign_fraction": 0.34782608695652173
+   },
+   "both_2s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "ANYONE",
+     "KNIGHT1",
+     "AUTISM1",
+     "HOSPITAL1"
+    ],
+    "score": 0.10742633789777756,
+    "margin": 0.023488439619541168,
+    "correct": false,
+    "recording_ms": 5600.0,
+    "coverage": 0.1369047611951828,
+    "sign_fraction": 0.2857142857142857
+   },
+   "both_4s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "ANYONE",
+     "MOUTH",
+     "HOSPITAL1"
+    ],
+    "score": 0.1421479880809784,
+    "margin": 0.029354259371757507,
+    "correct": false,
+    "recording_ms": 9600.0,
+    "coverage": 0.0798611119389534,
+    "sign_fraction": 0.16666666666666666
+   }
+  }
+ },
+ {
+  "gloss": "GUESS1",
+  "signer": "P5",
+  "sign_ms": 2005.0,
+  "sign_frames": 60,
+  "sign_coverage": 0.4333333373069763,
+  "base": {
+   "prediction": "GUESS1",
+   "top5": [
+    "GUESS1",
+    "DRAG1",
+    "BREAKFAST1",
+    "BITE1",
+    "MAPLE"
+   ],
+   "score": 0.5381830334663391,
+   "margin": 0.4955166280269623,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "GUESS1",
+    "top5": [
+     "GUESS1",
+     "APPLE",
+     "BREAKFAST1",
+     "COMB2",
+     "MAPLE"
+    ],
+    "score": 0.6373776793479919,
+    "margin": 0.6158458590507507,
+    "correct": true,
+    "recording_ms": 3007.5,
+    "coverage": 0.2888889014720917,
+    "sign_fraction": 0.6666666666666666
+   },
+   "lead_2s": {
+    "prediction": "GUESS1",
+    "top5": [
+     "GUESS1",
+     "BREAKFAST1",
+     "KNIGHT1",
+     "AUTISM1",
+     "RAZOR2"
+    ],
+    "score": 0.20233838260173798,
+    "margin": 0.11093754321336746,
+    "correct": true,
+    "recording_ms": 4010.0,
+    "coverage": 0.21666666865348816,
+    "sign_fraction": 0.5
+   },
+   "lead_3s": {
+    "prediction": "GUESS1",
+    "top5": [
+     "GUESS1",
+     "BREAKFAST1",
+     "MAPLE",
+     "RAZOR2",
+     "AUTISM1"
+    ],
+    "score": 0.35117992758750916,
+    "margin": 0.30636948347091675,
+    "correct": true,
+    "recording_ms": 5012.5,
+    "coverage": 0.1733333319425583,
+    "sign_fraction": 0.4
+   },
+   "trail_1s": {
+    "prediction": "GUESS1",
+    "top5": [
+     "GUESS1",
+     "MAPLE",
+     "BREAKFAST1",
+     "BITE1",
+     "DRAG1"
+    ],
+    "score": 0.33990243077278137,
+    "margin": 0.310793399810791,
+    "correct": true,
+    "recording_ms": 3007.5,
+    "coverage": 0.2888889014720917,
+    "sign_fraction": 0.6666666666666666
+   },
+   "trail_2s": {
+    "prediction": "GUESS1",
+    "top5": [
+     "GUESS1",
+     "BREAKFAST1",
+     "AUTISM1",
+     "BITE1",
+     "SQUEEZE"
+    ],
+    "score": 0.2870068848133087,
+    "margin": 0.20872868597507477,
+    "correct": true,
+    "recording_ms": 4010.0,
+    "coverage": 0.21666666865348816,
+    "sign_fraction": 0.5
+   },
+   "trail_3s": {
+    "prediction": "GUESS1",
+    "top5": [
+     "GUESS1",
+     "BREAKFAST1",
+     "AUTISM1",
+     "KNIGHT1",
+     "MAPLE"
+    ],
+    "score": 0.23481056094169617,
+    "margin": 0.1366974115371704,
+    "correct": true,
+    "recording_ms": 5012.5,
+    "coverage": 0.1733333319425583,
+    "sign_fraction": 0.4
+   },
+   "both_2s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "GUESS1",
+     "KNIGHT1",
+     "AUTISM1",
+     "ANYONE"
+    ],
+    "score": 0.14535865187644958,
+    "margin": 0.07890981435775757,
+    "correct": false,
+    "recording_ms": 6015.0,
+    "coverage": 0.14444445073604584,
+    "sign_fraction": 0.3333333333333333
+   },
+   "both_4s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "GUESS1",
+     "KNIGHT1",
+     "AUTISM1",
+     "ANYONE"
+    ],
+    "score": 0.1535029113292694,
+    "margin": 0.09467905014753342,
+    "correct": false,
+    "recording_ms": 10025.0,
+    "coverage": 0.08666666597127914,
+    "sign_fraction": 0.2
+   }
+  }
+ },
+ {
+  "gloss": "APPLE",
+  "signer": "P5",
+  "sign_ms": 2340.0,
+  "sign_frames": 70,
+  "sign_coverage": 0.3571428656578064,
+  "base": {
+   "prediction": "APPLE",
+   "top5": [
+    "APPLE",
+    "METAL",
+    "RAZOR2",
+    "SHAVE1",
+    "PENNY"
+   ],
+   "score": 0.5874737501144409,
+   "margin": 0.5350744724273682,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "APPLE",
+    "top5": [
+     "APPLE",
+     "METAL",
+     "RAZOR2",
+     "SHAVE1",
+     "WHATFOR1"
+    ],
+    "score": 0.3962240219116211,
+    "margin": 0.33222249150276184,
+    "correct": true,
+    "recording_ms": 3342.857142857143,
+    "coverage": 0.25,
+    "sign_fraction": 0.7
+   },
+   "lead_2s": {
+    "prediction": "APPLE",
+    "top5": [
+     "APPLE",
+     "RAZOR2",
+     "METAL",
+     "WHATFOR1",
+     "KNIGHT1"
+    ],
+    "score": 0.22637587785720825,
+    "margin": 0.15479320287704468,
+    "correct": true,
+    "recording_ms": 4345.714285714286,
+    "coverage": 0.19230769574642181,
+    "sign_fraction": 0.5384615384615384
+   },
+   "lead_3s": {
+    "prediction": "APPLE",
+    "top5": [
+     "APPLE",
+     "RAZOR2",
+     "BREAKFAST1",
+     "KNIGHT1",
+     "MOUTH"
+    ],
+    "score": 0.08178509771823883,
+    "margin": 0.004619933664798737,
+    "correct": true,
+    "recording_ms": 5348.571428571428,
+    "coverage": 0.15625,
+    "sign_fraction": 0.4375
+   },
+   "trail_1s": {
+    "prediction": "APPLE",
+    "top5": [
+     "APPLE",
+     "RAZOR2",
+     "METAL",
+     "MYSELF",
+     "SHAVE1"
+    ],
+    "score": 0.2720811367034912,
+    "margin": 0.21351845562458038,
+    "correct": true,
+    "recording_ms": 3342.857142857143,
+    "coverage": 0.25,
+    "sign_fraction": 0.7
+   },
+   "trail_2s": {
+    "prediction": "APPLE",
+    "top5": [
+     "APPLE",
+     "RAZOR2",
+     "WHATFOR1",
+     "BREAKFAST1",
+     "METAL"
+    ],
+    "score": 0.2084020972251892,
+    "margin": 0.15186867117881775,
+    "correct": true,
+    "recording_ms": 4345.714285714286,
+    "coverage": 0.19230769574642181,
+    "sign_fraction": 0.5384615384615384
+   },
+   "trail_3s": {
+    "prediction": "APPLE",
+    "top5": [
+     "APPLE",
+     "RAZOR2",
+     "BREAKFAST1",
+     "MYSELF",
+     "SHAVE1"
+    ],
+    "score": 0.161855086684227,
+    "margin": 0.10475100576877594,
+    "correct": true,
+    "recording_ms": 5348.571428571428,
+    "coverage": 0.15625,
+    "sign_fraction": 0.4375
+   },
+   "both_2s": {
+    "prediction": "APPLE",
+    "top5": [
+     "APPLE",
+     "RAZOR2",
+     "KNIGHT1",
+     "BREAKFAST1",
+     "MOUTH"
+    ],
+    "score": 0.09631739556789398,
+    "margin": 0.02630329132080078,
+    "correct": true,
+    "recording_ms": 6351.428571428572,
+    "coverage": 0.1315789520740509,
+    "sign_fraction": 0.3684210526315789
+   },
+   "both_4s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "RAZOR2",
+     "MOUTH",
+     "ANYONE"
+    ],
+    "score": 0.10205959528684616,
+    "margin": 0.017543941736221313,
+    "correct": false,
+    "recording_ms": 10362.857142857143,
+    "coverage": 0.08064515888690948,
+    "sign_fraction": 0.22580645161290322
+   }
+  }
+ },
+ {
+  "gloss": "EAT1",
+  "signer": "P5",
+  "sign_ms": 2500.0,
+  "sign_frames": 75,
+  "sign_coverage": 0.3866666555404663,
+  "base": {
+   "prediction": "EAT1",
+   "top5": [
+    "EAT1",
+    "UNDERWEAR1",
+    "BREAKFAST1",
+    "VOICE",
+    "BEE1"
+   ],
+   "score": 0.5294166803359985,
+   "margin": 0.4791948199272156,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "EAT1",
+    "top5": [
+     "EAT1",
+     "BREAKFAST1",
+     "UNDERWEAR1",
+     "VOICE",
+     "BEE1"
+    ],
+    "score": 0.46574506163597107,
+    "margin": 0.4117746949195862,
+    "correct": true,
+    "recording_ms": 3500.0,
+    "coverage": 0.27619048953056335,
+    "sign_fraction": 0.7142857142857143
+   },
+   "lead_2s": {
+    "prediction": "EAT1",
+    "top5": [
+     "EAT1",
+     "BREAKFAST1",
+     "UNDERWEAR1",
+     "ANYONE",
+     "AUTISM1"
+    ],
+    "score": 0.116605743765831,
+    "margin": 0.005597740411758423,
+    "correct": true,
+    "recording_ms": 4500.0,
+    "coverage": 0.21481481194496155,
+    "sign_fraction": 0.5555555555555556
+   },
+   "lead_3s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "EAT1",
+     "ANYONE",
+     "UNDERWEAR1",
+     "AUTISM1"
+    ],
+    "score": 0.1070307120680809,
+    "margin": 0.005178913474082947,
+    "correct": false,
+    "recording_ms": 5500.0,
+    "coverage": 0.17575757205486298,
+    "sign_fraction": 0.45454545454545453
+   },
+   "trail_1s": {
+    "prediction": "EAT1",
+    "top5": [
+     "EAT1",
+     "UNDERWEAR1",
+     "BREAKFAST1",
+     "VOICE",
+     "BEE1"
+    ],
+    "score": 0.4265783727169037,
+    "margin": 0.36699217557907104,
+    "correct": true,
+    "recording_ms": 3500.0,
+    "coverage": 0.27619048953056335,
+    "sign_fraction": 0.7142857142857143
+   },
+   "trail_2s": {
+    "prediction": "EAT1",
+    "top5": [
+     "EAT1",
+     "BREAKFAST1",
+     "UNDERWEAR1",
+     "AUTISM1",
+     "ANYONE"
+    ],
+    "score": 0.22366201877593994,
+    "margin": 0.13660794496536255,
+    "correct": true,
+    "recording_ms": 4500.0,
+    "coverage": 0.21481481194496155,
+    "sign_fraction": 0.5555555555555556
+   },
+   "trail_3s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "EAT1",
+     "UNDERWEAR1",
+     "AUTISM1",
+     "ANYONE"
+    ],
+    "score": 0.11958085000514984,
+    "margin": 0.0040353164076805115,
+    "correct": false,
+    "recording_ms": 5500.0,
+    "coverage": 0.17575757205486298,
+    "sign_fraction": 0.45454545454545453
+   },
+   "both_2s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "ANYONE",
+     "KNIGHT1",
+     "UNDERWEAR1",
+     "AUTISM1"
+    ],
+    "score": 0.16006049513816833,
+    "margin": 0.08560331910848618,
+    "correct": false,
+    "recording_ms": 6500.0,
+    "coverage": 0.1487179547548294,
+    "sign_fraction": 0.38461538461538464
+   },
+   "both_4s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "ANYONE",
+     "KNIGHT1",
+     "AUTISM1",
+     "UNDERWEAR1"
+    ],
+    "score": 0.16920872032642365,
+    "margin": 0.09795662015676498,
+    "correct": false,
+    "recording_ms": 10500.0,
+    "coverage": 0.09206349402666092,
+    "sign_fraction": 0.23809523809523808
+   }
+  }
+ },
+ {
+  "gloss": "BACKPACK1",
+  "signer": "P5",
+  "sign_ms": 3108.0,
+  "sign_frames": 93,
+  "sign_coverage": 0.4301075339317322,
+  "base": {
+   "prediction": "CHEER",
+   "top5": [
+    "CHEER",
+    "PARTY1",
+    "GRAMMAR",
+    "BACKPACK1",
+    "ALLOFSUDDEN"
+   ],
+   "score": 0.4652164578437805,
+   "margin": 0.3874514102935791,
+   "correct": false
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "CHEER",
+    "top5": [
+     "CHEER",
+     "PARTY1",
+     "GRAMMAR",
+     "SWEATER2",
+     "BACKPACK1"
+    ],
+    "score": 0.41901570558547974,
+    "margin": 0.28334981203079224,
+    "correct": false,
+    "recording_ms": 4110.580645161291,
+    "coverage": 0.3252032399177551,
+    "sign_fraction": 0.7560975609756098
+   },
+   "lead_2s": {
+    "prediction": "PARTY1",
+    "top5": [
+     "PARTY1",
+     "CHEER",
+     "ALLOFSUDDEN",
+     "BACKPACK1",
+     "GRAMMAR"
+    ],
+    "score": 0.228383868932724,
+    "margin": 0.036102086305618286,
+    "correct": false,
+    "recording_ms": 5113.16129032258,
+    "coverage": 0.26143792271614075,
+    "sign_fraction": 0.6078431372549019
+   },
+   "lead_3s": {
+    "prediction": "PARTY1",
+    "top5": [
+     "PARTY1",
+     "CHEER",
+     "SWEATER2",
+     "BACKPACK1",
+     "ALLOFSUDDEN"
+    ],
+    "score": 0.2473335713148117,
+    "margin": 0.07284718751907349,
+    "correct": false,
+    "recording_ms": 6115.74193548387,
+    "coverage": 0.2185792326927185,
+    "sign_fraction": 0.5081967213114754
+   },
+   "trail_1s": {
+    "prediction": "CHEER",
+    "top5": [
+     "CHEER",
+     "PARTY1",
+     "GRAMMAR",
+     "SWEATER2",
+     "IMPOSSIBLE"
+    ],
+    "score": 0.35567742586135864,
+    "margin": 0.275922566652298,
+    "correct": false,
+    "recording_ms": 4110.580645161291,
+    "coverage": 0.3252032399177551,
+    "sign_fraction": 0.7560975609756098
+   },
+   "trail_2s": {
+    "prediction": "CHEER",
+    "top5": [
+     "CHEER",
+     "PARTY1",
+     "IMPOSSIBLE",
+     "ANYONE",
+     "SWEATER2"
+    ],
+    "score": 0.1536182016134262,
+    "margin": 0.04054194688796997,
+    "correct": false,
+    "recording_ms": 5113.16129032258,
+    "coverage": 0.26143792271614075,
+    "sign_fraction": 0.6078431372549019
+   },
+   "trail_3s": {
+    "prediction": "PARTY1",
+    "top5": [
+     "PARTY1",
+     "CHEER",
+     "SWEATER2",
+     "IMPOSSIBLE",
+     "ANYONE"
+    ],
+    "score": 0.21745167672634125,
+    "margin": 0.07083453238010406,
+    "correct": false,
+    "recording_ms": 6115.74193548387,
+    "coverage": 0.2185792326927185,
+    "sign_fraction": 0.5081967213114754
+   },
+   "both_2s": {
+    "prediction": "ANYONE",
+    "top5": [
+     "ANYONE",
+     "PARTY1",
+     "UNDERWEAR1",
+     "CHEER",
+     "ALLOFSUDDEN"
+    ],
+    "score": 0.07543567568063736,
+    "margin": 0.01856551319360733,
+    "correct": false,
+    "recording_ms": 7118.322580645161,
+    "coverage": 0.18779343366622925,
+    "sign_fraction": 0.43661971830985913
+   },
+   "both_4s": {
+    "prediction": "PARTY1",
+    "top5": [
+     "PARTY1",
+     "CHEER",
+     "SWEATER2",
+     "BACKPACK1",
+     "UNDERWEAR1"
+    ],
+    "score": 0.15303315222263336,
+    "margin": 0.069539874792099,
+    "correct": false,
+    "recording_ms": 11128.645161290322,
+    "coverage": 0.12012012302875519,
+    "sign_fraction": 0.27927927927927926
+   }
+  }
+ },
+ {
+  "gloss": "BEE1",
+  "signer": "P5",
+  "sign_ms": 3454.74286842365,
+  "sign_frames": 105,
+  "sign_coverage": 0.380952388048172,
+  "base": {
+   "prediction": "BEE1",
+   "top5": [
+    "BEE1",
+    "HALLOWEEN1",
+    "MAPLE",
+    "AXE1",
+    "PONDER"
+   ],
+   "score": 0.12072768807411194,
+   "margin": 0.0481584370136261,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "BEE1",
+    "top5": [
+     "BEE1",
+     "MAPLE",
+     "GUESS1",
+     "BREAKFAST1",
+     "AXE1"
+    ],
+    "score": 0.1994522660970688,
+    "margin": 0.10567214339971542,
+    "correct": true,
+    "recording_ms": 4441.812259401836,
+    "coverage": 0.29629629850387573,
+    "sign_fraction": 0.7777777777777778
+   },
+   "lead_2s": {
+    "prediction": "BEE1",
+    "top5": [
+     "BEE1",
+     "MAPLE",
+     "GUESS1",
+     "HALLOWEEN1",
+     "ANYONE"
+    ],
+    "score": 0.1320038139820099,
+    "margin": 0.04932594299316406,
+    "correct": true,
+    "recording_ms": 5461.783963412628,
+    "coverage": 0.2409638613462448,
+    "sign_fraction": 0.6325301204819277
+   },
+   "lead_3s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "BEE1",
+     "GUESS1",
+     "MAPLE",
+     "ANYONE"
+    ],
+    "score": 0.1034449115395546,
+    "margin": 0.00965949147939682,
+    "correct": false,
+    "recording_ms": 6448.853354390813,
+    "coverage": 0.20408163964748383,
+    "sign_fraction": 0.5357142857142857
+   },
+   "trail_1s": {
+    "prediction": "BEE1",
+    "top5": [
+     "BEE1",
+     "MAPLE",
+     "BREAKFAST1",
+     "GUESS1",
+     "FLIP"
+    ],
+    "score": 0.17349736392498016,
+    "margin": 0.1138300746679306,
+    "correct": true,
+    "recording_ms": 4441.812259401836,
+    "coverage": 0.29629629850387573,
+    "sign_fraction": 0.7777777777777778
+   },
+   "trail_2s": {
+    "prediction": "BEE1",
+    "top5": [
+     "BEE1",
+     "BREAKFAST1",
+     "MAPLE",
+     "GUESS1",
+     "NOON1"
+    ],
+    "score": 0.26158276200294495,
+    "margin": 0.19849896430969238,
+    "correct": true,
+    "recording_ms": 5461.783963412628,
+    "coverage": 0.2409638613462448,
+    "sign_fraction": 0.6325301204819277
+   },
+   "trail_3s": {
+    "prediction": "BEE1",
+    "top5": [
+     "BEE1",
+     "BREAKFAST1",
+     "GUESS1",
+     "ANYONE",
+     "NOON1"
+    ],
+    "score": 0.14066211879253387,
+    "margin": 0.038508787751197815,
+    "correct": true,
+    "recording_ms": 6448.853354390813,
+    "coverage": 0.20408163964748383,
+    "sign_fraction": 0.5357142857142857
+   },
+   "both_2s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "BEE1",
+     "GUESS1",
+     "MAPLE",
+     "ANYONE"
+    ],
+    "score": 0.10255599021911621,
+    "margin": 0.01538529247045517,
+    "correct": false,
+    "recording_ms": 7468.825058401605,
+    "coverage": 0.17621144652366638,
+    "sign_fraction": 0.46255506607929514
+   },
+   "both_4s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "ANYONE",
+     "AUTISM1",
+     "GUESS1"
+    ],
+    "score": 0.16074438393115997,
+    "margin": 0.09178169071674347,
+    "correct": false,
+    "recording_ms": 11482.90724837956,
+    "coverage": 0.11461318284273148,
+    "sign_fraction": 0.3008595988538682
+   }
+  }
+ },
+ {
+  "gloss": "WHATFOR1",
+  "signer": "P5",
+  "sign_ms": 3867.0,
+  "sign_frames": 116,
+  "sign_coverage": 0.25,
+  "base": {
+   "prediction": "WHATFOR1",
+   "top5": [
+    "WHATFOR1",
+    "KNIGHT1",
+    "OFFEND",
+    "TAIL1",
+    "BREAKFAST1"
+   ],
+   "score": 0.6248214840888977,
+   "margin": 0.5719594955444336,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "WHATFOR1",
+    "top5": [
+     "WHATFOR1",
+     "KNIGHT1",
+     "OFFEND",
+     "BREAKFAST1",
+     "TAIL1"
+    ],
+    "score": 0.2865230441093445,
+    "margin": 0.16930706799030304,
+    "correct": true,
+    "recording_ms": 4867.086206896552,
+    "coverage": 0.19863013923168182,
+    "sign_fraction": 0.7945205479452054
+   },
+   "lead_2s": {
+    "prediction": "WHATFOR1",
+    "top5": [
+     "WHATFOR1",
+     "KNIGHT1",
+     "OFFEND",
+     "SCROLLDOWN",
+     "SHARPEN2"
+    ],
+    "score": 0.262649267911911,
+    "margin": 0.1546294391155243,
+    "correct": true,
+    "recording_ms": 5867.172413793103,
+    "coverage": 0.16477273404598236,
+    "sign_fraction": 0.6590909090909091
+   },
+   "lead_3s": {
+    "prediction": "KNIGHT1",
+    "top5": [
+     "KNIGHT1",
+     "WHATFOR1",
+     "OFFEND",
+     "AUTISM1",
+     "BREAKFAST1"
+    ],
+    "score": 0.12119829654693604,
+    "margin": 0.0413348525762558,
+    "correct": false,
+    "recording_ms": 6867.258620689655,
+    "coverage": 0.14077669382095337,
+    "sign_fraction": 0.5631067961165048
+   },
+   "trail_1s": {
+    "prediction": "WHATFOR1",
+    "top5": [
+     "WHATFOR1",
+     "OFFEND",
+     "KNIGHT1",
+     "SCROLLDOWN",
+     "SHARPEN2"
+    ],
+    "score": 0.7140299081802368,
+    "margin": 0.680130660533905,
+    "correct": true,
+    "recording_ms": 4867.086206896552,
+    "coverage": 0.19863013923168182,
+    "sign_fraction": 0.7945205479452054
+   },
+   "trail_2s": {
+    "prediction": "WHATFOR1",
+    "top5": [
+     "WHATFOR1",
+     "KNIGHT1",
+     "OFFEND",
+     "BREAKFAST1",
+     "SCROLLDOWN"
+    ],
+    "score": 0.2182289958000183,
+    "margin": 0.11284881830215454,
+    "correct": true,
+    "recording_ms": 5867.172413793103,
+    "coverage": 0.16477273404598236,
+    "sign_fraction": 0.6590909090909091
+   },
+   "trail_3s": {
+    "prediction": "WHATFOR1",
+    "top5": [
+     "WHATFOR1",
+     "KNIGHT1",
+     "OFFEND",
+     "SCROLLDOWN",
+     "BREAKFAST1"
+    ],
+    "score": 0.24848225712776184,
+    "margin": 0.1712445318698883,
+    "correct": true,
+    "recording_ms": 6867.258620689655,
+    "coverage": 0.14077669382095337,
+    "sign_fraction": 0.5631067961165048
+   },
+   "both_2s": {
+    "prediction": "WHATFOR1",
+    "top5": [
+     "WHATFOR1",
+     "SCROLLDOWN",
+     "OFFEND",
+     "KNIGHT1",
+     "BREAKFAST1"
+    ],
+    "score": 0.14883103966712952,
+    "margin": 0.0757368877530098,
+    "correct": true,
+    "recording_ms": 7867.3448275862065,
+    "coverage": 0.12288135290145874,
+    "sign_fraction": 0.4915254237288136
+   },
+   "both_4s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "KNIGHT1",
+     "ANYONE",
+     "OFFEND",
+     "MOUTH"
+    ],
+    "score": 0.1595040112733841,
+    "margin": 0.03355371952056885,
+    "correct": false,
+    "recording_ms": 11867.689655172415,
+    "coverage": 0.08146067708730698,
+    "sign_fraction": 0.3258426966292135
+   }
+  }
+ },
+ {
+  "gloss": "BEE1",
+  "signer": "P5",
+  "sign_ms": 2898.26433488127,
+  "sign_frames": 88,
+  "sign_coverage": 0.5227272510528564,
+  "base": {
+   "prediction": "MAPLE",
+   "top5": [
+    "MAPLE",
+    "BEE1",
+    "ALLOFSUDDEN",
+    "GOODYGOODYSHOEOPPOSITE",
+    "FLIP"
+   ],
+   "score": 0.18577644228935242,
+   "margin": 0.02667395770549774,
+   "correct": false
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "MAPLE",
+    "top5": [
+     "MAPLE",
+     "BEE1",
+     "GUESS1",
+     "FLIP",
+     "GOODYGOODYSHOEOPPOSITE"
+    ],
+    "score": 0.16375820338726044,
+    "margin": 0.09271564334630966,
+    "correct": false,
+    "recording_ms": 3886.3089944998846,
+    "coverage": 0.38983049988746643,
+    "sign_fraction": 0.7457627118644068
+   },
+   "lead_2s": {
+    "prediction": "MAPLE",
+    "top5": [
+     "MAPLE",
+     "BEE1",
+     "GUESS1",
+     "FLIP",
+     "GOODYGOODYSHOEOPPOSITE"
+    ],
+    "score": 0.1342150717973709,
+    "margin": 0.05731404572725296,
+    "correct": false,
+    "recording_ms": 4907.288476105787,
+    "coverage": 0.3087248206138611,
+    "sign_fraction": 0.5906040268456376
+   },
+   "lead_3s": {
+    "prediction": "DECIDE1",
+    "top5": [
+     "DECIDE1",
+     "KNIGHT1",
+     "BREAKFAST1",
+     "FLIP",
+     "MAPLE"
+    ],
+    "score": 0.09154722094535828,
+    "margin": 0.02939797192811966,
+    "correct": false,
+    "recording_ms": 5895.3331357244015,
+    "coverage": 0.2569832503795624,
+    "sign_fraction": 0.49162011173184356
+   },
+   "trail_1s": {
+    "prediction": "MAPLE",
+    "top5": [
+     "MAPLE",
+     "BEE1",
+     "FLIP",
+     "ALLOFSUDDEN",
+     "GOODYGOODYSHOEOPPOSITE"
+    ],
+    "score": 0.11398417502641678,
+    "margin": 0.014592714607715607,
+    "correct": false,
+    "recording_ms": 3886.3089944998846,
+    "coverage": 0.38983049988746643,
+    "sign_fraction": 0.7457627118644068
+   },
+   "trail_2s": {
+    "prediction": "MAPLE",
+    "top5": [
+     "MAPLE",
+     "GUESS1",
+     "BEE1",
+     "BREAKFAST1",
+     "FLIP"
+    ],
+    "score": 0.10913599282503128,
+    "margin": 0.04192432761192322,
+    "correct": false,
+    "recording_ms": 4907.288476105787,
+    "coverage": 0.3087248206138611,
+    "sign_fraction": 0.5906040268456376
+   },
+   "trail_3s": {
+    "prediction": "MAPLE",
+    "top5": [
+     "MAPLE",
+     "GUESS1",
+     "BREAKFAST1",
+     "FLIP",
+     "GOODYGOODYSHOEOPPOSITE"
+    ],
+    "score": 0.07669293880462646,
+    "margin": 0.02043888345360756,
+    "correct": false,
+    "recording_ms": 5895.3331357244015,
+    "coverage": 0.2569832503795624,
+    "sign_fraction": 0.49162011173184356
+   },
+   "both_2s": {
+    "prediction": "TAIL1",
+    "top5": [
+     "TAIL1",
+     "FLIP",
+     "MAPLE",
+     "GUESS1",
+     "BREAKFAST1"
+    ],
+    "score": 0.051320578902959824,
+    "margin": 0.004275456070899963,
+    "correct": false,
+    "recording_ms": 6916.3126173303035,
+    "coverage": 0.21904762089252472,
+    "sign_fraction": 0.41904761904761906
+   },
+   "both_4s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "GUESS1",
+     "KNIGHT1",
+     "AUTISM1",
+     "MAPLE"
+    ],
+    "score": 0.095674067735672,
+    "margin": 0.030464857816696167,
+    "correct": false,
+    "recording_ms": 10868.491255804764,
+    "coverage": 0.13939394056797028,
+    "sign_fraction": 0.26666666666666666
+   }
+  }
+ },
+ {
+  "gloss": "SPECIAL1",
+  "signer": "P5",
+  "sign_ms": 3103.0,
+  "sign_frames": 93,
+  "sign_coverage": 0.4301075339317322,
+  "base": {
+   "prediction": "8HOUR",
+   "top5": [
+    "8HOUR",
+    "SAIL2",
+    "DEVELOP1",
+    "CALENDAR1",
+    "SPECIAL1"
+   ],
+   "score": 0.07736393809318542,
+   "margin": 0.017086144536733627,
+   "correct": false
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "DEVELOP1",
+    "top5": [
+     "DEVELOP1",
+     "CALENDAR1",
+     "DEMAND1",
+     "SAIL2",
+     "SPECIAL1"
+    ],
+    "score": 0.055830568075180054,
+    "margin": 0.006938237696886063,
+    "correct": false,
+    "recording_ms": 4103.967741935484,
+    "coverage": 0.3252032399177551,
+    "sign_fraction": 0.7560975609756098
+   },
+   "lead_2s": {
+    "prediction": "8HOUR",
+    "top5": [
+     "8HOUR",
+     "DEVELOP1",
+     "SAIL2",
+     "MAPLE",
+     "AUTISM1"
+    ],
+    "score": 0.06883758306503296,
+    "margin": 0.023984983563423157,
+    "correct": false,
+    "recording_ms": 5104.935483870968,
+    "coverage": 0.26143792271614075,
+    "sign_fraction": 0.6078431372549019
+   },
+   "lead_3s": {
+    "prediction": "ANYONE",
+    "top5": [
+     "ANYONE",
+     "DEVELOP1",
+     "SAIL2",
+     "AUTISM1",
+     "MAPLE"
+    ],
+    "score": 0.04544270411133766,
+    "margin": 7.340312004089355e-05,
+    "correct": false,
+    "recording_ms": 6105.903225806452,
+    "coverage": 0.2185792326927185,
+    "sign_fraction": 0.5081967213114754
+   },
+   "trail_1s": {
+    "prediction": "8HOUR",
+    "top5": [
+     "8HOUR",
+     "CALENDAR1",
+     "DEVELOP1",
+     "SAIL2",
+     "SOCCER2"
+    ],
+    "score": 0.06885500252246857,
+    "margin": 0.019580040127038956,
+    "correct": false,
+    "recording_ms": 4103.967741935484,
+    "coverage": 0.3252032399177551,
+    "sign_fraction": 0.7560975609756098
+   },
+   "trail_2s": {
+    "prediction": "8HOUR",
+    "top5": [
+     "8HOUR",
+     "AUTISM1",
+     "EMPTY2",
+     "CALENDAR1",
+     "DEVELOP1"
+    ],
+    "score": 0.06159723550081253,
+    "margin": 0.01801110804080963,
+    "correct": false,
+    "recording_ms": 5104.935483870968,
+    "coverage": 0.26143792271614075,
+    "sign_fraction": 0.6078431372549019
+   },
+   "trail_3s": {
+    "prediction": "CALENDAR1",
+    "top5": [
+     "CALENDAR1",
+     "AUTISM1",
+     "SAIL2",
+     "8HOUR",
+     "DEVELOP1"
+    ],
+    "score": 0.06864899396896362,
+    "margin": 0.012980245053768158,
+    "correct": false,
+    "recording_ms": 6105.903225806452,
+    "coverage": 0.2185792326927185,
+    "sign_fraction": 0.5081967213114754
+   },
+   "both_2s": {
+    "prediction": "AUTISM1",
+    "top5": [
+     "AUTISM1",
+     "SAIL2",
+     "8HOUR",
+     "EASY",
+     "CALENDAR1"
+    ],
+    "score": 0.06672302633523941,
+    "margin": 0.008133802562952042,
+    "correct": false,
+    "recording_ms": 7106.870967741936,
+    "coverage": 0.18779343366622925,
+    "sign_fraction": 0.43661971830985913
+   },
+   "both_4s": {
+    "prediction": "SAIL2",
+    "top5": [
+     "SAIL2",
+     "EASY",
+     "KNIGHT1",
+     "CLOSE",
+     "CALENDAR1"
+    ],
+    "score": 0.06018684804439545,
+    "margin": 0.00020053237676620483,
+    "correct": false,
+    "recording_ms": 11110.741935483871,
+    "coverage": 0.12012012302875519,
+    "sign_fraction": 0.27927927927927926
+   }
+  }
+ },
+ {
+  "gloss": "CLOSE",
+  "signer": "P39",
+  "sign_ms": 4233.0,
+  "sign_frames": 127,
+  "sign_coverage": 0.29921260476112366,
+  "base": {
+   "prediction": "CLOSE",
+   "top5": [
+    "CLOSE",
+    "AUTISM1",
+    "BREAKFAST1",
+    "LONGLINE",
+    "DEVELOP1"
+   ],
+   "score": 0.24133171141147614,
+   "margin": 0.17846499383449554,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "AUTISM1",
+     "CLOSE",
+     "KNIGHT1",
+     "LONGLINE"
+    ],
+    "score": 0.12979185581207275,
+    "margin": 0.01457986980676651,
+    "correct": false,
+    "recording_ms": 5232.92125984252,
+    "coverage": 0.24203822016716003,
+    "sign_fraction": 0.8089171974522293
+   },
+   "lead_2s": {
+    "prediction": "AUTISM1",
+    "top5": [
+     "AUTISM1",
+     "CLOSE",
+     "KNIGHT1",
+     "HALLOWEEN1",
+     "LONGLINE"
+    ],
+    "score": 0.2281826138496399,
+    "margin": 0.08014574646949768,
+    "correct": false,
+    "recording_ms": 6232.842519685039,
+    "coverage": 0.2032085508108139,
+    "sign_fraction": 0.679144385026738
+   },
+   "lead_3s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "AUTISM1",
+     "KNIGHT1",
+     "TAIL1",
+     "ANYONE"
+    ],
+    "score": 0.2196541130542755,
+    "margin": 0.14794981479644775,
+    "correct": false,
+    "recording_ms": 7232.76377952756,
+    "coverage": 0.1751152127981186,
+    "sign_fraction": 0.5852534562211982
+   },
+   "trail_1s": {
+    "prediction": "CLOSE",
+    "top5": [
+     "CLOSE",
+     "AUTISM1",
+     "BREAKFAST1",
+     "KNIGHT1",
+     "LONGLINE"
+    ],
+    "score": 0.20211584866046906,
+    "margin": 0.06920887529850006,
+    "correct": true,
+    "recording_ms": 5232.92125984252,
+    "coverage": 0.24203822016716003,
+    "sign_fraction": 0.8089171974522293
+   },
+   "trail_2s": {
+    "prediction": "AUTISM1",
+    "top5": [
+     "AUTISM1",
+     "CLOSE",
+     "BREAKFAST1",
+     "KNIGHT1",
+     "FINE1"
+    ],
+    "score": 0.1617499440908432,
+    "margin": 0.06993960589170456,
+    "correct": false,
+    "recording_ms": 6232.842519685039,
+    "coverage": 0.2032085508108139,
+    "sign_fraction": 0.679144385026738
+   },
+   "trail_3s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "AUTISM1",
+     "CLOSE",
+     "TAIL1",
+     "KNIGHT1"
+    ],
+    "score": 0.1441030353307724,
+    "margin": 0.03418257087469101,
+    "correct": false,
+    "recording_ms": 7232.76377952756,
+    "coverage": 0.1751152127981186,
+    "sign_fraction": 0.5852534562211982
+   },
+   "both_2s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "AUTISM1",
+     "KNIGHT1",
+     "TAIL1",
+     "ANYONE"
+    ],
+    "score": 0.15574096143245697,
+    "margin": 0.07315607368946075,
+    "correct": false,
+    "recording_ms": 8232.685039370079,
+    "coverage": 0.1538461595773697,
+    "sign_fraction": 0.5141700404858299
+   },
+   "both_4s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "AUTISM1",
+     "KNIGHT1",
+     "ANYONE",
+     "GUESS1"
+    ],
+    "score": 0.17128902673721313,
+    "margin": 0.049915678799152374,
+    "correct": false,
+    "recording_ms": 12232.370078740158,
+    "coverage": 0.10354223102331161,
+    "sign_fraction": 0.3460490463215259
+   }
+  }
+ },
+ {
+  "gloss": "SAIL2",
+  "signer": "P39",
+  "sign_ms": 4333.0,
+  "sign_frames": 130,
+  "sign_coverage": 0.36153846979141235,
+  "base": {
+   "prediction": "SAIL2",
+   "top5": [
+    "SAIL2",
+    "GRAMMAR",
+    "SLIDE2",
+    "EASY",
+    "BEE1"
+   ],
+   "score": 0.8213715553283691,
+   "margin": 0.813719630241394,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "SAIL2",
+    "top5": [
+     "SAIL2",
+     "BREAKFAST1",
+     "GRAMMAR",
+     "ALLOFSUDDEN",
+     "CHEESEGRATER"
+    ],
+    "score": 0.7819832563400269,
+    "margin": 0.7683119177818298,
+    "correct": true,
+    "recording_ms": 5332.923076923077,
+    "coverage": 0.29374998807907104,
+    "sign_fraction": 0.8125
+   },
+   "lead_2s": {
+    "prediction": "SAIL2",
+    "top5": [
+     "SAIL2",
+     "EASY",
+     "PENNY",
+     "GRAMMAR",
+     "BREAKFAST1"
+    ],
+    "score": 0.8754022717475891,
+    "margin": 0.8682699203491211,
+    "correct": true,
+    "recording_ms": 6332.846153846153,
+    "coverage": 0.24736842513084412,
+    "sign_fraction": 0.6842105263157895
+   },
+   "lead_3s": {
+    "prediction": "SAIL2",
+    "top5": [
+     "SAIL2",
+     "DECIDE1",
+     "GRAMMAR",
+     "EASY",
+     "PENNY"
+    ],
+    "score": 0.4116061329841614,
+    "margin": 0.3387373387813568,
+    "correct": true,
+    "recording_ms": 7332.769230769231,
+    "coverage": 0.2136363685131073,
+    "sign_fraction": 0.5909090909090909
+   },
+   "trail_1s": {
+    "prediction": "SAIL2",
+    "top5": [
+     "SAIL2",
+     "EASY",
+     "PENNY",
+     "GRAMMAR",
+     "CHEESEGRATER"
+    ],
+    "score": 0.7487016916275024,
+    "margin": 0.7326332330703735,
+    "correct": true,
+    "recording_ms": 5332.923076923077,
+    "coverage": 0.29374998807907104,
+    "sign_fraction": 0.8125
+   },
+   "trail_2s": {
+    "prediction": "SAIL2",
+    "top5": [
+     "SAIL2",
+     "GRAMMAR",
+     "BREAKFAST1",
+     "DECIDE1",
+     "ALLOFSUDDEN"
+    ],
+    "score": 0.7706473469734192,
+    "margin": 0.7580408453941345,
+    "correct": true,
+    "recording_ms": 6332.846153846153,
+    "coverage": 0.24736842513084412,
+    "sign_fraction": 0.6842105263157895
+   },
+   "trail_3s": {
+    "prediction": "SAIL2",
+    "top5": [
+     "SAIL2",
+     "GRAMMAR",
+     "ALLOFSUDDEN",
+     "BREAKFAST1",
+     "PARTY1"
+    ],
+    "score": 0.75191330909729,
+    "margin": 0.7378523945808411,
+    "correct": true,
+    "recording_ms": 7332.769230769231,
+    "coverage": 0.2136363685131073,
+    "sign_fraction": 0.5909090909090909
+   },
+   "both_2s": {
+    "prediction": "SAIL2",
+    "top5": [
+     "SAIL2",
+     "EAT1",
+     "EASY",
+     "BREAKFAST1",
+     "PARTY1"
+    ],
+    "score": 0.3709314167499542,
+    "margin": 0.3245929181575775,
+    "correct": true,
+    "recording_ms": 8332.692307692307,
+    "coverage": 0.18799999356269836,
+    "sign_fraction": 0.52
+   },
+   "both_4s": {
+    "prediction": "SAIL2",
+    "top5": [
+     "SAIL2",
+     "EASY",
+     "KNIGHT1",
+     "PENNY",
+     "BREAKFAST1"
+    ],
+    "score": 0.25079211592674255,
+    "margin": 0.1682494878768921,
+    "correct": true,
+    "recording_ms": 12332.384615384615,
+    "coverage": 0.1270270198583603,
+    "sign_fraction": 0.35135135135135137
+   }
+  }
+ },
+ {
+  "gloss": "FOREIGNER1",
+  "signer": "P39",
+  "sign_ms": 5533.0,
+  "sign_frames": 166,
+  "sign_coverage": 0.29518070816993713,
+  "base": {
+   "prediction": "FOREIGNER1",
+   "top5": [
+    "FOREIGNER1",
+    "INTUITIVE",
+    "IMPOSSIBLE",
+    "CHEESEGRATER",
+    "COMB2"
+   ],
+   "score": 0.10405416786670685,
+   "margin": 0.04223323240876198,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "INTUITIVE",
+    "top5": [
+     "INTUITIVE",
+     "KNIGHT1",
+     "DECIDE1",
+     "CHEESEGRATER",
+     "SCARF2"
+    ],
+    "score": 0.09669338166713715,
+    "margin": 0.016862452030181885,
+    "correct": false,
+    "recording_ms": 6532.939759036145,
+    "coverage": 0.25,
+    "sign_fraction": 0.8469387755102041
+   },
+   "lead_2s": {
+    "prediction": "KNIGHT1",
+    "top5": [
+     "KNIGHT1",
+     "INTUITIVE",
+     "ZEBRA",
+     "TAIL1",
+     "FLIP"
+    ],
+    "score": 0.1301766335964203,
+    "margin": 0.06690000742673874,
+    "correct": false,
+    "recording_ms": 7532.879518072289,
+    "coverage": 0.21681416034698486,
+    "sign_fraction": 0.7345132743362832
+   },
+   "lead_3s": {
+    "prediction": "KNIGHT1",
+    "top5": [
+     "KNIGHT1",
+     "INTUITIVE",
+     "ZEBRA",
+     "TAIL1",
+     "ANYONE"
+    ],
+    "score": 0.08321909606456757,
+    "margin": 0.005883648991584778,
+    "correct": false,
+    "recording_ms": 8532.819277108434,
+    "coverage": 0.19140625,
+    "sign_fraction": 0.6484375
+   },
+   "trail_1s": {
+    "prediction": "INTUITIVE",
+    "top5": [
+     "INTUITIVE",
+     "KNIGHT1",
+     "SCARF2",
+     "CHEESEGRATER",
+     "ZEBRA"
+    ],
+    "score": 0.1446923017501831,
+    "margin": 0.07874520868062973,
+    "correct": false,
+    "recording_ms": 6532.939759036145,
+    "coverage": 0.25,
+    "sign_fraction": 0.8469387755102041
+   },
+   "trail_2s": {
+    "prediction": "KNIGHT1",
+    "top5": [
+     "KNIGHT1",
+     "INTUITIVE",
+     "CHEESEGRATER",
+     "PARTY1",
+     "TAIL1"
+    ],
+    "score": 0.10811148583889008,
+    "margin": 0.018067263066768646,
+    "correct": false,
+    "recording_ms": 7532.879518072289,
+    "coverage": 0.21681416034698486,
+    "sign_fraction": 0.7345132743362832
+   },
+   "trail_3s": {
+    "prediction": "INTUITIVE",
+    "top5": [
+     "INTUITIVE",
+     "KNIGHT1",
+     "TAIL1",
+     "PARTY1",
+     "ZEBRA"
+    ],
+    "score": 0.08728787302970886,
+    "margin": 0.003936998546123505,
+    "correct": false,
+    "recording_ms": 8532.819277108434,
+    "coverage": 0.19140625,
+    "sign_fraction": 0.6484375
+   },
+   "both_2s": {
+    "prediction": "KNIGHT1",
+    "top5": [
+     "KNIGHT1",
+     "OFFEND",
+     "PARTY1",
+     "TAIL1",
+     "ANYONE"
+    ],
+    "score": 0.27930429577827454,
+    "margin": 0.23374252021312714,
+    "correct": false,
+    "recording_ms": 9532.759036144578,
+    "coverage": 0.17132867872714996,
+    "sign_fraction": 0.5804195804195804
+   },
+   "both_4s": {
+    "prediction": "KNIGHT1",
+    "top5": [
+     "KNIGHT1",
+     "BREAKFAST1",
+     "OFFEND",
+     "AUTISM1",
+     "ANYONE"
+    ],
+    "score": 0.17015260457992554,
+    "margin": 0.10925668478012085,
+    "correct": false,
+    "recording_ms": 13532.518072289158,
+    "coverage": 0.12068965286016464,
+    "sign_fraction": 0.4088669950738916
+   }
+  }
+ },
+ {
+  "gloss": "MEAT1",
+  "signer": "P39",
+  "sign_ms": 4000.0,
+  "sign_frames": 120,
+  "sign_coverage": 0.5249999761581421,
+  "base": {
+   "prediction": "MEAT1",
+   "top5": [
+    "MEAT1",
+    "SOCCER2",
+    "FLOAT1",
+    "SPECIAL1",
+    "HURDLE/TRIP1"
+   ],
+   "score": 0.925062358379364,
+   "margin": 0.920207142829895,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "MEAT1",
+    "top5": [
+     "MEAT1",
+     "SOCCER2",
+     "HURDLE/TRIP1",
+     "MOVIE1",
+     "MECHANIC1"
+    ],
+    "score": 0.8283129930496216,
+    "margin": 0.8188565373420715,
+    "correct": true,
+    "recording_ms": 5000.0,
+    "coverage": 0.41999998688697815,
+    "sign_fraction": 0.8
+   },
+   "lead_2s": {
+    "prediction": "MEAT1",
+    "top5": [
+     "MEAT1",
+     "SOCCER2",
+     "INTUITIVE",
+     "HURDLE/TRIP1",
+     "MOVIE1"
+    ],
+    "score": 0.8036597967147827,
+    "margin": 0.7899344563484192,
+    "correct": true,
+    "recording_ms": 6000.0,
+    "coverage": 0.3499999940395355,
+    "sign_fraction": 0.6666666666666666
+   },
+   "lead_3s": {
+    "prediction": "MEAT1",
+    "top5": [
+     "MEAT1",
+     "SOCCER2",
+     "INTUITIVE",
+     "MOVIE1",
+     "DECIDE1"
+    ],
+    "score": 0.6641290783882141,
+    "margin": 0.6404036283493042,
+    "correct": true,
+    "recording_ms": 7000.0,
+    "coverage": 0.30000001192092896,
+    "sign_fraction": 0.5714285714285714
+   },
+   "trail_1s": {
+    "prediction": "MEAT1",
+    "top5": [
+     "MEAT1",
+     "SOCCER2",
+     "HURDLE/TRIP1",
+     "OFFEND",
+     "BITE1"
+    ],
+    "score": 0.9127912521362305,
+    "margin": 0.9065765738487244,
+    "correct": true,
+    "recording_ms": 5000.0,
+    "coverage": 0.41999998688697815,
+    "sign_fraction": 0.8
+   },
+   "trail_2s": {
+    "prediction": "MEAT1",
+    "top5": [
+     "MEAT1",
+     "SOCCER2",
+     "HURDLE/TRIP1",
+     "FLOAT1",
+     "MOVIE1"
+    ],
+    "score": 0.7571004629135132,
+    "margin": 0.7385127544403076,
+    "correct": true,
+    "recording_ms": 6000.0,
+    "coverage": 0.3499999940395355,
+    "sign_fraction": 0.6666666666666666
+   },
+   "trail_3s": {
+    "prediction": "MEAT1",
+    "top5": [
+     "MEAT1",
+     "HURDLE/TRIP1",
+     "SOCCER2",
+     "INTUITIVE",
+     "WHATFOR1"
+    ],
+    "score": 0.7938674092292786,
+    "margin": 0.7768961191177368,
+    "correct": true,
+    "recording_ms": 7000.0,
+    "coverage": 0.30000001192092896,
+    "sign_fraction": 0.5714285714285714
+   },
+   "both_2s": {
+    "prediction": "MEAT1",
+    "top5": [
+     "MEAT1",
+     "DECIDE1",
+     "INTUITIVE",
+     "MECHANIC1",
+     "HURDLE/TRIP1"
+    ],
+    "score": 0.3292088806629181,
+    "margin": 0.27801916003227234,
+    "correct": true,
+    "recording_ms": 8000.0,
+    "coverage": 0.26249998807907104,
+    "sign_fraction": 0.5
+   },
+   "both_4s": {
+    "prediction": "MEAT1",
+    "top5": [
+     "MEAT1",
+     "ZEBRA",
+     "PARTY1",
+     "HURDLE/TRIP1",
+     "DEAF1"
+    ],
+    "score": 0.2090291678905487,
+    "margin": 0.16291621327400208,
+    "correct": true,
+    "recording_ms": 12000.0,
+    "coverage": 0.17499999701976776,
+    "sign_fraction": 0.3333333333333333
+   }
+  }
+ },
+ {
+  "gloss": "TAIL1",
+  "signer": "P39",
+  "sign_ms": 4767.0,
+  "sign_frames": 143,
+  "sign_coverage": 0.30069929361343384,
+  "base": {
+   "prediction": "TAIL1",
+   "top5": [
+    "TAIL1",
+    "DRAG1",
+    "ANYONE",
+    "AUTISM1",
+    "OFFEND"
+   ],
+   "score": 0.07274559140205383,
+   "margin": 0.031482454389333725,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "TAIL1",
+    "top5": [
+     "TAIL1",
+     "KNIGHT1",
+     "UNDERWEAR1",
+     "RAZOR2",
+     "ANYONE"
+    ],
+    "score": 0.07543781399726868,
+    "margin": 0.02111918479204178,
+    "correct": true,
+    "recording_ms": 5767.06993006993,
+    "coverage": 0.24855491518974304,
+    "sign_fraction": 0.8265895953757225
+   },
+   "lead_2s": {
+    "prediction": "KNIGHT1",
+    "top5": [
+     "KNIGHT1",
+     "TAIL1",
+     "ANYONE",
+     "BREAKFAST1",
+     "OFFEND"
+    ],
+    "score": 0.06427076458930969,
+    "margin": 0.00044267624616622925,
+    "correct": false,
+    "recording_ms": 6767.13986013986,
+    "coverage": 0.21182265877723694,
+    "sign_fraction": 0.7044334975369458
+   },
+   "lead_3s": {
+    "prediction": "KNIGHT1",
+    "top5": [
+     "KNIGHT1",
+     "ANYONE",
+     "TAIL1",
+     "FLIP",
+     "OFFEND"
+    ],
+    "score": 0.06927450001239777,
+    "margin": 0.018517520278692245,
+    "correct": false,
+    "recording_ms": 7767.20979020979,
+    "coverage": 0.18454936146736145,
+    "sign_fraction": 0.6137339055793991
+   },
+   "trail_1s": {
+    "prediction": "TAIL1",
+    "top5": [
+     "TAIL1",
+     "BREAKFAST1",
+     "KNIGHT1",
+     "ANYONE",
+     "RAZOR2"
+    ],
+    "score": 0.06526757776737213,
+    "margin": 0.015217937529087067,
+    "correct": true,
+    "recording_ms": 5767.06993006993,
+    "coverage": 0.24855491518974304,
+    "sign_fraction": 0.8265895953757225
+   },
+   "trail_2s": {
+    "prediction": "INTUITIVE",
+    "top5": [
+     "INTUITIVE",
+     "KNIGHT1",
+     "TAIL1",
+     "FLIP",
+     "UNDERWEAR1"
+    ],
+    "score": 0.05463071167469025,
+    "margin": 0.0030734799802303314,
+    "correct": false,
+    "recording_ms": 6767.13986013986,
+    "coverage": 0.21182265877723694,
+    "sign_fraction": 0.7044334975369458
+   },
+   "trail_3s": {
+    "prediction": "TAIL1",
+    "top5": [
+     "TAIL1",
+     "FLIP",
+     "ANYONE",
+     "KNIGHT1",
+     "RAZOR2"
+    ],
+    "score": 0.05882735922932625,
+    "margin": 0.00820547342300415,
+    "correct": true,
+    "recording_ms": 7767.20979020979,
+    "coverage": 0.18454936146736145,
+    "sign_fraction": 0.6137339055793991
+   },
+   "both_2s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "ANYONE",
+     "AUTISM1",
+     "KNIGHT1",
+     "OFFEND"
+    ],
+    "score": 0.09280282258987427,
+    "margin": 0.0032112374901771545,
+    "correct": false,
+    "recording_ms": 8767.279720279721,
+    "coverage": 0.16349810361862183,
+    "sign_fraction": 0.5437262357414449
+   },
+   "both_4s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "ANYONE",
+     "KNIGHT1",
+     "AUTISM1",
+     "OFFEND"
+    ],
+    "score": 0.14865407347679138,
+    "margin": 0.046300798654556274,
+    "correct": false,
+    "recording_ms": 12767.559440559442,
+    "coverage": 0.11227153986692429,
+    "sign_fraction": 0.3733681462140992
+   }
+  }
+ },
+ {
+  "gloss": "SCROLLDOWN",
+  "signer": "P39",
+  "sign_ms": 6033.0,
+  "sign_frames": 181,
+  "sign_coverage": 0.7900552749633789,
+  "base": {
+   "prediction": "SCROLLDOWN",
+   "top5": [
+    "SCROLLDOWN",
+    "UNDERWEAR1",
+    "FLIP",
+    "ELEVATOR1",
+    "ANYONE"
+   ],
+   "score": 0.3754614591598511,
+   "margin": 0.3326365649700165,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "SCROLLDOWN",
+    "top5": [
+     "SCROLLDOWN",
+     "ANYONE",
+     "UNDERWEAR1",
+     "FLIP",
+     "ZEBRA"
+    ],
+    "score": 0.42579081654548645,
+    "margin": 0.37610024213790894,
+    "correct": true,
+    "recording_ms": 7032.944751381216,
+    "coverage": 0.6777251362800598,
+    "sign_fraction": 0.8578199052132701
+   },
+   "lead_2s": {
+    "prediction": "SCROLLDOWN",
+    "top5": [
+     "SCROLLDOWN",
+     "ANYONE",
+     "UNDERWEAR1",
+     "FLIP",
+     "ZEBRA"
+    ],
+    "score": 0.36556628346443176,
+    "margin": 0.3181568384170532,
+    "correct": true,
+    "recording_ms": 8032.889502762431,
+    "coverage": 0.5933610200881958,
+    "sign_fraction": 0.7510373443983402
+   },
+   "lead_3s": {
+    "prediction": "SCROLLDOWN",
+    "top5": [
+     "SCROLLDOWN",
+     "UNDERWEAR1",
+     "FLIP",
+     "ZEBRA",
+     "OFFEND"
+    ],
+    "score": 0.3650563657283783,
+    "margin": 0.3200048804283142,
+    "correct": true,
+    "recording_ms": 9032.834254143647,
+    "coverage": 0.5276752710342407,
+    "sign_fraction": 0.6678966789667896
+   },
+   "trail_1s": {
+    "prediction": "SCROLLDOWN",
+    "top5": [
+     "SCROLLDOWN",
+     "UNDERWEAR1",
+     "FLIP",
+     "DUCK2",
+     "TICKLE"
+    ],
+    "score": 0.28075918555259705,
+    "margin": 0.23346830904483795,
+    "correct": true,
+    "recording_ms": 7032.944751381216,
+    "coverage": 0.6777251362800598,
+    "sign_fraction": 0.8578199052132701
+   },
+   "trail_2s": {
+    "prediction": "SCROLLDOWN",
+    "top5": [
+     "SCROLLDOWN",
+     "FLIP",
+     "UNDERWEAR1",
+     "CHEESEGRATER",
+     "ROCKINGCHAIR1"
+    ],
+    "score": 0.29697394371032715,
+    "margin": 0.24628637731075287,
+    "correct": true,
+    "recording_ms": 8032.889502762431,
+    "coverage": 0.5933610200881958,
+    "sign_fraction": 0.7510373443983402
+   },
+   "trail_3s": {
+    "prediction": "SCROLLDOWN",
+    "top5": [
+     "SCROLLDOWN",
+     "FLIP",
+     "UNDERWEAR1",
+     "ANYONE",
+     "OFFEND"
+    ],
+    "score": 0.3842659294605255,
+    "margin": 0.34327197074890137,
+    "correct": true,
+    "recording_ms": 9032.834254143647,
+    "coverage": 0.5276752710342407,
+    "sign_fraction": 0.6678966789667896
+   },
+   "both_2s": {
+    "prediction": "SCROLLDOWN",
+    "top5": [
+     "SCROLLDOWN",
+     "FLIP",
+     "CHEESEGRATER",
+     "UNDERWEAR1",
+     "ZEBRA"
+    ],
+    "score": 0.11487782746553421,
+    "margin": 0.06062612310051918,
+    "correct": true,
+    "recording_ms": 10032.779005524862,
+    "coverage": 0.47508305311203003,
+    "sign_fraction": 0.6013289036544851
+   },
+   "both_4s": {
+    "prediction": "SCROLLDOWN",
+    "top5": [
+     "SCROLLDOWN",
+     "CAPTURE",
+     "FLIP",
+     "SLIDE2",
+     "DEAF1"
+    ],
+    "score": 0.07149022072553635,
+    "margin": 0.03253738209605217,
+    "correct": true,
+    "recording_ms": 14032.558011049725,
+    "coverage": 0.3396674692630768,
+    "sign_fraction": 0.42992874109263657
+   }
+  }
+ },
+ {
+  "gloss": "METAL",
+  "signer": "P39",
+  "sign_ms": 4100.0,
+  "sign_frames": 123,
+  "sign_coverage": 0.38211381435394287,
+  "base": {
+   "prediction": "METAL",
+   "top5": [
+    "METAL",
+    "PENNY",
+    "JOKE",
+    "UNDERWEAR1",
+    "MICROSCOPE1"
+   ],
+   "score": 0.8848074078559875,
+   "margin": 0.8513050675392151,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "METAL",
+    "top5": [
+     "METAL",
+     "PENNY",
+     "JOKE",
+     "UNDERWEAR1",
+     "RAZOR2"
+    ],
+    "score": 0.8148905634880066,
+    "margin": 0.7657278180122375,
+    "correct": true,
+    "recording_ms": 5100.0,
+    "coverage": 0.30718955397605896,
+    "sign_fraction": 0.803921568627451
+   },
+   "lead_2s": {
+    "prediction": "METAL",
+    "top5": [
+     "METAL",
+     "PENNY",
+     "JOKE",
+     "RAZOR2",
+     "DEAF1"
+    ],
+    "score": 0.7044269442558289,
+    "margin": 0.624057948589325,
+    "correct": true,
+    "recording_ms": 6100.0,
+    "coverage": 0.2568306028842926,
+    "sign_fraction": 0.6721311475409836
+   },
+   "lead_3s": {
+    "prediction": "METAL",
+    "top5": [
+     "METAL",
+     "PENNY",
+     "RAZOR2",
+     "KNIGHT1",
+     "DEAF1"
+    ],
+    "score": 0.5480837225914001,
+    "margin": 0.4797157347202301,
+    "correct": true,
+    "recording_ms": 7100.0,
+    "coverage": 0.22065727412700653,
+    "sign_fraction": 0.5774647887323944
+   },
+   "trail_1s": {
+    "prediction": "METAL",
+    "top5": [
+     "METAL",
+     "PENNY",
+     "JOKE",
+     "UNDERWEAR1",
+     "DEAF1"
+    ],
+    "score": 0.8132739067077637,
+    "margin": 0.7783167362213135,
+    "correct": true,
+    "recording_ms": 5100.0,
+    "coverage": 0.30718955397605896,
+    "sign_fraction": 0.803921568627451
+   },
+   "trail_2s": {
+    "prediction": "METAL",
+    "top5": [
+     "METAL",
+     "JOKE",
+     "PENNY",
+     "DEAF1",
+     "UNDERWEAR1"
+    ],
+    "score": 0.7128486037254333,
+    "margin": 0.6798763275146484,
+    "correct": true,
+    "recording_ms": 6100.0,
+    "coverage": 0.2568306028842926,
+    "sign_fraction": 0.6721311475409836
+   },
+   "trail_3s": {
+    "prediction": "METAL",
+    "top5": [
+     "METAL",
+     "JOKE",
+     "DEAF1",
+     "UNDERWEAR1",
+     "PENNY"
+    ],
+    "score": 0.651574432849884,
+    "margin": 0.606571614742279,
+    "correct": true,
+    "recording_ms": 7100.0,
+    "coverage": 0.22065727412700653,
+    "sign_fraction": 0.5774647887323944
+   },
+   "both_2s": {
+    "prediction": "METAL",
+    "top5": [
+     "METAL",
+     "KNIGHT1",
+     "RAZOR2",
+     "JOKE",
+     "PENNY"
+    ],
+    "score": 0.32629603147506714,
+    "margin": 0.25224995613098145,
+    "correct": true,
+    "recording_ms": 8100.0,
+    "coverage": 0.19341564178466797,
+    "sign_fraction": 0.5061728395061729
+   },
+   "both_4s": {
+    "prediction": "KNIGHT1",
+    "top5": [
+     "KNIGHT1",
+     "BREAKFAST1",
+     "MOUTH",
+     "ANYONE",
+     "RAZOR2"
+    ],
+    "score": 0.14736995100975037,
+    "margin": 0.04549871385097504,
+    "correct": false,
+    "recording_ms": 12100.0,
+    "coverage": 0.12947657704353333,
+    "sign_fraction": 0.33884297520661155
+   }
+  }
+ },
+ {
+  "gloss": "BITE1",
+  "signer": "P39",
+  "sign_ms": 4167.0,
+  "sign_frames": 125,
+  "sign_coverage": 0.335999995470047,
+  "base": {
+   "prediction": "BITE1",
+   "top5": [
+    "BITE1",
+    "DUCK2",
+    "SQUEEZE",
+    "BREAKFAST1",
+    "UNDERWEAR1"
+   ],
+   "score": 0.7543355226516724,
+   "margin": 0.7214202880859375,
+   "correct": true
+  },
+  "pads": {
+   "lead_1s": {
+    "prediction": "BITE1",
+    "top5": [
+     "BITE1",
+     "FLIP",
+     "DUCK2",
+     "SQUEEZE",
+     "OFFEND"
+    ],
+    "score": 0.4458886682987213,
+    "margin": 0.40900328755378723,
+    "correct": true,
+    "recording_ms": 5167.08,
+    "coverage": 0.2709677517414093,
+    "sign_fraction": 0.8064516129032258
+   },
+   "lead_2s": {
+    "prediction": "BITE1",
+    "top5": [
+     "BITE1",
+     "SQUEEZE",
+     "DUCK2",
+     "CHEW1",
+     "BREAKFAST1"
+    ],
+    "score": 0.6676274538040161,
+    "margin": 0.6427909731864929,
+    "correct": true,
+    "recording_ms": 6167.16,
+    "coverage": 0.227027028799057,
+    "sign_fraction": 0.6756756756756757
+   },
+   "lead_3s": {
+    "prediction": "BITE1",
+    "top5": [
+     "BITE1",
+     "SQUEEZE",
+     "BREAKFAST1",
+     "CHEW1",
+     "DUCK2"
+    ],
+    "score": 0.3014388084411621,
+    "margin": 0.2501530647277832,
+    "correct": true,
+    "recording_ms": 7167.24,
+    "coverage": 0.1953488439321518,
+    "sign_fraction": 0.5813953488372093
+   },
+   "trail_1s": {
+    "prediction": "BITE1",
+    "top5": [
+     "BITE1",
+     "SQUEEZE",
+     "DUCK2",
+     "BREAKFAST1",
+     "CHEW1"
+    ],
+    "score": 0.6639561653137207,
+    "margin": 0.6352524161338806,
+    "correct": true,
+    "recording_ms": 5167.08,
+    "coverage": 0.2709677517414093,
+    "sign_fraction": 0.8064516129032258
+   },
+   "trail_2s": {
+    "prediction": "BITE1",
+    "top5": [
+     "BITE1",
+     "SQUEEZE",
+     "DUCK2",
+     "CHEW1",
+     "BREAKFAST1"
+    ],
+    "score": 0.5729275941848755,
+    "margin": 0.5309126973152161,
+    "correct": true,
+    "recording_ms": 6167.16,
+    "coverage": 0.227027028799057,
+    "sign_fraction": 0.6756756756756757
+   },
+   "trail_3s": {
+    "prediction": "BITE1",
+    "top5": [
+     "BITE1",
+     "SQUEEZE",
+     "DUCK2",
+     "CHEW1",
+     "FLIP"
+    ],
+    "score": 0.5747363567352295,
+    "margin": 0.5383968353271484,
+    "correct": true,
+    "recording_ms": 7167.24,
+    "coverage": 0.1953488439321518,
+    "sign_fraction": 0.5813953488372093
+   },
+   "both_2s": {
+    "prediction": "BITE1",
+    "top5": [
+     "BITE1",
+     "SQUEEZE",
+     "CHEW1",
+     "BREAKFAST1",
+     "TAIL1"
+    ],
+    "score": 0.15446732938289642,
+    "margin": 0.08550690859556198,
+    "correct": true,
+    "recording_ms": 8167.32,
+    "coverage": 0.17142857611179352,
+    "sign_fraction": 0.5102040816326531
+   },
+   "both_4s": {
+    "prediction": "BREAKFAST1",
+    "top5": [
+     "BREAKFAST1",
+     "BITE1",
+     "KNIGHT1",
+     "OFFEND",
+     "AUTISM1"
+    ],
+    "score": 0.08261993527412415,
+    "margin": 0.014039374887943268,
+    "correct": false,
+    "recording_ms": 12167.640000000001,
+    "coverage": 0.11506849527359009,
+    "sign_fraction": 0.3424657534246575
+   }
+  }
+ }
+]

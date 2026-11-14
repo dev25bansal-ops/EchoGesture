@@ -86,6 +86,14 @@ class CameraScreen(
          * last frames of a real sign are often empty.
          */
         private const val MIN_HAND_FRACTION = 0.15
+
+        /**
+         * When to warn that a recording is running long. Measured across 72
+         * authorised clips: median sign 2.5 s, p90 4.3 s, max 8.7 s. Five
+         * seconds sits above the p90, so the hint does not fire on an ordinary
+         * sign but does fire before idle time starts to dominate.
+         */
+        private const val LONG_RECORDING_HINT_MS = 5_000L
     }
 
     val root: View = LayoutInflater.from(activity).inflate(R.layout.screen_camera, null, false)
@@ -810,6 +818,15 @@ class CameraScreen(
                     R.string.record_recording,
                     String.format(java.util.Locale.US, "%.1fs", elapsed / 1000f)
                 )
+                // Most signs finish well inside ~5 s (p90 of 72 measured clips
+                // is 4.3 s). Past that, say so rather than let the signer keep
+                // holding a button and diluting the interval.
+                if (elapsed > LONG_RECORDING_HINT_MS &&
+                    statusDetail.text != activity.getString(R.string.record_too_long_hint)
+                ) {
+                    statusTitle.setText(R.string.record_prompt)
+                    statusDetail.setText(R.string.record_too_long_hint)
+                }
                 liveStatus.setTextColor(ContextCompat.getColor(activity, R.color.danger))
                 captureButton.text = activity.getString(R.string.record_finish)
                 handler.postDelayed(this, 100L)

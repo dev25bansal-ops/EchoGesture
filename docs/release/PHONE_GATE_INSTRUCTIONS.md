@@ -4,19 +4,37 @@ No physical Android device is attached to this machine (`adb devices -l` shows
 only `emulator-5554`). Nothing in this file is a measurement. It is the exact
 sequence that produces one.
 
-This build uses **Start sign → perform one sign → Finish sign**, not the tap
-after signing. Press Start just before you begin and Finish as soon as the sign
-ends. If you record for more than ~5 s the app tells you to finish.
+This build uses **Start sign → perform one complete sign → Finish sign**, not
+a tap after signing. Press Start just before you begin and Finish as soon as the
+sign ends.
 
-**APK:** `dist/echogesture-v4.1.apk`
-SHA-256 `3963bf43ec1a4cd341c52e527759c4825f21e3b81bda995deb84be4ed1fc1b8f`
-Commit `621b7ea`, branch `fix/true-video-recognition-v4`, 77,812,363 bytes.
+**APK:** `dist/echogesture-v4.2.apk`
+SHA-256 `__APK_SHA__`
+Commit `__COMMIT__`, branch `fix/true-video-recognition-v4`.
 
-This is the **V4.1 explicit-record** build. It differs from the
-previous candidate (`echogesture-rc-a2c0a6c.apk`) in the capture path, not the
-models: the window is the 3.7 s ending at your tap, there is no waiting after
-the tap, and a thin or stalled buffer is refused with a message instead of being
-classified anyway. See `PHONE_BUILD_IDENTITY.md` for the full build list.
+## How the two capture modes work
+
+**Record (default, the button you will use).** Press **Start sign**; the button
+becomes **Finish sign** and the pill shows elapsed time. Perform one complete
+supported sign, then press Finish. The app reads exactly that interval: frames
+are collected only between the two presses, so nothing from before Start or
+after Finish can enter the sequence.
+
+After the recording is taken, the app trims idle from the two ends before the
+model sees it — this is why a second of hesitation either side does not ruin the
+reading — and then samples 32 frames evenly across what remains, resamples to 24
+temporal steps, and runs the four-member ensemble.
+
+Past ~5 s of recording the app asks you to finish. Most signs are much shorter:
+across 72 authorised clips the median is 2.5 s, the 90th percentile 4.3 s and
+the longest 8.7 s. It does not truncate for you; Finish stays yours to press.
+
+**Quick scan (secondary).** The rolling-window path is still present in the code
+behind the same frozen model, kept as a comparison baseline. It classifies a
+fixed trailing window instead of a bracketed interval. It is not wired to the
+default button in this build.
+
+See `PHONE_BUILD_IDENTITY.md` for the full build list.
 
 ---
 
@@ -101,14 +119,19 @@ written gloss measures nothing.
 is a data point, not something to retry away. The retry rate is part of what is
 being measured.
 
-Three refusals are now possible and mean different things — record which one you
-saw, because they diagnose different problems:
+Record-mode refusals, and what each diagnoses. Record which one you saw — they
+are not interchangeable:
 
 | Message | Meaning |
 | --- | --- |
-| "Not enough of the sign was recorded yet…" | The buffer was cold. Wait a second after opening the camera. |
-| "The camera stopped sending frames during that sign…" | The analyser stalled mid-sign. Note it; this is a device finding. |
-| "That sign was just read…" | You tapped twice inside 1.2 s. Space the attempts out. |
+| "That recording was too short to read." | Finish was pressed within 400 ms. Nothing usable was captured. |
+| "The camera did not send any frames during that recording." | No analysed frame arrived. A device or camera fault. |
+| "The camera stopped during that sign." | A gap longer than 700 ms mid-recording; the sequence is broken. |
+| "Hands were visible for too little of that recording." | Fewer than 10% of frames carried a hand. Re-aim the camera. |
+| "No hands in view" | The capture contained no hand at all. |
+
+Do not retry a failure silently — note it, count it, and keep going. The
+rejection rate is part of what the run measures.
 
 Keep an annotations file, one line per capture, in capture order:
 

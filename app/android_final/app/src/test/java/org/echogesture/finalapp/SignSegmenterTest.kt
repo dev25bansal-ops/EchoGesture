@@ -182,6 +182,69 @@ class SignSegmenterTest {
             stamps.zipWithNext().all { (a, b) -> b - a == 33L })
     }
 
+    // --- safety floor and detector hazards -------------------------------
+
+    @Test
+    fun aTrimThatKeepsAlmostNothingFallsBackToTheWholeRecording() {
+        // The floor exists for a blip inside a very long recording, where the
+        // surviving window would be a few percent of the capture. Note that a
+        // short blip in a SHORT recording is not degenerate — 3 frames plus
+        // 2x0.5 s of padding is ~13% of 8 s — so the floor correctly lets it
+        // through. The floor is a misfire guard, not a quality gate.
+        val frames = still(400) + moving(3, after(400)) + still(400, after(403))
+        val seg = SignSegmenter.choose(frames, fps)
+        assertEquals(SignSegmenter.Reason.TRIMMED_TOO_LITTLE, seg.reason)
+        assertEquals(0, seg.startIndex)
+        assertEquals(frames.size, seg.endIndex)
+    }
+
+    @Test
+    fun aShortBlipInAShortRecordingIsStillTrimmedNotDiscarded() {
+        // Documents the boundary refused above, so the floor cannot silently
+        // become stricter than intended.
+        val frames = still(120) + moving(3, after(120)) + still(120, after(123))
+        val seg = SignSegmenter.choose(frames, fps)
+        assertEquals(SignSegmenter.Reason.TRIMMED, seg.reason)
+        assertTrue(seg.endIndex > seg.startIndex)
+    }
+
+    @Test
+    fun anIsolatedDetectorSpikeInsideIdleDoesNotDefineTheSign() {
+        // Jitter is what makes a peak-relative rule dangerous: a single noisy
+        // frame can out-displace a slow real sign. Adding a spike to the idle
+        // must not shrink the trimmed window to the spike.
+        val baseline = still(60) + moving(60, after(60)) + still(60, after(120))
+        val baseSeg = SignSegmenter.choose(baseline, fps)
+
+        val spiked = baseline.toMutableList()
+        val idx = 20
+        spiked[idx] = frame(baseline[idx].capturedAtMs, 40f)   // one huge frame
+        val spikeSeg = SignSegmenter.choose(spiked, fps)
+
+        assertTrue(
+            "a single spike shrank the window from ${baseSeg.endIndex - baseSeg.startIndex} " +
+                "to ${spikeSeg.endIndex - spikeSeg.startIndex} frames",
+            (spikeSeg.endIndex - spikeSeg.startIndex) >= 40
+        )
+    }
+
+    @Test
+    fun aRecordingThatIsAlmostAllIdleStillUsesSomethingReal() {
+        // Sanity: the floor must not make the segmenter return an empty range.
+        val frames = still(50) + moving(10, after(50)) + still(50, after(60))
+        val seg = SignSegmenter.choose(frames, fps)
+        assertTrue("empty segment", seg.endIndex > seg.startIndex)
+        assertTrue("segment exceeds recording", seg.endIndex <= frames.size)
+    }
+
+    @Test
+    fun isWholeReflectsWhatWasActuallyKept() {
+        val trimmed = SignSegmenter.choose(still(40) + moving(40, after(40)), fps)
+        assertEquals("a real trim is not whole", false, trimmed.isWhole)
+        val static = SignSegmenter.choose(still(60), fps)
+        assertEquals("an untrimmed recording is whole", true, static.isWhole)
+    }
+
     // --- integration with the production sampling ------------------------
 
     @Test

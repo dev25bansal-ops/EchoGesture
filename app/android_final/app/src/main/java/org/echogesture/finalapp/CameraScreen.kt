@@ -214,7 +214,8 @@ class CameraScreen(
         contractContract = loaded
         modelReady = true
         modelIdentity.text = activity.getString(
-            R.string.settings_model_ensemble
+            R.string.settings_model_ensemble,
+            loaded.members.size
         ) + " · " + activity.getString(
             R.string.settings_model_precision
         ) + " · SHA-256 " + loaded.identity.shortSha + "…"

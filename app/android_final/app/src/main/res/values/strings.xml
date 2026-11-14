@@ -129,7 +129,7 @@
     <string name="settings_privacy_no_video">No video or images are saved.</string>
     <string name="settings_clear_history">Clear saved history</string>
 
-    <string name="settings_model_ensemble">Four-model ensemble</string>
+    <string name="settings_model_ensemble">%1$d-model ensemble</string>
     <string name="settings_model_ensemble_detail">logit-averaged, one softmax</string>
     <string name="settings_model_precision">FP16 TFLite</string>
     <string name="settings_model_precision_detail">float16 weights, float32 input/output</string>

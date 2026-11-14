@@ -1,0 +1,136 @@
+{
+  "release": "Samsung XR Hackathon 2026 \u2014 Track 02",
+  "generated": "2026-11-14",
+  "internal_target": "2026-11-17",
+  "deadline": "2026-11-18T23:59:00+05:30",
+  "source": {
+    "branch": "release/samsung-track2-final",
+    "base_branch": "shared/v4.4-dev-integration",
+    "base_commit": "facae8fbabe499addc90051c231f778f7d91deff",
+    "model_dev_branch": "hackathon/dev-model",
+    "model_dev_commit": "11bbddf5d60ebac1e02c2c6d4241222251cffb58"
+  },
+  "model": {
+    "ensemble_sha256": "995cc8d0b6f6ac25abb9f7ddca01c3ce71edf8bc2d34e34f4813a2b99dd3b4bb",
+    "members": 9,
+    "widths": {
+      "255": 4,
+      "381": 5
+    },
+    "precision": "float16",
+    "int8": false,
+    "ensemble_bytes": 8508832,
+    "detector_bytes": 7819105,
+    "shipped_bytes_with_detector": 16327937,
+    "attention_mask": "present.max(axis=1) > 0.5 over resampled presence",
+    "detector_sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1",
+    "vocabulary_size": 100
+  },
+  "artifacts": {
+    "apk_v4_3": {
+      "path": "dist/echogesture-v4.3-masked.apk",
+      "sha256": "3db9d94ad761a76bdcf5dd9b3eaeff7e91dd14a51eaee2eca44acb98f1380896",
+      "bytes": 83350522,
+      "source_commit": "5251bf8",
+      "note": "Footer string misstates 4 members. Superseded by apk_p1."
+    },
+    "apk_p1": {
+      "path": "app/android_final/app/build/outputs/apk/debug/app-debug.apk",
+      "sha256": "150ffeeb0eaaa8914db362e2bcd41de26c93608193ebcee8457433dc5ea5cb7a",
+      "bytes": 83350522,
+      "change": "footer model count derived from loaded members; string resource parameterised",
+      "verified": "installs and launches on Android 14 emulator; footer reads '9-model ensemble'"
+    },
+    "apk_v4_2_rollback": {
+      "path": "dist/echogesture-v4.2.apk",
+      "sha256": "5490e02908159e24dac1b45dca7b21afbbe77909fb62ceab4348828e8d939dfc"
+    },
+    "submission_zip": {
+      "path": "submission/EchoGesture_Submission.zip",
+      "sha256": "35b902dfc3d9a72c1b0180098430596b5e5a71d3fd99414c2dc22c38ce2217e6",
+      "bytes": 13377754,
+      "clean_room_verified": true,
+      "clean_room_note": "extracted to empty dir; predict() ran from extracted copy only; 30/30 clips, 23 correct"
+    },
+    "presentation": {
+      "path": "submission/presentation/EchoGesture_Track02.pptx",
+      "sha256": "d156f7943713b4a655d3875ed290f7837307d1505325884eaccd0ec4c09fe066",
+      "slides": 8,
+      "naming": "must be renamed to CollegeName_TeamName before submission"
+    }
+  },
+  "evidence": {
+    "android_unit_tests": {
+      "run": 110,
+      "failed": 0,
+      "skipped": 0
+    },
+    "python_suite": {
+      "run": 493,
+      "passed": 424,
+      "failed": 3,
+      "errors": 23,
+      "skipped": 43,
+      "note": "failures identical on the untouched V4.4 tip; all blocked on gitignored artifacts"
+    },
+    "clean_zip_accuracy": {
+      "clips": 30,
+      "correct": 23,
+      "top1": 76.67,
+      "errors": 0,
+      "population": "val_30, ASL Citizen, laptop CPU"
+    },
+    "corpus_accuracy": {
+      "top1": 77.02,
+      "top5": 92.79,
+      "clips": 1249,
+      "signers": 11,
+      "source": "Dev, results/results.csv",
+      "not_phone": true
+    },
+    "latency_laptop": {
+      "p50_ms": 236.4,
+      "p95_ms": 314.9,
+      "cold_ms": 556.2,
+      "n": 29,
+      "note": "full clip-to-JSON incl. MediaPipe, laptop CPU, NOT a phone measurement"
+    },
+    "robustness_pixel": {
+      "worst_drop_pp": 10.0,
+      "verdict": "FAIL",
+      "budget_pp": 5
+    },
+    "robustness_landmark": {
+      "worst_drop_pp": 4.4,
+      "verdict": "PASS",
+      "budget_pp": 5,
+      "note": "different harness from robustness_pixel; never conflate"
+    },
+    "phone": {
+      "status": "NOT TESTED",
+      "reason": "no physical device attached"
+    }
+  },
+  "compliance": {
+    "python_3_11": "PASS",
+    "predict_contract": "PASS \u2014 five keys, verified from clean extraction",
+    "zip_layout": "PASS \u2014 src/, models/, results/ per PDF p12",
+    "quantization_int8": "FAIL \u2014 FP16 shipped; organizer clarification unsent",
+    "latency_50ms": "FAIL \u2014 314.9 ms p95 warm on laptop",
+    "model_size_20mb": "PASS \u2014 15.57 MB including detector",
+    "top1_70pct": "PASS \u2014 77.02% corpus",
+    "demo_video": "BLOCKED \u2014 not recorded",
+    "presentation": "DONE \u2014 content verified, naming pending",
+    "team_naming": "NEEDS HUMAN",
+    "registration": "UNVERIFIED \u2014 no confirmation record in repo",
+    "rights": "BLOCKED \u2014 weights have no confirmed redistribution permission"
+  },
+  "pending_human": [
+    "Confirm registration and the exact CollegeName_TeamName string",
+    "Attach a physical phone and run submission/PHONE_TEST_REPORT.md",
+    "Record the demo video per submission/DEMO_SCRIPT.md",
+    "Decide model redistribution rights",
+    "Authorize and send the organizer clarification email",
+    "Submit the Google Form and save the receipt"
+  ]
+}

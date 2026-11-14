@@ -1,0 +1,1 @@
+attempt_id,gloss_truth,prediction,top5,confidence,accepted,hand_frame_ratio,record_duration_s,inference_ms,end_to_end_ms,device_model,android_version,lighting,distance,background,handedness,signer,correct,notes

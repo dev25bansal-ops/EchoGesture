@@ -1,0 +1,49 @@
+{
+ "feature_width_contract": {
+  "xy": 255,
+  "xyz": 381,
+  "members_with_xz": 1,
+  "members_with_xyz": 5
+ },
+ "attention_mask": "present.max(axis=1) > 0.5 over RESAMPLED presence; fed to every member",
+ "source_preprocessing_version": "features.py@fix/v4-4-final-release",
+ "measurement_method": "host CPU (Apple Silicon, macOS); Python 3.11; ai_edge_litert interpreter",
+ "runtime_version": "ai-edge-litert",
+ "execution_date": "2026-11-14",
+ "metric_definitions": {
+  "top1": "argmax of softmax over mean raw logits across ensemble members",
+  "top5": "true gloss present in the top five classes by that softmax",
+  "coverage": "fraction of captures whose top1/top2 margin passes the app gate",
+  "accepted_accuracy": "top1 accuracy restricted to captures the gate accepted"
+ },
+ "model_family": "landmark-ensemble",
+ "model_version": "v4_3_masked",
+ "git_commit": "5251bf8",
+ "combined_model_sha256": "995cc8d0b6f6ac25abb9f7ddca01c3ce71edf8bc2d34e34f4813a2b99dd3b4bb",
+ "member_count": 9,
+ "dataset": "ASL Citizen (research licence)",
+ "split": "train(32 signers)/val(5 signers)",
+ "unique_clips": 72,
+ "unique_signers": 37,
+ "evaluations": 184,
+ "note": "184 evaluations is NOT 184 independent signs: 72 unique clips, some repeated with synthetic leading/trailing idle. Report unique clips, never 184.",
+ "results": {
+  "aggregate_full_interval": {
+   "A_old_four": 117,
+   "B_four_masked": 141,
+   "C_nine_masked": 146,
+   "n": 184
+  },
+  "aggregate_top5": {
+   "A": 160,
+   "B": 172,
+   "C": 177
+  },
+  "val_clean_full_interval": {
+   "A": "31/40",
+   "B": "30/40",
+   "C": "31/40"
+  }
+ },
+ "status": "MEASURED"
+}

@@ -9,8 +9,8 @@ a tap after signing. Press Start just before you begin and Finish as soon as the
 sign ends.
 
 **APK:** `dist/echogesture-v4.2.apk`
-SHA-256 `__APK_SHA__`
-Commit `__COMMIT__`, branch `fix/true-video-recognition-v4`.
+SHA-256 `5490e02908159e24dac1b45dca7b21afbbe77909fb62ceab4348828e8d939dfc`
+Commit `71fca9b`, branch `fix/true-video-recognition-v4`.
 
 ## How the two capture modes work
 

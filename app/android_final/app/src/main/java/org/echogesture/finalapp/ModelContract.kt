@@ -30,7 +30,9 @@ data class ModelIdentity(
 data class MemberAsset(
     val name: String,
     val bytes: ByteArray,
-    val sha256: String
+    val sha256: String,
+    /** True when this member's features are x,y,z (381 wide) per the sidecar. */
+    val useZ: Boolean = false
 )
 
 data class LoadedModel(
@@ -51,6 +53,7 @@ object ModelContract {
     }
 
     const val EXPECTED_FRAMES = 24
+    /** Width of the x,y members. z members are 381; the sidecar says which. */
     const val EXPECTED_FEATURE_DIM = 255
     const val EXPECTED_CLASSES = 100
     /** The shipped members are float16 weights with float32 IO; not INT8. */
@@ -61,19 +64,34 @@ object ModelContract {
      * here is rejected: an unpinned binary is an unverified binary.
      */
     val MEMBER_SHA256: Map<String, String> = mapOf(
+        // Four x,y (255-wide) members, re-exported WITH the attention mask on
+        // 2026-11-14. Same filenames as the V4.2 bundle, different binaries:
+        // e.g. landmark_ens_tcn21_fp16.tflite was 112279bc…, and is now
+        // af031d89…. Filenames are therefore not an identity; these hashes are.
         "landmark_ens_tcn21_fp16.tflite" to
-            "112279bc86090470b82b20b510746a946220322c25ec84cb3706a538c73dc22a",
+            "af031d898c98c97abcf66ae7538166316faac458b7b938fe9e3390fce31e5d4c",
         "landmark_ens_tcnm61_fp16.tflite" to
-            "01a261d8eb6c2c4d8b501f0ce1a36db338365d17fddabc63528a7941b1390f63",
+            "b0a97aa45c6797b4b85e2f6a1b03945881a94dad5519cb71be47e474fdea54f0",
         "landmark_ens_tcnm62_fp16.tflite" to
-            "27058a85e032bee3af444fb1538ff0bf32fd38fa2b01ce01a2f25c3a428d20b3",
+            "1d247397d57e982196e68f3f230adeeabbfcdf673ba01ed541eadd54d874ea8d",
         "landmark_ens_rob71_fp16.tflite" to
-            "08417e72da59150ac9adf749e6324c30fb001d4a401394e32f125d3276d1ab21"
+            "105218a89fde1d107441422254805dfb38cc7df25a216ff986801bc15dccb89a",
+        // Five x,y,z (381-wide) members.
+        "landmark_ens_mirror_handdrop_tcn_z_s0_fp16.tflite" to
+            "387749f81673719bd4a24813f33c6880c6117ed7be9d6bd50853250f8082901e",
+        "landmark_ens_mirror_handdrop_tcn_z_s1_fp16.tflite" to
+            "02a2dc70fbd769f793c8f8915c8a30cc568d901bf2e35bffe1752aa762000a35",
+        "landmark_ens_mirror_handdrop_tcn_z_s2_fp16.tflite" to
+            "3b97a2d416faec002bb84a6d2e47c131bb97941f074feed248a2c5a99c1c3b3d",
+        "landmark_ens_mirror_handdrop_tcn_z_s7_fp16.tflite" to
+            "2f13d0eba1f34e68f3e3ac1b2c645d9f75d1953918d69be6d58ca00a1f2b36b2",
+        "landmark_ens_mirror_handdrop_tcn_z_s13_fp16.tflite" to
+            "3d3a61e08d6a4d2a0a8064ae3b63692a55b55a2004ba37a428308a22b6336fba"
     )
 
-    /** SHA-256 of the four members concatenated in meta order. */
+    /** SHA-256 of the nine members concatenated in meta order. */
     const val ENSEMBLE_SHA256 =
-        "0e4c392732e7da7e77632620dc72e4afce8b1a5aa00234dbf7a13a1049a7ad93"
+        "995cc8d0b6f6ac25abb9f7ddca01c3ce71edf8bc2d34e34f4813a2b99dd3b4bb"
 
     const val DETECTOR_SHA256 =
         "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1"
@@ -115,6 +133,10 @@ object ModelContract {
         check(featureDim == FeatureTransform.FEATURE_DIM) {
             "Feature implementation produces ${FeatureTransform.FEATURE_DIM}, metadata says $featureDim"
         }
+        // The sidecar must declare a use_z flag for every member: the width a
+        // member expects is not inferable from its filename, and guessing it
+        // would feed a 381-wide model a 255-wide tensor.
+        val detailUseZ = parseMembersDetail(meta)
         check(classes == EXPECTED_CLASSES) { "Metadata classes $classes != $EXPECTED_CLASSES" }
 
         val memberNames = parseMembers(meta)
@@ -124,12 +146,17 @@ object ModelContract {
                     "Ensemble member '$name' from $META_ASSET is not pinned in " +
                         "ModelContract.MEMBER_SHA256; refusing to load an unverified binary."
                 )
+            val useZ = detailUseZ[name]
+                ?: throw IllegalStateException(
+                    "Member '$name' has no entry in $META_ASSET members_detail; " +
+                        "its feature width would have to be guessed."
+                )
             val bytes = source.read(name)
             val hash = sha256(bytes)
             check(hash == pinned) {
                 "Member '$name' hash mismatch: ${hash.take(12)}… != ${pinned.take(12)}…"
             }
-            MemberAsset(name = name, bytes = bytes, sha256 = hash)
+            MemberAsset(name = name, bytes = bytes, sha256 = hash, useZ = useZ)
         }
         check(members.size == memberNames.size) {
             "Ensemble member set was not fully loaded (${members.size}/${memberNames.size})"
@@ -163,6 +190,28 @@ object ModelContract {
             members = members,
             labels = labels
         )
+    }
+
+    /**
+     * `members_detail` from the sidecar: member basename -> use_z.
+     *
+     * Every member must appear. A member with no entry has an indeterminate
+     * feature width, and inferring it from the filename is exactly the kind of
+     * guess that feeds a 381-wide model a 255-wide tensor.
+     */
+    fun parseMembersDetail(meta: JSONObject): Map<String, Boolean> {
+        check(meta.has("members_detail")) {
+            "$META_ASSET has no 'members_detail'; per-member feature width is unknown"
+        }
+        val array = meta.getJSONArray("members_detail")
+        val out = HashMap<String, Boolean>(array.length())
+        for (i in 0 until array.length()) {
+            val entry = array.getJSONObject(i)
+            val file = entry.optString("file", "")
+            check(file.isNotEmpty()) { "$META_ASSET members_detail[$i] has no 'file'" }
+            out[file] = entry.optBoolean("use_z", false)
+        }
+        return out
     }
 
     /**

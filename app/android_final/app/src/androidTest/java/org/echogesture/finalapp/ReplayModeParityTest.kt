@@ -237,7 +237,18 @@ class ReplayModeParityTest {
             outcome is SignRecorder.Result.Usable)
         val recording = (outcome as SignRecorder.Result.Usable).recording
 
-        val recTensor = RecordingFeatures.build(recording)
+        val recBoth = RecordingFeatures.buildBoth(recording)
+        val recXY = FeatureTransform.build(
+            RecordingFeatures.tensors(RecordingFeatures.sample(recording)).first,
+            RecordingFeatures.tensors(RecordingFeatures.sample(recording)).second,
+            RecordingFeatures.sample(recording).size, 24, useZ = false
+        )
+        val recXYZ = FeatureTransform.build(
+            RecordingFeatures.tensors(RecordingFeatures.sample(recording)).first,
+            RecordingFeatures.tensors(RecordingFeatures.sample(recording)).second,
+            RecordingFeatures.sample(recording).size, 24, useZ = true
+        )
+        val recTensor = recBoth.featuresXY
         assertEquals(24 * 255, recTensor.size)
         assertTrue("features finite", recTensor.all { it.isFinite() })
 
@@ -267,14 +278,16 @@ class ReplayModeParityTest {
             }
             fi++
         }
-        val quickTensor = FeatureTransform.buildFeatures(ql, qp, qn, 24)
+        val quickXY = FeatureTransform.build(ql, qp, qn, 24, useZ = false)
+        val quickXYZ = FeatureTransform.build(ql, qp, qn, 24, useZ = true)
+        val quickTensor = quickXY.features
         assertEquals(24 * 255, quickTensor.size)
 
         // --- both tensors through the shipped ensemble ---------------------
         val loaded = ModelContract.load(instrumentation.targetContext.assets)
         LandmarkClassifier.create(loaded).use { classifier ->
-            val rRec = classifier.predict(recTensor)
-            val rQuick = classifier.predict(quickTensor)
+            val rRec = classifier.predict(recXY.features, recXY.mask, recXYZ.features)
+            val rQuick = classifier.predict(quickXY.features, quickXY.mask, quickXYZ.features)
             println(
                 "REPLAY decoded=$total frames=${allFrames.size} distinct=$distinct " +
                     "rec_dur=${recording.durationMs}ms rec_hand=${recording.frames.count { it.hands.isNotEmpty() }} " +
@@ -284,7 +297,7 @@ class ReplayModeParityTest {
             assertEquals(5, rRec.top5.size)
             assertEquals(5, rQuick.top5.size)
             // Determinism: the same tensor must give the same answer twice.
-            val again = classifier.predict(recTensor)
+            val again = classifier.predict(recXY.features, recXY.mask, recXYZ.features)
             assertEquals("record-mode prediction must be deterministic",
                 rRec.prediction, again.prediction)
         }

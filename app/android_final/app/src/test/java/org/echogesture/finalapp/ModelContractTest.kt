@@ -99,6 +99,23 @@ class ModelContractTest {
     }
 
     /** Returns the asset dir when COMPLETE; skips with a reason when ABSENT; fails when BROKEN. */
+    /**
+     * A synthetic sidecar. The real one carries `members_detail`; these tests
+     * vary the member list, so the detail block is derived from the same list
+     * to keep each case about the thing it is testing.
+     */
+    private fun sidecar(members: List<String>): ByteArray {
+        val detail = members.joinToString(",", "[", "]") { m ->
+            val z = m.contains("_z_")
+            """{"file":"$m","use_z":$z}"""
+        }
+        return """
+            {"frames":24,"feature_dim":255,"classes":100,"quantization":"float16",
+             "members":${members.joinToString(",", "[", "]") { "\"$it\"" }},
+             "members_detail":$detail}
+        """.trimIndent().toByteArray()
+    }
+
     private fun requireCompleteAssets(): File {
         val (state, detail) = classify()
         when (state) {
@@ -182,10 +199,19 @@ class ModelContractTest {
         assertEquals(ModelContract.EXPECTED_FEATURE_DIM, meta.getInt("feature_dim"))
         assertEquals(ModelContract.EXPECTED_CLASSES, meta.getInt("classes"))
         assertEquals(ModelContract.EXPECTED_QUANTIZATION, meta.getString("quantization"))
+        // Every member must declare its feature width; a member with no entry
+        // has an indeterminate width and the loader refuses it.
+        assertEquals(
+            ModelContract.parseMembers(meta).toSet(),
+            ModelContract.parseMembersDetail(meta).keys.toSet()
+        )
         assertEquals(
             ModelContract.MEMBER_SHA256.keys.toList(),
             ModelContract.parseMembers(meta)
         )
+        // Order is load-bearing: aggregation is a mean in this order and the
+        // combined hash concatenates in it.
+        assertEquals(9, ModelContract.parseMembers(meta).size)
     }
 
     @Test
@@ -214,10 +240,14 @@ class ModelContractTest {
     // ---- B. weight tests: need the complete verified set -------------------
 
     @Test
-    fun realAssetsLoadAllFourMembersInMetaOrder() {
+    fun realAssetsLoadAllNineMembersInMetaOrder() {
         val dir = requireCompleteAssets()
         val loaded = ModelContract.load(source(dir))
-        assertEquals(4, loaded.members.size)
+        assertEquals(ModelContract.MEMBER_SHA256.size, loaded.members.size)
+        assertEquals(9, loaded.members.size)
+        // Four x,y (255-wide) then five x,y,z (381-wide), per members_detail.
+        assertEquals(4, loaded.members.count { !it.useZ })
+        assertEquals(5, loaded.members.count { it.useZ })
         assertEquals(ModelContract.MEMBER_SHA256.keys.toList(), loaded.identity.memberNames)
         assertEquals(ModelContract.ENSEMBLE_SHA256, loaded.identity.combinedSha256)
         assertEquals(100, loaded.labels.size)
@@ -258,12 +288,13 @@ class ModelContractTest {
     @Test
     fun threeMemberListFailsTheCombinedIdentity() {
         val dir = requireCompleteAssets()
-        val meta = """
-            {"frames":24,"feature_dim":255,"classes":100,"quantization":"float16",
-             "members":["landmark_ens_tcn21_fp16.tflite",
-                        "landmark_ens_tcnm61_fp16.tflite",
-                        "landmark_ens_tcnm62_fp16.tflite"]}
-        """.trimIndent().toByteArray()
+        val meta = sidecar(
+            listOf(
+                "landmark_ens_tcn21_fp16.tflite",
+                "landmark_ens_tcnm61_fp16.tflite",
+                "landmark_ens_tcnm62_fp16.tflite"
+            )
+        )
         val err = runCatching {
             ModelContract.load(source(dir, mapOf(ModelContract.META_ASSET to meta)))
         }.exceptionOrNull()
@@ -278,10 +309,7 @@ class ModelContractTest {
     fun reorderedMembersFailTheCombinedIdentity() {
         val dir = requireCompleteAssets()
         val reordered = ModelContract.MEMBER_SHA256.keys.toList().reversed()
-        val meta = """
-            {"frames":24,"feature_dim":255,"classes":100,"quantization":"float16",
-             "members":${reordered.joinToString(",", "[", "]") { "\"$it\"" }}}
-        """.trimIndent().toByteArray()
+        val meta = sidecar(reordered)
         val err = runCatching {
             ModelContract.load(source(dir, mapOf(ModelContract.META_ASSET to meta)))
         }.exceptionOrNull()
@@ -295,14 +323,15 @@ class ModelContractTest {
     @Test
     fun unpinnedMemberIsRejectedEvenIfBytesAreValid() {
         val dir = requireCompleteAssets()
-        val meta = """
-            {"frames":24,"feature_dim":255,"classes":100,"quantization":"float16",
-             "members":["landmark_ens_tcn21_fp16.tflite",
-                        "landmark_ens_tcnm61_fp16.tflite",
-                        "landmark_ens_tcnm62_fp16.tflite",
-                        "landmark_ens_rob71_fp16.tflite",
-                        "landmark_ens_unknown_fp16.tflite"]}
-        """.trimIndent().toByteArray()
+        val meta = sidecar(
+            listOf(
+                "landmark_ens_tcn21_fp16.tflite",
+                "landmark_ens_tcnm61_fp16.tflite",
+                "landmark_ens_tcnm62_fp16.tflite",
+                "landmark_ens_rob71_fp16.tflite",
+                "landmark_ens_unknown_fp16.tflite"
+            )
+        )
         val err = runCatching {
             ModelContract.load(source(dir, mapOf(ModelContract.META_ASSET to meta)))
         }.exceptionOrNull()
@@ -372,7 +401,7 @@ class ModelContractTest {
         val dir = requireCompleteAssets()
         val good = File(dir, ModelContract.META_ASSET).readText(Charsets.UTF_8)
         val withProvenance = good.trimEnd().removeSuffix("}") +
-            ",\n  \"ensemble_test_top1\": 0.7278,\n" +
+            ",\n  \"v4_3_provenance\": \"added by test\",\n" +
             "  \"evaluated_on\": \"val_30\",\n" +
             "  \"notes\": \"provenance only\"\n}\n"
         val plain = ModelContract.load(source(dir))

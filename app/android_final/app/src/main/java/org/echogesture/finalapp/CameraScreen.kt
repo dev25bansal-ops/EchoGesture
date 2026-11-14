@@ -711,9 +711,11 @@ class CameraScreen(
                     val started = System.nanoTime()
                     val (landmarks, present, srcFrames) = toFeatureArrays(frames)
                     // Same 32->24 resample and feature contract as the Python
-                    // reference (STRICT_RESAMPLE=False).
-                    val feats = FeatureTransform.buildFeatures(landmarks, present, srcFrames, 24)
-                    val result = c.predict(feats)
+                    // reference (STRICT_RESAMPLE=False). Both widths and the
+                    // mask come from this one landmark pass.
+                    val xy = FeatureTransform.build(landmarks, present, srcFrames, 24, useZ = false)
+                    val xyz = FeatureTransform.build(landmarks, present, srcFrames, 24, useZ = true)
+                    val result = c.predict(xy.features, xy.mask, xyz.features)
                     val totalMs = (System.nanoTime() - started) / 1_000_000L
                     finishProcessing()
                     if (prefs.diagnostics) logDiagnostic(capture, result, totalMs)
@@ -885,8 +887,8 @@ class CameraScreen(
                 return
             }
             val started = System.nanoTime()
-            val features = RecordingFeatures.build(recording)
-            val result = c.predict(features)
+            val tensors = RecordingFeatures.buildBoth(recording)
+            val result = c.predict(tensors.featuresXY, tensors.mask, tensors.featuresXYZ)
             val totalMs = (System.nanoTime() - started) / 1_000_000L
             processing = false
             if (prefs.diagnostics) logDiagnostic(capture, result, totalMs)

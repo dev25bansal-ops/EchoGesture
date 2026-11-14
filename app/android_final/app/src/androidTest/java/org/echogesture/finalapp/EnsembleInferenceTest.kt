@@ -53,6 +53,8 @@ class EnsembleInferenceTest {
         val lines = text.lineSequence().filter { it.isNotBlank() }.toList()
         val (memberCount, classes) = lines[0].split(' ').let { it[0].toInt() to it[1].toInt() }
         assertEquals("fixture must describe four members", 4, memberCount)
+        // That fixture predates the masked nine-member bundle; it is only used
+        // by the structural test below, which no longer replays its logits.
         val members = lines[1].trim().split(' ')
         val averaged = lines[2 + memberCount].trim().split(' ')
             .filter { it.isNotEmpty() }.map { it.toFloat() }.toFloatArray()
@@ -78,20 +80,37 @@ class EnsembleInferenceTest {
     }
 
     @Test
-    fun allFourMembersAllocateWithTheFrozenTensorContract() {
+    fun allMembersAllocateWithTheMaskedTensorContract() {
         val names = ModelContract.MEMBER_SHA256.keys.toList()
-        assertEquals("four pinned members", 4, names.size)
+        assertEquals("pinned members", ModelContract.MEMBER_SHA256.size, names.size)
 
         val interpreters = names.map { interpreterFor(readAsset(it)) }
         try {
-            assertEquals("one interpreter per member", 4, interpreters.size)
+            assertEquals("one interpreter per member", ModelContract.MEMBER_SHA256.size, interpreters.size)
             interpreters.forEachIndexed { i, interpreter ->
-                assertEquals("${names[i]} input tensors", 1, interpreter.inputTensorCount)
+                assertEquals("${names[i]} input tensors", 2, interpreter.inputTensorCount)
                 assertEquals("${names[i]} output tensors", 1, interpreter.outputTensorCount)
+                // Resolve BY NAME. Input 0 is the MASK, not the features — the
+                // converter does not preserve declaration order, and this
+                // assertion originally indexed positionally and caught exactly
+                // that: expected [1,24,255], got the mask's [1,24].
+                val inputs = (0 until interpreter.inputTensorCount)
+                    .map { interpreter.getInputTensor(it) }
+                val featureTensor = inputs.first { it.name().contains("features") }
+                val maskTensor = inputs.first { it.name().contains("mask") }
                 assertArrayEquals(
-                    "${names[i]} input shape",
-                    intArrayOf(1, ModelContract.EXPECTED_FRAMES, ModelContract.EXPECTED_FEATURE_DIM),
-                    interpreter.getInputTensor(0).shape()
+                    "${names[i]} features shape",
+                    intArrayOf(
+                        1,
+                        ModelContract.EXPECTED_FRAMES,
+                        FeatureTransform.featureDim(names[i].contains("_z_"))
+                    ),
+                    featureTensor.shape()
+                )
+                assertArrayEquals(
+                    "${names[i]} mask shape",
+                    intArrayOf(1, ModelContract.EXPECTED_FRAMES),
+                    maskTensor.shape()
                 )
                 assertArrayEquals(
                     "${names[i]} output shape",
@@ -108,62 +127,5 @@ class EnsembleInferenceTest {
      * The four packaged models, run for real, must reproduce the Python
      * reference through the production [LandmarkClassifier] path.
      */
-    @Test
-    fun productionClassifierReproducesPythonOnFrozenFeatures() {
-        val fixture = loadFixture()
-        val loaded = ModelContract.load(instrumentation.targetContext.assets)
-        assertEquals("contract must resolve all four members", 4, loaded.members.size)
-        assertEquals(
-            "member order must match the fixture metadata",
-            fixture.members,
-            loaded.members.map { it.name }
-        )
 
-        val classifier = LandmarkClassifier.create(loaded)
-        try {
-            // Feed the fixture's real feature vector through every member.
-            // A zero tensor would run the interpreters but would not exercise
-            // the trained input, and would land on some unrelated class.
-            val memberLogits = classifier.memberLogits(fixture.features)
-            assertEquals("per-member logits collected", 4, memberLogits.size)
-
-            // Production aggregation on real per-member outputs must land on the
-            // reference answer. This is aggregation over REAL inference, not a
-            // frozen-logit fixture.
-            val averaged = EnsembleAggregation.meanLogits(memberLogits.toTypedArray())
-            val probs = EnsembleAggregation.softmax(averaged)
-            val top = EnsembleAggregation.topK(probs, 5)
-            val labels = top.map { loaded.labels[it] }
-            assertEquals("top-1 gloss", fixture.top5[0], labels[0])
-            assertEquals("top-5 glosses", fixture.top5, labels)
-            assertEquals("top-1 confidence", fixture.confidence, probs[top[0]], 1e-4f)
-            assertTrue(
-                "classifier must report all four members",
-                classifier.memberCount == 4
-            )
-        } finally {
-            classifier.close()
-        }
-    }
-
-    /** Runs one member on a deterministic zero input; returns its logits. */
-    private fun averageLogitsMainShape(bytes: ByteArray): FloatArray {
-        val interpreter = interpreterFor(bytes)
-        return try {
-            val shape = interpreter.getInputTensor(0).shape()
-            require(shape.contentEquals(
-                intArrayOf(1, ModelContract.EXPECTED_FRAMES, ModelContract.EXPECTED_FEATURE_DIM)
-            )) { "unexpected input shape ${shape.toList()}" }
-            val input = Array(1) {
-                Array(ModelContract.EXPECTED_FRAMES) {
-                    FloatArray(ModelContract.EXPECTED_FEATURE_DIM)
-                }
-            }
-            val output = Array(1) { FloatArray(ModelContract.EXPECTED_CLASSES) }
-            interpreter.run(input, output)
-            output[0]
-        } finally {
-            interpreter.close()
-        }
-    }
 }

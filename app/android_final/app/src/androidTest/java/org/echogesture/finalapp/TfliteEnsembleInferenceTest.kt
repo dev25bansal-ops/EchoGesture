@@ -91,7 +91,7 @@ class TfliteEnsembleInferenceTest {
             assertEquals("interpreter count", 4, classifier.memberCount)
 
             // 3) Per-member logits through each member's OWN output tensor.
-            val real = classifier.memberLogits(features)
+            val real = classifier.memberLogits(features, maskOf(features), xyzOf(features))
             assertEquals(4, real.size)
             real.forEachIndexed { i, logits ->
                 assertEquals(classes, logits.size)
@@ -113,7 +113,7 @@ class TfliteEnsembleInferenceTest {
             }
 
             // 4) The full result the user sees.
-            val result = classifier.predict(features)
+            val result = classifier.predict(features, maskOf(features), xyzOf(features))
             assertNotNull(result.averagedLogits)
             assertArrayEquals(
                 "averaged logits drift", expectedAvg, result.averagedLogits!!, 1e-3f
@@ -148,7 +148,7 @@ class TfliteEnsembleInferenceTest {
         val expectedLogits = Array(4) { floats(l[2 + it], classes) }
         val features = floats(l[7 + 4 + 1].removePrefix("features "), 24 * 255)
         LandmarkClassifier.create(ModelContract.load(assets)).use { classifier ->
-            val real = classifier.memberLogits(features)
+            val real = classifier.memberLogits(features, maskOf(features), xyzOf(features))
             for (i in 0 until 4) for (j in i + 1 until 4) {
                 var d = 0f
                 for (c in 0 until classes) d = maxOf(d, kotlin.math.abs(real[i][c] - real[j][c]))
@@ -160,4 +160,13 @@ class TfliteEnsembleInferenceTest {
             }
         }
     }
+    /** An all-ones mask: these tests are about tensor plumbing, not presence. */
+    private fun maskOf(features: FloatArray): FloatArray {
+        require(features.size % 24 == 0)
+        return FloatArray(24) { 1f }
+    }
+
+    /** A zero-filled 381-wide tensor of the same clip: plumbing test only. */
+    private fun xyzOf(features: FloatArray): FloatArray = FloatArray(24 * 381)
+
 }

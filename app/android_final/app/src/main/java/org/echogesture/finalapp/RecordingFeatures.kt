@@ -74,9 +74,29 @@ object RecordingFeatures {
     }
 
     /** The full 24×255 tensor for one recording. */
-    fun build(recording: SignRecorder.Recording): FloatArray {
+    fun build(recording: SignRecorder.Recording): FloatArray =
+        buildBoth(recording).let { it.featuresXY ?: FloatArray(0) }
+
+    /** Both feature widths plus the attention mask, from ONE landmark pass. */
+    data class Tensors(
+        val featuresXY: FloatArray,
+        val featuresXYZ: FloatArray,
+        val mask: FloatArray
+    )
+
+    /**
+     * Builds the 255-wide and 381-wide tensors and the mask together.
+     *
+     * The two widths are the same landmarks read with and without z, so the
+     * mask is identical for both and MediaPipe is never run twice. Building
+     * them separately would risk the mask drifting from the features it is
+     * paired with.
+     */
+    fun buildBoth(recording: SignRecorder.Recording): Tensors {
         val (landmarks, present, n) = tensors(sample(recording))
-        return FeatureTransform.buildFeatures(landmarks, present, n, MODEL_STEPS)
+        val xy = FeatureTransform.build(landmarks, present, n, MODEL_STEPS, useZ = false)
+        val xyz = FeatureTransform.build(landmarks, present, n, MODEL_STEPS, useZ = true)
+        return Tensors(xy.features, xyz.features, xy.mask)
     }
 
     /**

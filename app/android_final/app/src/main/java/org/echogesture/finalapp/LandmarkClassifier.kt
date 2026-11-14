@@ -38,13 +38,22 @@ class LandmarkClassifier(
     class Member(
         val name: String,
         modelBuffer: ByteBuffer,
-        expectedOutputClasses: Int = ModelContract.EXPECTED_CLASSES
+        expectedOutputClasses: Int = ModelContract.EXPECTED_CLASSES,
+        /** True when this member takes 381-wide x,y,z features. */
+        val useZ: Boolean = false
     ) {
         internal val interpreter: Interpreter
-        internal val inputTensorName: String
+        internal val featureTensorName: String
+        internal val maskTensorName: String
+        internal val featureTensorIndex: Int
+        internal val maskTensorIndex: Int
+        internal val featureDim: Int
         internal val outputTensorName: String
         internal val inputScale: Float
         internal val inputZeroPoint: Int
+        internal val maskScale: Float
+        internal val maskZeroPoint: Int
+        internal val maskIsFloat: Boolean
         internal val outputScale: Float
         internal val outputZeroPoint: Int
         internal val outputIsFloat: Boolean
@@ -55,21 +64,46 @@ class LandmarkClassifier(
                 modelBuffer,
                 Interpreter.Options().apply { setNumThreads(4); setUseXNNPACK(true) }
             )
-            require(interpreter.inputTensorCount == 1) {
-                "member '$name': expected 1 input tensor, got ${interpreter.inputTensorCount}"
+            // The masked models take TWO inputs. Resolve them BY NAME: the
+            // converter reports the mask as input 0, so positional code feeds
+            // the mask where the features belong and fails only as a shape
+            // mismatch several layers deeper.
+            require(interpreter.inputTensorCount == 2) {
+                "member '$name': expected 2 inputs (features + mask), " +
+                    "got ${interpreter.inputTensorCount}"
             }
             require(interpreter.outputTensorCount == 1) {
                 "member '$name': expected 1 output tensor, got ${interpreter.outputTensorCount}"
             }
 
             // Resolve this member's own handles and validate only them.
-            val inputTensor: Tensor = interpreter.getInputTensor(0)
+            var fIdx = -1
+            var mIdx = -1
+            for (i in 0 until interpreter.inputTensorCount) {
+                val n = interpreter.getInputTensor(i).name()
+                if (n.contains("features")) fIdx = i
+                if (n.contains("mask")) mIdx = i
+            }
+            check(fIdx >= 0) { "member '$name': no input tensor named like 'features'" }
+            check(mIdx >= 0) { "member '$name': no input tensor named like 'mask'" }
+            require(fIdx != mIdx) { "member '$name': features and mask resolved to the same tensor" }
+            featureTensorIndex = fIdx
+            maskTensorIndex = mIdx
+
+            val inputTensor: Tensor = interpreter.getInputTensor(fIdx)
+            val maskTensor: Tensor = interpreter.getInputTensor(mIdx)
             val outputTensor: Tensor = interpreter.getOutputTensor(0)
-            inputTensorName = inputTensor.name()
+            featureTensorName = inputTensor.name()
+            maskTensorName = maskTensor.name()
             outputTensorName = outputTensor.name()
 
-            check(inputTensor.shape().contentEquals(intArrayOf(1, 24, 255))) {
-                "member '$name': input shape ${inputTensor.shape().joinToString(",")} != [1,24,255]"
+            featureDim = FeatureTransform.featureDim(useZ)
+            check(inputTensor.shape().contentEquals(intArrayOf(1, 24, featureDim))) {
+                "member '$name': features shape ${inputTensor.shape().joinToString(",")} " +
+                    "!= [1,24,$featureDim]"
+            }
+            check(maskTensor.shape().contentEquals(intArrayOf(1, 24))) {
+                "member '$name': mask shape ${maskTensor.shape().joinToString(",")} != [1,24]"
             }
             check(outputTensor.shape().contentEquals(intArrayOf(1, expectedOutputClasses))) {
                 "member '$name': output shape ${outputTensor.shape().joinToString(",")} " +
@@ -84,6 +118,9 @@ class LandmarkClassifier(
 
             inputScale = inputTensor.quantizationParams().scale
             inputZeroPoint = inputTensor.quantizationParams().zeroPoint
+            maskScale = maskTensor.quantizationParams().scale
+            maskZeroPoint = maskTensor.quantizationParams().zeroPoint
+            maskIsFloat = maskTensor.dataType() == DataType.FLOAT32
             outputScale = outputTensor.quantizationParams().scale
             outputZeroPoint = outputTensor.quantizationParams().zeroPoint
             outputIsFloat = outputTensor.dataType() == DataType.FLOAT32
@@ -164,13 +201,18 @@ class LandmarkClassifier(
     private val gate = Any()
     @Volatile private var closed = false
 
-    /** features: 24*255 float32 row-major from FeatureTransform.buildFeatures. */
-    fun predict(features: FloatArray): Result = synchronized(gate) {
+    /**
+     * @param features the 255-wide x,y tensor (used by `use_z=false` members)
+     * @param mask     the 24-step attention mask from the SAME landmark pass
+     * @param featuresXYZ the 381-wide x,y,z tensor (used by `use_z=true` members)
+     */
+    fun predict(
+        features: FloatArray,
+        mask: FloatArray,
+        featuresXYZ: FloatArray = FloatArray(0)
+    ): Result = synchronized(gate) {
         check(!closed) { "classifier is closed" }
-        val expected = ModelContract.EXPECTED_FRAMES * ModelContract.EXPECTED_FEATURE_DIM
-        require(features.size == expected) {
-            "features must be 24*255=$expected, got ${features.size}"
-        }
+        validateInputs(features, mask, featuresXYZ)
 
         val memberLogits = ArrayList<FloatArray>(members.size)
         val memberMillis = LinkedHashMap<String, Long>()
@@ -178,7 +220,7 @@ class LandmarkClassifier(
 
         for (member in members) {
             val start = System.nanoTime()
-            memberLogits.add(invoke(member, features))
+            memberLogits.add(invoke(member, if (member.useZ) featuresXYZ else features, mask))
             val elapsed = (System.nanoTime() - start) / 1_000_000L
             memberMillis[member.name] = elapsed
             inferenceMillis += elapsed
@@ -201,34 +243,59 @@ class LandmarkClassifier(
     }
 
     /**
-     * Runs EVERY member on the same features and returns each member's own raw
-     * logits, in meta order. Same invocation path as [predict]; exposed so the
-     * on-device test can assert per-member tensor resolution and parity against
-     * the Python reference instead of only the aggregated result.
+     * Runs EVERY member and returns each member's own raw logits, in meta
+     * order. Same invocation path as [predict]; exposed so the on-device test
+     * can assert per-member tensor resolution and parity against the Python
+     * reference instead of only the aggregated result.
      */
-    fun memberLogits(features: FloatArray): List<FloatArray> = synchronized(gate) {
+    fun memberLogits(
+        features: FloatArray,
+        mask: FloatArray,
+        featuresXYZ: FloatArray = FloatArray(0)
+    ): List<FloatArray> = synchronized(gate) {
         check(!closed) { "classifier is closed" }
-        val expected = ModelContract.EXPECTED_FRAMES * ModelContract.EXPECTED_FEATURE_DIM
-        require(features.size == expected) {
-            "features must be 24*255=$expected, got ${features.size}"
-        }
-        members.map { invoke(it, features) }
+        validateInputs(features, mask, featuresXYZ)
+        members.map { invoke(it, if (it.useZ) featuresXYZ else features, mask) }
     }
 
-    /** One member invocation through that member's own interpreter. */
-    private fun invoke(member: Member, features: FloatArray): FloatArray {
+    private fun validateInputs(features: FloatArray, mask: FloatArray, featuresXYZ: FloatArray) {
         val frames = ModelContract.EXPECTED_FRAMES
-        val dim = ModelContract.EXPECTED_FEATURE_DIM
-        val classes = ModelContract.EXPECTED_CLASSES
-
-        val input: Array<Array<FloatArray>> = Array(1) { Array(frames) { FloatArray(dim) } }
-        for (t in 0 until frames) {
-            System.arraycopy(features, t * dim, input[0][t], 0, dim)
+        val xyExpected = frames * ModelContract.EXPECTED_FEATURE_DIM
+        require(features.size == xyExpected) {
+            "features must be 24*255=$xyExpected, got ${features.size}"
         }
-        // Quantized input only when the tensor actually is int8; a float input
-        // has scale 0 and must be fed as float.
-        val modelInput: Any = if (member.inputIsFloat) {
-            input
+        require(mask.size == frames) { "mask must be $frames values, got ${mask.size}" }
+        val needsZ = members.any { it.useZ }
+        if (needsZ) {
+            val xyzExpected = frames * FeatureTransform.FEATURE_DIM_XYZ
+            require(featuresXYZ.size == xyzExpected) {
+                "ensemble has z-members but featuresXYZ is ${featuresXYZ.size}, expected $xyzExpected"
+            }
+        }
+    }
+
+    /**
+     * One member invocation through that member's own interpreter.
+     *
+     * Two inputs, addressed BY TENSOR OBJECT — never by position. The
+     * converter reports the mask first, so positional feeding would put the
+     * mask where the features go. Building the map from each member's own
+     * resolved tensors makes the ordering irrelevant.
+     */
+    private fun invoke(member: Member, features: FloatArray, mask: FloatArray): FloatArray {
+        val frames = ModelContract.EXPECTED_FRAMES
+        val dim = member.featureDim
+        val classes = ModelContract.EXPECTED_CLASSES
+        require(features.size == frames * dim) {
+            "member '${member.name}': got ${features.size} features, expected ${frames * dim}"
+        }
+
+        val featureInput: Any = if (member.inputIsFloat) {
+            Array(1) { Array(frames) { FloatArray(dim) } }.also { array ->
+                for (t in 0 until frames) {
+                    System.arraycopy(features, t * dim, array[0][t], 0, dim)
+                }
+            }
         } else {
             Array(1) { Array(frames) { t ->
                 ByteArray(dim) { f ->
@@ -238,16 +305,34 @@ class LandmarkClassifier(
                 }
             } }
         }
+        // Mask is float32 in the shipped artifacts; quantize only if it is not.
+        val maskInput: Any = if (member.maskIsFloat) {
+            Array(1) { mask.copyOf(frames) }
+        } else {
+            Array(1) { ByteArray(frames) { t ->
+                val q = Math.round(mask[t] / member.maskScale) + member.maskZeroPoint
+                q.coerceIn(-128, 127).toByte()
+            } }
+        }
+
+        // Indexed by the member's own tensor indices, so the converter's
+        // ordering is irrelevant.
+        // Positional ARRAY, with each buffer placed at that member's own
+        // resolved tensor index, so the converter's ordering cannot matter.
+        val inputs = arrayOfNulls<Any>(member.interpreter.inputTensorCount)
+        inputs[member.featureTensorIndex] = featureInput
+        inputs[member.maskTensorIndex] = maskInput
+        val outputs = HashMap<Int, Any>(1)
 
         return if (member.outputIsFloat) {
             val output = Array(1) { FloatArray(classes) }
-            member.interpreter.run(modelInput, output)
+            outputs[0] = output
+            member.interpreter.runForMultipleInputsOutputs(inputs, outputs)
             output[0]
         } else {
-            // Not the shipped form, but supported the way src/main.py handles it:
-            // dequantize the int8 logits with this member's output params.
             val output = Array(1) { ByteArray(classes) }
-            member.interpreter.run(modelInput, output)
+            outputs[0] = output
+            member.interpreter.runForMultipleInputsOutputs(inputs, outputs)
             FloatArray(classes) { i ->
                 (output[0][i].toInt() - member.outputZeroPoint) * member.outputScale
             }
@@ -272,7 +357,8 @@ class LandmarkClassifier(
                     modelBuffer = ByteBuffer.allocateDirect(asset.bytes.size)
                         .order(ByteOrder.nativeOrder())
                         .apply { put(asset.bytes); rewind() },
-                    expectedOutputClasses = classes
+                    expectedOutputClasses = classes,
+                    useZ = asset.useZ
                 )
             }
             return try {

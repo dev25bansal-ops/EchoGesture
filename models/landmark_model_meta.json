@@ -2,11 +2,56 @@
   "frames": 24,
   "feature_dim": 255,
   "classes": 100,
-  "quantization": "float16",
   "members": [
     "landmark_ens_tcn21_fp16.tflite",
     "landmark_ens_tcnm61_fp16.tflite",
     "landmark_ens_tcnm62_fp16.tflite",
-    "landmark_ens_rob71_fp16.tflite"
-  ]
+    "landmark_ens_rob71_fp16.tflite",
+    "landmark_ens_mirror_handdrop_tcn_z_s0_fp16.tflite",
+    "landmark_ens_mirror_handdrop_tcn_z_s1_fp16.tflite",
+    "landmark_ens_mirror_handdrop_tcn_z_s2_fp16.tflite",
+    "landmark_ens_mirror_handdrop_tcn_z_s7_fp16.tflite",
+    "landmark_ens_mirror_handdrop_tcn_z_s13_fp16.tflite"
+  ],
+  "quantization": "float16",
+  "ensemble_test_top1": 0.7702,
+  "members_detail": [
+    {
+      "file": "landmark_ens_tcn21_fp16.tflite",
+      "use_z": false
+    },
+    {
+      "file": "landmark_ens_tcnm61_fp16.tflite",
+      "use_z": false
+    },
+    {
+      "file": "landmark_ens_tcnm62_fp16.tflite",
+      "use_z": false
+    },
+    {
+      "file": "landmark_ens_rob71_fp16.tflite",
+      "use_z": false
+    },
+    {
+      "file": "landmark_ens_mirror_handdrop_tcn_z_s0_fp16.tflite",
+      "use_z": true
+    },
+    {
+      "file": "landmark_ens_mirror_handdrop_tcn_z_s1_fp16.tflite",
+      "use_z": true
+    },
+    {
+      "file": "landmark_ens_mirror_handdrop_tcn_z_s2_fp16.tflite",
+      "use_z": true
+    },
+    {
+      "file": "landmark_ens_mirror_handdrop_tcn_z_s7_fp16.tflite",
+      "use_z": true
+    },
+    {
+      "file": "landmark_ens_mirror_handdrop_tcn_z_s13_fp16.tflite",
+      "use_z": true
+    }
+  ],
+  "note": "members_detail marks the members whose features are x,y,z (381 wide). Members without an entry, or with use_z false, take the 255-wide x,y features."
 }

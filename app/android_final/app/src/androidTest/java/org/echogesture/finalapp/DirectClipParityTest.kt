@@ -317,8 +317,9 @@ class DirectClipParityTest {
                 }
                 val landmarks = res["landmarks"] as FloatArray
                 val present = res["present"] as FloatArray
-                val feats = FeatureTransform.buildFeatures(landmarks, present, n, 24)
-                val r = classifier.predict(feats)
+                val xy = FeatureTransform.build(landmarks, present, n, 24, useZ = false)
+                val xyz = FeatureTransform.build(landmarks, present, n, 24, useZ = true)
+                val r = classifier.predict(xy.features, xy.mask, xyz.features)
                 println(
                     "DIRECT_CLIP $tag decoded=${res["decoded"]} frames=$n " +
                         "hands=${res["hands"]} top1=${r.prediction} " +

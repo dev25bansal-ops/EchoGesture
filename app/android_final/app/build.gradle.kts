@@ -16,17 +16,32 @@ val expectedMembers = listOf(
     "landmark_ens_tcn21_fp16.tflite",
     "landmark_ens_tcnm61_fp16.tflite",
     "landmark_ens_tcnm62_fp16.tflite",
-    "landmark_ens_rob71_fp16.tflite"
+    "landmark_ens_rob71_fp16.tflite",
+    "landmark_ens_mirror_handdrop_tcn_z_s0_fp16.tflite",
+    "landmark_ens_mirror_handdrop_tcn_z_s1_fp16.tflite",
+    "landmark_ens_mirror_handdrop_tcn_z_s2_fp16.tflite",
+    "landmark_ens_mirror_handdrop_tcn_z_s7_fp16.tflite",
+    "landmark_ens_mirror_handdrop_tcn_z_s13_fp16.tflite"
 )
 val memberHashes = mapOf(
     "landmark_ens_tcn21_fp16.tflite" to
-        "112279bc86090470b82b20b510746a946220322c25ec84cb3706a538c73dc22a",
+        "af031d898c98c97abcf66ae7538166316faac458b7b938fe9e3390fce31e5d4c",
     "landmark_ens_tcnm61_fp16.tflite" to
-        "01a261d8eb6c2c4d8b501f0ce1a36db338365d17fddabc63528a7941b1390f63",
+        "b0a97aa45c6797b4b85e2f6a1b03945881a94dad5519cb71be47e474fdea54f0",
     "landmark_ens_tcnm62_fp16.tflite" to
-        "27058a85e032bee3af444fb1538ff0bf32fd38fa2b01ce01a2f25c3a428d20b3",
+        "1d247397d57e982196e68f3f230adeeabbfcdf673ba01ed541eadd54d874ea8d",
     "landmark_ens_rob71_fp16.tflite" to
-        "08417e72da59150ac9adf749e6324c30fb001d4a401394e32f125d3276d1ab21"
+        "105218a89fde1d107441422254805dfb38cc7df25a216ff986801bc15dccb89a",
+    "landmark_ens_mirror_handdrop_tcn_z_s0_fp16.tflite" to
+        "387749f81673719bd4a24813f33c6880c6117ed7be9d6bd50853250f8082901e",
+    "landmark_ens_mirror_handdrop_tcn_z_s1_fp16.tflite" to
+        "02a2dc70fbd769f793c8f8915c8a30cc568d901bf2e35bffe1752aa762000a35",
+    "landmark_ens_mirror_handdrop_tcn_z_s2_fp16.tflite" to
+        "3b97a2d416faec002bb84a6d2e47c131bb97941f074feed248a2c5a99c1c3b3d",
+    "landmark_ens_mirror_handdrop_tcn_z_s7_fp16.tflite" to
+        "2f13d0eba1f34e68f3e3ac1b2c645d9f75d1953918d69be6d58ca00a1f2b36b2",
+    "landmark_ens_mirror_handdrop_tcn_z_s13_fp16.tflite" to
+        "3d3a61e08d6a4d2a0a8064ae3b63692a55b55a2004ba37a428308a22b6336fba"
 )
 // Every weight and the detector are byte-pinned: a swapped classifier cannot
 // get past this, and those bytes are what decide what the app runs.

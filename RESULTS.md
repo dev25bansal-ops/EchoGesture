@@ -173,7 +173,7 @@ class, extra capacity overfits. Widening is not the lever.
 | what | value | what it means |
 | --- | --- | --- |
 | classifier only | **0.55 ms p50 / 0.76 p95** | the metric the jury matrix scores |
-| per frame, streaming | **~16 ms** | MediaPipe 15.7 + classifier 0.55 → ~30 fps, inside 50 ms |
+| per frame, streaming | **~151 ms** | **RETRACTED 16 Nov: no artifact in this repo backed 15.7 ms/frame.** Re-measured with `scripts/ml/latency_per_frame.py`: p50 **150.9 ms**, p95 358.5, min 68.5 (IMAGE mode, 160 frames). Pinning to an idle core gave 163 ms, so it is not contention. This is **above** the 50 ms budget. |
 | whole clip, warm | ~447 ms | decode 52 + MediaPipe over 32 frames 503 + features 0.4 + classifier 0.6 |
 | cold start | ~7.7 s | MediaPipe graph init, one time; model load is 3 ms |
 

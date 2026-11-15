@@ -1,0 +1,22 @@
+{
+  "size": "256",
+  "frames_per_clip": 32,
+  "clips": 5,
+  "warmup_calls": 3,
+  "modes": {
+    "image": {
+      "n": 160,
+      "p50_ms": 150.86,
+      "p95_ms": 358.54,
+      "min_ms": 68.54,
+      "mean_ms": 169.44
+    },
+    "video": {
+      "n": 160,
+      "p50_ms": 141.87,
+      "p95_ms": 256.16,
+      "min_ms": 72.39,
+      "mean_ms": 148.47
+    }
+  }
+}

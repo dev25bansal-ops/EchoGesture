@@ -75,8 +75,9 @@ python main.py path/to/test_clip.mp4
 
 - **Classifier inference: 1.21 ms p50, 1.60 ms p95** across all four members —
   this is the number the jury matrix scores ("Measured inference time <50 ms").
-- **Per-frame streaming budget: ~16.3 ms** — MediaPipe 15.7 ms + classifier, so
-  a live camera sustains ~30 fps inside the 50 ms frame budget.
+- **Per-frame streaming: ~151 ms p50 on desktop** — **RETRACTED 16 Nov: no artifact in this repo backed 15.7 ms/frame.** Re-measured with `scripts/ml/latency_per_frame.py`: p50 **150.9 ms**, p95 358.5, min 68.5 (IMAGE mode, 160 frames). Pinning to an idle core gave 163 ms, so it is not contention. This is **above** the 50 ms budget.
+  The Android app uses `detectForVideo` with tracker reuse and has never been
+  measured, so the on-device figure may differ.
 - **Whole-clip batch path: ~470 ms warm** — decode 52 ms + MediaPipe over 32
   frames 503 ms + features 0.4 ms + four model invocations. This is a
   batch-of-one-clip cost, not per-frame latency.

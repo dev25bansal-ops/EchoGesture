@@ -171,7 +171,7 @@ np.ones((32,2),np.float32), expected_frames=24)` → shape `(24, 255)`.
 | Float vs FP16 | 75.36% vs 75.36% on val — quantization loses **0.00** |
 | TF↔PyTorch parity, all 4 members | 100% argmax agreement; FP16 max&#124;d&#124; 3.5–4.5e-03 (gate: 1e-2) |
 | Classifier latency | measured at 1.21 ms p50 / 1.60 ms p95 for the four legacy members; the nine-member set has not been re-timed |
-| Per-frame streaming | ~16.3 ms (MediaPipe 15.7 + classifier) |
+| Per-frame streaming | ~151 ms p50 desktop (**15.7 ms claim retracted 16 Nov** — no artifact backed it) |
 | Cold start | ~8.8 s, one time, MediaPipe graph init |
 
 ### Known failure cases

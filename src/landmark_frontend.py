@@ -14,7 +14,9 @@ geometry that defines the sign - the approach every Kaggle GISLR top-5 entry
 converged on independently.
 
 Latency budget (measured on this machine, single process, no contention):
-MediaPipe HandLandmarker is ~23 ms/frame at 256x256 with 2 hands, and the INT8
+MediaPipe HandLandmarker measures ~110-160 ms/frame p50 at 256x256 with 2 hands
+on this machine (16 Nov, scripts/ml/latency_per_frame.py; an earlier ~23 ms
+figure had no retained artifact behind it), and the INT8
 classifier is ~3 ms per clip. A 24-frame clip is therefore ~0.55 s wall
 clock, but the number the jury matrix scores is per-frame inference time,
 which is ~26 ms - inside the 50 ms budget. Reported separately in results.csv
@@ -53,7 +55,7 @@ def get_landmarker(mode: str = "image"):
     """Create (once) and return a MediaPipe HandLandmarker.
 
     `mode` is "image" for offline clips and "video" for streaming. Both give
-    the same 23 ms/frame; VIDEO additionally reuses its tracker across calls,
+    the same per-frame cost; VIDEO additionally reuses its tracker across calls,
     which matters when frames arrive one at a time.
     """
     global _LANDMARKER

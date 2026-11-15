@@ -140,7 +140,8 @@ def _init_model():
             pass
 
 
-def _preprocess_video(video_path: str, target_frames: int = 24, use_z: bool = False):
+def _preprocess_video(video_path: str, target_frames: int = 24, use_z: bool = False,
+                      size=256):
     """Video -> the model's (T, FEATURE_DIM) landmark feature matrix and mask.
 
     MediaPipe extracts two hands per frame into canonical left/right slots,
@@ -154,7 +155,18 @@ def _preprocess_video(video_path: str, target_frames: int = 24, use_z: bool = Fa
     Raises ValueError when no hand is visible in any sampled frame: predicting
     a gloss from an empty clip would be a guess dressed up as a measurement.
     """
-    lm, present = clip_to_landmarks(video_path, max_frames=max(32, target_frames))
+    # `size` is a square edge (256 = the squash the checkpoints were extracted
+    # at), or the string "native" for no resize - which is what the Android app
+    # does and is worth ~8.5 points. The default is the extraction geometry, so
+    # existing callers are unaffected.
+    #
+    # Note "native" is a distinct sentinel rather than None: clip_to_landmarks
+    # uses None for its own native path, and overloading one value for both
+    # "default" and "native" made size=None silently mean 256.
+    native = (size == "native")
+    lm, present = clip_to_landmarks(
+        video_path, max_frames=max(32, target_frames),
+        size=None if native else size)
     if lm.shape[0] == 0 or float(present.max()) < 0.5:
         raise ValueError(f"No hand detected in any frame of: {video_path}")
 

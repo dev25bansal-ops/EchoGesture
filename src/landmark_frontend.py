@@ -208,9 +208,16 @@ def detect_hands(frames, landmarker=None, mode: str = "image"):
     return np.stack(seq), np.array(present, np.float32)
 
 
-def clip_to_landmarks(video_path, max_frames: int = 32):
-    """Whole-video convenience wrapper used by `predict()`."""
-    frames = read_frames(video_path, max_frames=max_frames)
+def clip_to_landmarks(video_path, max_frames: int = 32, size=FRAME_SIZE):
+    """Whole-video convenience wrapper used by `predict()`.
+
+    `size` defaults to FRAME_SIZE (256 squash), which is what the shipped
+    checkpoints were EXTRACTED at - changing that default would invalidate the
+    cache and every checkpoint. Pass `size=None` for the native path, which is
+    what the Android app does and is worth about 8.5 points (see
+    docs/hackathon/CACHE_REBUILT_2026-11-15.md).
+    """
+    frames = read_frames(video_path, max_frames=max_frames, size=size)
     if not frames:
         return np.zeros((0, HANDS, NUM_LANDMARKS, 3), np.float32), \
                np.zeros((0, HANDS), np.float32)

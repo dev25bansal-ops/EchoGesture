@@ -29,7 +29,16 @@ import cv2
 import numpy as np
 
 NUM_LANDMARKS = 21
+
+# Detector input size. The landmark model works on a square crop, so this is
+# the resolution MediaPipe sees before its own internal resize.
+#
+# 256 is what the shipped checkpoints were EXTRACTED at, and that must not
+# change: the landmark cache, every checkpoint, and the Android app's feature
+# transform are all downstream of this number. Retraining is the only way to
+# move it, so the default stays.
 FRAME_SIZE = 256
+
 HANDS = 2
 
 _TASK = None
@@ -75,7 +84,45 @@ def get_landmarker(mode: str = "image"):
     return _LANDMARKER
 
 
-def read_frames(video_path: str | Path, max_frames: int = 32, size: int = FRAME_SIZE):
+def _present_for_detector(frame: np.ndarray, size: int, letterbox: bool) -> np.ndarray:
+    """Prepare one BGR frame for MediaPipe.
+
+    `letterbox=False` squashes to size x size, which is what extraction used.
+
+    `letterbox=True` preserves aspect ratio by scaling the long side to `size`
+    and centring on a square canvas. This matters for robustness: a 35%
+    downscale applied to an already-squashed 256x256 frame leaves ~89px of real
+    detail and detection collapses, but applied to a 640x480 frame before
+    squashing it leaves ~224px and detection is unaffected (measured: 45.5% ->
+    44.5% of frames with a hand present, versus 44.1% -> 27.6% when the squash
+    comes first). The same reasoning is why the Android app captures 640x480
+    landscape rather than a square.
+    """
+    if size is None:
+        # Native path: no resize at all. This is what the Android app does -
+        # CameraScreen captures 640x480 and HandTracker builds the MediaPipe
+        # image straight from the bitmap with no crop, scale or letterbox.
+        return cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    if not letterbox:
+        return cv2.cvtColor(cv2.resize(frame, (size, size)), cv2.COLOR_BGR2RGB)
+    h, w = frame.shape[:2]
+    k = size / float(max(h, w))
+    resized = cv2.resize(frame, (max(1, int(round(w * k))), max(1, int(round(h * k)))))
+    canvas = np.zeros((size, size, 3), np.uint8)
+    top = (size - resized.shape[0]) // 2
+    left = (size - resized.shape[1]) // 2
+    canvas[top:top + resized.shape[0], left:left + resized.shape[1]] = resized
+    return cv2.cvtColor(canvas, cv2.COLOR_BGR2RGB)
+
+
+def read_frames(video_path: str | Path, max_frames: int = 32, size: int | None = FRAME_SIZE,
+                letterbox: bool = False):
+    """Sample `max_frames` frames spread evenly across the whole clip.
+
+    `size=None` keeps frames at their native resolution, which is the path the
+    Android app takes. An int resizes to that square edge (`letterbox` picks
+    aspect-preserving pad versus squash).
+    """
     """Sample `max_frames` frames spread evenly across the whole clip.
 
     Sampling the opening frames only loses the sign whenever a clip starts
@@ -100,13 +147,13 @@ def read_frames(video_path: str | Path, max_frames: int = 32, size: int = FRAME_
             if not ok:
                 break
             cur += 1
-            out.append(cv2.cvtColor(cv2.resize(f, (size, size)), cv2.COLOR_BGR2RGB))
+            out.append(_present_for_detector(f, size, letterbox))
     else:
         while len(out) < max_frames:
             ok, f = cap.read()
             if not ok:
                 break
-            out.append(cv2.cvtColor(cv2.resize(f, (size, size)), cv2.COLOR_BGR2RGB))
+            out.append(_present_for_detector(f, size, letterbox))
     cap.release()
     return out
 

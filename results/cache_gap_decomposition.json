@@ -1,0 +1,7508 @@
+{
+  "agree": {
+    "n": 885,
+    "cached_pct": 82.4859,
+    "fresh_pct": 82.4859
+  },
+  "differ": {
+    "n": 364,
+    "cached_pct": 63.4615,
+    "fresh_pct": 82.4176
+  },
+  "per_clip": [
+    {
+      "clip": "002273170951422543-CHEW 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "0023118276702314144-ROCKING CHAIR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "002867932497711001-DUCK",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "0035239519721155244-BACKPACK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "0035415552923467875-MYSELF",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "0038022309327769843-DRAG",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "005082179049994862-DOG",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "00570144917869797-GRAMMAR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "0074991170568861065-MAPLE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "0075134472969600186-RABBIT 2",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "008024082130591692-SCROLL DOWN",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "008533489727754251-EAT",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "010316615814611296-MECHANIC",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "011010878590564266-DARK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "011189478158196708-DRAG",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "011716531366529281-APPLE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "011868282246247253-BASEBALL CAP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "011997498786849192-RAZOR 2",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "013266005229871869-TAIL",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "013334161348316442-FLOAT 3",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "013933028993222907-SINK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "01393636751769689-RIVER",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "014045128526052997-MAPLE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "014831861831486881-DUCK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "01502565597484895-FLIP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "01603320772096839-GUESS",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "01658498476486625-UNDERWEAR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "01737573342017562-LOCK",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "01782035114094338-WALK-TIGHTROPE-CL",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "018252108786821486-CLOSE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "019113149258163764-BASKETBALL",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "019153341708292082-DEVELOP",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "01997263204709898-DARK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "021239231440700612-SCARF 4",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "02127544513426116-BASKETBALL",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "0224524746429009-DARK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "022655247413304158-HURDLE-TRIP",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "02278260656013753-APPLE",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "024568947527517704-BITE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "02487817658687752-INTUITIVE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "02808030064323508-AXE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "028264130143242472-HOW",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "028495375833406555-CHEEK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "02972543857073462-CALENDAR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "030041311574118934-DOG",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "031167200145334917-EMPTY 2",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "032824561194411794-WHAT FOR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "034046510887022485-WHAT FOR",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "0347681952564558-DARK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "03784724402121453-UNDERWEAR",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "0391236078587216-HOSPITAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "04009125576648165-METAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "04040322468025548-MICROSCOPE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "04125584598262866-CHEESE GRATER",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "04181961529715594-ADVERTISE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "04210263150660265-DOG",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "0441323037377932-SHARPEN 3",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "044486584581144406-METAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "045654445738952054-SAIL 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "0460671531200294-PENNY",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "04628430080673662-TEACH",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "048426994463449-GRAMMAR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "04861503641767739-MOVIE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "048755012776680706-ZEBRA",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "04962514019781339-BASKETBALL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "04976287806312629-RIVER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "0503955404505847-DARK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "05043302933121163-BASKETBALL",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "05182760007996734-SCROLL DOWN",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "05282150539349706-COMB",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "05469657086044322-CALENDAR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "054947630736963626-SHARPEN 3",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "05665256472118152-CALENDAR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "05745201238962094-MAPLE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "057822760199061296-COMB",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "0600691648462941-TICKLE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "06059399992218295-VOICE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "06135210265179425-FAIL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "06220534936854305-ADVERTISE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "06250679912910284-BASKETBALL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "06275594280373986-ANYONE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "0642805451334636-SCROLL DOWN",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "06437354909692172-HOW",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "0645859742166186-FAIL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "0649088165060383-SCROLL DOWN",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "06530043158521814-ROCKING CHAIR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "06549470108960409-PENNY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "06550312798005042-ELEVATOR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "0659852923794384-SHOCKED",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "06612660137871473-WHAT FOR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "06763934192733045-CEMETERY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "06887001263013914-COMB",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "06963511027625535-BELT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "07020288264965746-EMPTY 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "07058391985205126-HURDLE-TRIP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "07243138866452936-8 HOUR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "07433963255660614-CALENDAR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "07483084821662134-MEA CULPA",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "07616529311429576-PATIENT 2",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "07652904644501302-PONDER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "07729666531437518-EMPTY 2",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "0777683950330228-CHEER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "07859033165447094-SPECIAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "07934406900594504-BITE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "07988040564648213-SPECIAL",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "08158105124707693-GOODY GOODY_SHOE_OPPOSITE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "08340390659087227-VOICE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "08763437833459409-DARK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "08795608187591553-HOSPITAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "08828994157564463-DOWNSIZE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "09033463994461477-PATIENT 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "09160085686424368-ALL OF_SUDDEN",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "09260976643572971-PULL CONVINCE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "09262919077219123-CEMETERY",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "09399513672720006-BITE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "0947826036924726-MECHANIC",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "09538809070702303-MICROSCOPE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "09615386459704434-TICKLE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "09709454810039175-SHAVE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "09710120224353314-JOKE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "09711982083090631-BASEBALL CAP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "09786943399298931-WALK-TIGHTROPE-CL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "09844516715257434-GUESS",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "09897880619511823-DEVELOP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "09902338777880337-DEAF",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "09975978509158434-MECHANIC",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "10105426893804847-HURDLE-TRIP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "10175548037053983-EASY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "10225292722230295-OFFEND",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "1032702569099111-WALK-TIGHTROPE-CL",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "10390446211426041-RIGHT 3",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "10506892472594931-APPLE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "10772444584020002-DEVELOP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "1091567632188366-DOWNSIZE",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "10941417100216433-SINK",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "1096659736862362-OFFEND",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "11034432898849245-MOUTH",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "11143309153181202-BELT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "11270296105684796-AUTISM",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "11276204524425326-DECIDE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "11308751121929794-SCARF 4",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "11389369287628259-GUESS",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "11414022724134343-ELEVATOR",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "11542521046357379-WHAT FOR",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "11627173480736719-PONDER",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "11633401475133409-ZEBRA",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "11705316733419768-PONDER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "11786857072598522-ALL OF_SUDDEN",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "11817381236526092-FLIP",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "12023037948163728-PATIENT 2",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "12045635816655964-HOW",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "12066848680268882-CLOSE",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "12191689555814977-FINE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "12254867187007878-SPECIAL",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "12285240541999953-COPY",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "12315234223651039-COPY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "12394252495711999-CALENDAR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "12406400434709686-DRAG",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "12563635897653036-UNDERWEAR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "1276420379859602-CHEEK",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "12862904772194628-CLOSE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "12913801291908267-ADVERTISE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "1298285956469971-EASY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "12994023662032128-ROCKING CHAIR",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "13051783303937703-HOSPITAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "13146118187417377-MICROSCOPE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "132075224114935-8 HOUR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "13221185503439514-SCROLL DOWN",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "13232827258182245-MEAT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "13304711014723236-SOCCER 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "13478643539187618-DECIDE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "13534022403534518-MECHANIC",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "13569759120554248-MOVIE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "13607109882500157-SOCCER 2",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": false
+    },
+    {
+      "clip": "13614436278754405-KNIGHT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "1363777633602654-PATIENT 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "13651840403204663-ELEVATOR",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "1384893971212695-DEAF",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "13870986746937408-FAIL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "13884914336494525-EAT",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "13940305296702737-SPECIAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "14027199560866777-FOREIGNER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "1417633613233007-BASEBALL CAP",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "14275568879802236-UNDERWEAR",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "14277024832132956-BITE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "14415908988995363-DEAF",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "14585543673442425-BREAKFAST",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "14609763859933667-MOVIE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "14864015469192737-RIVER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "14961382348435026-MICROSCOPE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "1507074049477588-SQUEEZE",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "15089342979732145-DEVELOP",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "15252109051698337-NOON",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "15284514899988855-RIVER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "15375530979986185-SHARPEN 3",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "15479327154757483-RABBIT 2",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "15516088668952888-CAPTURE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "15571541224560148-JOKE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "15579232403382148-PENNY",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "15643976576715013-FOREIGNER",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "1569354789631634-BEE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "15748558841625426-MICROSCOPE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "1576578324165625-MYSELF",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "1605799239700627-DOG",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "16069128885806583-TAIL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "16144066876600838-VOICE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": false
+    },
+    {
+      "clip": "16186137030756842-FAIL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "1630741460505114-SQUEEZE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "16316092023770867-DEMAND",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "1645802561825107-DARK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "1646228087605357-EASY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "16499691175444786-HOSPITAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "16612720848576923-ADVERTISE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "16622190281751048-CHEW 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "16694417150150498-LONG LINE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "16765721633983355-RIGHT 3",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "16803050280980258-SLIDE 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "16892882605368742-FOREIGNER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "16973039654911082-RABBIT 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "17004022306011768-RABBIT 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "1711692148884032-OFFEND",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "17156030645430365-FINE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "17278884781423343-SHAVE",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "17436829618634997-DUCK",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "17477754398988732-CEMETERY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "17654288627517722-MAPLE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "17686505303084354-WHAT FOR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "17695874871973993-WALK-TIGHTROPE-CL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "1777858686581253-ANYONE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "1788481433923017-ROCKING CHAIR",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "18188731093450206-INTUITIVE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "18359901387677735-CHEER",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "18512720464837074-DRAG",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "1868297376328567-BABY 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "18797449356397156-VOICE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "18816930587449554-RAZOR 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "19327020831542607-GOODY GOODY_SHOE_OPPOSITE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "19349385278962217-SLIDE 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "19423607331119452-ADVERTISE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "1947352203225916-MOVIE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "19492058400267154-EMPTY 2",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "19660182382627567-RAZOR 2",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "19894739757704438-LONG LINE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "19910436412347976-SAIL 2",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "20024346305599372-CALENDAR",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "20025869087956027-SWEATER 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "20126405660750923-DRAG",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "20225671766965791-ZEBRA",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2025895270570035-ROCKING CHAIR",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "20378163193514642-LONG LINE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2041324453100719-SINK",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "20426405054980679-DEMAND",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "20442639095429826-EMPTY 2",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "20511534492100236-JEWELRY",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "20564818191274226-AUTISM",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "20647859814734493-ANYONE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "207441560328397-PARTY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "20840691513845444-CAPTURE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "20998843420473312-OFFEND",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "21166353600430976-DEAF",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2117780366590447-TICKLE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "21466889027769764-CEMETERY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2149343960761707-DEAF",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "21604854634666015-DEVELOP",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "21748424536181488-HALLOWEEN",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2174842546480229-PARTY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2181628608007582-MICROSCOPE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2191437937668399-DARK",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2234307188509459-RIVER",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "22465201840170024-MEAT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "22849185715948206-TAIL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "22862651728809946-CALENDAR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2306174781353174-DEMAND",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2315323333566508-BELT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "23228935359891456-AXE",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "23381035098456993-FAIL",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "23390235460470676-DEVELOP",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2339097615922603-MEAT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2349600796230753-AUTISM",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "23578187279282958-ROCKING CHAIR",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "23612619162352666-GUESS",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "237896269558469-ELEVATOR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "23807712610252052-RIGHT 3",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "23869069758976114-ROCKING CHAIR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "23887793850909178-CHEESE GRATER",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "23918615846797597-DOWNSIZE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2407308686046703-FLOAT 3",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "2418491911721361-GOODY GOODY_SHOE_OPPOSITE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "24365351902926458-AUTISM",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "24393293337340283-DEAF",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2439848722216198-PULL CONVINCE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2444898893094336-TEACH",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "24621191121587915-COMB",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "248170228444343-SHARPEN 3",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "24920929967311678-BELT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "24929560097535908-METAL",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "24953451900596613-NOON",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2505723348580138-LOCK",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "2518282513725827-ALL OF_SUDDEN",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "25193493599062466-SAIL 2",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "25322510507863427-TAIL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "25323376667781083-GUESS",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "25386259590605253-EASY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "25388875174562653-HOW",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "25398273569443774-EAT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "25589261327553303-SPECIAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2559519716404153-RIVER",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": false
+    },
+    {
+      "clip": "25648011466216625-FLOAT 3",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "2566607455394867-SLIDE 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2573922405417379-ROCKING CHAIR",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "2579055880076111-BREAKFAST",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "2610128574126054-RABBIT 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2628169739609161-METAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2631942203458184-CHEESE GRATER",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "26372045261031896-RAZOR 2",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "26588999147309833-CLOSE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "2661039066955322-GUESS",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2661859902709265-APPLE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2674371379182767-DEMAND",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2686788005902119-MAPLE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2690912082374577-FINE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "26942588422931224-SHOCKED",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2701178897396648-KNIGHT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2713168545931097-ADVERTISE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "27374535355988594-FOREIGNER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "274844484230772-SWEATER 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2748457214117681-WHAT FOR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2762792243529284-HURDLE-TRIP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "27673862220461576-MECHANIC",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "27838993663040457-HALLOWEEN",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2786014513481181-HURDLE-TRIP",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "27927736861266106-HALLOWEEN",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "27934471953770945-MOUTH",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2799071999109719-DUCK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2802613713529949-DEMAND",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2805279749371312-COPY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "28134096069176584-BREAKFAST",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "2820444224020271-CHEESE GRATER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2822381131246865-ROCKING CHAIR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "28341042487163093-DARK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "28357839470280455-FINE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "28367703776112174-RIVER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "28522130623160047-AXE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2860591589687298-BABY 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2861165788878921-DUCK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2875856489071946-DEMAND",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2901876329761064-SOCIETY",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2914633345775546-BEE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2919930496025478-SPECIAL",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2931833946779496-MEA CULPA",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "29515769427371175-OFFEND",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "29728761142376525-BELT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "2977347784269375-COPY",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "29975883523571745-HOSPITAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3017683204778152-CAPTURE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "30225378097580125-ROCKING CHAIR",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3029383112947084-TICKLE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "30424952164359365-WALK-TIGHTROPE-CL",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "30542066641425136-SINK",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "3056556796291894-MICROSCOPE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "30574692353796706-PULL CONVINCE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "30728048195204827-AXE",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "307328109259249-DRAG",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "3084937742369156-PATIENT 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3100642899695314-RAZOR 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "31079920245940595-PONDER",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "31090954261767045-KNIGHT",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "31098066479037323-OFFEND",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "31247413462954965-MOVIE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "31395737777791566-BEE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3150358164238749-DRAG",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "31565553555172965-PULL CONVINCE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "31599747477241236-LONG LINE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3176259704516493-COPY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "31854192784744484-PONDER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3189593502854826-DOWNSIZE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "31999967028554943-ALL OF_SUDDEN",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3203446868149544-SCROLL DOWN",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3209876126116058-BASEBALL CAP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "32112966532244824-ROCKING CHAIR",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "32129500090322716-DRAG",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3219737697335432-APPLE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "322006567292628-PENNY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "32244369390325667-APPLE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3236578861048194-LOCK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "32441911620852726-LOCK",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3248125439606664-MECHANIC",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3256116629855341-METAL",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "32566520675182575-RIVER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "32869994241305056-GOODY GOODY_SHOE_OPPOSITE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "32990283650930285-METAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "33051835760678294-WHAT FOR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3325422719129627-SOCIETY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "33282959086389163-BASKETBALL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "332887621632481-TEACH",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "33461934284349804-BREAKFAST",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "3356973641507637-VOICE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "33721516025652254-AXE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3376905366477876-BEE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3413128719696481-CAPTURE",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3425142830042933-CEMETERY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "34251957180053694-DEAF",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3427168064450039-IMPOSSIBLE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "34272085377403605-JOKE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "34361513389950504-BASKETBALL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "34468622946102623-MOVIE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3448123355846451-WHAT FOR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3448619139940019-LONG LINE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "34489116206614145-MECHANIC",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "34491853927581917-BACKPACK",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3450910244744305-SPECIAL",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": false
+    },
+    {
+      "clip": "34515391099855797-VLOG",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3465554493356222-RIVER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3474152794017067-CEMETERY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "34767733467328754-CEMETERY",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "34850632661056835-DARK",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3488944460737071-FOREIGNER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3490725945533484-MICROSCOPE",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "3503629675931672-CHEW 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "35176220038590755-HOSPITAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "35248928832316895-CALENDAR",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "3525196896278959-MECHANIC",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "35252035098624934-MICROSCOPE",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "3543899492627518-MECHANIC",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3556079563053802-GRAMMAR",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "3560281523789681-TICKLE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3561548719390817-SAIL 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "35781885230783694-CHEESE GRATER",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "3584674453434542-BACKPACK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3588759801071051-SHAVE",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "35932779886345867-SCARF 4",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "36097118562437536-METAL",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "3623297795418521-CLOSE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3627757495665438-HURDLE-TRIP",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "36422367690574187-SHOCKED",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "36432105984927166-MICROSCOPE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3645189890366596-PARTY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "36615987323138266-PULL CONVINCE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3667126063454025-CHEER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "36805542769003496-HOSPITAL",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "3681922148149226-AXE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "37029788874314784-ELEVATOR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "37036723618334255-IMPOSSIBLE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3713111366291957-RIVER",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "37166258360351856-BASEBALL CAP",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3719618012767687-SWEATER 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "37294782745118416-HALLOWEEN",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "37298692595361205-BABY 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3738697090568506-BELT",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3759922548209751-HOSPITAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3763789737470338-SCARF 4",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "37779347947817365-SHAVE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3779710078635041-CALENDAR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3784591045062218-MOUTH",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "37879668663027477-INTUITIVE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3800782001937606-AUTISM",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3808564388433662-SWEATER 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3808932969060006-EASY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3815838813702843-BEE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3817109287881457-ZEBRA",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "38254818870970486-DEVELOP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3827741794247175-FINE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "38353854507628116-FLOAT 3",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "38509618638272336-BEE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3864758318565873-MECHANIC",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3866743159985997-MAPLE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "388573733360029-GOODY GOODY_SHOE_OPPOSITE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3894755318059373-BEE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "38957148560325083-PARTY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "39029001403440455-PENNY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "39033263528917295-SPECIAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3908502639532043-BASKETBALL",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "3913088846381303-FINE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3919116256131199-RABBIT 2",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3956842525134605-HALLOWEEN",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "39658960674590915-CLOSE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "39660412786151333-SCARF 4",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "3972721910058057-UNDERWEAR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3976156540390696-HOW",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "3999854113276131-RIGHT 3",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "40008425505075484-JOKE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "401464347685514-DOWNSIZE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "40193405478785693-EAT",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "40198656856145853-TAIL",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "403609422576934-BABY 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4052017389201119-CALENDAR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4052172247333312-MEAT",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "40529180847170077-EASY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "40640709805278785-ANYONE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "40684817790121275-MAPLE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4072572598463988-BABY 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "408010215031793-VOICE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4087545522469531-APPLE",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "41098649268419307-8 HOUR",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "41235392187392317-DOG",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "41461171624603455-EAT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4153714591008735-LOCK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4174648676194661-VLOG",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4185420608277408-SHAVE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4193597821623176-UNDERWEAR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "41953269936944704-WHAT FOR",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "4196090672983519-ROCKING CHAIR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4212999001602742-DOG",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "42129990648972826-EASY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "42165254143653175-PENNY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4224742442088747-BABY 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "42292487254793754-VOICE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4234657375773241-SOCCER 2",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "42399720737094815-DOWNSIZE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "42598507074244907-TICKLE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "42800084869897037-8 HOUR",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "42910160606938996-FOREIGNER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "42918137348904106-BREAKFAST",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "43142287081368647-HOSPITAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4315957172962892-HOSPITAL",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "43188626194921786-FLOAT 3",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4342586261599819-GRAMMAR",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "43431970898118655-PONDER",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "43553524936537147-MICROSCOPE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4369569441624308-PULL CONVINCE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "43797213551458936-ADVERTISE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4383507371408264-TICKLE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4387438322401891-CHEEK",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "4388183150935634-GOODY GOODY_SHOE_OPPOSITE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "44029752215646-BASEBALL CAP",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "44147379249886454-NOON",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "44343358805798005-FAIL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "44372489821876915-SCARF 4",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4440511235371951-DOG",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "44458614013793873-AXE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "4448602107586741-FLIP",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "44505694957301256-MYSELF",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "4458076498397452-JOKE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4465299933433673-MEAT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4468174850137181-EMPTY 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "44740791162322613-PULL CONVINCE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "44866555143309816-DOWNSIZE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4498615325207542-BELT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4509764589041869-DRAG",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4522494379781763-WALK-TIGHTROPE-CL",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4524158338314277-EAT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "45417678103253367-HURDLE-TRIP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "455301239224293-SQUEEZE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "45613275919189045-DUCK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4574934946321978-CHEW 2",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "45844576586594177-EMPTY 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4585374633768091-FLOAT 3",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": false
+    },
+    {
+      "clip": "4589304290577716-FLIP",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "4589398793876327-DEAF",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "45913985094539034-SHAVE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "45986851425089204-BITE",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "46043236997915304-DARK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4608324102845509-SHAVE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4616676154433652-PARTY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4628437990437857-MEAT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4632804985876-GOODY GOODY_SHOE_OPPOSITE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4641646458517976-EAT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "46533591511180483-BASEBALL CAP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "46599236593717674-BREAKFAST",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "46617283654386044-BELT",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "46737628910365925-WALK-TIGHTROPE-CL",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4674665809049434-ALL OF_SUDDEN",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4687291565864429-BREAKFAST",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "46961704813812566-DECIDE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "47018728424793843-BITE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "47046133854683725-SQUEEZE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4706517730637263-DOG",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4722823828781051-TEACH",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4723403431695994-VLOG",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "47293235053662497-SHARPEN 3",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "4735989644399585-DARK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4738658549039212-BACKPACK",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "47472673738561166-MEAT",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4747623892063422-BASKETBALL",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "47631472518661977-DECIDE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "47887620617886606-JEWELRY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4796789891057993-ALL OF_SUDDEN",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4803845809175722-CAPTURE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4814760954431352-SHAVE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "48282240447519165-SOCIETY",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4832444981501538-FAIL",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4841869407341375-RABBIT 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4842884577432556-ELEVATOR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4849086166947669-GRAMMAR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4857135026643289-DOWNSIZE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "48595502480834907-CHEER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4879800740124409-DECIDE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "488841421007149-SHAVE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "48969905397377134-DOWNSIZE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4898001120466351-PATIENT 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4901663474918121-MOVIE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "490282955950905-GRAMMAR",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "492085987654973-BELT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4933850683655725-HURDLE-TRIP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4940860404214378-BACKPACK",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "49586719733965356-INTUITIVE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4963763581681351-INTUITIVE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "4982662953116501-SOCCER 2",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5012834035926363-PATIENT 2",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5012946551449344-WALK-TIGHTROPE-CL",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "502201060238753-BEE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5026846866644539-BACKPACK",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5035301373430681-EAT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5035723296966363-IMPOSSIBLE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5045239686748142-8 HOUR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5064940376290201-BASKETBALL",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5065543906769825-DECIDE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5071160357660403-EMPTY 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5096694289924761-FAIL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5097140355237577-DOWNSIZE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5102955598279411-ALL OF_SUDDEN",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5104381603195376-AXE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5104707243199498-DEVELOP",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5119605257789235-CHEER",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5121733417075109-MOVIE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5127971682215744-ELEVATOR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "513048409174413-HOSPITAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5134322963568105-EMPTY 2",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5134609205301106-NOON",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5140132924913865-FLIP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5147443836339318-SHARPEN 3",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5155585835496319-SLIDE 2",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5170058285304073-FOREIGNER",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5181575783850909-SHOCKED",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5183545451162979-EASY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "519067006979435-AXE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5193451899614112-MOUTH",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5195697908408565-HALLOWEEN",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5202332177126394-DOG",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5203155274355433-MOUTH",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "520986092861234-ALL OF_SUDDEN",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5215173009286387-PARTY",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5218419103318646-GUESS",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5226943306928418-MOVIE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5240585169048262-CHEEK",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5241036116526541-ANYONE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5248742066900234-BASKETBALL",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "526359722774836-DEMAND",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5264461471950679-DEVELOP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5268087791001244-LONG LINE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5274212110709813-CHEEK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5282260621975616-TEACH",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5298380938535534-FINE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5317425737821186-RIGHT 3",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5339362864225501-KNIGHT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5342088990441476-8 HOUR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5354138776340422-DEVELOP",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "53632631231304-SCARF 4",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5370182591161741-WHAT FOR",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5370498643647836-HURDLE-TRIP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5382700887826948-DRAG",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5393407731733888-FINE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "540014801916062-WHAT FOR",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5403299092715226-SHAVE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5414577015659796-ELEVATOR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5422761871296606-MYSELF",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5432467311144609-MOUTH",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5433940503536829-FLOAT 3",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5434654052551171-SLIDE 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5459892769877634-GOODY GOODY_SHOE_OPPOSITE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5470805439006985-DOG",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5493974082836584-SAIL 2",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5495813412522725-ZEBRA",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5505058927344313-RAZOR 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5507067773792254-RABBIT 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "550827298682977-EAT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5516627845475137-DECIDE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5516924865905062-LONG LINE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5523823677466979-DOG",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5525140113364186-CALENDAR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5526703075746617-SAIL 2",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5534384584687875-HALLOWEEN",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5548558906474121-CHEER",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5548976355283721-MOUTH",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5552456698729644-BASKETBALL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5566179200601824-MOVIE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5566665370119497-ROCKING CHAIR",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5578948597780375-VLOG",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "558308045235034-AUTISM",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "558952987894197-ANYONE",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5591138727104759-INTUITIVE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5597061336024889-JOKE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "559751821509622-CAPTURE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5600796543348407-DEMAND",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5602841814677764-MYSELF",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5614454275414267-JEWELRY",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5622194453417186-GRAMMAR",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5627020105721396-IMPOSSIBLE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5630437733218496-FINE",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5632482532808469-VLOG",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "563777812862887-BREAKFAST",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5648322340425651-LONG LINE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5650251393797099-SQUEEZE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5653613278256231-SHOCKED",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "566521815318118-SHAVE",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5670018066245708-SLIDE 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5671220265034711-SAIL 2",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5672396093022622-EAT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5676770729571208-SHARPEN 3",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5676798007009973-MICROSCOPE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5683105950678111-IMPOSSIBLE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5687999496701976-MOVIE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5702632225441844-WHAT FOR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5703828865617759-DRAG",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5710267974386394-SOCIETY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5715942483646306-SPECIAL",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5717423317727564-ELEVATOR",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5725425588178272-SPECIAL",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5728474852441685-DOG",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "57337857006252-BASKETBALL",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5750761361796157-BEE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5768210306391073-SHOCKED",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5775606036563159-CLOSE",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5780399875754547-SINK",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5781875286649776-CHEEK",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5797410543922652-NOON",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5802665070521433-MYSELF",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "5817524945804566-FINE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5820875139386561-GUESS",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5828053254147967-FOREIGNER",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5828501225998033-CALENDAR",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5847209256499839-BITE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5848387902515144-EASY",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5858894099244791-CALENDAR",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5860882618877203-SHARPEN 3",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5872128462194921-AXE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5882347360908131-EAT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "588518965366434-CHEW 2",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5885260079894912-ALL OF_SUDDEN",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5887689273566759-SHAVE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "589002045649919-NOON",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5892785858379128-BEE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5895168812812925-HURDLE-TRIP",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "590096727965362-IMPOSSIBLE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5906701504536866-MECHANIC",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5911137084980156-SHAVE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5928780114771448-MICROSCOPE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5966490068165968-PULL CONVINCE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5969891552315867-CAPTURE",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5973822525316321-DRAG",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "597679984862866-JEWELRY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "5979307187574394-HOW",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6009073404108636-RABBIT 2",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6011935580208898-BACKPACK",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6018953253350048-MOVIE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6025391697351228-FLOAT 3",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6026165473646816-BELT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6031397118143422-LOCK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "603696185892914-PULL CONVINCE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "6046927085873439-SCARF 4",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6049958656794103-FLIP",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6052041147470333-JOKE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6067700660442612-KNIGHT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6077589281087066-JOKE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "6077910640818238-MECHANIC",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6078879576003486-HOSPITAL",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "6087095754086718-PULL CONVINCE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "6101771437370134-DRAG",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "610537806232085-RIVER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6109463216925328-JOKE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6110727438268888-SQUEEZE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6117207820407957-GRAMMAR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6119825081396184-HOW",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6124241233846333-DECIDE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6130841323450544-CHEESE GRATER",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "6131867703442992-RIVER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6136915924637409-VLOG",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6137536629041125-PARTY",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6141571454900683-PONDER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6147850811124795-PULL CONVINCE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6153726677883691-ZEBRA",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6158933637490949-ANYONE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6160810516504218-MOVIE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "6162988797399023-APPLE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6172166711658931-MECHANIC",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6173763213909325-BASEBALL CAP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6176064285060452-CEMETERY",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6180460657605713-PARTY",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6194403555532917-UNDERWEAR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6200662014605667-OFFEND",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "6211118727857166-BELT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6212025243138277-RABBIT 2",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "621774538662446-BITE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6234049897280949-ZEBRA",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6239284754747361-EAT",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6248238472505623-ALL OF_SUDDEN",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6255149958777317-MAPLE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6261101013267782-CEMETERY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6273685058060641-DEMAND",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6274491354212639-MEAT",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6276722794259124-DEMAND",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6280050722469468-JEWELRY",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6285246934559876-RIGHT 3",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6308074528622889-LOCK",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6315521010238523-IMPOSSIBLE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "6320406486835155-ROCKING CHAIR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6321360489558931-MICROSCOPE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6329931932403075-MOUTH",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6335788738826302-NOON",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6337587039102204-DEMAND",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "634367181659016-BASKETBALL",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "6369165146385125-BITE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6380235698435188-MICROSCOPE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "638431579959643-SWEATER 2",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "639300202040006-SCARF 4",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "6414342540777798-BITE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6415377667480795-VLOG",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6415601731003178-SOCCER 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6417613431345404-CHEEK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6423047538549398-MECHANIC",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "6424296514507701-KNIGHT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6425246898229175-SPECIAL",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "6427224211624221-JEWELRY",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6434390057625317-PONDER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6441715715628225-AUTISM",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6454957272181174-JOKE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6465600241429885-MOUTH",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6478807707974723-FINE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6482406016609963-CHEER",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6485116504079504-TAIL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6486757483480985-DEVELOP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6487118446053637-DARK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6491014039322838-COMB",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6491618764233542-WHAT FOR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6508516478167936-KNIGHT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6518967067833892-SLIDE 2",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6530524584451622-RAZOR 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6545272573094927-WALK-TIGHTROPE-CL",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": false
+    },
+    {
+      "clip": "6549988082380516-DRAG",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6567536181466793-DEVELOP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6568301773507554-PONDER",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6568942384866152-GUESS",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "65783462643741-SINK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "658484494196101-HURDLE-TRIP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6591489788002123-CHEER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6609147443429966-8 HOUR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6613571396847215-SOCCER 2",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6621939724418062-SHAVE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6650249061999234-GRAMMAR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6659486908996504-MEA CULPA",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6666081222424158-PATIENT 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6668436910094755-INTUITIVE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6668478250820946-BEE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6693352226076847-HURDLE-TRIP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "669341845794291-ADVERTISE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "670019265660998-HOW",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "6711732386150773-SHOCKED",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6711864738832773-DEMAND",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6714644694899818-UNDERWEAR",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6727498378915875-DOG",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "673007599300742-PONDER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6733132641220483-DARK",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6734748834983595-WHAT FOR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6735615804684514-MYSELF",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "6756758400922664-SHOCKED",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "6759197415113356-FINE",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "6774681279201691-ADVERTISE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6816940223298953-TEACH",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6838972939348469-FLIP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6839450933707614-KNIGHT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6843816941433676-HURDLE-TRIP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6856543084037374-COPY",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "686166079641618-NOON",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "6875103299181073-PATIENT 2",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "6894015576519184-EASY",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6923135736914201-HALLOWEEN",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "695050757207446-BACKPACK",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "696763884594753-COPY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6977187216892402-CLOSE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6980810863571851-FOREIGNER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "6992071845360412-DRAG",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7004633441565566-DEVELOP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7012467163475777-GOODY GOODY_SHOE_OPPOSITE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7013359602026294-IMPOSSIBLE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7013706523131213-BREAKFAST",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7018313480492955-SLIDE 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7029845806718837-BASKETBALL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7034210782927104-MOUTH",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7045049662687144-BELT",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7050118459113892-KNIGHT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7054566014359778-UNDERWEAR",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7055480144695647-EMPTY 2",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7060264881379719-PARTY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7060749578849994-BELT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7082524916387023-COMB",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "7083275776843025-BABY 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7087167543908557-RIGHT 3",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7089010995873191-DUCK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7113017609731125-UNDERWEAR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7114290792277806-CAPTURE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7130845415896367-KNIGHT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7135244799398011-AXE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7174661485702265-HOSPITAL",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "7181745753042428-MYSELF",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "7190581947128405-FLOAT 3",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7195905452376792-ELEVATOR",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7207149795563565-SOCCER 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7224199836145444-ANYONE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7244794630270626-SHARPEN 3",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7247277266558105-NOON",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "726398082719435-MOUTH",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7280683399053265-LOCK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7291224290785421-EAT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "730365856105063-SCROLL DOWN",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7321586591293114-ELEVATOR",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "7322377994548119-DEAF",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7323364809473216-RIGHT 3",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7325191597197114-DOWNSIZE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7326504342813724-DOWNSIZE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7330246629921584-HALLOWEEN",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7337751955351213-FOREIGNER",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7344079679086746-TEACH",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7351437566394112-BACKPACK",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "7357989142241634-ROCKING CHAIR",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7361115629851984-NOON",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7372378107130253-CAPTURE",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7392833801742305-FLIP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7400091778305622-MEAT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7401806361173147-IMPOSSIBLE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "7418359443276457-DOWNSIZE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7432967051023693-BITE",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7444999310587148-ANYONE",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7459707564383506-PATIENT 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7467286859247295-PATIENT 2",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "7471045610988767-BABY 2",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7498872458583166-BEE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7499956109855568-MICROSCOPE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "751062829442714-SOCCER 2",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7534055580754193-DRAG",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "7537334917248126-CALENDAR",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7544535482069414-DECIDE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7550465099881678-FINE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7550837519145819-FOREIGNER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7573683637678914-JOKE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7594535298398593-SCROLL DOWN",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7602627316216253-BITE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "7610485274159868-BACKPACK",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "7639127940687449-BACKPACK",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7640667133656183-EAT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7641510854833071-TICKLE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7645215228394144-BACKPACK",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "7648687779624457-BACKPACK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7650811687163266-OFFEND",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7653988562697651-SOCIETY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7670976099615834-SPECIAL",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "767694747048641-DOWNSIZE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "7677851426600801-PATIENT 2",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7690191017709807-ADVERTISE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "7696893051959788-VLOG",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7697724236967516-PENNY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7703186132845228-NOON",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7705091690611687-PATIENT 2",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7708541702284382-METAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7722395612351456-CAPTURE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7723203210411635-DRAG",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "7728056611070833-DEAF",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7728530147060908-TICKLE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7731639796616112-BASEBALL CAP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "773289625161528-NOON",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7748116694645926-DEMAND",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": false
+    },
+    {
+      "clip": "7754706991206437-ELEVATOR",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7768078843171742-HOSPITAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7769434916738955-EAT",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7778510676556174-GUESS",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7791512047489262-PULL CONVINCE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7804428609762339-COPY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7807037328960411-GRAMMAR",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7822635218545708-SHOCKED",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7823986821268818-LOCK",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7824266335167966-TICKLE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "782759587023113-WALK-TIGHTROPE-CL",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7831376075834608-VLOG",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7839604835224319-FINE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7847160428079492-BELT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7849698309534123-SQUEEZE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7855149396736427-OFFEND",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7873651986940362-TAIL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7892308235757779-CLOSE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "789374508489777-APPLE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7896617219942053-VOICE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7900570521805592-GUESS",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7902958071330217-CHEESE GRATER",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": false
+    },
+    {
+      "clip": "7910128481289247-EAT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7915156766162783-FOREIGNER",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "7921373203371331-HOSPITAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7923809498792325-CAPTURE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7931462131471729-INTUITIVE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7942145450190576-HALLOWEEN",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7967116680366968-FLOAT 3",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "798551752340491-COPY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7989555282313261-BELT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "7999184363928851-GOODY GOODY_SHOE_OPPOSITE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8004689290030678-MYSELF",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8005495556017137-ADVERTISE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8008652725129142-LOCK",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8009848891932896-INTUITIVE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8018890964087735-PATIENT 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "802927996332603-SWEATER 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8032623168123776-HOW",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8066564278540846-JEWELRY",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8075877619511098-PARTY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8076844819969087-OFFEND",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8081628477001177-VOICE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8097690814117247-SWEATER 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8101190988385516-ANYONE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8102034151544322-MYSELF",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8116492991148303-CALENDAR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8137067966521225-NOON",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8141262628403736-CHEESE GRATER",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8142687077432298-BACKPACK",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8157940154781618-FOREIGNER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8165094765201217-GRAMMAR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8176464183939756-SCROLL DOWN",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8199741206679274-RIVER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8200377897293458-MOVIE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8213731556192359-BEE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8217551435248458-DECIDE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8220002210902866-CLOSE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "822012666452467-SPECIAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8220190976728852-VLOG",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8221767943813794-COPY",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8222455597738532-MOVIE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8229331057982809-NOON",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8229673832022837-MOVIE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8245190559451223-DEAF",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8258055659654735-APPLE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8262748898996921-SOCCER 2",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8274113929146596-COMB",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8275784411364397-BASKETBALL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8298420400860262-SAIL 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8306510210981155-FAIL",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8311298382278862-HOSPITAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8324281666299067-CEMETERY",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8327463716113954-HALLOWEEN",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8329988968480724-FINE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8333184919350309-GUESS",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8338554842463526-RIVER",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8342342809172125-SINK",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8348457720872406-BABY 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8357681368333663-SOCIETY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8365337464131144-SAIL 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8374363566526752-PENNY",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "838413045684397-COMB",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8393621301768615-COMB",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8394621428692806-SCARF 4",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8394838079742581-MOVIE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8411356645660348-BASKETBALL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8416313533480644-BREAKFAST",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8424337476976695-UNDERWEAR",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8431311301031601-DOG",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8436415241829844-HOW",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8445637932466747-MEA CULPA",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8446680592118017-CHEER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8446813728988498-SQUEEZE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8461654509651795-LOCK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8477447153783957-RIVER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8478656185820408-WALK-TIGHTROPE-CL",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8485513646497005-ANYONE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8500572020516062-MEA CULPA",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "850806640059272-MEA CULPA",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8516300740853042-BEE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8519387093010242-CHEW 2",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8524004759358377-EASY",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8532015518358596-SAIL 2",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8534239704968525-VOICE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "853431645349799-TAIL",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8541956010853493-DUCK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8543303873824508-BABY 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8553259523975034-COPY",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8577203903961548-TEACH",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8578382483154174-FLIP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8587360828955466-8 HOUR",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8597276011580623-SQUEEZE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8606724385309419-DUCK",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8620738487316586-PARTY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8622441304805439-DEAF",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8630644173768907-WHAT FOR",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8644314090326979-CEMETERY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8644500718519694-SWEATER 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8653147480495109-DUCK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8654213491997176-TAIL",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8658798594771642-OFFEND",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8664199291481569-SQUEEZE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8666500034693927-PONDER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8667514091725259-SHOCKED",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8675465806927196-SINK",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8678772599632558-CHEEK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8696173340990474-SLIDE 2",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8706611505389534-PARTY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "871492835507548-CHEEK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "874668688550942-FLIP",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8774724480187561-PENNY",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8798883885842443-CEMETERY",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8802640228118344-BREAKFAST",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8810516216012401-DUCK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8820682241748081-TEACH",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8837115118398433-SINK",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8849383543656688-DEAF",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "885364711838418-SWEATER 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8855683123064535-SWEATER 2",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8870425547945984-SHARPEN 3",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8871292164581093-WHAT FOR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8882593476676703-SOCIETY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8893172628755586-APPLE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8895404739336832-MEA CULPA",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8917019991674742-8 HOUR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8917376974712743-SOCCER 2",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8917441625336839-EAT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "891762980521426-ZEBRA",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8930687706484837-FAIL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "893938267813648-SPECIAL",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8939894447791028-HALLOWEEN",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8941363347473583-DEVELOP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8942924682446114-SLIDE 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8949613194071961-MEAT",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "895774270343501-PENNY",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "8970692371270304-JEWELRY",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8976315421586525-BREAKFAST",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8986261759938581-ZEBRA",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8988760969997542-DOWNSIZE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8989528029263532-TEACH",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "8992440923082239-ELEVATOR",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "9011186830988667-SOCIETY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9011277551820545-SHARPEN 3",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9017949398961564-BELT",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9029556042473037-8 HOUR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "90400972567156-PARTY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9040916354947328-ELEVATOR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9043040905145667-BREAKFAST",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9044717877883695-LONG LINE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9048307249380734-LOCK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9060023830973407-LONG LINE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "9065308331231714-BASKETBALL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9082215354219794-SWEATER 2",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9085896896916874-IMPOSSIBLE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "9094225151963911-CHEESE GRATER",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "910107238080224-CHEESE GRATER",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "910957017059935-SPECIAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9118344679494537-METAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9119691570534749-MECHANIC",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9144883427773998-PARTY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9145807941216497-AXE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9153967820181674-SOCIETY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9163224794037794-BREAKFAST",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9163483845387819-DECIDE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9169591255818932-AXE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9175519523397195-COMB",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9192146459174093-8 HOUR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9203343144545557-RIGHT 3",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "92066843291958-FOREIGNER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9211038427560128-CHEEK",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "9216989955416042-DOG",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "92215448176422-FLIP",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9248009026095918-CALENDAR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9248063910755118-BASKETBALL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9257033497624791-AXE",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9264184323853195-AUTISM",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "9270005186325547-BREAKFAST",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9273260008144788-MECHANIC",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9275047717018603-PONDER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9276584354030748-CHEW 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9279702716261724-ZEBRA",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9319298873644923-DEAF",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "9334893127200423-CLOSE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9357269893673421-SOCIETY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9359050586202402-WHAT FOR",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9369003937842226-JEWELRY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9371199099654599-GUESS",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9378100162571483-HALLOWEEN",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9390255679637509-RIGHT 3",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9398394541066051-INTUITIVE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "9399155951019131-VLOG",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9400277148346079-DECIDE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9409703659390083-CHEER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9411276889279345-RAZOR 2",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "9415302842200408-CHEW 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9423945773178233-DECIDE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9435603376676149-ADVERTISE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9451068311218791-UNDERWEAR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9459073703539058-AUTISM",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9462586175856116-SINK",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "946484904568228-FINE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9468513900311404-FOREIGNER",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9475029528119012-PENNY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9480029056224784-FAIL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9492151554510415-BITE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9495896765987966-MYSELF",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9497834137118895-CHEER",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9506496385757299-BACKPACK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9526180645276527-MAPLE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9528588130869438-GUESS",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9531050848283635-DOWNSIZE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9541773825415498-VOICE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9554412893118276-MEA CULPA",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9556838571878923-SCARF 4",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "9562607239525267-PARTY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9572472020825835-SHAVE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9575682085814561-NOON",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9577147390367295-SOCCER 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9581399154633741-SOCCER 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9586716011761816-BABY 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9587129815323401-BELT",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "9599466909097483-FAIL",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9604797909481075-AXE",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9634414974344636-METAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9644274787195919-BASKETBALL",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "9646338369236265-TEACH",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9654296103105799-CHEEK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "965506389404958-LONG LINE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "9659053045796857-BASEBALL CAP",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9684934734400592-WHAT FOR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9686543112536792-PATIENT 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9692444989436564-DOG",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9694248628847537-SCARF 4",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9701141967767493-CHEW 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9723039986971633-PATIENT 2",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9742883685495938-DEAF",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9748952063405179-DARK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "975708260781796-SLIDE 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9766513994870278-DOG",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9775762322894266-LOCK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9786578695730845-BITE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "979805558632346-SHOCKED",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9799604200678025-RABBIT 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9800204067006966-FOREIGNER",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9800727120918791-MAPLE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9814101519115721-CHEW 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9829235261455356-LOCK",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "983671931644813-SCROLL DOWN",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9847098573163278-BELT",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9859158369118783-ELEVATOR",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9867166920593038-CAPTURE",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "9885919115657631-ALL OF_SUDDEN",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9892215868579313-ALL OF_SUDDEN",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "9899831305523452-JOKE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9913301055747488-AUTISM",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9918066360083451-SOCIETY",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9927260819917987-RAZOR 2",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "9935032342175718-HOW",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "994616537343642-JEWELRY",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9952566533146212-DECIDE",
+      "group": "differ",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "996892922569991-METAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9978442343622909-IMPOSSIBLE",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "997878459075781-HOSPITAL",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9978984903081016-MEA CULPA",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "9984806937929429-SOCIETY",
+      "group": "differ",
+      "cached_ok": false,
+      "fresh_ok": true
+    },
+    {
+      "clip": "998664525579968-SAIL 2",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    },
+    {
+      "clip": "9988072637552368-RIGHT 3",
+      "group": "agree",
+      "cached_ok": false,
+      "fresh_ok": false
+    },
+    {
+      "clip": "999987838258863-HALLOWEEN",
+      "group": "agree",
+      "cached_ok": true,
+      "fresh_ok": true
+    }
+  ]
+}

@@ -150,14 +150,21 @@ def load_split(split, vocab_idx):
 
 
 def ensemble_probs(models, lm, pres, frames):
-    """Mean probability over members, each fed at ITS OWN width and WITH the mask.
+    """Mean LOGITS over members, then one softmax - the shipped aggregator.
 
-    Both details are load-bearing and both were wrong here until 14 Nov:
+    Three details are load-bearing and each was wrong here at some point:
       * width  - a z member takes 381 features, a legacy one 255. Building one
                  255-wide tensor for all of them cannot represent the ensemble.
       * mask   - the models are trained with the hand-presence mask applied to
                  attention; scoring without it measures a different model
                  (~1.8 points low on test).
+      * logits - `src/main.py` and `LandmarkClassifier.kt` both average raw
+                 logits and softmax once. Averaging per-member SOFTMAX
+                 probabilities is a different estimator that was measured at
+                 +0.9 test / -0.9 val and rejected (results/EXPERIMENTS.md).
+                 Until 14 Nov this function averaged probabilities, so every
+                 pixel-robustness number in this repo was computed at an
+                 operating point the app does not use.
     A robustness number computed at the wrong operating point is not a
     conservative estimate, it is a different experiment.
     """
@@ -165,15 +172,17 @@ def ensemble_probs(models, lm, pres, frames):
     widths = {}
     for uz in {m_use_z(m) for m, _b in models}:
         widths[uz] = build_features(lm, pres, expected_frames=frames, use_z=uz)
-    out = []
+    logits = []
     for m, backbone in models:
         use_z = m_use_z(m)
         feats, mask = widths[use_z]
         with torch.no_grad():
             lg = m(torch.from_numpy(feats)[None],
                    torch.from_numpy(mask)[None])
-            out.append(torch.softmax(lg, 1)[0].numpy())
-    return np.mean(out, axis=0)
+            logits.append(lg[0].numpy())
+    avg = np.mean(logits, axis=0)
+    e = np.exp(avg - avg.max())
+    return e / e.sum()
 
 
 def m_use_z(model):
@@ -292,15 +301,27 @@ PIXEL_CORRUPTIONS = {
 }
 
 
-def run_pixel(ckpts, split, limit):
+def run_pixel(ckpts, split, limit, size=None, letterbox=False):
     """Corrupt the frames, then run the whole real pipeline.
 
     This is the honest end-to-end test: MediaPipe sees degraded pixels and the
     errors propagate through detection, not just classification.
+
+    `size` and `letterbox` control how a frame reaches the detector, and they
+    change the verdict completely. Squashing to 256 first leaves ~89 px of real
+    detail under a 35% downscale and detection collapses (worst case +28.33
+    points); letterboxing at 512 leaves ~179 px and it passes (-0.83). Pass
+    `--size 512 --letterbox` to measure the configuration the Android app
+    actually runs.
     """
     import torch
     from train import TemporalModel
     from landmark_frontend import read_frames, detect_hands
+
+    def read(path):
+        if size is None:
+            return read_frames(path, max_frames=32)
+        return read_frames(path, max_frames=32, size=size, letterbox=letterbox)
 
     models, frames, vocab = [], None, None
     for c in ckpts:
@@ -315,7 +336,9 @@ def run_pixel(ckpts, split, limit):
         models.append((m, str(ck["backbone"])))
     vocab_idx = {g: i for i, g in enumerate(vocab)}
 
-    items = load_split(split, vocab_idx)[:limit]
+    # limit=0 means "every clip"; [:0] would score nothing.
+    items = load_split(split, vocab_idx)
+    items = items[:limit] if limit else items
     videos = ROOT / ".scratch" / "aslcit_vocab_videos"
     print(f"{len(items)} clips, pixel-level, {len(models)} model(s)\n")
 
@@ -330,7 +353,7 @@ def run_pixel(ckpts, split, limit):
             if not src.exists():
                 usd += 1
                 continue
-            fr = read_frames(src, max_frames=32)
+            fr = read(src)
             if not fr:
                 failed_detect += 1
                 continue
@@ -378,12 +401,22 @@ def main():
         ".scratch/search/mirror_handdrop_tcn_z_s13.pt"])
     ap.add_argument("--split", default="test")
     ap.add_argument("--limit", type=int, default=0)
+    # Frame presentation to the detector. Defaults preserve what the shipped
+    # models were extracted with; `--size 512 --letterbox` measures the
+    # deployed app's geometry.
+    ap.add_argument("--size", type=int, default=None,
+                    help="detector input size (default: landmark_frontend.FRAME_SIZE)")
+    ap.add_argument("--letterbox", action="store_true",
+                    help="preserve aspect ratio instead of squashing to a square")
     ap.add_argument("--out", default="results/robustness.json")
     args = ap.parse_args()
 
     if args.level == "pixel":
+        # `--limit 0` means "every clip". This used to read `args.limit or 120`,
+        # which turned 0 into 120 - so a full-split request quietly ran a
+        # 120-clip sample and still printed a PASS/FAIL verdict.
         res = run_pixel([ROOT / c for c in args.ckpts], args.split,
-                        args.limit or 120)
+                        args.limit, size=args.size, letterbox=args.letterbox)
     else:
         res = run_landmark([ROOT / c for c in args.ckpts], args.split, args.limit)
 

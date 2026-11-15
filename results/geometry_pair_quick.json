@@ -1,0 +1,734 @@
+{
+  "n_clips": 120,
+  "clips_without_detection_in_either": 0,
+  "both_correct": 87,
+  "both_wrong": 15,
+  "squash256_only_right": 6,
+  "letterbox512_only_right": 12,
+  "mcnemar_z": 1.179,
+  "mcnemar_p_two_sided": 0.2386,
+  "squash256_acc_pct": 77.5,
+  "letterbox512_acc_pct": 82.5,
+  "per_clip": [
+    {
+      "clip": "6425246898229175-SPECIAL.mp4",
+      "truth": "SPECIAL1",
+      "squash256": "SPECIAL1",
+      "letterbox512": "SPECIAL1"
+    },
+    {
+      "clip": "7321586591293114-ELEVATOR.mp4",
+      "truth": "ELEVATOR1",
+      "squash256": "BEE1",
+      "letterbox512": "ELEVATOR1"
+    },
+    {
+      "clip": "9684934734400592-WHAT FOR.mp4",
+      "truth": "WHATFOR1",
+      "squash256": "WHATFOR1",
+      "letterbox512": "PENNY"
+    },
+    {
+      "clip": "9859158369118783-ELEVATOR.mp4",
+      "truth": "ELEVATOR1",
+      "squash256": "ELEVATOR1",
+      "letterbox512": "ELEVATOR1"
+    },
+    {
+      "clip": "45913985094539034-SHAVE.mp4",
+      "truth": "SHAVE1",
+      "squash256": "SHAVE1",
+      "letterbox512": "SHAVE1"
+    },
+    {
+      "clip": "8338554842463526-RIVER.mp4",
+      "truth": "RIVER1",
+      "squash256": "DECIDE1",
+      "letterbox512": "CEMETERY"
+    },
+    {
+      "clip": "05469657086044322-CALENDAR.mp4",
+      "truth": "CALENDAR1",
+      "squash256": "CALENDAR1",
+      "letterbox512": "CALENDAR1"
+    },
+    {
+      "clip": "3248125439606664-MECHANIC.mp4",
+      "truth": "MECHANIC1",
+      "squash256": "MECHANIC1",
+      "letterbox512": "MECHANIC1"
+    },
+    {
+      "clip": "8424337476976695-UNDERWEAR.mp4",
+      "truth": "UNDERWEAR1",
+      "squash256": "UNDERWEAR1",
+      "letterbox512": "MEACULPA"
+    },
+    {
+      "clip": "492085987654973-BELT.mp4",
+      "truth": "BELT1",
+      "squash256": "BELT1",
+      "letterbox512": "BELT1"
+    },
+    {
+      "clip": "8229673832022837-MOVIE.mp4",
+      "truth": "MOVIE1",
+      "squash256": "MOVIE1",
+      "letterbox512": "MOVIE1"
+    },
+    {
+      "clip": "7910128481289247-EAT.mp4",
+      "truth": "EAT1",
+      "squash256": "EAT1",
+      "letterbox512": "EAT1"
+    },
+    {
+      "clip": "11276204524425326-DECIDE.mp4",
+      "truth": "DECIDE1",
+      "squash256": "DECIDE1",
+      "letterbox512": "DECIDE1"
+    },
+    {
+      "clip": "23918615846797597-DOWNSIZE.mp4",
+      "truth": "DOWNSIZE1",
+      "squash256": "DOWNSIZE1",
+      "letterbox512": "DOWNSIZE1"
+    },
+    {
+      "clip": "10506892472594931-APPLE.mp4",
+      "truth": "APPLE",
+      "squash256": "APPLE",
+      "letterbox512": "APPLE"
+    },
+    {
+      "clip": "9554412893118276-MEA CULPA.mp4",
+      "truth": "MEACULPA",
+      "squash256": "MEACULPA",
+      "letterbox512": "MEACULPA"
+    },
+    {
+      "clip": "2748457214117681-WHAT FOR.mp4",
+      "truth": "WHATFOR1",
+      "squash256": "WHATFOR1",
+      "letterbox512": "WHATFOR1"
+    },
+    {
+      "clip": "9644274787195919-BASKETBALL.mp4",
+      "truth": "BASKETBALL1",
+      "squash256": "BEE1",
+      "letterbox512": "EMPTY2"
+    },
+    {
+      "clip": "5676798007009973-MICROSCOPE.mp4",
+      "truth": "MICROSCOPE1",
+      "squash256": "KNIGHT1",
+      "letterbox512": "MICROSCOPE1"
+    },
+    {
+      "clip": "11389369287628259-GUESS.mp4",
+      "truth": "GUESS1",
+      "squash256": "FINE1",
+      "letterbox512": "GUESS1"
+    },
+    {
+      "clip": "4641646458517976-EAT.mp4",
+      "truth": "EAT1",
+      "squash256": "EAT1",
+      "letterbox512": "EAT1"
+    },
+    {
+      "clip": "8431311301031601-DOG.mp4",
+      "truth": "DOG1",
+      "squash256": "ALLOFSUDDEN",
+      "letterbox512": "DOG1"
+    },
+    {
+      "clip": "5892785858379128-BEE.mp4",
+      "truth": "BEE1",
+      "squash256": "BEE1",
+      "letterbox512": "BEE1"
+    },
+    {
+      "clip": "603696185892914-PULL CONVINCE.mp4",
+      "truth": "PULLCONVINCE",
+      "squash256": "BABY2",
+      "letterbox512": "PULLCONVINCE"
+    },
+    {
+      "clip": "9800727120918791-MAPLE.mp4",
+      "truth": "MAPLE",
+      "squash256": "MAPLE",
+      "letterbox512": "MAPLE"
+    },
+    {
+      "clip": "07729666531437518-EMPTY 2.mp4",
+      "truth": "EMPTY2",
+      "squash256": "EMPTY2",
+      "letterbox512": "EMPTY2"
+    },
+    {
+      "clip": "1507074049477588-SQUEEZE.mp4",
+      "truth": "SQUEEZE",
+      "squash256": "SQUEEZE",
+      "letterbox512": "SQUEEZE"
+    },
+    {
+      "clip": "388573733360029-GOODY GOODY_SHOE_OPPOSITE.mp4",
+      "truth": "GOODYGOODYSHOEOPPOSITE",
+      "squash256": "GOODYGOODYSHOEOPPOSITE",
+      "letterbox512": "GOODYGOODYSHOEOPPOSITE"
+    },
+    {
+      "clip": "9814101519115721-CHEW 2.mp4",
+      "truth": "CHEW1",
+      "squash256": "CHEW1",
+      "letterbox512": "CHEW1"
+    },
+    {
+      "clip": "25648011466216625-FLOAT 3.mp4",
+      "truth": "FLOAT1",
+      "squash256": "FOREIGNER1",
+      "letterbox512": "FLOAT1"
+    },
+    {
+      "clip": "6774681279201691-ADVERTISE.mp4",
+      "truth": "ADVERTISE",
+      "squash256": "ADVERTISE",
+      "letterbox512": "ADVERTISE"
+    },
+    {
+      "clip": "5973822525316321-DRAG.mp4",
+      "truth": "DRAG1",
+      "squash256": "DRAG1",
+      "letterbox512": "DRAG1"
+    },
+    {
+      "clip": "5552456698729644-BASKETBALL.mp4",
+      "truth": "BASKETBALL1",
+      "squash256": "BASKETBALL1",
+      "letterbox512": "BASKETBALL1"
+    },
+    {
+      "clip": "23887793850909178-CHEESE GRATER.mp4",
+      "truth": "CHEESEGRATER",
+      "squash256": "MICROSCOPE1",
+      "letterbox512": "MICROSCOPE1"
+    },
+    {
+      "clip": "7322377994548119-DEAF.mp4",
+      "truth": "DEAF1",
+      "squash256": "DEAF1",
+      "letterbox512": "DEAF1"
+    },
+    {
+      "clip": "0023118276702314144-ROCKING CHAIR.mp4",
+      "truth": "ROCKINGCHAIR1",
+      "squash256": "ROCKINGCHAIR1",
+      "letterbox512": "ROCKINGCHAIR1"
+    },
+    {
+      "clip": "5370498643647836-HURDLE-TRIP.mp4",
+      "truth": "HURDLE/TRIP1",
+      "squash256": "HURDLE/TRIP1",
+      "letterbox512": "BELT1"
+    },
+    {
+      "clip": "9279702716261724-ZEBRA.mp4",
+      "truth": "ZEBRA",
+      "squash256": "ZEBRA",
+      "letterbox512": "ZEBRA"
+    },
+    {
+      "clip": "207441560328397-PARTY.mp4",
+      "truth": "PARTY1",
+      "squash256": "PARTY1",
+      "letterbox512": "PARTY1"
+    },
+    {
+      "clip": "34491853927581917-BACKPACK.mp4",
+      "truth": "BACKPACK1",
+      "squash256": "BACKPACK1",
+      "letterbox512": "BACKPACK1"
+    },
+    {
+      "clip": "7114290792277806-CAPTURE.mp4",
+      "truth": "CAPTURE",
+      "squash256": "CAPTURE",
+      "letterbox512": "CAPTURE"
+    },
+    {
+      "clip": "8666500034693927-PONDER.mp4",
+      "truth": "PONDER",
+      "squash256": "PONDER",
+      "letterbox512": "PONDER"
+    },
+    {
+      "clip": "15571541224560148-JOKE.mp4",
+      "truth": "JOKE",
+      "squash256": "KNIGHT1",
+      "letterbox512": "JOKE"
+    },
+    {
+      "clip": "9153967820181674-SOCIETY.mp4",
+      "truth": "SOCIETY",
+      "squash256": "SOCIETY",
+      "letterbox512": "SOCIETY"
+    },
+    {
+      "clip": "7444999310587148-ANYONE.mp4",
+      "truth": "ANYONE",
+      "squash256": "ANYONE",
+      "letterbox512": "ANYONE"
+    },
+    {
+      "clip": "21466889027769764-CEMETERY.mp4",
+      "truth": "CEMETERY",
+      "squash256": "CEMETERY",
+      "letterbox512": "CEMETERY"
+    },
+    {
+      "clip": "06135210265179425-FAIL.mp4",
+      "truth": "FAIL",
+      "squash256": "FAIL",
+      "letterbox512": "FAIL"
+    },
+    {
+      "clip": "6839450933707614-KNIGHT.mp4",
+      "truth": "KNIGHT1",
+      "squash256": "KNIGHT1",
+      "letterbox512": "KNIGHT1"
+    },
+    {
+      "clip": "09160085686424368-ALL OF_SUDDEN.mp4",
+      "truth": "ALLOFSUDDEN",
+      "squash256": "ALLOFSUDDEN",
+      "letterbox512": "ALLOFSUDDEN"
+    },
+    {
+      "clip": "9369003937842226-JEWELRY.mp4",
+      "truth": "JEWELRY",
+      "squash256": "JEWELRY",
+      "letterbox512": "JEWELRY"
+    },
+    {
+      "clip": "42918137348904106-BREAKFAST.mp4",
+      "truth": "BREAKFAST1",
+      "squash256": "BEE1",
+      "letterbox512": "NOON1"
+    },
+    {
+      "clip": "41235392187392317-DOG.mp4",
+      "truth": "DOG1",
+      "squash256": "ALLOFSUDDEN",
+      "letterbox512": "DOG1"
+    },
+    {
+      "clip": "4735989644399585-DARK.mp4",
+      "truth": "DARK1",
+      "squash256": "DARK1",
+      "letterbox512": "DARK1"
+    },
+    {
+      "clip": "26372045261031896-RAZOR 2.mp4",
+      "truth": "RAZOR2",
+      "squash256": "RAZOR2",
+      "letterbox512": "RAZOR2"
+    },
+    {
+      "clip": "01603320772096839-GUESS.mp4",
+      "truth": "GUESS1",
+      "squash256": "GUESS1",
+      "letterbox512": "GUESS1"
+    },
+    {
+      "clip": "20426405054980679-DEMAND.mp4",
+      "truth": "DEMAND1",
+      "squash256": "IMPOSSIBLE",
+      "letterbox512": "DEMAND1"
+    },
+    {
+      "clip": "8157940154781618-FOREIGNER.mp4",
+      "truth": "FOREIGNER1",
+      "squash256": "FOREIGNER1",
+      "letterbox512": "FOREIGNER1"
+    },
+    {
+      "clip": "3203446868149544-SCROLL DOWN.mp4",
+      "truth": "SCROLLDOWN",
+      "squash256": "SCROLLDOWN",
+      "letterbox512": "SCROLLDOWN"
+    },
+    {
+      "clip": "5848387902515144-EASY.mp4",
+      "truth": "EASY",
+      "squash256": "EASY",
+      "letterbox512": "EASY"
+    },
+    {
+      "clip": "4857135026643289-DOWNSIZE.mp4",
+      "truth": "DOWNSIZE1",
+      "squash256": "SCROLLDOWN",
+      "letterbox512": "DOWNSIZE1"
+    },
+    {
+      "clip": "10105426893804847-HURDLE-TRIP.mp4",
+      "truth": "HURDLE/TRIP1",
+      "squash256": "HURDLE/TRIP1",
+      "letterbox512": "HURDLE/TRIP1"
+    },
+    {
+      "clip": "6567536181466793-DEVELOP.mp4",
+      "truth": "DEVELOP1",
+      "squash256": "DEVELOP1",
+      "letterbox512": "DEVELOP1"
+    },
+    {
+      "clip": "4052017389201119-CALENDAR.mp4",
+      "truth": "CALENDAR1",
+      "squash256": "CALENDAR1",
+      "letterbox512": "CALENDAR1"
+    },
+    {
+      "clip": "6734748834983595-WHAT FOR.mp4",
+      "truth": "WHATFOR1",
+      "squash256": "SHARPEN2",
+      "letterbox512": "WHATFOR1"
+    },
+    {
+      "clip": "40198656856145853-TAIL.mp4",
+      "truth": "TAIL1",
+      "squash256": "TAIL1",
+      "letterbox512": "TAIL1"
+    },
+    {
+      "clip": "1363777633602654-PATIENT 2.mp4",
+      "truth": "PATIENT2",
+      "squash256": "PATIENT2",
+      "letterbox512": "CHEEK"
+    },
+    {
+      "clip": "9775762322894266-LOCK.mp4",
+      "truth": "LOCK1",
+      "squash256": "LOCK1",
+      "letterbox512": "SHAVE1"
+    },
+    {
+      "clip": "11143309153181202-BELT.mp4",
+      "truth": "BELT1",
+      "squash256": "BELT1",
+      "letterbox512": "BELT1"
+    },
+    {
+      "clip": "15089342979732145-DEVELOP.mp4",
+      "truth": "DEVELOP1",
+      "squash256": "CAPTURE",
+      "letterbox512": "DEVELOP1"
+    },
+    {
+      "clip": "09615386459704434-TICKLE.mp4",
+      "truth": "TICKLE",
+      "squash256": "TICKLE",
+      "letterbox512": "TICKLE"
+    },
+    {
+      "clip": "7174661485702265-HOSPITAL.mp4",
+      "truth": "HOSPITAL1",
+      "squash256": "DUCK2",
+      "letterbox512": "DUCK2"
+    },
+    {
+      "clip": "874668688550942-FLIP.mp4",
+      "truth": "FLIP",
+      "squash256": "VOICE",
+      "letterbox512": "VOICE"
+    },
+    {
+      "clip": "9065308331231714-BASKETBALL.mp4",
+      "truth": "BASKETBALL1",
+      "squash256": "BASKETBALL1",
+      "letterbox512": "BASKETBALL1"
+    },
+    {
+      "clip": "25193493599062466-SAIL 2.mp4",
+      "truth": "SAIL2",
+      "squash256": "SAIL2",
+      "letterbox512": "SAIL2"
+    },
+    {
+      "clip": "47293235053662497-SHARPEN 3.mp4",
+      "truth": "SHARPEN2",
+      "squash256": "HURDLE/TRIP1",
+      "letterbox512": "HURDLE/TRIP1"
+    },
+    {
+      "clip": "15479327154757483-RABBIT 2.mp4",
+      "truth": "RABBIT2",
+      "squash256": "SCARF2",
+      "letterbox512": "SCARF2"
+    },
+    {
+      "clip": "8774724480187561-PENNY.mp4",
+      "truth": "PENNY",
+      "squash256": "CHEEK",
+      "letterbox512": "PARTY1"
+    },
+    {
+      "clip": "12315234223651039-COPY.mp4",
+      "truth": "COPY",
+      "squash256": "COPY",
+      "letterbox512": "COPY"
+    },
+    {
+      "clip": "8587360828955466-8 HOUR.mp4",
+      "truth": "8HOUR",
+      "squash256": "8HOUR",
+      "letterbox512": "8HOUR"
+    },
+    {
+      "clip": "06887001263013914-COMB.mp4",
+      "truth": "COMB2",
+      "squash256": "FINE1",
+      "letterbox512": "FINE1"
+    },
+    {
+      "clip": "8653147480495109-DUCK.mp4",
+      "truth": "DUCK2",
+      "squash256": "DUCK2",
+      "letterbox512": "DUCK2"
+    },
+    {
+      "clip": "5193451899614112-MOUTH.mp4",
+      "truth": "MOUTH",
+      "squash256": "MOUTH",
+      "letterbox512": "MOUTH"
+    },
+    {
+      "clip": "5828501225998033-CALENDAR.mp4",
+      "truth": "CALENDAR1",
+      "squash256": "CALENDAR1",
+      "letterbox512": "CALENDAR1"
+    },
+    {
+      "clip": "4465299933433673-MEAT.mp4",
+      "truth": "MEAT1",
+      "squash256": "MEAT1",
+      "letterbox512": "MEAT1"
+    },
+    {
+      "clip": "9399155951019131-VLOG.mp4",
+      "truth": "VLOG",
+      "squash256": "VLOG",
+      "letterbox512": "VLOG"
+    },
+    {
+      "clip": "5702632225441844-WHAT FOR.mp4",
+      "truth": "WHATFOR1",
+      "squash256": "WHATFOR1",
+      "letterbox512": "WHATFOR1"
+    },
+    {
+      "clip": "04009125576648165-METAL.mp4",
+      "truth": "METAL",
+      "squash256": "METAL",
+      "letterbox512": "METAL"
+    },
+    {
+      "clip": "013266005229871869-TAIL.mp4",
+      "truth": "TAIL1",
+      "squash256": "CEMETERY",
+      "letterbox512": "IMPOSSIBLE"
+    },
+    {
+      "clip": "6666081222424158-PATIENT 2.mp4",
+      "truth": "PATIENT2",
+      "squash256": "PATIENT2",
+      "letterbox512": "PATIENT2"
+    },
+    {
+      "clip": "2505723348580138-LOCK.mp4",
+      "truth": "LOCK1",
+      "squash256": "ADVERTISE",
+      "letterbox512": "DRAG1"
+    },
+    {
+      "clip": "6046927085873439-SCARF 4.mp4",
+      "truth": "SCARF2",
+      "squash256": "SCARF2",
+      "letterbox512": "SCARF2"
+    },
+    {
+      "clip": "06963511027625535-BELT.mp4",
+      "truth": "BELT1",
+      "squash256": "BELT1",
+      "letterbox512": "BELT1"
+    },
+    {
+      "clip": "35252035098624934-MICROSCOPE.mp4",
+      "truth": "MICROSCOPE1",
+      "squash256": "MOVIE1",
+      "letterbox512": "MEAT1"
+    },
+    {
+      "clip": "9913301055747488-AUTISM.mp4",
+      "truth": "AUTISM1",
+      "squash256": "AUTISM1",
+      "letterbox512": "AUTISM1"
+    },
+    {
+      "clip": "09897880619511823-DEVELOP.mp4",
+      "truth": "DEVELOP1",
+      "squash256": "DEVELOP1",
+      "letterbox512": "DEVELOP1"
+    },
+    {
+      "clip": "3029383112947084-TICKLE.mp4",
+      "truth": "TICKLE",
+      "squash256": "TICKLE",
+      "letterbox512": "TICKLE"
+    },
+    {
+      "clip": "7768078843171742-HOSPITAL.mp4",
+      "truth": "HOSPITAL1",
+      "squash256": "HOSPITAL1",
+      "letterbox512": "HOSPITAL1"
+    },
+    {
+      "clip": "5064940376290201-BASKETBALL.mp4",
+      "truth": "BASKETBALL1",
+      "squash256": "BASKETBALL1",
+      "letterbox512": "BASKETBALL1"
+    },
+    {
+      "clip": "998664525579968-SAIL 2.mp4",
+      "truth": "SAIL2",
+      "squash256": "SAIL2",
+      "letterbox512": "SAIL2"
+    },
+    {
+      "clip": "9011277551820545-SHARPEN 3.mp4",
+      "truth": "SHARPEN2",
+      "squash256": "SHARPEN2",
+      "letterbox512": "SHARPEN2"
+    },
+    {
+      "clip": "4841869407341375-RABBIT 2.mp4",
+      "truth": "RABBIT2",
+      "squash256": "RABBIT2",
+      "letterbox512": "RABBIT2"
+    },
+    {
+      "clip": "9475029528119012-PENNY.mp4",
+      "truth": "PENNY",
+      "squash256": "PENNY",
+      "letterbox512": "PENNY"
+    },
+    {
+      "clip": "12285240541999953-COPY.mp4",
+      "truth": "COPY",
+      "squash256": "COPY",
+      "letterbox512": "COPY"
+    },
+    {
+      "clip": "9192146459174093-8 HOUR.mp4",
+      "truth": "8HOUR",
+      "squash256": "8HOUR",
+      "letterbox512": "8HOUR"
+    },
+    {
+      "clip": "24621191121587915-COMB.mp4",
+      "truth": "COMB2",
+      "squash256": "COMB2",
+      "letterbox512": "COMB2"
+    },
+    {
+      "clip": "8810516216012401-DUCK.mp4",
+      "truth": "DUCK2",
+      "squash256": "DUCK2",
+      "letterbox512": "DUCK2"
+    },
+    {
+      "clip": "726398082719435-MOUTH.mp4",
+      "truth": "MOUTH",
+      "squash256": "MOUTH",
+      "letterbox512": "MOUTH"
+    },
+    {
+      "clip": "47472673738561166-MEAT.mp4",
+      "truth": "MEAT1",
+      "squash256": "MEAT1",
+      "letterbox512": "MEAT1"
+    },
+    {
+      "clip": "7696893051959788-VLOG.mp4",
+      "truth": "VLOG",
+      "squash256": "VLOG",
+      "letterbox512": "VLOG"
+    },
+    {
+      "clip": "7708541702284382-METAL.mp4",
+      "truth": "METAL",
+      "squash256": "METAL",
+      "letterbox512": "METAL"
+    },
+    {
+      "clip": "9556838571878923-SCARF 4.mp4",
+      "truth": "SCARF2",
+      "squash256": "HOSPITAL1",
+      "letterbox512": "HOSPITAL1"
+    },
+    {
+      "clip": "3490725945533484-MICROSCOPE.mp4",
+      "truth": "MICROSCOPE1",
+      "squash256": "MOVIE1",
+      "letterbox512": "MOVIE1"
+    },
+    {
+      "clip": "11270296105684796-AUTISM.mp4",
+      "truth": "AUTISM1",
+      "squash256": "AUTISM1",
+      "letterbox512": "AUTISM1"
+    },
+    {
+      "clip": "5195697908408565-HALLOWEEN.mp4",
+      "truth": "HALLOWEEN1",
+      "squash256": "HALLOWEEN1",
+      "letterbox512": "HALLOWEEN1"
+    },
+    {
+      "clip": "8141262628403736-CHEESE GRATER.mp4",
+      "truth": "CHEESEGRATER",
+      "squash256": "CHEESEGRATER",
+      "letterbox512": "DRAG1"
+    },
+    {
+      "clip": "6173763213909325-BASEBALL CAP.mp4",
+      "truth": "BASEBALLCAP",
+      "squash256": "BASEBALLCAP",
+      "letterbox512": "BASEBALLCAP"
+    },
+    {
+      "clip": "7361115629851984-NOON.mp4",
+      "truth": "NOON1",
+      "squash256": "NOON1",
+      "letterbox512": "NOON1"
+    },
+    {
+      "clip": "9654296103105799-CHEEK.mp4",
+      "truth": "CHEEK",
+      "squash256": "CHEEK",
+      "letterbox512": "CHEEK"
+    },
+    {
+      "clip": "8220002210902866-CLOSE.mp4",
+      "truth": "CLOSE",
+      "squash256": "CLOSE",
+      "letterbox512": "CLOSE"
+    },
+    {
+      "clip": "07934406900594504-BITE.mp4",
+      "truth": "BITE1",
+      "squash256": "BITE1",
+      "letterbox512": "BITE1"
+    }
+  ]
+}

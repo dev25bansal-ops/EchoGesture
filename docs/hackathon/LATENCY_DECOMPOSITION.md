@@ -49,8 +49,15 @@ focused on — cannot move it meaningfully. The levers that would are:
 
 - **fewer frames**: 32 sampled frames at 135 ms each. Dropping to 16 halves the
   detector cost, but changes the model input and would need re-validation.
-- **a smaller/faster landmark model**: MediaPipe offers `full` and `lite`
-  variants; this repo uses whichever `models/hand_landmarker.task` is.
+- **a smaller/faster landmark model**: this repo ships
+  `models/hand_landmarker.task` at **7.82 MB, which is the FULL variant**.
+  I checked whether a lite variant exists as a drop-in and it does **not**:
+  Google's Tasks model zoo publishes only
+  `hand_landmarker/hand_landmarker/float16/{1,latest}/hand_landmarker.task`
+  (both 200, both the full model). The `_lite` paths return 404. MediaPipe's
+  older Solutions API had a lite option; the Tasks API this repo uses does
+  not expose one for hand landmarking. So this avenue is closed unless we
+  convert a lite TFLite ourselves.
 - **the phone's own detector**: on-device `detectForVideo` in VIDEO mode reuses
   its tracker across frames, which is why the Android app may well be much
   faster than this Python path. That has never been measured.

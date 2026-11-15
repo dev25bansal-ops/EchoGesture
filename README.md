@@ -10,13 +10,15 @@ Organized by **Samsung R&D Institute India, Bangalore** (XR Perception Group & P
 Start with the [two-person sprint plan](docs/hackathon/README.md) and the
 [agent guide](AGENTS.md) for Abhijeet and Dev's ownership and handoffs.
 
-## Status: research complete, submission NOT ready
+## Status: submission-ready model, on-device numbers outstanding
 
-This repository contains a working inference pipeline, an empirically-validated
-diagnosis of why the obvious approach fails, and an honest measurement harness.
-It does **not** yet contain a model that meets the accuracy target.
+The landmark pipeline works and clears the accuracy target by 15 points. What is
+**not** done is on-device measurement: latency, power and thermal are unmeasured
+because the only available emulator cannot run MediaPipe (no x86_64 native
+library) and no phone has completed a test session here.
 
-Read [RESULTS.md](RESULTS.md) before reading any number in this file.
+Current numbers, measured on the FP16 `.tflite` files that ship:
+[docs/hackathon/FINAL_NUMBERS_2026-11-15.md](docs/hackathon/FINAL_NUMBERS_2026-11-15.md).
 
 ---
 
@@ -25,15 +27,28 @@ Read [RESULTS.md](RESULTS.md) before reading any number in this file.
 | Item | Status | Evidence |
 |---|---|---|
 | `predict(video_path)` contract | **working** | [src/main.py](src/main.py), returns the required JSON |
-| INT8 model size ≤ 20 MB | **pass** | 880.1 KB measured with `ls -l` |
-| Model inference latency | **pass** | 2.1 ms p50 / 3.2 ms p95 measured, N=200, this machine |
-| End-to-end `predict()` latency | **fail** | 54.1 ms p50 / 117.8 ms p95 measured, N=60 real clips |
-| Accuracy on unseen signers | **fail** | 1.47% (25/1705) vs 1.02% chance, ASL Citizen participant-disjoint |
-| Robustness drop ≤ 5 pt | **not measured** | no occlusion/lighting test script exists yet |
-| Power ≤ 500 mW | **not measured** | no measurement hardware or capture |
-| Thermal drift ≤ 20% | **not measured** | no sustained 10-min run performed |
+| Accuracy on unseen signers | **pass, 85.45%** | 9-model FP16 ensemble, 1,251 clips, 11 unseen signers, chance 1.00%. Reproduce: `scripts/ml/eval_tflite_cache.py --cache .scratch/landmarks_native` |
+| Top-5 | **pass, 96.64%** | same run |
+| Quantization | **pass** | FP16 loses 0.00 vs FP32 at half the size. INT8 was tried and rejected: −6.37 points |
+| Model size | **pass** | 8.51 MB across nine members, plus 7.8 MB MediaPipe = ~16.3 MB |
+| Pixel robustness ≤ 5 pt | **pass, +4.48** | full 1,251-clip split, four corruptions all under budget |
+| Landmark robustness ≤ 5 pt | **fail, +5.76** | `drop_hand_25pct` only; the other five pass. A model limitation, not a measurement artefact — see [DROP_HAND_ANALYSIS.md](docs/hackathon/DROP_HAND_ANALYSIS.md) |
+| Classifier latency | **pass (desktop)** | 4.2 ms/clip for nine members, x86. **Not an on-device figure** |
+| On-device latency | **not measured** | needs a phone; the emulator cannot run MediaPipe |
+| Power ≤ 500 mW | **not measured** | no measurement hardware |
+| Thermal drift ≤ 20% | **not measured** | no sustained run |
 
 ## The core empirical finding
+
+The published S3D-Conv1D INT8 weights (MIT-licensed, shipped by Kimpinde &
+Olukanmi, *Algorithms* 2026) score **1.47%** on the ASL Citizen signer-disjoint
+test split against a 1.02% chance floor. We verified the positive control
+(17/17 on in-distribution WLASL100 clips), so the failure is not a
+preprocessing bug — raw 64×64 pixels let the network memorise signer
+appearance. That is why this repo uses MediaPipe landmarks instead.
+
+**Superseded:** the figures below describing the S3D pixel model are kept as
+the record of why we changed approach. They are not the shipped system.
 
 We downloaded the published S3D-Conv1D INT8 weights (MIT-licensed, shipped by
 Kimpinde & Olukanmi, *Algorithms* 2026) and evaluated them ourselves.

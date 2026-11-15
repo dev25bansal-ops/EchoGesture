@@ -1,12 +1,35 @@
 # Results
 
+> **This file is out of date. Read [docs/hackathon/FINAL_NUMBERS_2026-11-15.md](docs/hackathon/FINAL_NUMBERS_2026-11-15.md) instead.**
+>
+> Everything below was measured on a landmark cache whose hand-presence mask is
+> wrong on **29% of test clips** (364 of 1,255). That cache was rebuilt on
+> 15 Nov from native 640×480 frames — the geometry the Android app actually
+> feeds MediaPipe — and **every number in this file moved by about +9 points**.
+>
+> Current figures, from the FP16 `.tflite` files that ship:
+>
+> | | this file | current |
+> | --- | --: | --: |
+> | top-1 test | 72.78% | **85.45%** |
+> | top-1 val | 83.77% | **89.31%** |
+> | top-5 | 87.51% | **96.64%** |
+> | per-signer mean | 73.36% | **86.02%** |
+> | worst signer | 53.5% | **72.54%** |
+> | best single member | 69.10% | **81.53%** |
+>
+> These are 9-model figures, not 4-model. The reasoning below about ensembling,
+> aggregation and signer variance still holds and is worth reading; the
+> absolute numbers do not.
+
 Every number here was produced by a script in this repo, on this machine, and names
 that script. Nothing is copied from a paper, extrapolated, or left over from an
 earlier draft.
 
-**Headline: 72.78% top-1 / 87.51% top-5 on 11 unseen signers, 1,249 clips, 100
-classes, chance 1.00% — the ≥70% target is met.** By a 4-model ensemble, not a
-single model: the best individual member scores 69.10%.
+**Headline (as of 13 Nov, superseded — see the box above): 72.78% top-1 /
+87.51% top-5 on 11 unseen signers, 1,249 clips, 100 classes, chance 1.00%.**
+By a 4-model ensemble, not a single model: the best individual member scored
+69.10%.
 
 ---
 

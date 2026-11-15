@@ -16,6 +16,8 @@ deck, a demo script or a README without being qualified the same way here.
 | Model size | **8.51 MB** | nine members, summed from the meta's member list | `ls -l models/*.tflite` |
 | Pixel robustness | **+4.48 PASS** | full split, 4 corruptions, all under the 5-pt budget | `scripts/ml/robustness_pixel_parallel.py --cache .scratch/landmarks_native` |
 | Classifier latency | **4.2 ms/clip** | nine members, desktop x86 | `scripts/ml/eval_tflite_cache.py` |
+| Confidence calibration | **99.7% at >0.8** | 594 of 1,251 clips; 74% of all errors sit below 0.4 | `python scripts/ml/confidence_calibration.py` |
+| Abstain-and-reask | **95.93% at 72.6% coverage** | answering only clips above 0.5 confidence | same |
 
 ## Can claim, with a caveat that must travel with it
 
@@ -24,6 +26,30 @@ deck, a demo script or a README without being qualified the same way here.
 | Landmark robustness | +5.76, **FAIL** | Fails on `drop_hand_25pct` alone; other five pass. It is a model limitation, not a measurement artefact — measured three ways, the attention mask is working correctly. See [DROP_HAND_ANALYSIS.md](DROP_HAND_ANALYSIS.md) |
 | Per-frame latency | p50 **133 ms** | Desktop x86 Python. The budget is 50 ms and even the floor (~70 ms) exceeds it. Wide run-to-run spread (84–163 ms p50). **Not** an on-device figure |
 | Cold start | **159 s** | One-time per process, and 135 s of it is MediaPipe building its graph on the first `detect()`. Now paid inside `_init_model()`, so it does not pollute a timed prediction |
+
+### Confidence is the strongest demo claim we have
+
+Re-measured on the native cache after the geometry fix:
+
+| confidence | clips | accuracy | share of all errors |
+| --- | --: | --: | --: |
+| 0.0–0.2 | 67 | 28.4% | 26.4% |
+| 0.2–0.4 | 172 | 59.3% | 38.5% |
+| 0.4–0.6 | 189 | 75.1% | 25.8% |
+| 0.6–0.8 | 229 | 93.4% | 8.2% |
+| **0.8–1.0** | **594** | **99.7%** | **1.1%** |
+
+**74% of all mistakes are below 0.4 confidence.** Above 0.8 confidence the model
+is right 99.7% of the time over 594 clips.
+
+Two operating points that make a good live demo:
+
+- **abstain below 0.5**: answers 72.6% of clips at **95.93%** accuracy
+- **abstain below 0.7**: answers 57.9% of clips at **99.03%** accuracy
+
+This converts the most visible failure mode — a fluent-looking wrong answer —
+into an honest "sign that again". It is also the one place where the model's
+behaviour matches its confidence closely enough to say so out loud.
 
 ## Cannot claim — no measurement exists
 

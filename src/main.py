@@ -139,6 +139,21 @@ def _init_model():
         except Exception:
             pass
 
+    # MediaPipe builds its graph lazily on the FIRST detect() call, not at
+    # import. Measured on this machine that single call costs 134.8 s, versus
+    # 325 ms to import everything and 93 ms to load nine TFLite interpreters.
+    # Left alone, that one-time cost lands inside whichever predict() a caller
+    # happens to time first, and the reported latency_ms becomes meaningless.
+    # Pay it here instead, so predict() measures inference.
+    try:
+        import numpy as _np
+        from landmark_frontend import detect_hands as _warm
+        _warm([_np.zeros((256, 256, 3), _np.uint8)], mode="image")
+    except Exception:
+        # A warm-up failure must not break model loading; it only affects the
+        # first call's timing, never correctness.
+        pass
+
 
 def _preprocess_video(video_path: str, target_frames: int = 24, use_z: bool = False,
                       size=256):

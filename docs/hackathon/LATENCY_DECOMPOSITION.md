@@ -36,10 +36,12 @@ Per-clip breakdown, warm process, 32 sampled frames:
 The classifier — the part this branch spent days improving — is **0.15%** of
 end-to-end latency. Everything else is the detector.
 
-That is 135 ms per frame across 32 frames, against the ~23 ms/frame this repo
-has been quoting. **These measurements are contaminated**: a `distllm` model
-server was running on the same machine and competing for CPU. The figures are
-useful as a *relative* breakdown but should not be quoted as absolute latency.
+That is 135 ms per frame across 32 frames. The repo had been quoting 15.7 ms
+and 23 ms in six places, with no artifact behind either — see the retraction in
+`results/results.csv`. The figure is now measured reproducibly by
+`scripts/ml/latency_per_frame.py`, which gives p50 150.9 ms / min 68.5 ms. A
+`distllm` model server was competing for CPU during these runs, but pinning to
+an idle core gave p50 163 ms, so contention is not the explanation.
 
 ## What this means for the submission
 

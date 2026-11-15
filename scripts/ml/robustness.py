@@ -134,9 +134,15 @@ CORRUPTIONS = {
 
 # ------------------------------------------------------------------ pipeline
 
+# Cache root. The shipped results were measured on `.scratch/landmarks` (256
+# squash, built 8 Nov). `.scratch/landmarks_native` is the same corpus extracted
+# at the app's real geometry; pass CACHE_ROOT to score that instead.
+CACHE_ROOT = LANDMARKS
+
+
 def load_split(split, vocab_idx):
     items = []
-    for p in sorted((LANDMARKS / split).glob("*.npz")):
+    for p in sorted((CACHE_ROOT / split).glob("*.npz")):
         d = np.load(p, allow_pickle=False)
         if float(d["present"].max()) < 0.5:
             continue
@@ -408,8 +414,14 @@ def main():
                     help="detector input size (default: landmark_frontend.FRAME_SIZE)")
     ap.add_argument("--letterbox", action="store_true",
                     help="preserve aspect ratio instead of squashing to a square")
+    ap.add_argument("--cache", default=None,
+                    help="landmark cache root (default .scratch/landmarks)")
     ap.add_argument("--out", default="results/robustness.json")
     args = ap.parse_args()
+
+    if args.cache:
+        global CACHE_ROOT
+        CACHE_ROOT = ROOT / args.cache
 
     if args.level == "pixel":
         # `--limit 0` means "every clip". This used to read `args.limit or 120`,

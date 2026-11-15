@@ -1,0 +1,31 @@
+{
+  "clean": {
+    "top1": 85.6115,
+    "n": 1251
+  },
+  "blur_k5": {
+    "top1": 84.4924,
+    "n": 1251
+  },
+  "low_light_40pct": {
+    "top1": 81.1351,
+    "n": 1251
+  },
+  "downscale_35pct": {
+    "top1": 83.693,
+    "n": 1251
+  },
+  "jpeg_q25": {
+    "top1": 82.6539,
+    "n": 1251
+  },
+  "_meta": {
+    "split": "test",
+    "size": 512,
+    "letterbox": true,
+    "workers": 6,
+    "clean_top1": 85.6115,
+    "worst_drop": 4.4764,
+    "aggregator": "mean-logit (shipped)"
+  }
+}

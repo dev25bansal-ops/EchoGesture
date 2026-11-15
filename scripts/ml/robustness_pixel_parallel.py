@@ -102,6 +102,8 @@ def main():
     ap.add_argument("--letterbox", action="store_true")
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--seed", type=int, default=7)
+    ap.add_argument("--cache", default=None,
+                    help="landmark cache root (default .scratch/landmarks)")
     ap.add_argument("--out", default="results/robustness_pixel_full.json")
     args = ap.parse_args()
 
@@ -109,6 +111,8 @@ def main():
     import torch
     import robustness as R
 
+    if args.cache:
+        R.CACHE_ROOT = ROOT / args.cache
     ck = torch.load(ROOT / CKPTS[0], map_location="cpu", weights_only=True)
     items = R.load_split(args.split, {g: i for i, g in enumerate(ck["vocab"])})
     if args.limit:

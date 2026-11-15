@@ -188,9 +188,13 @@ def predict(video_path: str) -> dict:
         "latency_ms": 23.4
     }
     """
-    start_time = time.perf_counter()
-
     _init_model()
+
+    # Timed from here, not from before _init_model(). Cold-start loads nine
+    # TFLite interpreters and a MediaPipe graph (~124 s measured on this
+    # machine); including that in latency_ms reported a 200x inflated figure
+    # for work that happens once per process. Cold start is reported separately.
+    start_time = time.perf_counter()
 
     # Extract clip_id from video filename without extension
     clip_id = Path(video_path).stem
@@ -205,9 +209,12 @@ def predict(video_path: str) -> dict:
     for uz in set(_MEMBER_USE_Z) or {False}:
         widths[uz] = build_features(lm, present, expected_frames=_FRAMES, use_z=uz)
 
-    # Average logits across ensemble members, then softmax once. Averaging
-    # probabilities instead would let one over-confident member dominate;
-    # averaging logits keeps each member's vote proportional to its evidence.
+    # Average logits across ensemble members, then softmax once. This matches
+    # src/main.py's contract and LandmarkClassifier.kt exactly, and it is what
+    # was measured: the alternative (average per-member probabilities) scored
+    # +0.9 test / -0.9 val differently and was rejected - see EXPERIMENTS.md.
+    # Logit averaging preserves each member's confidence margin; softmaxing
+    # first and averaging compresses every member toward uniform.
     member_logits = []
     for interp, (in_idx, out_idx, mask_idx), use_z in zip(
             _INTERPRETERS, _MEMBER_IO, _MEMBER_USE_Z):

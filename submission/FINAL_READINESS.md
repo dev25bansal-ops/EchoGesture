@@ -153,7 +153,7 @@ before one.
 | Evaluator | `latency_ms` no longer includes cold start; MediaPipe graph is built during `_init_model()` |
 | Tests | +9 geometry-contract tests; 433 passed (was 424), same 3 failed / 23 errors / 43 skipped |
 | Docs | `FINAL_EVIDENCE.md` per-frame row corrected from a pass to **RETRACTED / FAIL** |
-| Deck | Robustness row corrected: landmark **5.36 FAIL** (was 4.40 PASS, wrong aggregator) |
+| Deck | Robustness row corrected to **5.76 FAIL** (was 4.40 PASS with the wrong aggregator, then 5.36 on the old cache) |
 | ZIP | Rebuilt with corrected results.csv; **behaviour identical** — 23/30, 0 errors |
 
 ### The geometry finding
@@ -176,9 +176,12 @@ the deadline is a worse trade than it looks. Full reasoning in
 
 ### Corrections that make the submission more honest, not less impressive
 
-- Landmark robustness is **FAIL 5.36**, not the previously reported 4.40 PASS.
-  The old number used per-member softmax averaging; the shipped code averages
-  raw logits. The criterion genuinely fails.
+- Landmark robustness is **FAIL 5.76**, not the previously reported 4.40 PASS.
+  The 4.40 used per-member softmax averaging; the shipped code averages raw
+  logits and then applies one softmax. The 5.36 figure that briefly replaced it
+  came from the old 256-squash cache. On the native cache the worst corruption
+  (hand dropout, both coordinates and presence zeroed) costs **5.76 pp**, and
+  the criterion genuinely fails.
 - The 15.7 ms/frame figure is **retracted**. Re-measured per-frame median is
   ~142–151 ms, already above the 50 ms budget before any Android work.
 - Dev's pixel robustness PASS at 4.48 is at **512 letterbox**, which the app does

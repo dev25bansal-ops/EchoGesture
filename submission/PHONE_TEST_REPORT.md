@@ -133,7 +133,8 @@ rejection reason shown on screen.
 If this stays untested, say exactly this:
 
 > Recognition accuracy was measured on the ASL Citizen corpus signer-disjoint
-> (77.02% top-1 on 1,249 test clips from 11 unseen signers, laptop CPU). The
-> application was verified to install, launch and load the nine-member model on
-> an Android 14 emulator. **No physical-device accuracy, latency, power or
-> thermal measurement exists.**
+> (85.45% top-1 on 1,251 test clips from 11 unseen signers at native 640×480,
+> laptop CPU; the 256-squash entry point scores 82.47%). The application was
+> verified to install, launch and load the nine-member model on an Android 14
+> emulator. **No physical-device accuracy, latency, power or thermal
+> measurement exists.**

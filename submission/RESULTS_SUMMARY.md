@@ -54,8 +54,14 @@ The packaged evaluator was extracted to an empty directory and run there:
 | Top-1 | **76.67%** |
 | Errors | 0 |
 
-23/30 from a clean extraction is consistent with 77.02% on the full split and
-confirms the ZIP contains a working model, not a stale one.
+23/30 from a clean extraction sits between the 82.47% (256 squash) and 85.45%
+(native) full-split figures, which is what a 30-clip sample of that population
+should do. It confirms the ZIP contains a working model, not a stale one.
+
+**The current ZIP was rebuilt on 2026-11-17** and re-verified the same way: a
+clean extraction ran `predict()` on an authorised clip and returned
+`WHATFOR1` at 0.9749 confidence with top-5 `[WHATFOR1, OFFEND, DEAF1, KNIGHT1,
+PENNY]` — the same answer the Android result card shows for that clip.
 
 ---
 

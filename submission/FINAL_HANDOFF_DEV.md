@@ -49,7 +49,9 @@ cut it — but it needs a re-run of the ZIP parity gate, which is a few hours.
 
 `start_time` moved to *after* model init, and `_init_model` now warms MediaPipe
 with one throwaway frame. Previously the first clip absorbed ~320 ms of warm-up
-and inflated the reported clip time. Warm p50 is now **236 ms**, p95 **314.9 ms**.
+and inflated the reported clip time. My own early run showed a warm p50 of 236 ms,
+but your later LATENCY_DECOMPOSITION work (4,650 ms warm `predict()`, detector
+dominated) supersedes it — see the note below.
 
 Neither number meets the 50 ms criterion. I have not tried to close that gap;
 it is recorded as FAIL everywhere it appears.
@@ -71,7 +73,7 @@ on features and presence, tensor-for-tensor, not just by shape. That test is
 | --- | --- |
 | 77.02% top-1 | Cached landmark provenance; the cache's presence mask disagrees with fresh extraction on 29% of test clips |
 | 76.67% | 30-clip clean-extraction run of the packaged ZIP — a smoke test, not a benchmark |
-| 85.84% | My 346-clip validation run, native geometry, opt-in. Not your 1,249-clip test split |
+| 85.84% | My 346-clip validation run, native geometry, opt-in. Not your 1,251-clip test split |
 | 82.47% / 85.51% | Your fresh-extraction test-split figures, recorded but **not re-run by me** |
 
 Your reported figures and mine agree in **direction** in every case where they
@@ -99,8 +101,19 @@ Tell me and I will do it — that is a few hours, not a one-line edit.
 
 **The 4.40 pp landmark robustness PASS is withdrawn.** It averaged per-member
 softmax probabilities. Shipped code averages raw logits then applies one softmax.
-Under the real aggregator the worst drop is **5.36 pp**, which fails the 5 pp
-budget. I published the 4.40 figure myself and am correcting it publicly.
+I published that 4.40 myself and am correcting it publicly.
+
+Two subsequent figures need reconciling on your side before either is quoted:
+
+- **5.36 pp** was my measurement on the *old 256-squash cache*. Superseded.
+- **5.76 pp** is the harness corruption on the native cache (both coordinates
+  *and* presence zeroed) — this is the number our docs now quote, and it fails.
+- **5.52 pp** in your `results/robustness_gated.json` is labelled "raw (every
+  clip)" but is computed from the **coords-kept diagnostic** (79.94%, delta
+  actually 5.51). `DROP_HAND_ANALYSIS.md` states both variants; the gated file
+  picked the diagnostic. The gate itself (margin ≥ 0.15) is real and verified in
+  `CameraScreen.kt:958`, but it accepts on 86% / 80% coverage and must always be
+  quoted with that.
 
 Your **4.48 pp pixel PASS stands** — but only for 512 letterbox. The Android app
 is 640×480 native, and native pixel robustness has not been measured. Do not let
@@ -167,8 +180,10 @@ force-pushed. Full inventory in `docs/release/V4_5_PARTICIPANT_ID_AUDIT.md`.
 2. **The 26 Python failures.** Do you agree they are asset-blocked? If not,
    name the ones you think are real.
 3. **Sign-off.** Are you willing to be listed as the model author on a release
-   whose ensemble scores 77.02% corpus / 76.67% clean-ZIP, ships **FP16 not INT8**,
-   and misses the 50 ms latency target at 314.9 ms p95?
+   whose ensemble scores 85.45% corpus at native geometry (82.47% at the
+   256-squash default the ZIP runs), ships **FP16 not INT8**, misses the 5 pp
+   hand-dropout robustness criterion at 5.76 pp unconditional, and has **no
+   on-device latency measurement at all**?
 
 Answer 3 matters most. If any of those limits makes you uncomfortable being
 named, say so now rather than after the form is sent.

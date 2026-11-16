@@ -4,11 +4,12 @@
   "internal_target": "2026-11-17",
   "deadline": "2026-11-18T23:59:00+05:30",
   "source": {
-    "branch": "release/samsung-track2-final",
-    "base_branch": "shared/v4.4-dev-integration",
-    "base_commit": "facae8fbabe499addc90051c231f778f7d91deff",
+    "branch": "release/samsung-track2-geometry-review",
+    "base_branch": "hackathon/abhijeet-integration",
+    "base_commit": "eef80e088551230cd25410692014e25ca5a9f78b",
     "model_dev_branch": "hackathon/dev-model",
-    "model_dev_commit": "11bbddf5d60ebac1e02c2c6d4241222251cffb58"
+    "model_dev_commit": "11bbddf5d60ebac1e02c2c6d4241222251cffb58",
+    "github_url": "https://github.com/dev25bansal-ops/EchoGesture"
   },
   "model": {
     "ensemble_sha256": "995cc8d0b6f6ac25abb9f7ddca01c3ce71edf8bc2d34e34f4813a2b99dd3b4bb",
@@ -56,8 +57,18 @@
     },
     "presentation": {
       "path": "submission/presentation/EchoGesture_Track02.pptx",
-      "sha256": "951d5177c435c02c4a0cce763c82945e6b4a5a7dfe3c5aad05aa435112350e66",
+      "sha256": "cc88de1ed22199a082c403caee1c8092d8538e1e660683aaa771e2b85a318bef",
+      "bytes": 413002,
       "slides": 8,
+      "font": "Arial (pinned so arrows and multiplication signs have real glyph coverage)",
+      "pdf": {
+        "path": "submission/presentation/EchoGesture_Track02.pdf",
+        "sha256": "f670bd3168d311047f57f20151f22dd7c2507b5703efdc79f2e799add26762ab",
+        "bytes": 631350,
+        "pages": 8,
+        "note": "Rasterised from submission/presentation/render_slides.py, not a native PowerPoint export. Text is not selectable. Replace with a native export if PowerPoint is available."
+      },
+      "visual_inspection": "All 8 slides rasterised and inspected: no clipped text, no colliding boxes, no missing glyphs.",
       "naming": "must be renamed to CollegeName_TeamName before submission"
     }
   },
@@ -68,12 +79,12 @@
       "skipped": 0
     },
     "python_suite": {
-      "run": 493,
-      "passed": 424,
+      "run": 502,
+      "passed": 433,
       "failed": 3,
       "errors": 23,
       "skipped": 43,
-      "note": "failures identical on the untouched V4.4 tip; all blocked on gitignored artifacts"
+      "note": "clean-clone conditions; all 26 failures are FileNotFoundError on gitignored or retired artifacts, individually classified in docs/release/V4_5_TEST_TRIAGE.md. Supplying the retired weight raises the run to 461 passed and clears 28."
     },
     "clean_zip_accuracy": {
       "clips": 30,
@@ -127,7 +138,7 @@
     "zip_layout": "PASS \u2014 src/, models/, results/ per PDF p12",
     "quantization_int8": "FAIL \u2014 FP16 shipped; organizer clarification unsent",
     "latency_50ms": "FAIL \u2014 314.9 ms p95 warm on laptop",
-    "model_size_20mb": "PASS \u2014 15.57 MB including detector",
+    "model_size_20mb": "PASS \u2014 16.33 MB including detector",
     "top1_70pct": "PASS \u2014 77.02% corpus",
     "demo_video": "BLOCKED \u2014 not recorded",
     "presentation": "DONE \u2014 content verified, naming pending",

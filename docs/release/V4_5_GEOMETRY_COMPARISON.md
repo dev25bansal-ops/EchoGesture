@@ -53,17 +53,23 @@ The single error is `5989539775823847-INTUITIVE` — the evaluator raises
 "No hand detected in any frame" under both geometries. That is a detector
 failure on the clip, not a geometry effect, and it is identical in both arms.
 
-### Per signer
+#
+> **Signer labels.** Signers appear as `S…` pseudonyms produced by the repository's
+> own `hash_signer_id` scheme (HMAC-SHA256 with a fixed project salt). The raw
+> ASL Citizen participant IDs are deliberately not published and the
+> participant→pseudonym mapping is not recorded in this repository.
+
+## Per signer
 
 | signer | n | squash | native | Δ pp |
 | --- | --: | --: | --: | --: |
-| P12 | 24 | 79.2% | 79.2% | 0.0 |
-| P21 | 104 | 82.7% | 86.5% | +3.8 |
-| P26 | 101 | 79.2% | 84.2% | +5.0 |
-| P39 | 103 | 86.4% | 90.3% | +3.9 |
-| P5 | 13 | 84.6% | 76.9% | −7.7 |
+| S28C1 | 24 | 79.2% | 79.2% | 0.0 |
+| S4ABE | 104 | 82.7% | 86.5% | +3.8 |
+| S1BC1 | 101 | 79.2% | 84.2% | +5.0 |
+| S476B | 103 | 86.4% | 90.3% | +3.9 |
+| SCA7F | 13 | 84.6% | 76.9% | −7.7 |
 
-Four of five improve. P5 has 13 clips, so its one-clip drop is 7.7 points — not
+Four of five improve. SCA7F has 13 clips, so its one-clip drop is 7.7 points — not
 evidence of a signer-specific regression.
 
 ### Per class

@@ -60,7 +60,9 @@ def text(slide, x, y, w, h, runs, size=18, color=NAVY, bold=False,
         f.size = Pt(opt.get("size", size))
         f.color.rgb = opt.get("color", color)
         f.bold = opt.get("bold", bold)
-        f.name = "Helvetica"
+        # Helvetica has no U+2192 (arrow) or U+00D7; Arial does, so the deck
+        # renders arrows without depending on font fallback surviving export.
+        f.name = "Arial"
     return tb
 
 

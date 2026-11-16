@@ -1,3 +1,19 @@
+> ## ⚠️ SUPERSEDED — HISTORICAL BASELINE
+>
+> **This file describes a single-classifier system (`landmark_classifier_fp16.tflite`,
+> 62.61% top-1) that is NOT the shipped release.** It is kept as historical
+> evidence of the earlier baseline and its honesty about that baseline.
+>
+> The shipped candidate is a **nine-member masked FP16 ensemble** at
+> `995cc8d0b6f6ac25abb9f7ddca01c3ce71edf8bc2d34e34f4813a2b99dd3b4bb`.
+> For current numbers read **[V4_5_RELEASE_DECISION.md](V4_5_RELEASE_DECISION.md)**
+> and **[V4_5_GEOMETRY_COMPARISON.md](V4_5_GEOMETRY_COMPARISON.md)**.
+>
+> Two rows in this file are also out of date: the per-frame latency claim
+> (15.7 ms) is **RETRACTED** — see the note on that row — and any robustness
+> PASS below predates the aggregator correction that turned the landmark result
+> into a FAIL.
+
 # Final release evidence
 
 Status: **NOT release-certified**. This file is filled from final measured

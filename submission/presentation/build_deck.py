@@ -233,9 +233,9 @@ def results(prs):
     text(s, 0.95, 1.52, 11.5, 0.4,
          "Measured on ASL Citizen, signer-disjoint. These are corpus results, not phone results.",
          size=15, color=GREY)
-    stats = [("77.02%", "top-1, test", "1,249 clips, 11 unseen signers"),
-             ("92.79%", "top-5, test", "same clips"),
-             ("8.51 MB", "nine members", "15.57 MB with detector"),
+    stats = [("85.45%", "top-1, test", "1,251 clips, 11 unseen signers"),
+             ("96.64%", "top-5, test", "same clips"),
+             ("8.51 MB", "nine members", "16.33 MB with detector"),
              ("110 / 110", "Android unit tests", "0 failures")]
     for i, (big, lbl, sub) in enumerate(stats):
         x = 0.95 + i * 2.95
@@ -245,17 +245,17 @@ def results(prs):
         text(s, x + 0.22, 3.38, 2.35, 0.5, sub, size=10.5, color=GREY, line=1.15)
     text(s, 0.95, 4.35, 5.6, 0.3, "READ THIS CORRECTLY", size=12, color=GREY, bold=True)
     text(s, 0.95, 4.68, 5.6, 2.6, [
-        ("77.02% is a corpus figure from the model owner's re-run over the shipped files. We do not claim it as phone accuracy.",
+        ("85.45% is a corpus figure at native 640×480 — the geometry the Android app feeds. Not phone accuracy.",
          {"size": 13.5, "space": 7}),
-        ("A separate A/B/C study covered 72 unique clips across 184 evaluations including synthetic idle. That is not 184 independent signs.",
+        ("The Python entry point squashes to 256 and scores 82.47% on the same weights.",
          {"size": 13.5, "space": 7}),
-        ("Measured this cycle: feeding the same nine models native 640×480 frames instead of a 256 squash scores 85.84% on 346 validation clips (n=345 paired, p=0.05). Opt-in, not the shipped default — the packaged evaluator stays at 256.",
+        ("The old 77.02% was these same weights on a cache with a wrong presence mask on 29% of clips. The evaluation changed, not the model.",
          {"size": 12, "color": BLUE}),
     ], color=GREY)
     text(s, 6.95, 4.35, 5.4, 0.3, "WHERE IT STILL FALLS SHORT", size=12, color=GREY, bold=True)
     for i, (t, v, col) in enumerate([
-        ("Landmark robustness", "FAIL — 5.36 pp worst drop", RGBColor(0xB4, 0x2A, 0x2A)),
-        ("Latency ≤50 ms", "FAIL — MediaPipe dominates", RGBColor(0xB4, 0x2A, 0x2A)),
+        ("Hand dropout", "FAIL — 5.76 pp unconditional", RGBColor(0xB4, 0x2A, 0x2A)),
+        ("Latency ≤50 ms", "NOT CLAIMED — on-device unmeasured", RGBColor(0xB4, 0x2A, 0x2A)),
         ("INT8 quantisation", "FP16 shipped — clarification open", RGBColor(0xB4, 0x7A, 0x0A)),
         ("Native-camera robustness", "NOT MEASURED", RGBColor(0x5A, 0x6B, 0x82)),
     ]):

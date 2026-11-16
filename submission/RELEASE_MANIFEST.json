@@ -57,19 +57,26 @@
     },
     "presentation": {
       "path": "submission/presentation/EchoGesture_Track02.pptx",
-      "sha256": "cc88de1ed22199a082c403caee1c8092d8538e1e660683aaa771e2b85a318bef",
-      "bytes": 413002,
+      "sha256": "e526f3668b364404a9a9e96eb018755c75c394b6e1b98981722d1f23adc23ed7",
+      "bytes": 412909,
       "slides": 8,
       "font": "Arial (pinned so arrows and multiplication signs have real glyph coverage)",
       "pdf": {
         "path": "submission/presentation/EchoGesture_Track02.pdf",
-        "sha256": "f670bd3168d311047f57f20151f22dd7c2507b5703efdc79f2e799add26762ab",
-        "bytes": 631350,
+        "sha256": "f4b6db1419786e2f524ac2452b0196063be3e58458901e712218f481f147f812",
+        "bytes": 622577,
         "pages": 8,
         "note": "Rasterised from submission/presentation/render_slides.py, not a native PowerPoint export. Text is not selectable. Replace with a native export if PowerPoint is available."
       },
       "visual_inspection": "All 8 slides rasterised and inspected: no clipped text, no colliding boxes, no missing glyphs.",
-      "naming": "must be renamed to CollegeName_TeamName before submission"
+      "naming": "must be renamed to CollegeName_TeamName before submission",
+      "figures_corrected_2026_11_17": [
+        "Evaluation slide: 77.02/92.79/1,249 -> 85.45/96.64/1,251",
+        "Evaluation slide: detector total 15.57 MB -> 16.33 MB",
+        "Evaluation slide: added the 82.47% 256-squash figure so the Python entry point is not mislabelled with the native-geometry number",
+        "Evaluation slide: robustness 5.36 -> 5.76 unconditional (the harness corruption), not the coords-kept diagnostic",
+        "Evaluation slide: latency changed from 'FAIL - MediaPipe dominates' to 'NOT CLAIMED - on-device unmeasured', because Dev's two per-frame figures are unreconciled"
+      ]
     }
   },
   "evidence": {

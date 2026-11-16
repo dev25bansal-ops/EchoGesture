@@ -53,7 +53,10 @@ class EnsembleRuntimeParityTest {
     fun realMemberLogitsReproducePythonThroughProductionArithmetic() {
         val l = lines()
         val (members, classes) = l[0].split(' ').let { it[0].toInt() to it[1].toInt() }
-        assertEquals(4, members)
+        // The fixture names the ensemble it describes; asserting a hardcoded
+        // count is what let a nine-member build pass these tests while the
+        // fixture still described four.
+        assertEquals("fixture must describe the shipped ensemble", 9, members)
         assertEquals(100, classes)
         val names = l[1].trim().split(' ')
         assertEquals(
@@ -61,7 +64,12 @@ class EnsembleRuntimeParityTest {
                 "landmark_ens_tcn21_fp16.tflite",
                 "landmark_ens_tcnm61_fp16.tflite",
                 "landmark_ens_tcnm62_fp16.tflite",
-                "landmark_ens_rob71_fp16.tflite"
+                "landmark_ens_rob71_fp16.tflite",
+                "landmark_ens_mirror_handdrop_tcn_z_s0_fp16.tflite",
+                "landmark_ens_mirror_handdrop_tcn_z_s1_fp16.tflite",
+                "landmark_ens_mirror_handdrop_tcn_z_s2_fp16.tflite",
+                "landmark_ens_mirror_handdrop_tcn_z_s7_fp16.tflite",
+                "landmark_ens_mirror_handdrop_tcn_z_s13_fp16.tflite"
             ),
             names
         )

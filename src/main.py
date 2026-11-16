@@ -47,6 +47,32 @@ _MEMBER_IO = []             # per-member (input_index, output_index, io tuple)
 _MEMBER_NAMES = []          # per-member basename for profiling/errors
 _MEMBER_USE_Z = []          # per-member: True when the member takes 381-wide x,y,z
 
+# Frame geometry fed to MediaPipe. 256 is a square *squash*: a 640x480 source
+# frame is resized to 256x256, which distorts a 4:3 image by 1.33x. The Android
+# app does no resize at all (CameraScreen requests 640x480, HandTracker builds
+# the MediaPipe image from the bitmap with no crop or scale), so native is the
+# geometry that actually ships. Set ECHOGESTURE_FRAME_SIZE=native to use it, or
+# an integer for a square edge. Default 256 keeps the historical operating point
+# so existing results stay comparable; see docs/release/V4_5_RELEASE_DECISION.md.
+_FRAME_SIZE = 256
+
+
+def _frame_size():
+    """Resolve ECHOGESTURE_FRAME_SIZE: an int square edge, or "native"."""
+    raw = os.environ.get("ECHOGESTURE_FRAME_SIZE", "").strip()
+    if not raw:
+        return _FRAME_SIZE
+    if raw.lower() == "native":
+        return None
+    try:
+        value = int(raw)
+    except ValueError:
+        raise ValueError(
+            f"ECHOGESTURE_FRAME_SIZE must be an integer or 'native', got {raw!r}")
+    if value <= 0:
+        raise ValueError(f"ECHOGESTURE_FRAME_SIZE must be positive, got {value}")
+    return value
+
 # Pinned identity of the shipped nine-member masked ensemble. Filenames are NOT
 # identity: the four legacy names now hold different binaries than the V4.2
 # release, so a hash mismatch is the only thing that distinguishes them. Keep
@@ -520,6 +546,20 @@ def _init_model():
     _FEATURE_DIM = feature_dim
     _ACTIVE_MODEL = model_path
 
+    # MediaPipe builds its graph lazily on the FIRST detect() call, not at
+    # import or at HandLandmarker construction. Left alone that one-time cost
+    # lands inside whichever predict() the caller happens to time first, which
+    # makes a warm/cold comparison meaningless. Pay it here, at init.
+    if backend == "landmark":
+        try:
+            import numpy as _np
+            from landmark_frontend import detect_hands as _warm
+            _warm([_np.zeros((256, 256, 3), _np.uint8)], mode="image")
+        except Exception:
+            # A warm-up failure must never break model loading; it only affects
+            # the first call's timing, not correctness.
+            pass
+
 
 def _preprocess_video(video_path: str, target_frames: int = 24, target_size: int = 64):
     started_ns = time.perf_counter_ns()
@@ -616,13 +656,18 @@ def predict(video_path: str, *, clip_id: str | None = None, profile: bool = Fals
         "latency_ms": 23.4
     }
     """
-    start_time = time.perf_counter()
     global _LAST_PROFILE
     _LAST_PROFILE = {"stages": {}} if profile else None
 
     started_ns = time.perf_counter_ns()
     _init_model()
     _record_stage("model_initialization", started_ns)
+
+    # Timed from AFTER _init_model(). Loading nine interpreters and building the
+    # MediaPipe graph happens once per process, so including it made the first
+    # predict() report ~200x the steady-state figure for work no per-clip caller
+    # pays. Cold start is still observable via get_last_profile().
+    start_time = time.perf_counter()
 
     clip_id = clip_id if clip_id is not None else Path(video_path).stem
 
@@ -631,7 +676,7 @@ def predict(video_path: str, *, clip_id: str | None = None, profile: bool = Fals
         from features import build_features
 
         started_ns = time.perf_counter_ns()
-        frames = read_frames(video_path, max_frames=max(32, _FRAMES))
+        frames = read_frames(video_path, max_frames=max(32, _FRAMES), size=_frame_size())
         _record_stage("video_open_decode", started_ns, sampled_frames=len(frames))
         if not frames:
             raise ValueError(f"No valid frames decoded from: {video_path}")

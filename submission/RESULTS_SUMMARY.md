@@ -69,12 +69,21 @@ exists.
 
 | Level | Worst drop | Verdict | What it corrupts |
 | --- | --: | --- | --- |
-| Landmark | +4.40 pp | **PASS** (≤5) | the 21 points, after detection |
-| Pixel | −10.00 pp | **FAIL** (≤5) | the video frames, before detection |
+| Landmark | +5.36 pp | **FAIL** (≤5) | the 21 points, after detection |
+| Pixel (512 letterbox) | +4.48 pp | PASS (≤5) | the video frames, before detection. **Not the app's geometry.** |
+| Pixel (256 squash, 4-model, n=30) | −10.00 pp | **FAIL** — older model generation | the video frames, before detection |
 
 Both are real. They are not the same experiment and must never be averaged or
-quoted interchangeably. The deployed app sees pixels, so the pixel number is the
-deployment-relevant one. Worst pixel conditions: crop −10.00, occlusion −6.67.
+quoted interchangeably.
+
+**The landmark figure is 5.36, not 4.40.** The earlier 4.40 PASS was measured
+with per-member softmax probability averaging; the shipped code averages raw
+logits then applies one softmax. Corrected, the criterion **fails**. See
+`docs/release/V4_5_ROBUSTNESS_RECONCILIATION.md`.
+
+The pixel PASS at 4.48 is at **512 letterbox**, which the Android app does not
+use — it runs 640×480 native. **Native-geometry pixel robustness has not been
+measured** and is not claimed.
 
 ---
 
@@ -86,8 +95,9 @@ deployment-relevant one. Worst pixel conditions: crop −10.00, occlusion −6.6
 | "184 independent signs tested" | 184 evaluations over **72 unique clips** |
 | "INT8 quantised" | FP16 ships |
 | "Meets the 50 ms target" | 314.9 ms p95 warm |
-| "Robust to occlusion" | −6.67 pp on occlusion |
+| "Robust to occlusion" | Landmark robustness FAILs at 5.36 pp; native pixel unmeasured |
 | "Continuous translation" | 100 isolated signs |
+| "Robustness criterion passed" | **FAIL** under the shipped aggregator |
 
 ---
 

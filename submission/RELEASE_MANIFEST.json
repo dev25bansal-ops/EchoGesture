@@ -1,6 +1,6 @@
 {
-  "release": "Samsung XR Hackathon 2026 \u2014 Track 02",
-  "generated": "2026-11-14",
+  "release": "Samsung XR Hackathon 2026 \u2014 Track 02 (V4.5)",
+  "generated": "2026-11-16",
   "internal_target": "2026-11-17",
   "deadline": "2026-11-18T23:59:00+05:30",
   "source": {
@@ -24,7 +24,9 @@
     "shipped_bytes_with_detector": 16327937,
     "attention_mask": "present.max(axis=1) > 0.5 over resampled presence",
     "detector_sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1",
-    "vocabulary_size": 100
+    "vocabulary_size": 100,
+    "frame_geometry_default": "256 squash (square) \u2014 unchanged",
+    "frame_geometry_optin": "native via ECHOGESTURE_FRAME_SIZE=native \u2014 NOT the shipped default"
   },
   "artifacts": {
     "apk_v4_3": {
@@ -47,14 +49,14 @@
     },
     "submission_zip": {
       "path": "submission/EchoGesture_Submission.zip",
-      "sha256": "35b902dfc3d9a72c1b0180098430596b5e5a71d3fd99414c2dc22c38ce2217e6",
-      "bytes": 13377754,
+      "sha256": "7691190b8ce045684a6117ab6a2b97b7b79327563147e9699f69cec939646cca",
+      "bytes": 13379265,
       "clean_room_verified": true,
       "clean_room_note": "extracted to empty dir; predict() ran from extracted copy only; 30/30 clips, 23 correct"
     },
     "presentation": {
       "path": "submission/presentation/EchoGesture_Track02.pptx",
-      "sha256": "d156f7943713b4a655d3875ed290f7837307d1505325884eaccd0ec4c09fe066",
+      "sha256": "951d5177c435c02c4a0cce763c82945e6b4a5a7dfe3c5aad05aa435112350e66",
       "slides": 8,
       "naming": "must be renamed to CollegeName_TeamName before submission"
     }
@@ -101,14 +103,22 @@
       "budget_pp": 5
     },
     "robustness_landmark": {
-      "worst_drop_pp": 4.4,
-      "verdict": "PASS",
-      "budget_pp": 5,
-      "note": "different harness from robustness_pixel; never conflate"
+      "worst_drop_pp": 5.36,
+      "verdict": "FAIL",
+      "note": "supersedes the withdrawn 4.40 PASS (wrong aggregator)"
     },
     "phone": {
       "status": "NOT TESTED",
       "reason": "no physical device attached"
+    },
+    "geometry_paired_val346": {
+      "clips": 346,
+      "paired": 345,
+      "squash256_top1": 82.37,
+      "native_top1": 85.84,
+      "net_clips": 12,
+      "mcnemar_exact_p": 0.0501,
+      "note": "opt-in mode only; shipped default unchanged"
     }
   },
   "compliance": {

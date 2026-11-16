@@ -21,7 +21,7 @@ import org.junit.runner.RunWith
  *   ./gradlew :app:connectedDebugAndroidTest \
  *       --tests org.echogesture.finalapp.TfliteEnsembleInferenceTest
  *
- * Requires the four FP16 member binaries in `src/main/assets/` (they are not
+ * Requires all nine FP16 member binaries in `src/main/assets/` (they are not
  * redistributable and therefore absent from a clean checkout). When they are
  * absent the test SKIPS with an explicit message rather than passing vacuously.
  *
@@ -59,7 +59,7 @@ class TfliteEnsembleInferenceTest {
     }
 
     @Test
-    fun fourRealInterpretersMatchThePythonReference() {
+    fun realInterpretersMatchThePythonReference() {
         val assets = context().assets
         val names = assets.list("")?.toList() ?: emptyList()
         val missing = ModelContract.MEMBER_SHA256.keys.filter { it !in names }
@@ -70,7 +70,10 @@ class TfliteEnsembleInferenceTest {
         val l = fixture()
         val members = l[0].split(' ')[0].toInt()
         val classes = l[0].split(' ')[1].toInt()
-        assertEquals(4, members)
+        // The fixture declares its own member count; the app must ship that many.
+        // Hardcoding 4 here is what let a nine-member build ship while these
+        // tests still described the previous generation.
+        assertEquals("fixture must describe the shipped ensemble", 9, members)
         val expectedNames = l[1].trim().split(' ')
         val expectedLogits = Array(members) { floats(l[2 + it], classes) }
         val expectedAvg = floats(l[2 + members], classes)
@@ -78,21 +81,21 @@ class TfliteEnsembleInferenceTest {
         val expectedTop = l[4 + members].trim().split(' ').map { it.toInt() }.toIntArray()
         val expectedLabels = l[5 + members].trim().split(' ')
         val expectedConfidence = l[6 + members].trim().toFloat()
-        val features = floats(l[7 + 4 + 1].removePrefix("features "), 24 * 255)
+        val features = floats(l[7 + members + 1].removePrefix("features "), 24 * 255)
 
-        // 1) The real production loader validates and returns all four members.
+        // 1) The real production loader validates and returns every member.
         val loaded = ModelContract.load(assets)
-        assertEquals(4, loaded.members.size)
+        assertEquals(members, loaded.members.size)
         assertEquals(expectedNames, loaded.identity.memberNames)
         assertEquals(ModelContract.ENSEMBLE_SHA256, loaded.identity.combinedSha256)
 
-        // 2) Four real interpreters, one per member; closed together.
+        // 2) One real interpreter per member; closed together.
         LandmarkClassifier.create(loaded).use { classifier ->
-            assertEquals("interpreter count", 4, classifier.memberCount)
+            assertEquals("interpreter count", members, classifier.memberCount)
 
             // 3) Per-member logits through each member's OWN output tensor.
-            val real = classifier.memberLogits(features, maskOf(features), xyzOf(features))
-            assertEquals(4, real.size)
+            val real = classifier.memberLogits(features, maskOf(), xyz())
+            assertEquals(members, real.size)
             real.forEachIndexed { i, logits ->
                 assertEquals(classes, logits.size)
                 assertArrayEquals(
@@ -105,15 +108,17 @@ class TfliteEnsembleInferenceTest {
                     logits.max() - logits.min() > 1f
                 )
             }
-            // The four members are genuinely different models.
-            for (i in 0 until 4) for (j in i + 1 until 4) {
+            // The members are genuinely different models.
+            for (i in 0 until members) for (j in i + 1 until members) {
                 var d = 0f
                 for (c in 0 until classes) d = maxOf(d, kotlin.math.abs(real[i][c] - real[j][c]))
-                assertTrue("members $i and $j returned identical logits; not four models", d > 0.5f)
+                assertTrue(
+                    "members $i and $j returned identical logits; not distinct models", d > 0.5f
+                )
             }
 
             // 4) The full result the user sees.
-            val result = classifier.predict(features, maskOf(features), xyzOf(features))
+            val result = classifier.predict(features, maskOf(), xyz())
             assertNotNull(result.averagedLogits)
             assertArrayEquals(
                 "averaged logits drift", expectedAvg, result.averagedLogits!!, 1e-3f
@@ -144,12 +149,13 @@ class TfliteEnsembleInferenceTest {
         org.junit.Assume.assumeTrue("members not published; skipped", missing.isEmpty())
 
         val l = fixture()
+        val members = l[0].split(' ')[0].toInt()
         val classes = l[0].split(' ')[1].toInt()
-        val expectedLogits = Array(4) { floats(l[2 + it], classes) }
-        val features = floats(l[7 + 4 + 1].removePrefix("features "), 24 * 255)
+        val expectedLogits = Array(members) { floats(l[2 + it], classes) }
+        val features = floats(l[7 + members + 1].removePrefix("features "), 24 * 255)
         LandmarkClassifier.create(ModelContract.load(assets)).use { classifier ->
-            val real = classifier.memberLogits(features, maskOf(features), xyzOf(features))
-            for (i in 0 until 4) for (j in i + 1 until 4) {
+            val real = classifier.memberLogits(features, maskOf(), xyz())
+            for (i in 0 until members) for (j in i + 1 until members) {
                 var d = 0f
                 for (c in 0 until classes) d = maxOf(d, kotlin.math.abs(real[i][c] - real[j][c]))
                 assertTrue("members $i/$j identical: interpreter/tensor cross-wired", d > 0.5f)
@@ -160,13 +166,32 @@ class TfliteEnsembleInferenceTest {
             }
         }
     }
-    /** An all-ones mask: these tests are about tensor plumbing, not presence. */
-    private fun maskOf(features: FloatArray): FloatArray {
-        require(features.size % 24 == 0)
-        return FloatArray(24) { 1f }
+    /**
+     * The clip's real presence mask, from the fixture.
+     *
+     * This used to return all ones. The reference logits were produced with the
+     * real mask, and the two disagree by more than a tolerance — an all-ones
+     * mask gives -0.888 where the fixture records -1.564 on the same features.
+     * Feeding a mask the reference did not use made the parity test compare
+     * two different operating points.
+     */
+    private fun maskOf(): FloatArray {
+        val line = fixture().first { it.startsWith("mask ") }
+        return floats(line.removePrefix("mask "), 24)
     }
 
-    /** A zero-filled 381-wide tensor of the same clip: plumbing test only. */
-    private fun xyzOf(features: FloatArray): FloatArray = FloatArray(24 * 381)
+    /**
+     * The clip's real 381-wide x,y,z row, from the fixture.
+     *
+     * This used to return all zeros. With a constant input the five z-members
+     * converge to within 0.39-0.45 of each other, below the 0.5 "distinct
+     * members" threshold, so the plumbing test failed for a reason that had
+     * nothing to do with tensor wiring. Feeding real features makes the
+     * distinctness assertion test what it claims to.
+     */
+    private fun xyz(): FloatArray {
+        val line = fixture().first { it.startsWith("features_xyz ") }
+        return floats(line.removePrefix("features_xyz "), 24 * 381)
+    }
 
 }

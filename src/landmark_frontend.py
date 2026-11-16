@@ -75,8 +75,20 @@ def get_landmarker(mode: str = "image"):
     return _LANDMARKER
 
 
-def read_frames(video_path: str | Path, max_frames: int = 32, size: int = FRAME_SIZE):
+def _fit(f, size):
+    """Resize one frame, or pass it through when `size` is None."""
+    if size is None:
+        return f
+    return cv2.resize(f, (size, size))
+
+
+def read_frames(video_path: str | Path, max_frames: int = 32, size: int | None = FRAME_SIZE):
     """Sample `max_frames` frames spread evenly across the whole clip.
+
+    `size` is a square edge, or None for no resize at all. Native resolution is
+    what the Android app uses: CameraScreen requests 640x480 and HandTracker
+    builds the MediaPipe image with no crop or scale. The default stays 256
+    because that is the geometry the shipped checkpoints were extracted at.
 
     Sampling the opening frames only loses the sign whenever a clip starts
     dark or auto-exposing - one ASL Citizen clip yielded 0/32 hand detections
@@ -100,13 +112,13 @@ def read_frames(video_path: str | Path, max_frames: int = 32, size: int = FRAME_
             if not ok:
                 break
             cur += 1
-            out.append(cv2.cvtColor(cv2.resize(f, (size, size)), cv2.COLOR_BGR2RGB))
+            out.append(cv2.cvtColor(_fit(f, size), cv2.COLOR_BGR2RGB))
     else:
         while len(out) < max_frames:
             ok, f = cap.read()
             if not ok:
                 break
-            out.append(cv2.cvtColor(cv2.resize(f, (size, size)), cv2.COLOR_BGR2RGB))
+            out.append(cv2.cvtColor(_fit(f, size), cv2.COLOR_BGR2RGB))
     cap.release()
     return out
 
@@ -161,9 +173,9 @@ def detect_hands(frames, landmarker=None, mode: str = "image"):
     return np.stack(seq), np.array(present, np.float32)
 
 
-def clip_to_landmarks(video_path, max_frames: int = 32):
+def clip_to_landmarks(video_path, max_frames: int = 32, size: int | None = FRAME_SIZE):
     """Whole-video convenience wrapper used by `predict()`."""
-    frames = read_frames(video_path, max_frames=max_frames)
+    frames = read_frames(video_path, max_frames=max_frames, size=size)
     if not frames:
         return np.zeros((0, HANDS, NUM_LANDMARKS, 3), np.float32), \
                np.zeros((0, HANDS), np.float32)

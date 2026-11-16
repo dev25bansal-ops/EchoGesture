@@ -70,15 +70,16 @@ class ResultCardRenderTest {
         )
 
         val l = fixtureLines()
+        val members = l[0].split(' ')[0].toInt()
         val classes = l[0].split(' ')[1].toInt()
-        val features = floats(l[7 + 4 + 1].removePrefix("features "), 24 * 255)
-        val expectedLabels = l[5 + 4].trim().split(' ')
-        val expectedConfidence = l[6 + 4].trim().toFloat()
+        val features = floats(l[7 + members + 1].removePrefix("features "), 24 * 255)
+        val xyz = floats(l.first { it.startsWith("features_xyz ") }
+            .removePrefix("features_xyz "), 24 * 381)
 
         // Real loader, real interpreters, real aggregation.
         val loaded = ModelContract.load(assets)
         val result = LandmarkClassifier.create(loaded).use {
-            it.predict(features, FloatArray(24) { 1f }, FloatArray(24 * 381))
+            it.predict(features, floats(l.first { it.startsWith("mask ") }.removePrefix("mask "), 24), xyz)
         }
 
         // NOTE: the fixture's expected label/confidence were recorded against

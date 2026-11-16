@@ -139,3 +139,52 @@ Dev has not yet run them.
 
 **This is not a submission.** It is everything that can be built and verified
 before one.
+
+---
+
+## V4.5 update — 2026-11-16
+
+### What changed this cycle
+
+| Item | Change |
+| --- | --- |
+| Evaluator | Frame geometry is now an explicit, validated opt-in (`ECHOGESTURE_FRAME_SIZE`). **Default unchanged at 256.** |
+| Evaluator | `latency_ms` no longer includes cold start; MediaPipe graph is built during `_init_model()` |
+| Tests | +9 geometry-contract tests; 433 passed (was 424), same 3 failed / 23 errors / 43 skipped |
+| Docs | `FINAL_EVIDENCE.md` per-frame row corrected from a pass to **RETRACTED / FAIL** |
+| Deck | Robustness row corrected: landmark **5.36 FAIL** (was 4.40 PASS, wrong aggregator) |
+| ZIP | Rebuilt with corrected results.csv; **behaviour identical** — 23/30, 0 errors |
+
+### The geometry finding
+
+Feeding the same nine models native 640×480 instead of a 256 square squash,
+measured through our own frozen `predict()` on the **346-clip validation split**:
+
+| geometry | top-1 |
+| --- | --: |
+| 256 squash (shipped default) | 82.37% |
+| native 640×480 | **85.84%** |
+
+Paired n=345: +12 clips, McNemar exact **p = 0.0501** (22 gained, 10 lost).
+4 of 5 signers improve; 16 classes better, 76 unchanged, 8 worse by one clip.
+
+**Not adopted as the default.** p=0.05 is exactly at the threshold, the Android
+app already runs at native, and re-verifying every published number days before
+the deadline is a worse trade than it looks. Full reasoning in
+`docs/release/V4_5_RELEASE_DECISION.md`.
+
+### Corrections that make the submission more honest, not less impressive
+
+- Landmark robustness is **FAIL 5.36**, not the previously reported 4.40 PASS.
+  The old number used per-member softmax averaging; the shipped code averages
+  raw logits. The criterion genuinely fails.
+- The 15.7 ms/frame figure is **retracted**. Re-measured per-frame median is
+  ~142–151 ms, already above the 50 ms budget before any Android work.
+- Dev's pixel robustness PASS at 4.48 is at **512 letterbox**, which the app does
+  not use. Native-camera robustness is **NOT MEASURED**.
+
+### Unchanged
+
+APK `150ffeeb…` — byte-identical, no Android source touched, 110/110 JVM tests.
+Registration, team string, demo video, rights and the Google Form are still the
+five human blockers.

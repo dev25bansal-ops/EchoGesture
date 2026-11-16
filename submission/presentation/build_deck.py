@@ -242,17 +242,20 @@ def results(prs):
         text(s, x + 0.22, 3.05, 2.3, 0.3, lbl, size=13, bold=True)
         text(s, x + 0.22, 3.38, 2.35, 0.5, sub, size=10.5, color=GREY, line=1.15)
     text(s, 0.95, 4.35, 5.6, 0.3, "READ THIS CORRECTLY", size=12, color=GREY, bold=True)
-    text(s, 0.95, 4.68, 5.6, 2.0, [
+    text(s, 0.95, 4.68, 5.6, 2.6, [
         ("77.02% is a corpus figure from the model owner's re-run over the shipped files. We do not claim it as phone accuracy.",
          {"size": 13.5, "space": 7}),
         ("A separate A/B/C study covered 72 unique clips across 184 evaluations including synthetic idle. That is not 184 independent signs.",
-         {"size": 13.5}),
+         {"size": 13.5, "space": 7}),
+        ("Measured this cycle: feeding the same nine models native 640×480 frames instead of a 256 squash scores 85.84% on 346 validation clips (n=345 paired, p=0.05). Opt-in, not the shipped default — the packaged evaluator stays at 256.",
+         {"size": 12, "color": BLUE}),
     ], color=GREY)
     text(s, 6.95, 4.35, 5.4, 0.3, "WHERE IT STILL FALLS SHORT", size=12, color=GREY, bold=True)
     for i, (t, v, col) in enumerate([
-        ("Pixel-level robustness", "FAIL — 10.0 pp worst drop", RGBColor(0xB4, 0x2A, 0x2A)),
+        ("Landmark robustness", "FAIL — 5.36 pp worst drop", RGBColor(0xB4, 0x2A, 0x2A)),
         ("Latency ≤50 ms", "FAIL — MediaPipe dominates", RGBColor(0xB4, 0x2A, 0x2A)),
         ("INT8 quantisation", "FP16 shipped — clarification open", RGBColor(0xB4, 0x7A, 0x0A)),
+        ("Native-camera robustness", "NOT MEASURED", RGBColor(0x5A, 0x6B, 0x82)),
     ]):
         text(s, 6.95, 4.70 + i * 0.50, 5.4, 0.4, "·  " + t, size=13.5, bold=True)
         text(s, 7.22, 5.00 + i * 0.50, 5.1, 0.35, v, size=12, color=col)

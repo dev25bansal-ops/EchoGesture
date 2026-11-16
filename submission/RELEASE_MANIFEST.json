@@ -50,10 +50,21 @@
     },
     "submission_zip": {
       "path": "submission/EchoGesture_Submission.zip",
-      "sha256": "7691190b8ce045684a6117ab6a2b97b7b79327563147e9699f69cec939646cca",
-      "bytes": 13379265,
-      "clean_room_verified": true,
-      "clean_room_note": "extracted to empty dir; predict() ran from extracted copy only; 30/30 clips, 23 correct"
+      "sha256": "ec7b6f68852b0dd2f971ba7685f06e8f166be24d20e9eae5488243f7c9b761c1",
+      "bytes": 13411549,
+      "layout": "EchoGesture/{src,models,results}",
+      "members": 9,
+      "detector": true,
+      "rebuilt_2026_11_17": true,
+      "rebuild_reason": "The tracked ZIP was never present on this machine (gitignored, previously only in a temp dir). Rebuilt from src/ plus the nine member binaries and detector verified against their pinned hashes.",
+      "verified": {
+        "member_hashes_match_pins": true,
+        "ordered_ensemble_sha256": "995cc8d0b6f6ac25abb9f7ddca01c3ce71edf8bc2d34e34f4813a2b99dd3b4bb",
+        "detector_sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1",
+        "clean_extraction_predict": "WHATFOR1 on clip 0283886564670357-WHAT FOR, confidence 0.9749, top5 [WHATFOR1, OFFEND, DEAF1, KNIGHT1, PENNY]",
+        "participant_ids_present": false
+      },
+      "note": "results/ contains aggregate summaries only (results.csv, eval summaries, quantisation). Per-clip predictions.jsonl is deliberately excluded because clip_id embeds ASL Citizen participant identifiers."
     },
     "presentation": {
       "path": "submission/presentation/EchoGesture_Track02.pptx",
@@ -143,15 +154,16 @@
     "python_3_11": "PASS",
     "predict_contract": "PASS \u2014 five keys, verified from clean extraction",
     "zip_layout": "PASS \u2014 src/, models/, results/ per PDF p12",
-    "quantization_int8": "FAIL \u2014 FP16 shipped; organizer clarification unsent",
-    "latency_50ms": "FAIL \u2014 314.9 ms p95 warm on laptop",
+    "quantization_int8": "FAIL \u2014 FP16 shipped; organizer clarification unsent. Do not claim INT8 compliance.",
+    "latency_50ms": "NOT CLAIMED \u2014 per-frame detector figures in Dev's branch are unreconciled (15.34 ms vs 135 ms in the same commit); full predict() is 4,650 ms on desktop; on-device unmeasured. The official timing boundary is also unverified against the rubric.",
     "model_size_20mb": "PASS \u2014 16.33 MB including detector",
-    "top1_70pct": "PASS \u2014 77.02% corpus",
-    "demo_video": "BLOCKED \u2014 not recorded",
-    "presentation": "DONE \u2014 content verified, naming pending",
+    "top1_70pct": "PASS \u2014 85.45% corpus at native 640x480 (Android geometry); 82.47% at 256 squash (the Python entry point). Not phone accuracy.",
+    "demo_video": "BLOCKED \u2014 no physical phone available to record a real prediction",
+    "presentation": "DONE \u2014 8 slides, figures corrected 2026-11-17, all rasterised and inspected; naming pending",
     "team_naming": "NEEDS HUMAN",
     "registration": "UNVERIFIED \u2014 no confirmation record in repo",
-    "rights": "BLOCKED \u2014 weights have no confirmed redistribution permission"
+    "rights": "BLOCKED \u2014 weights have no confirmed redistribution permission",
+    "robustness_hand_dropout": "FAIL \u2014 5.76 pp unconditional on the full split (harness corruption). At the app's margin>=0.15 gate it is 1.24 pp on 86%/80% coverage; official applicability of abstention is UNKNOWN."
   },
   "pending_human": [
     "Confirm registration and the exact CollegeName_TeamName string",
@@ -160,5 +172,6 @@
     "Decide model redistribution rights",
     "Authorize and send the organizer clarification email",
     "Submit the Google Form and save the receipt"
-  ]
+  ],
+  "audit_2026_11_17_claims": "Demo script reversed the 0.8 confidence statistic and scripted an abstention the app does not implement; both corrected. See submission/DEMO_SCRIPT.md and docs/release/*_RECONCILIATION.md."
 }

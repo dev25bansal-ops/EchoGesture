@@ -1,11 +1,27 @@
 # Demo video script — 3 minutes
 
-Recorded with the **shipped nine-model APK** on a physical phone. If a phone is
-not available, see §7 before recording anything.
+Recorded with the **shipped nine-model APK** on a physical phone. If no phone is
+available, read §7 before recording anything.
 
 The rule this script follows: **every prediction on screen is a live inference
-from a real sign.** If an attempt fails, that take is either retried honestly or
-cut. Nothing is ever overlaid to look like a success.
+from a real sign.** If an attempt fails, the take is retried honestly or cut.
+Nothing is ever overlaid to look like a success.
+
+---
+
+## 0. What this script must not say
+
+Three claims were wrong in earlier drafts. They are corrected here, and the
+corrections are not negotiable:
+
+| Wrong | Right |
+| --- | --- |
+| "Below 0.8 confidence the model is right 99.7%" | "**Above** 0.8 confidence, the model was correct on 99.7% of 594 evaluated clips" — and this is a **laptop/corpus** figure, not phone accuracy |
+| "The app asks you to sign again when unsure" | The app **always shows its best guess**. When the margin is below 0.15 it labels the card *"Uncertain — this is the model's best guess, not a confirmed reading."* It never withholds a prediction. |
+| 77.02% top-1 / 92.79% top-5 / 1,249 clips | **85.45%** top-1 / **96.64%** top-5 over **1,251** clips, 11 unseen signers |
+
+**Do not script UI behaviour the app does not implement.** The uncertain state is
+a *label on a shown result*, not an abstention.
 
 ---
 
@@ -13,7 +29,7 @@ cut. Nothing is ever overlaid to look like a success.
 
 | Item | Check |
 | --- | --- |
-| APK | `echogesture-v4.3-masked.apk` (or the P1 build, §6) installed |
+| APK | `EchoGesture-Test-Ready.apk`, SHA-256 `6653160e…d37c` |
 | Model identity | Camera footer reads **`9-model ensemble · FP16 TFLite · SHA-256 995cc8d0…`** |
 | Network | Airplane mode **ON** for the whole recording |
 | Second camera | A separate phone or camera filming the screen *and* the signer |
@@ -34,8 +50,8 @@ each is in `models/landmark_labels.json` before using it.
 **Overlay:** `EchoGesture — offline recognition of isolated ASL signs`
 
 > "Around 70 million deaf people use sign language as a first language. Most of
-> the people standing next to them do not sign. EchoGesture turns a phone
-> camera into an offline recogniser — no cloud, no upload, no network."
+> the people standing next to them do not sign. EchoGesture turns a phone camera
+> into an offline recogniser — no cloud, no upload, no network."
 
 ### 0:15 – 0:35 · The app
 
@@ -66,9 +82,22 @@ literal. Do not clean this up in post.
 > "Start, sign, finish. It reads the interval I actually recorded — not a single
 > photo, not a rolling window over whatever the camera happened to see."
 
-**If a sign is wrong:** keep it in, say "that one missed", and sign it again.
-An honest miss with a visible retry is stronger than four suspiciously perfect
+**If a sign is wrong:** keep it in, say "that one missed", and sign it again. An
+honest miss with a visible retry is stronger than four suspiciously perfect
 takes, and judges notice edited cuts.
+
+### 1:07 – 1:25 · The uncertain label — only if it happens naturally
+
+**Do not stage this.** If a real attempt produces a low-margin result, the card
+carries the *"Uncertain — this is the model's best guess, not a confirmed
+reading"* label. Point at it and say:
+
+> "Notice it still gave me an answer, but it told me not to trust it. That label
+> appears when the top two candidates are close together. The app does not hide
+> a guess — it flags it."
+
+If no attempt triggers it, **skip this beat entirely.** Do not manufacture it by
+signing badly on purpose and calling it a system behaviour.
 
 ### 1:25 – 1:50 · How it works
 
@@ -96,114 +125,90 @@ mode**.
 
 **Shot:** the evaluation slide.
 
-> "On ASL Citizen, signer-disjoint: 77.02% top-1 over 1,249 test clips from
-> eleven unseen signers, 92.79% top-5. Nine members are 8.5 megabytes, under
+> "On ASL Citizen, signer-disjoint: 85.45% top-1 over 1,251 test clips from
+> eleven unseen signers, 96.64% top-5. Nine members are 8.5 megabytes, well under
 > the twenty-megabyte budget. Android and Python agree to one part in a million
 > on the same features."
 
-Do **not** say "77% accurate on a phone". See §5.
+Then the caveat, in the same breath — do not let the number stand alone:
+
+> "That is a desktop measurement on a corpus I have seen during development. It
+> is not phone accuracy. No phone accuracy figure exists, and I am not going to
+> invent one."
+
+Do **not** say "85% accurate on a phone". See §5.
 
 ### 2:40 – 3:00 · Limits and close
 
 **Shot:** signer, direct to camera.
 
 > "What this is not: not continuous translation, not a 2,000-word vocabulary —
-> one hundred signs, one at a time. Robustness to heavy occlusion still fails
-> and INT8 is future work. But it runs offline, on a phone, right now."
+> one hundred signs, one at a time. If a hand leaves the frame for a quarter of a
+> clip, accuracy drops about 5.8 points — that is the one criterion I fail.
+> On-device latency is unmeasured. But it runs offline, on a phone, right now."
 
 **End card:** `EchoGesture · Track 02 · <CollegeName_TeamName>`
 
 ---
 
-## 3. Technical settings
+## 3. The numbers you may say, and their exact labels
 
-| | |
-| --- | --- |
-| Resolution | 1080p, 30 fps minimum |
-| Audio | Record clean narration separately; sync in edit |
-| Screen capture | `adb shell screenrecord --bit-rate 12000000 /sdcard/demo.mp4` |
-| Wide shot | Same frame rate as screen capture, for split-screen |
-| Export | H.264 MP4, ≤3:00 hard, target 2:45 |
-| Upload | YouTube unlisted or Google Drive link, viewable without sign-in |
+Say the label with the number or do not say the number.
 
-```bash
-adb shell screenrecord --size 1080x2400 --bit-rate 12000000 /sdcard/demo.mp4
-# Ctrl-C on the device, then
-adb pull /sdcard/demo.mp4 demo_raw.mp4
-```
-
----
-
-## 4. Sign selection
-
-Use glosses whose predictions can be read at a glance on a phone screen. Before
-recording, verify all four are in the shipped vocabulary:
-
-```bash
-python3 -c "
-import json; v=json.load(open('models/landmark_labels.json'))
-print([g for g in v if g in ['HOW','DOG1','ANYONE','SQUEEZE','DOWNSIZE1']])
-"
-```
-
-Record one plain-background pass and one cluttered-background pass.
-
----
-
-## 5. Claims you must not make on camera
-
-| Do not say | Because |
-| --- | --- |
-| "77% accurate on a phone" | 77.02% is a corpus result on a laptop. No phone accuracy measurement exists. |
-| "Exactly 184 signs tested" | 184 evaluations on 72 unique clips. |
-| "Real-time translation" | It recognises one isolated sign per recording. |
-| "Robust to occlusion" | Pixel-level robustness fails at 10.0 pp. |
-| "INT8 quantised" | The shipped model is FP16. |
-| "Works in any language" | It is ASL, 100 signs, fixed vocabulary. |
-
-Safe: "works offline", "no network permission", "on-device", "seven of nine
-members", the corpus numbers with their population named.
-
----
-
-## 6. Which APK to film
-
-| APK | Footer | Use |
+| Number | What it is | What it is NOT |
 | --- | --- | --- |
-| `echogesture-v4.3-masked.apk` | `Four-model ensemble` | **Do not film** — misstates the model |
-| P1 rebuild (`150ffeeb…`) | `9-model ensemble` | **Film this one** |
+| 85.45% top-1 | nine-member FP16 ensemble, 1,251 clips, 11 unseen signers, native 640×480 landmark cache, **desktop** | not phone accuracy; not the 256-square geometry |
+| 96.64% top-5 | same population | — |
+| 89.31% val top-1 | separate 5-signer validation split | not the test split |
+| 81.53% | best single member | the ensemble beats it by 3.92 points |
+| 8.51 MB | nine FP16 members | excludes the 7.82 MB detector |
+| ~15.3 ms p50 / 23.0 ms p95 | MediaPipe **detector**, per frame, desktop x86, unloaded machine | not the classifier; not the full pipeline; not Android |
+| ~4.2 ms | nine-member classifier, desktop | not capture-to-caption |
+| ~4.65 s p50 | full Python `predict()` clip-to-result, **desktop** | not Android |
+| +5.76 pp | hand-dropout loss, unconditional, full 1,251-clip split — **FAIL** | do not present the gated 1.24 pp as the robustness result |
+| 1.24 pp | hand-dropout loss **at the app's margin gate, on accepted clips only**, 86% clean / 80% corrupted coverage | NOT proof of unconditional robustness |
+| 99.7% above 0.8 confidence | corpus, 594 of 1,251 clips | not phone accuracy, not a guarantee |
 
-If only the V4.3 APK is available, film it but state the count correctly in
-narration; the running model *is* nine members.
+## 4. What must never appear on screen
 
----
+- A prediction the model did not produce.
+- A success caption over a failed attempt.
+- "INT8" — the shipped build is FP16, and INT8 compliance is **not** claimed.
+- Any on-device latency, power or thermal number. None were measured.
+- "Uncertain — sign again" as a system behaviour. It does not exist.
 
-## 7. If no physical phone is available
+## 5. The 77% → 85% change, if a judge asks
 
-**Do not** present emulator footage as phone footage, and do not label the demo
-"live on device" while it is an emulator with a scripted input file.
+Say this plainly:
 
-Options, in order of preference:
+> "My earlier number was 77.02% because the landmark cache I evaluated on had a
+> wrong presence mask on 29% of test clips. Re-extracting at the native 640×480
+> geometry the app actually uses gives 85.45% on the same models with the same
+> weights. The weights never changed — the evaluation was wrong."
 
-1. Borrow an Android phone (API 30+, arm64) and record the real thing.
-2. Record on an emulator and say so plainly, on screen and in narration:
-   *"This is the app running in an Android emulator; no physical-device
-   measurement exists yet."* The recognition is genuine inference either way.
-3. If neither is possible, the video is **BLOCKED**. Say so in the submission
-   notes rather than implying a device test that did not happen.
+Do not present this as a model improvement. It is a measurement correction that
+happened to be in our favour.
 
----
+## 6. Recording with the current APK
 
-## 8. Final checklist before upload
+The APK to film is `submission/TEST_APP_NOW/EchoGesture-Test-Ready.apk`
+(SHA-256 `6653160e…d37c`). Confirm the footer before you roll.
 
-- [ ] Duration ≤ 3:00
-- [ ] Airplane mode visible
-- [ ] All displayed predictions are live inferences from real signs
-- [ ] No overlaid result that did not come from the app
-- [ ] At least one genuine attempt shown unedited end-to-end
-- [ ] Any miss kept, or honestly retried on camera
-- [ ] 77.02% attributed to the corpus, not the phone
-- [ ] Model footer legible in at least one shot
-- [ ] `CollegeName_TeamName` on the end card
-- [ ] Link viewable without sign-in
-- [ ] Link pasted into `submission/RELEASE_MANIFEST.json`
+If the phone is not available, see §7.
+
+## 7. If no phone is available
+
+Do **not** fake a phone shot. Two honest options:
+
+1. **Record the real Android app on an emulator** with a pre-recorded video
+   played into its virtual camera, and label the frame
+   `EMULATOR — synthetic camera input`. Only do this if the clip actually runs
+   through the shipped nine-model path and produces a real prediction. The
+   emulator has no hand detector path on x86_64 for MediaPipe in some builds —
+   if it cannot produce a prediction, this option is not available.
+2. **Record the Python evaluator** producing a real prediction on an authorised
+   clip, labelled `DESKTOP EVALUATOR — not the Android app`, and state that the
+   phone demonstration is pending.
+
+Say which one you used. Never imply the Android app was demonstrated if it was
+not.

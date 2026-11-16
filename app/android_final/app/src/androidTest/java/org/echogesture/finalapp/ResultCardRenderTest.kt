@@ -12,7 +12,7 @@ import org.junit.runner.RunWith
 import java.io.File
 
 /**
- * Renders the PRODUCTION result card from the real four-model ensemble.
+ * Renders the PRODUCTION result card from the real nine-member ensemble.
  *
  * The emulator's synthetic camera never contains a hand, so the capture flow
  * correctly stops at NO_HANDS and RESULT cannot be reached by tapping through
@@ -20,7 +20,7 @@ import java.io.File
  * the real [LandmarkClassifier] over the pinned parity feature vector — the
  * same 24x255 input the Python reference produced for the real clip — and
  * asserts that what the card shows matches what the ensemble actually
- * predicted. Every number in the screenshot therefore came out of the four
+ * predicted. Every number in the screenshot therefore came out of the nine
  * shipped FP16 interpreters on this device. It is NOT a live-camera
  * prediction and must never be presented as one.
  *
@@ -223,6 +223,97 @@ class ResultCardRenderTest {
             while (!go.exists() && System.currentTimeMillis() < shotDeadline) Thread.sleep(250)
             ready.delete()
             android.util.Log.i("ResultCardRenderTest", "hold released")
+        } finally {
+            instrumentation.runOnMainSync { activity.finish() }
+        }
+    }
+
+    /**
+     * The uncertain branch of the result card.
+     *
+     * `renderResult` accepts on `margin >= 0.15 && percent >= 20`. The render
+     * test above drives a real clip whose margin is far above the cut, so it
+     * always takes the accepted branch — meaning the uncertain branch, which is
+     * the one every low-margin capture in the field will hit, had no coverage
+     * at all.
+     *
+     * This drives the same production method with a low-margin result and
+     * asserts the behaviour that matters: the card still SHOWS the prediction
+     * and simply labels it uncertain. It does not withhold the answer, and it
+     * does not ask the user to sign again — an earlier demo script claimed it
+     * did, which is why this is now pinned by a test.
+     */
+    @Test
+    fun lowMarginResultIsShownButLabelledUncertain() {
+        val activity = ActivityLaunch.fresh()
+        try {
+            val cameraField = MainActivity::class.java.getDeclaredField("cameraScreen")
+                .apply { isAccessible = true }
+            val screen = cameraField.get(activity) as CameraScreen
+
+            val deadline = System.currentTimeMillis() + 40_000
+            var stable = 0
+            while (stable < 6) {
+                if (System.currentTimeMillis() > deadline) {
+                    throw AssertionError("MainActivity never settled into a waiting state")
+                }
+                stable = if (settled(screen)) stable + 1 else 0
+                Thread.sleep(250)
+            }
+            instrumentation.waitForIdleSync()
+
+            val render = CameraScreen::class.java.getDeclaredMethod(
+                "renderResult",
+                LandmarkClassifier.Result::class.java,
+                java.lang.Long.TYPE,
+                HandTracker.Capture::class.java
+            ).apply { isAccessible = true }
+
+            // Margin 0.02, well under the 0.15 cut; score 0.61 clears the 0.20
+            // floor, so this isolates the margin gate rather than the guard.
+            val uncertain = LandmarkClassifier.Result(
+                prediction = "WHATFOR1",
+                top5 = listOf("WHATFOR1", "OFFEND", "DEAF1", "KNIGHT1", "PENNY"),
+                confidence = 0.61f,
+                margin = 0.02f,
+                inferenceMillis = 7L
+            )
+
+            val now = android.os.SystemClock.elapsedRealtime()
+            val frames = (0 until 32).map { i ->
+                HandTracker.Frame(emptyList(), now - 1000L + i * 33L)
+            }
+            val capture = HandTracker.Capture(frames, 1023L, 30f, 32)
+
+            instrumentation.runOnMainSync {
+                render.invoke(screen, uncertain, uncertain.inferenceMillis, capture)
+                val card = activity.findViewById<View>(R.id.resultCard)
+                card.animate().cancel()
+                card.alpha = 1f
+                card.translationY = 0f
+            }
+            instrumentation.waitForIdleSync()
+
+            val caption = activity.findViewById<TextView>(R.id.captionText)
+            val reliability = activity.findViewById<TextView>(R.id.confidenceLabel)
+
+            // The prediction is still shown. That is the whole point: the app
+            // flags a guess, it does not hide one.
+            assertEquals(
+                "an uncertain result must still show its prediction",
+                "WHATFOR1",
+                caption.text.toString()
+            )
+            assertEquals(
+                "a sub-threshold margin must take the uncertain branch",
+                activity.getString(R.string.result_confidence_uncertain),
+                reliability.text.toString()
+            )
+            // And the uncertain label must not read as a request to re-sign.
+            assertTrue(
+                "uncertain label must not claim the app withholds the answer, was '${reliability.text}'",
+                !reliability.text.toString().lowercase().contains("sign again")
+            )
         } finally {
             instrumentation.runOnMainSync { activity.finish() }
         }

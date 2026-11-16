@@ -58,8 +58,9 @@ assumed.
 
 **PASS.**
 
-Every figure carries its population. 77.02% is labelled a corpus result.
-Latency is labelled a laptop measurement and reported as **FAIL** against the
+Every figure carries its population. 85.45% is labelled a corpus result at
+native geometry, and 82.47% is given separately for the 256-squash entry point.
+Latency is labelled a laptop measurement and is **not** claimed to meet the
 50 ms criterion. Quantisation is stated as **FP16**, not INT8. Robustness is
 reported as two separate harnesses with different verdicts, never merged.
 

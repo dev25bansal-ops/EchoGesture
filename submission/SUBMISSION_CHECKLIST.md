@@ -68,10 +68,10 @@ first thing to check, before any further engineering.
 
 | Item | Status | Evidence |
 | --- | --- | --- |
-| No false accuracy claim | **DONE** | 77.02% labelled corpus; phone marked NOT TESTED |
-| No false latency claim | **DONE** | 314.9 ms reported as FAIL |
+| No false accuracy claim | **DONE** | 85.45% labelled corpus/native; 82.47% for the 256-squash entry point; phone marked NOT TESTED |
+| No false latency claim | **DONE** | No per-frame PASS claimed — 15.34 ms vs 135 ms unreconciled, so only the 4.65 s end-to-end and 4.2 ms classifier are quoted |
 | No false quantisation claim | **DONE** | FP16 stated everywhere |
-| No false robustness claim | **DONE** | Both harnesses reported separately |
+| No false robustness claim | **DONE** | Both harnesses reported separately; 5.76 unconditional FAIL, 1.24 gated WITH coverage |
 | Presentation matches shipped model | **DONE** | Rebuilt; 8 slides; stale 4-model deck replaced |
 | Deck claims verified against source | **DONE** | 8 numeric claims checked programmatically |
 

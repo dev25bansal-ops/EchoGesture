@@ -13,7 +13,7 @@ Everything else is information.
 | --- | --- |
 | Source branch | `release/samsung-track2-geometry-review` |
 | Base | `hackathon/abhijeet-integration` @ `eef80e0` |
-| Your model commit consumed | `hackathon/dev-model` @ `11bbddf` |
+| Your model commit consumed | `hackathon/dev-model` @ `11bbddf` — **15 commits behind your current tip `73bff0d`**, see §3 |
 | Ensemble SHA-256 | `995cc8d0…b4bb` (nine members, ordered) |
 | Detector SHA-256 | `fbc2a300…cde1` |
 | Preprocessing | **256 squash** is the shipped default. Native 640×480 is opt-in via `ECHOGESTURE_FRAME_SIZE=native`. |
@@ -77,6 +77,23 @@ on features and presence, tensor-for-tensor, not just by shape. That test is
 Your reported figures and mine agree in **direction** in every case where they
 overlap. That is all I am claiming. `docs/release/V4_5_CANONICAL_SUMMARY.md` holds
 the full seven-row table with each population labelled.
+
+### Metadata discrepancy you should know about
+
+Your branch tip has `models/landmark_model_meta.json` at
+`ensemble_test_top1: 0.8545`. The APK and ZIP I shipped carry the older
+`0.7702` in `assets/landmark_model_meta.json`.
+
+The field is **never read by the app** — `ModelContract.kt` uses that file for
+member order and widths only — so nothing displays the stale value. But someone
+unzipping the APK and comparing it against your repository would see the
+mismatch. I left it alone rather than adopt a number I had not reproduced and
+rebuild the APK two days out. It is recorded in §"Known metadata discrepancy" of
+`V4_5_CANONICAL_SUMMARY.md`.
+
+**If you want it aligned**, the fix is: rebuild the APK from your sidecar,
+re-run the 30-clip clean-extraction gate, update the three claim sites together.
+Tell me and I will do it — that is a few hours, not a one-line edit.
 
 ### And one correction to something you may have seen
 

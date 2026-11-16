@@ -126,3 +126,37 @@ all trace to three gitignored artifacts (see `V4_5_TEST_TRIAGE.md`).
 
 Registration unverified · exact `CollegeName_TeamName` · demo video · model
 redistribution rights · Google Form approval.
+
+---
+
+## Known metadata discrepancy — recorded, not resolved
+
+`assets/landmark_model_meta.json` ships inside the APK and the ZIP with
+`ensemble_test_top1: 0.7702`. Dev's branch tip
+(`hackathon/dev-model` @ `73bff0d`) has changed that same field to `0.8545`,
+measured on the rebuilt native-geometry cache.
+
+| | value | provenance |
+| --- | --: | --- |
+| Our shipped artifacts | **0.7702** | cached-landmark run; presence mask wrong on 29% of test clips |
+| Dev's current branch | **0.8545** | native-cache rebuild, re-verified at `fd4a13f` |
+
+**The field is never read or displayed by the app** — it is metadata only;
+`ModelContract.kt` uses the file for member order and widths, not for accuracy.
+So this is not a live display defect.
+
+It is a *claim* discrepancy: an organizer who unzips the APK would read 77.02%
+and could compare it against Dev's repository and find 85.45%. Both numbers are
+internally consistent — ours is the cached-landmark population, Dev's is the
+native-cache population — but a reader without this table cannot tell.
+
+**Not fixed here, deliberately.** Adopting 85.45% would mean shipping a number
+whose run I have not reproduced, and rebuilding the APK two days before the
+deadline to change a field nobody reads. The figure quoted in
+`RESULTS.md`, the deck and `RELEASE_MANIFEST.json` is 77.02%, which matches the
+shipped artifact and is labelled with its population everywhere it appears.
+
+**Action if this matters to the owner:** rebuild the APK from Dev's
+`models/landmark_model_meta.json`, re-run the 30-clip clean-extraction gate, and
+update the three claim sites together. That is a few hours plus a re-verification,
+not a one-line edit.

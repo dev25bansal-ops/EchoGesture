@@ -94,6 +94,15 @@ def main():
     tf_acc = float((tf_pred == y[:200]).mean())
     print(f"val top-1 (first 200): torch {pt_acc*100:.1f}%  tf {tf_acc*100:.1f}%")
 
+    # Full-set float reference for the INT8 gate below. The subset figure above
+    # is a cheap parity sanity check; the INT8 comparison must be scored on the
+    # SAME clip population, or "drop" measures a population difference rather
+    # than a quantization cost.
+    with torch.no_grad():
+        pt_full_pred = pt(torch.from_numpy(X), None).numpy().argmax(1)
+    float_acc = float((pt_full_pred == y).mean())
+    print(f"val top-1 (full {len(y)}): float {float_acc*100:.2f}%")
+
     # ---------------------------------------------------- 2. INT8 + TFLite
     def rep():
         for row in X[:300]:
@@ -128,14 +137,21 @@ def main():
         preds.append(int(interp.get_tensor(o_det["index"])[0].argmax()))
     preds = np.array(preds)
     int8_acc = float((preds == y).mean())
-    print(f"INT8 TFLite val top-1: {int8_acc*100:.2f}%  (torch {pt_acc*100:.1f}% on subset)")
-    drop = 0.0
+    print(f"INT8 TFLite val top-1: {int8_acc*100:.2f}%  (float {float_acc*100:.2f}% on the same {len(y)} clips)")
+    drop = float_acc - int8_acc
     if drop > 0.15:
-        sys.exit(f"REFUSING: INT8 dropped {drop*100:.1f}pp vs float. Not shipping.")
+        OUT.unlink()
+        sys.exit(
+            f"REFUSING: INT8 dropped {drop*100:.1f}pp vs float "
+            f"({float_acc*100:.1f}% -> {int8_acc*100:.1f}%). Not shipping."
+        )
 
     json.dump({"frames": frames, "feature_dim": FEATURE_DIM,
                "classes": len(vocab), "backbone": str(ckpt["backbone"]), "dim": dim,
-               "val_top1_int8": round(int8_acc, 4), "size_kb": round(size_kb, 1)},
+               "val_top1_int8": round(int8_acc, 4),
+               "val_top1_float": round(float_acc, 4),
+               "int8_drop_pp": round(drop * 100, 2),
+               "size_kb": round(size_kb, 1)},
               open(ROOT / "models" / "landmark_model_meta.json", "w"), indent=2)
     json.dump({g: n for n, g in enumerate(vocab)},
               open(ROOT / "models" / "landmark_labels.json", "w"), indent=0)

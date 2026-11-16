@@ -1,0 +1,47 @@
+{
+  "size": "256",
+  "frames_per_clip": 32,
+  "clips": 5,
+  "results": [
+    {
+      "workers": 1,
+      "n_frames": 160,
+      "per_frame_p50": 13.57,
+      "per_frame_p95": 20.0,
+      "per_frame_min": 6.94,
+      "per_frame_max": 20.97,
+      "frames_per_second": 81.32,
+      "clip_equivalent_ms": 393.52
+    },
+    {
+      "workers": 2,
+      "n_frames": 160,
+      "per_frame_p50": 26.36,
+      "per_frame_p95": 40.25,
+      "per_frame_min": 13.61,
+      "per_frame_max": 42.87,
+      "frames_per_second": 80.02,
+      "clip_equivalent_ms": 399.89
+    },
+    {
+      "workers": 4,
+      "n_frames": 160,
+      "per_frame_p50": 50.27,
+      "per_frame_p95": 81.29,
+      "per_frame_min": 22.24,
+      "per_frame_max": 97.18,
+      "frames_per_second": 79.76,
+      "clip_equivalent_ms": 401.19
+    },
+    {
+      "workers": 8,
+      "n_frames": 160,
+      "per_frame_p50": 100.2,
+      "per_frame_p95": 156.35,
+      "per_frame_min": 50.29,
+      "per_frame_max": 173.13,
+      "frames_per_second": 77.38,
+      "clip_equivalent_ms": 413.53
+    }
+  ]
+}

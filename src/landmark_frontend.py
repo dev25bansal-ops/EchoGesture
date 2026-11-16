@@ -14,13 +14,17 @@ geometry that defines the sign - the approach every Kaggle GISLR top-5 entry
 converged on independently.
 
 Latency budget (measured on this machine, single process, no contention):
-MediaPipe HandLandmarker measures ~110-160 ms/frame p50 at 256x256 with 2 hands
-on this machine (16 Nov, scripts/ml/latency_per_frame.py; an earlier ~23 ms
-figure had no retained artifact behind it), and the INT8
-classifier is ~3 ms per clip. A 24-frame clip is therefore ~0.55 s wall
-clock, but the number the jury matrix scores is per-frame inference time,
-which is ~26 ms - inside the 50 ms budget. Reported separately in results.csv
-so the two are never conflated.
+MediaPipe HandLandmarker measures 133 ms/frame p50 (min 69, p95 199) at 256x256
+with 2 hands on this machine (16 Nov, n=192 frames, scripts/ml/latency_per_frame.py).
+VIDEO mode with tracker reuse measured 142 ms p50 — reuse does not rescue this
+build. An earlier ~23 ms figure had no retained artifact behind it and was
+retracted. The classifier is ~3-4 ms per clip for the nine-member ensemble.
+
+So the per-frame latency criterion FAILS on this desktop: the floor alone (~69 ms)
+is above the 50 ms budget. This is a desktop x86 Python measurement; the Android
+app uses a different detector path (detectForVideo at native 640x480) and has
+never been measured. Reported separately in results.csv so the two are never
+conflated.
 """
 
 from __future__ import annotations
@@ -124,8 +128,6 @@ def read_frames(video_path: str | Path, max_frames: int = 32, size: int | None =
     `size=None` keeps frames at their native resolution, which is the path the
     Android app takes. An int resizes to that square edge (`letterbox` picks
     aspect-preserving pad versus squash).
-    """
-    """Sample `max_frames` frames spread evenly across the whole clip.
 
     Sampling the opening frames only loses the sign whenever a clip starts
     dark or auto-exposing - one ASL Citizen clip yielded 0/32 hand detections

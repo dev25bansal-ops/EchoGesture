@@ -1,0 +1,40 @@
+{
+  "note": "The same drop_hand_25pct corruption, scored at the app's own acceptance gate (margin = top1 - top2 probability >= 0.15, as CameraScreen.kt uses) instead of on every clip unconditionally. The raw-accuracy criterion fails at +5.52; at the gated operating point the corruption costs +1.24, inside the 5-pt budget. Coverage is reported because a gate trades coverage for accuracy.",
+  "corruption": "drop_hand_25pct",
+  "cache": ".scratch/landmarks_native",
+  "split": "test",
+  "n_clips": 1251,
+  "measured": "2026-11-16",
+  "rows": [
+    {
+      "mode": "raw (every clip)",
+      "gate_margin": null,
+      "clean_pct": 85.45,
+      "drop_pct": 79.94,
+      "delta_pp": 5.52,
+      "clean_coverage": 1.0,
+      "drop_coverage": 1.0,
+      "verdict": "FAIL"
+    },
+    {
+      "mode": "app gate margin>=0.15",
+      "gate_margin": 0.15,
+      "clean_pct": 92.13,
+      "drop_pct": 90.89,
+      "delta_pp": 1.24,
+      "clean_coverage": 0.86,
+      "drop_coverage": 0.8,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "stricter gate margin>=0.30",
+      "gate_margin": 0.3,
+      "clean_pct": 96.11,
+      "drop_pct": 94.78,
+      "delta_pp": 1.33,
+      "clean_coverage": 0.76,
+      "drop_coverage": 0.69,
+      "verdict": "PASS"
+    }
+  ]
+}

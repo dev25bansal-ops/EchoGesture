@@ -1,12 +1,20 @@
 # Quantization: what we measured and why we ship FP16
 
-**Decision: ship `models/landmark_classifier_fp16.tflite` (813 KB, float16 weights,
-float32 IO). Keep `models/landmark_classifier_int8.tflite` (498 KB) in the repo as a
-measured alternative, not the default.**
+**Decision: ship the nine-member FP16 TFLite ensemble in `models/landmark_ens_*_fp16.tflite`
+(8.51 MB total, float16 weights, float32 IO). Keep `models/landmark_classifier_int8.tflite`
+(498 KB, the single-model INT8) in the repo as a measured alternative, not the default.**
 
-The scored requirement is *"Compilation to TFLite/ONNX <20MB"*. Both variants are
-real TFLite FlatBuffers under 1 MB, so the criterion is met either way. The choice
-comes down to accuracy, and INT8 costs more than it buys here.
+> **Scope note (16 Nov).** The table below was measured on the **single-model era**
+> (`landmark_classifier_fp16.tflite`, 813 KB), which has since been replaced by the
+> nine-member ensemble and is no longer shipped. The *conclusion* — FP16 loses nothing,
+> INT8 loses 6.4 points and its two runtimes disagree — is what carries forward: the
+> shipped ensemble is FP16 for exactly these reasons. The INT8 artifact that remains in
+> `models/` is the same single-model INT8 measured here.
+
+The scored requirement is *"Compilation to TFLite/ONNX <20MB"*. Both the FP16 ensemble
+(8.51 MB) and the INT8 single model (498 KB) are real TFLite FlatBuffers under the
+budget, so the criterion is met either way. The choice comes down to accuracy, and INT8
+costs more than it buys here.
 
 ## Measured, on the signer-disjoint ASL Citizen val split (345 clips, 100 classes)
 

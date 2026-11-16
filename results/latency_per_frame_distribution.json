@@ -1,10 +1,23 @@
 {
-  "n": 192,
-  "p10": 71.0,
-  "p50": 133.1,
-  "p90": 193.9,
-  "p95": 199.4,
-  "min": 69.2,
-  "max": 221.8,
-  "mean": 126.0
+  "note": "Clean re-measurement 16 Nov. The earlier 133/199 ms figures were measured while a distllm inference server (another project, 100+ s CPU) was running on the same machine. Per-frame detector cost is ~15 ms, not ~130 ms.",
+  "runs": 3,
+  "frames_per_run": 160,
+  "clips": 5,
+  "size": "256",
+  "mode": "image",
+  "p50_ms_runs": [
+    14.49,
+    16.41,
+    15.34
+  ],
+  "p95_ms_runs": [
+    22.72,
+    25.06,
+    22.95
+  ],
+  "p50_ms": 15.34,
+  "p95_ms": 22.95,
+  "min_ms": 7.3,
+  "budget_ms": 50,
+  "verdict": "PASS"
 }

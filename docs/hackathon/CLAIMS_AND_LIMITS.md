@@ -16,6 +16,7 @@ deck, a demo script or a README without being qualified the same way here.
 | Model size | **8.51 MB** | nine members, summed from the meta's member list | `ls -l models/*.tflite` |
 | Pixel robustness | **+4.48 PASS** | full split, 4 corruptions, all under the 5-pt budget | `scripts/ml/robustness_pixel_parallel.py --cache .scratch/landmarks_native` |
 | Classifier latency | **4.2 ms/clip** | nine members, desktop x86 | `scripts/ml/eval_tflite_cache.py` |
+| **Per-frame detector latency** | **p50 15.3 ms / p95 23.0 ms** | desktop x86, 160 frames × 3 clean runs, n=192 prior — **inside the 50 ms budget** | `python scripts/ml/latency_per_frame.py` |
 | Confidence calibration | **99.7% at >0.8** | 594 of 1,251 clips; 74% of all errors sit below 0.4 | `python scripts/ml/confidence_calibration.py` |
 | Abstain-and-reask | **95.93% at 72.6% coverage** | answering only clips above 0.5 confidence | same |
 
@@ -23,8 +24,7 @@ deck, a demo script or a README without being qualified the same way here.
 
 | Claim | Number | The caveat |
 | --- | --- | --- |
-| Landmark robustness | +5.76, **FAIL** | Fails on `drop_hand_25pct` alone; other five pass. It is a model limitation, not a measurement artefact — measured three ways, the attention mask is working correctly. See [DROP_HAND_ANALYSIS.md](DROP_HAND_ANALYSIS.md) |
-| Per-frame latency | p50 **133 ms** | Desktop x86 Python. The budget is 50 ms and even the floor (~70 ms) exceeds it. Wide run-to-run spread (84–163 ms p50). **Not** an on-device figure |
+| Landmark robustness | +5.52 raw / **+1.24 gated PASS** | Unconditional per-clip scoring fails on `drop_hand_25pct` (+5.52); at the app's own margin ≥ 0.15 acceptance gate it is +1.24 PASS (92.13% clean / 90.89% corrupted, 86%/80% coverage). Both rows ship in `results.csv`. A harder-hand-dropout retrain was also tried and lost more clean accuracy than it recovered. See [DROP_HAND_ANALYSIS.md](DROP_HAND_ANALYSIS.md) |
 | Cold start | **159 s** | One-time per process, and 135 s of it is MediaPipe building its graph on the first `detect()`. Now paid inside `_init_model()`, so it does not pollute a timed prediction |
 
 ### Confidence is the strongest demo claim we have
@@ -68,14 +68,23 @@ retained artifact; I checked each on 16 Nov.
 
 | Claim | Was | Actually | Factor |
 | --- | --: | --: | --: |
-| MediaPipe per frame | 15.7 ms | **p50 133 ms** | 8× |
-| Per-frame p95 | 32.80 ms (PASS) | **199 ms (FAIL)** | 6× |
+| MediaPipe per frame | 15.7 ms | **p50 15.3 ms (clean runs)** | ~1× — the inherited number was roughly right |
+| Per-frame p95 | 32.80 ms (PASS) | **22.95 ms (PASS)** | the retraction of this one was itself wrong |
 | Cold start | 8,800 ms | **159,000 ms** | 16× |
 | End-to-end p50 | 470 ms | **4,650 ms** | 10× |
 
 The pattern is worth stating plainly: the accuracy numbers were verified
 repeatedly and survived, and the latency numbers had never been checked from
-source until now. Every one was optimistic.
+source until now.
+
+**A correction to the correction.** On 16 Nov I re-measured per-frame latency at
+p50 133 ms / p95 199 ms and retracted the older 15.7 ms / 32.80 ms figures as 8×
+optimistic. That retraction was itself wrong. Those measurements were taken while a
+`distllm` inference server (a separate project) was saturating this machine's CPU.
+Re-run on an unloaded machine, the *same script* reports **p50 14.5–16.4 ms, p95
+22.7–25.1 ms** across three consecutive runs — inside the 50 ms budget, and close to
+the figure originally inherited. The lesson is the one that keeps recurring here: a
+latency number measured under contention describes the contention, not the code.
 
 ## One correction that went the other way
 
@@ -86,5 +95,6 @@ because the earlier number was measured against input the app never produces.
 
 ## The one-line summary for a judge
 
-**85.45% top-1 on unseen signers, 8.51 MB, pixel-robust within budget, with
-on-device latency, power and thermal still unmeasured.**
+**85.45% top-1 on unseen signers, 8.51 MB, per-frame detector 15 ms and classifier
+4 ms — both inside the 50 ms budget — with pixel robustness passing, one landmark
+corruption failing, and on-device latency, power and thermal still unmeasured.**

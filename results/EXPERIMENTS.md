@@ -549,3 +549,29 @@ robustness (2.25 points of headroom) than any accuracy tuning did.
 This is the answer to "should we get more data": no. We were never losing on
 accuracy. We were losing 25% of the rubric on a measurement taken against a
 model we no longer ship.
+
+## 16 Nov: harder hand-dropout retrain — reduces the drop, loses more than it gains
+
+The training script already fires hand masking harder than the shipped models saw
+(50% of clips, up to 50% of frames, from commit 4594bfa on 9 Nov — all shipped members
+predate it). So a retrain with current code is a genuine test of whether this
+augmentation closes the one failing robustness case.
+
+Trained `drop91`: TCN, dim 192, 140 epochs, seed 91, `--jitter-sigma 0.03`, on the
+native 640×480 cache. Best signer-disjoint val **87.3%**.
+
+| | clean | drop_hand_25pct | drop |
+| --- | --: | --: | --: |
+| shipped nine-member ensemble | **85.45%** | **79.94%** | +5.51 |
+| new model (harder hand-dropout) | 80.26% | 75.14% | +5.12 |
+
+**The new model is worse on both axes.** Its drop is 0.64 points smaller only because
+its clean baseline is 5.2 points lower; in absolute terms it is worse under hand-drop
+than the shipped ensemble (75.14 vs 79.94). Adding a lower-accuracy correlated member
+does not help.
+
+Conclusion: harder hand-dropout augmentation at this corpus size (17–24 clips/class,
+32 signers) trades more clean accuracy than it recovers under the corruption. The
+`drop_hand_25pct` failure stands as a reported limitation, not something this lever
+fixes. Consistent with every other retrain attempt recorded above (merged data,
+speed perturbation, strict resample, wider model, longer schedule — all negative).

@@ -13,15 +13,16 @@ Open Terminal and paste this — it copies the APK to your Desktop and reveals i
 cp ~/AppData/EchoGesture/submission/TEST_APP_NOW/EchoGesture-Test-Ready.apk ~/Desktop/ && open -R ~/Desktop/EchoGesture-Test-Ready.apk
 ```
 
-If the file is not there yet, it is because the delivery folder has not been
-pulled to your working copy. The APK is committed on
-`release/samsung-final-app-test`:
+The file is already on your Desktop, and a copy sits at:
 
-```bash
-git -C ~/AppData/EchoGesture fetch origin release/samsung-final-app-test && git -C ~/AppData/EchoGesture show origin/release/samsung-final-app-test:submission/TEST_APP_NOW/EchoGesture-Test-Ready.apk > ~/Desktop/EchoGesture-Test-Ready.apk
+```
+~/AppData/EchoGesture/submission/TEST_APP_NOW/EchoGesture-Test-Ready.apk
 ```
 
-The file on your Desktop is `EchoGesture-Test-Ready.apk`. That is the app.
+The APK is deliberately **not** on GitHub. It is 83 MB and it contains the
+restricted model weights, so it is excluded from Git and lives only on this
+machine. That is why there is no clone-and-run step here — the folder is the
+delivery.
 
 Its fingerprint — check it if you want to be certain you have the right build:
 

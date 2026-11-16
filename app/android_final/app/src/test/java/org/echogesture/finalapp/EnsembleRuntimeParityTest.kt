@@ -82,14 +82,14 @@ class EnsembleRuntimeParityTest {
         val vocabulary = l[7 + members].trim().split(' ')
         assertEquals(classes, vocabulary.size)
 
-        // The exact member set the fixture proves was invoked: the four real
+        // The exact member set the fixture proves was invoked: the nine real
         // binaries are materially different models (pairwise max |delta| > 2.2),
-        // so they cannot be one model copied four times.
+        // so they cannot be one model copied nine times.
         val ordered = memberLogits.sortedBy { it[0] }
         for (i in memberLogits.indices) for (j in i + 1 until memberLogits.size) {
             var d = 0f
             for (c in 0 until classes) d = maxOf(d, kotlin.math.abs(memberLogits[i][c] - memberLogits[j][c]))
-            assertTrue("members $i/$j are identical; fixture is not four real models", d > 0.5f)
+            assertTrue("members $i/$j are identical; fixture is not nine real models", d > 0.5f)
         }
         assertEquals("member logits must stay distinct", ordered.size, memberLogits.size)
 
@@ -107,12 +107,14 @@ class EnsembleRuntimeParityTest {
 
     @Test
     fun everyMemberAloneWouldPredictTheEnsembleTop1OnThisClip() {
-        // All four members independently pick WHATFOR1 (index 8): the fixture is
-        // a genuine four-model consensus, and the ensemble confidence (0.8821)
+        // All nine members independently pick WHATFOR1 (index 8): the fixture is
+        // a genuine nine-model consensus, and the ensemble confidence (0.8821)
         // is the softmax of the AVERAGE, not any single member's peak.
         val l = lines()
+        val members = l[0].split(' ')[0].toInt()
         val classes = l[0].split(' ')[1].toInt()
-        val memberLogits = Array(4) { floats(l[2 + it], classes) }
+        assertEquals("fixture must describe the shipped nine", 9, members)
+        val memberLogits = Array(members) { floats(l[2 + it], classes) }
         val confidences = memberLogits.map { m ->
             val p = EnsembleAggregation.softmax(m)
             EnsembleAggregation.topK(p, 1)[0] to p[EnsembleAggregation.topK(p, 1)[0]]

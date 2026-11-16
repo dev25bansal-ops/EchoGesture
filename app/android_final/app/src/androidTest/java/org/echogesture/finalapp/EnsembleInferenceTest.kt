@@ -31,43 +31,6 @@ class EnsembleInferenceTest {
     private val instrumentation
         get() = InstrumentationRegistry.getInstrumentation()
 
-    /** Parsed form of app/src/test/resources/parity_ensemble_logits.txt. */
-    private class Fixture(
-        val members: List<String>,
-        val classes: Int,
-        val top5: List<String>,
-        val confidence: Float,
-        val vocabulary: List<String>,
-        val averagedLogits: FloatArray,
-        val features: FloatArray
-    )
-
-    private fun loadFixture(): Fixture {
-        // parity_ensemble_runtime.txt, not parity_ensemble_logits.txt: only the
-        // runtime fixture carries the real 24x255 feature vector that produced
-        // these logits, so it is the one a genuine inference test can replay.
-        val text = instrumentation.context.classLoader
-            ?.getResourceAsStream("parity_ensemble_runtime.txt")
-            ?.bufferedReader()?.readText()
-            ?: error("parity_ensemble_runtime.txt missing from the test classpath")
-        val lines = text.lineSequence().filter { it.isNotBlank() }.toList()
-        val (memberCount, classes) = lines[0].split(' ').let { it[0].toInt() to it[1].toInt() }
-        assertEquals("fixture must describe four members", 4, memberCount)
-        // That fixture predates the masked nine-member bundle; it is only used
-        // by the structural test below, which no longer replays its logits.
-        val members = lines[1].trim().split(' ')
-        val averaged = lines[2 + memberCount].trim().split(' ')
-            .filter { it.isNotEmpty() }.map { it.toFloat() }.toFloatArray()
-        val top5 = lines[5 + memberCount].trim().split(' ')
-        val confidence = lines[6 + memberCount].trim().toFloat()
-        val vocabulary = lines[7 + memberCount].trim().split(' ')
-        val features = lines[8 + memberCount].removePrefix("features ").trim()
-            .split(' ').filter { it.isNotEmpty() }.map { it.toFloat() }.toFloatArray()
-        assertEquals("feature vector length", 24 * 255, features.size)
-        assertEquals("vocabulary size", classes, vocabulary.size)
-        assertEquals("averaged logits length", classes, averaged.size)
-        return Fixture(members, classes, top5, confidence, vocabulary, averaged, features)
-    }
 
     private fun readAsset(name: String): ByteArray =
         instrumentation.targetContext.assets.open(name).use { it.readBytes() }
@@ -124,7 +87,7 @@ class EnsembleInferenceTest {
     }
 
     /**
-     * The four packaged models, run for real, must reproduce the Python
+     * The nine packaged members, run for real, must reproduce the Python
      * reference through the production [LandmarkClassifier] path.
      */
 

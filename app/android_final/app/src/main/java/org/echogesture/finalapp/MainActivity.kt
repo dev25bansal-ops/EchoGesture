@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
  * never reloads a model and never restarts the camera.
  *
  * The AI path is the frozen one: [ModelContract] verifies every asset hash and
- * [LandmarkClassifier] runs four members through their own interpreters,
+ * [LandmarkClassifier] runs all nine members through their own interpreters,
  * averages raw logits and applies exactly one softmax.
  */
 class MainActivity : AppCompatActivity() {

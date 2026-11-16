@@ -89,7 +89,7 @@ should be explained or not shipped.
 
 ### On-device instrumentation (`connectedDebugAndroidTest`)
 
-**17 tests · 0 failed · 0 errors · 1 skipped · 190.787 s**
+**18 tests · 0 failed · 0 errors · 1 skipped**
 
 | Test | Result |
 | --- | --- |
@@ -108,8 +108,32 @@ should be explained or not shipped.
 | `RecordModeOnDeviceTest.cancellingLeavesNoRecordingBehind` | PASS |
 | `ReplayModeParityTest.bothModesProduceAValidTensorFromTheSameFrames` | PASS |
 | `ResultCardRenderTest.resultCardShowsTheRealEnsembleOutput` | PASS |
+| `ResultCardRenderTest.lowMarginResultIsShownButLabelledUncertain` | PASS |
 | `DirectClipParityTest.decoderYieldsDistinctFramesNotRepeatedKeyframes` | PASS |
 | `DirectClipParityTest.androidDirectClipMatchesTheShippedPipeline` | **SKIP** |
+
+### The test added in V4.7
+
+`lowMarginResultIsShownButLabelledUncertain` is new, and it exists because the
+old suite had a hole: `resultCardShowsTheRealEnsembleOutput` drives a real clip
+whose margin is far above the acceptance cut, so it **only ever exercised the
+accepted branch**. The uncertain branch — the one every low-margin capture in
+the field hits — had no coverage at all.
+
+The new test renders a result with `margin = 0.02` (below the 0.15 cut) and
+asserts three things:
+
+1. the prediction is **still displayed** — the app flags a guess, it does not
+   hide one;
+2. the card takes the **uncertain** label;
+3. that label does **not** read as a request to re-sign.
+
+Point 3 is there because the demo script used to claim the app "asks you to sign
+again". It does not, and now a test fails if that language ever creeps into the
+string.
+
+**This test was verified to be able to fail.** Setting the margin to `0.90` makes
+it go red, so it is a real assertion rather than a tautology.
 
 **The one skip is deliberate.** It needs an authorised ASL Citizen clip pushed to
 the device. None is present in this environment, and the test calls

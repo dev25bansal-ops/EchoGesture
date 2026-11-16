@@ -20,8 +20,17 @@ Statuses: **OPEN** · **FIXED** · **VERIFIED** · **BLOCKED** · **NOT REPRODUC
 | B-04 | — | Camera gating | **NOT REPRODUCED** |
 | B-05 | — | Emulator stability | **NOT AN APP DEFECT** |
 | B-06 | P2 (UX) | Camera scroll | **VERIFIED OK** |
+| B-07 | **P1 (claims)** | Demo script | **FIXED** — reversed statistic |
+| B-08 | **P1 (claims)** | Demo script | **FIXED** — scripted behaviour the app lacks |
+| B-09 | P2 (claims) | Dev's latency artifacts | **DOCUMENTED, escalated to Dev** |
+| B-10 | P2 (claims) | Dev's robustness artifact | **DOCUMENTED, escalated to Dev** |
+| B-11 | P2 (test coverage) | Instrumentation | **FIXED** — uncertain branch untested |
 
-**Six findings. Zero app crashes. Zero broken buttons. No P0/P1 defects found.**
+**Eleven findings. Zero app crashes. Zero broken buttons. No P0 defects.**
+
+B-07 and B-08 are graded P1 even though they are documentation, because they
+would have been **spoken to judges** and one of them would have been contradicted
+live on screen. A wrong number in a shipped narration is not a cosmetic issue.
 
 That is a real result, not a clean bill of health by omission — §"What I tried to
 break" below lists what was exercised to reach it.
@@ -222,3 +231,123 @@ Checked as a red-team pass, not as a user walkthrough:
 | Live-camera sign recognition with a real hand | No physical device attached, and the emulator's camera is a synthetic test pattern with no hand in it. The MediaPipe detector correctly reports "No hands in view" against that pattern — which is itself evidence the detector is running, but it is **not** a recognition test. |
 | Recognition accuracy on a phone | Same. **No phone accuracy number exists for this project.** |
 | The 18-clip `DirectClipParityTest` | Needs an authorised ASL Citizen clip on the device; none present in this environment. It **skips** by design rather than failing. |
+
+---
+
+# V4.7 findings — claims and coverage
+
+These were found auditing Dev's branch `hackathon/dev-model` @ `465166f` and our
+own submission docs. None is an app defect; all would have reached a judge.
+
+## B-07 — Demo script inverted the confidence statistic
+
+| | |
+| --- | --- |
+| **Severity** | **P1** — would be spoken to judges, and is the reverse of the truth |
+| **Module** | `docs/hackathon/DEMO_SCRIPT_2026-11-16.md` (Dev), and our own script |
+| **Status** | **FIXED in ours** |
+
+**What it said:** *"Below zero point eight confidence the model is right
+ninety-nine point seven percent of the time — over 594 clips."*
+
+**What is true** (`CLAIMS_AND_LIMITS.md`, `confidence_calibration.py`): **ABOVE
+0.8** confidence, the model is correct on **99.7% of 594** clips. Below 0.8 it is
+correct on roughly **72.6%**.
+
+The sentence markets *low* confidence as reliable — the exact inverse of the
+finding. Any judge with the calibration table would catch it.
+
+**Fix:** rewritten in `submission/DEMO_SCRIPT.md` with the correct direction, the
+correct 594-clip denominator, and an explicit statement that it is a corpus
+figure, not phone accuracy.
+
+## B-08 — Demo script narrated behaviour the app does not implement
+
+| | |
+| --- | --- |
+| **Severity** | **P1** — the presenter would say it while the screen contradicted them |
+| **Module** | `submission/DEMO_SCRIPT.md`, `docs/hackathon/DEMO_SCRIPT_2026-11-16.md` |
+| **Status** | **FIXED in ours** |
+
+**What it scripted:**
+
+> *(Sign badly → the app shows 'Uncertain — sign again'.)*
+> "Rather than guess, it asks me to repeat."
+
+**What the app actually does** (`CameraScreen.kt:958`):
+
+```kotlin
+val certain = result.margin >= 0.15f && percent >= 20f
+```
+
+When `certain` is false the card **still renders the prediction** and labels it:
+
+> *"Uncertain — this is the model's best guess, not a confirmed reading"*
+
+There is no abstention path. `UiState` has no "ask again" state; the only states
+that withhold a result are `NO_HANDS`, `LOW_FRAMES` and `ERROR`, which are input
+failures, not low confidence.
+
+**Why this matters:** the scripted beat tells the presenter to claim a refusal
+while the audience sees a guess on screen. That is worse than saying nothing.
+
+**Fix:** the beat now says the app shows its best guess and flags it, and it may
+only be used if a real attempt happens to trigger the label. It must not be
+staged. The 0.5 abstention figure is described as an *offline analysis*, not as
+live behaviour.
+
+## B-09 — Dev's branch reports two incompatible per-frame latencies
+
+| | |
+| --- | --- |
+| **Severity** | P2 — a judge who reads two files will find it |
+| **Module** | `results.csv`, `latency_per_frame_distribution.json`, `LATENCY_DECOMPOSITION.md`, `src/landmark_frontend.py` |
+| **Status** | **DOCUMENTED** — escalated to Dev, not silently picked |
+
+`results.csv` and the distribution JSON report **15.34 ms/frame PASS**.
+`LATENCY_DECOMPOSITION.md` reports **135 ms/frame** and explicitly pre-empts the
+CPU-contention explanation. `src/landmark_frontend.py` still says **"FAILS"**.
+
+They cannot all hold. `detect_hands()` loops one frame at a time, so 32 frames at
+15.34 ms is ~0.5 s — but the measured end-to-end `predict()` is **4,650 ms**,
+which only ~135 ms/frame explains.
+
+**Resolution taken in our docs:** quote the classifier (~4.2 ms) and the
+end-to-end (4,650 ms); claim **no** per-frame PASS. See
+`docs/release/LATENCY_RECONCILIATION.md`.
+
+## B-10 — Dev's robustness artifact mislabels a diagnostic as the raw result
+
+| | |
+| --- | --- |
+| **Severity** | P2 |
+| **Module** | `results/robustness_gated.json` |
+| **Status** | **DOCUMENTED** — escalated to Dev |
+
+`robustness_gated.json` labels `drop_pct: 79.94` as `"raw (every clip)"`, but
+`DROP_HAND_ANALYSIS.md` states 79.94 is the **coords-kept diagnostic**; the
+harness corruption (both zeroed) gives **79.70**, delta **5.76**.
+
+The file also reports delta 5.52 for 85.45 − 79.94, which is 5.51.
+
+**Resolution:** our docs quote **5.76 FAIL** as the unconditional result, and
+always state the 86%/80% coverage alongside the gated 1.24. See
+`docs/release/ROBUSTNESS_RECONCILIATION.md`.
+
+## B-11 — The uncertain branch of the result card had no test
+
+| | |
+| --- | --- |
+| **Severity** | P2 — coverage hole |
+| **Module** | `androidTest/.../ResultCardRenderTest.kt` |
+| **Status** | **FIXED** |
+
+`resultCardShowsTheRealEnsembleOutput` drives a real clip whose margin is far
+above the acceptance cut, so it **only ever exercised the accepted branch**.
+
+**Fix:** added `lowMarginResultIsShownButLabelledUncertain`, which renders
+`margin = 0.02` and asserts the prediction is still shown, is labelled uncertain,
+and that the label does not read as a request to re-sign.
+
+**Verified it can fail:** the test goes red when the margin is changed to `0.90`,
+so it is a genuine assertion. Instrumentation moved 17 → 18 run, 0 failed.

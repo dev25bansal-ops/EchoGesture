@@ -159,9 +159,12 @@ measured. None of those is true.
 
 These are the things I would fix before anything else, and neither is in your handoff.
 
-**1. Your branch cannot load its own model set.** `models/landmark_model_meta.json` on
-`release/samsung-final-app-test` declares nine members, and **not one of the nine
-`.tflite` files is committed on that branch.** Reproduced:
+**1. Your branch cannot load its own model set — and that is deliberate on your
+side, which makes it a decision rather than a bug.** `models/README.md` on
+`release/samsung-final-app-test` says the weights are "not committed to this
+repository … no confirmed redistribution permission" and marks all nine as
+`**no** (restricted)`. `models/landmark_model_meta.json` nevertheless declares nine
+members. The consequence, reproduced:
 
 ```
 $ python -c "import sys; sys.path.insert(0,'src'); import main; main._init_model()"
@@ -169,9 +172,32 @@ FileNotFoundError: Ensemble member listed in landmark_model_meta.json is missing
                    landmark_ens_tcn21_fp16.tflite
 ```
 
-A clean clone of your branch cannot run `src/main.py` at all. The APK is self-contained
-so the *demo* is unaffected, but the organizer-facing Python entry point is the thing
-the evaluator runs, and it is broken on a fresh clone.
+I was wrong to call this a merge accident in my first draft — your README states the
+policy explicitly, so a clean clone of your branch cannot run `src/main.py` by design.
+The APK is self-contained so the demo is unaffected, but the organizer-facing Python
+entry point is the thing the evaluator runs.
+
+**That policy and `hackathon/dev-model` cannot both hold.** Our branch tracks all nine
+`.tflite` files in a **public** repository, which your own `RELEASE_MANIFEST.json`
+records as a finding. So you are shipping a release whose Python side is unusable by
+design precisely because the bytes are on my branch in public. Somebody has to decide
+which of those two facts is the one we submit against:
+
+- **A — respect the restriction.** Remove the nine weights, plus the detector, from
+  `hackathon/dev-model`'s working tree and from history. The public repo then carries
+  no model bytes; the ZIP/APK carry them to the organizer under whatever terms the
+  form provides. This is the only option consistent with `NOTICE`, and it is a history
+  rewrite on a public repo.
+- **B — accept publication.** Leave them tracked and stop saying redistribution is
+  uncleared. That is a legal position I am not qualified to take for you, and it
+  contradicts `models/README.md` and `NOTICE`.
+- **C — ship the ZIP only**, treat the Python source as documentation, and say so in
+  the form so the evaluator is not surprised.
+
+I recommend **C now, A after the deadline.** C is honest, requires no destructive
+operation on a public repo before the form is sent, and does not claim a runnable
+Python path we are not actually publishing. A is the correct end state; it is not a
+36-hour-deadline operation.
 
 **2. One of my own tests, and I want you to know before you cite it.** Our
 `evaluate.py` scores a single `.tflite`, not the nine-member ensemble, and writes its
@@ -183,11 +209,15 @@ which model produced it.
 
 ## What I need from you
 
-1. Confirm the merged `models/` — I can push the nine members to your branch, or you can
-   re-cut the ZIP from `hackathon/dev-model @ d5dcbb3`. Say which and I will do it.
+1. **Decide A, B or C on the weights** (previous section). My recommendation is C now,
+   A after the deadline. This is the only item that needs a decision from you rather
+   than a fix from me.
 2. Drop the "no per-frame PASS" line from `LATENCY_RECONCILIATION.md` and take the clean
-   re-measurement instead.
-3. Re-quote the gated robustness row as **+2.39**, not +1.24.
+   re-measurement instead (B-09, above).
+3. Re-quote the gated robustness row as **+2.39**, not +1.24 (B-10, above).
 4. Your `ClosureAssemblyTest` — decide delete or rewrite rather than annotate.
+
+If you pick C, tell me and I will update `NOTICE`, `models/README.md` and the
+`RELEASE_MANIFEST.json` finding to match, so the three documents agree with the form.
 
 Everything else in your handoff I accept as written.

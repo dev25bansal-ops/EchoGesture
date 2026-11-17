@@ -136,13 +136,13 @@ source: identical.
 ## 13. Local commit SHA
 
 ```
-4443bcfe671d71acf206eeca2c4a510c208978a1
+ecc1b6a2487a91f067de365003626810fbc0c16e
 ```
 
 ## 14. GitHub remote commit SHA
 
 ```
-4443bcfe671d71acf206eeca2c4a510c208978a1
+ecc1b6a2487a91f067de365003626810fbc0c16e
 ```
 
 Verified with `git ls-remote` after the push. They match.

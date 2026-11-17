@@ -53,6 +53,11 @@ _OUTPUT_ZP = 0
 _IDX_TO_LABEL = {}
 _FRAMES = 24
 
+# Mirrors CameraScreen.kt's MIN_HAND_FRACTION. The app refuses to classify below
+# this share of frames carrying a hand; the Python entry point must not be the
+# looser of the two on the same clip.
+MIN_HAND_FRACTION = 0.15
+
 
 def _init_model():
     global _FRAMES
@@ -155,6 +160,29 @@ def _init_model():
         pass
 
 
+def _require_hand_coverage(lm, present, video_path):
+    """Refuse a clip the model cannot actually see.
+
+    A clip with a hand in one sampled frame satisfies `present.max()`, but the
+    resample to the model's frame count can then step over that frame entirely:
+    measured, 8 of the 32 sampled positions are skipped by the 32->24 grid. When
+    that happens every feature is zero and the mask is all-zero, yet the old
+    gate passed it and the ensemble still returned a gloss (BREAKFAST1 at 0.0661
+    on test). The app already refuses this - CameraScreen.kt requires
+    MIN_HAND_FRACTION = 0.15 of frames to carry a hand - so the Python entry
+    point was the looser of the two on the same input.
+    """
+    if lm.shape[0] == 0 or float(present.max()) < 0.5:
+        raise ValueError(f"No hand detected in any frame of: {video_path}")
+    fraction = float((present.max(axis=1) >= 0.5).mean())
+    if fraction < MIN_HAND_FRACTION:
+        raise ValueError(
+            f"Hand detected in only {fraction:.1%} of sampled frames of "
+            f"{video_path}; refusing below {MIN_HAND_FRACTION:.0%}. The model "
+            "resamples frames, so a hand in one frame can be resampled away "
+            "entirely and produce an all-zero, fully-masked input.")
+
+
 def _preprocess_video(video_path: str, target_frames: int = 24, use_z: bool = False,
                       size=256):
     """Video -> the model's (T, FEATURE_DIM) landmark feature matrix and mask.
@@ -182,8 +210,7 @@ def _preprocess_video(video_path: str, target_frames: int = 24, use_z: bool = Fa
     lm, present = clip_to_landmarks(
         video_path, max_frames=max(32, target_frames),
         size=None if native else size)
-    if lm.shape[0] == 0 or float(present.max()) < 0.5:
-        raise ValueError(f"No hand detected in any frame of: {video_path}")
+    _require_hand_coverage(lm, present, video_path)
 
     feats, mask = build_features(lm, present, expected_frames=target_frames,
                                  use_z=use_z)
@@ -218,8 +245,7 @@ def predict(video_path: str) -> dict:
     # at each width the ensemble actually uses. Building them twice would run
     # the expensive MediaPipe pass twice for no benefit.
     lm, present = clip_to_landmarks(video_path, max_frames=max(32, _FRAMES))
-    if lm.shape[0] == 0 or float(present.max()) < 0.5:
-        raise ValueError(f"No hand detected in any frame of: {video_path}")
+    _require_hand_coverage(lm, present, video_path)
     widths = {}
     for uz in set(_MEMBER_USE_Z) or {False}:
         widths[uz] = build_features(lm, present, expected_frames=_FRAMES, use_z=uz)

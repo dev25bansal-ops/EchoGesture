@@ -373,6 +373,21 @@ def _init_model():
         for asset in ("hand_landmarker.task", "landmark_model_meta.json"):
             if not (model_path.parent / asset).is_file():
                 raise FileNotFoundError(f"Missing landmark runtime asset: {model_path.parent / asset}")
+        # The detector is part of the model contract, not just a file that has to
+        # exist: a corrupted or swapped hand_landmarker.task changes the landmarks
+        # every downstream member sees, so it is verified exactly like a member.
+        # PINNED_DETECTOR_SHA256 was declared here and never compared, which made
+        # the Python path weaker than Android's ModelContract.kt, which does check.
+        detector_path = model_path.parent / "hand_landmarker.task"
+        if _pinning_required():
+            detector_sha = _sha256_file(detector_path)
+            if detector_sha != PINNED_DETECTOR_SHA256:
+                raise ValueError(
+                    f"hand_landmarker.task hash mismatch: {detector_sha[:12]}… != "
+                    f"{PINNED_DETECTOR_SHA256[:12]}…. The detector determines the "
+                    "landmarks every member sees; a different binary is a different "
+                    "model. Set ECHOGESTURE_ALLOW_UNPINNED_MODELS=1 only for a "
+                    "candidate you are deliberately evaluating.")
 
     with open(label_path, "r", encoding="utf-8") as f:
         labels_map = json.load(f)

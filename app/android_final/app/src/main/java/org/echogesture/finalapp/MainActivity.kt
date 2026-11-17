@@ -85,6 +85,15 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.IO) { initModels() }
     }
 
+    override fun onResume() {
+        super.onResume()
+        // A permission granted from system Settings arrives while this activity
+        // was stopped, so no ActivityResult is delivered and the Camera tab -
+        // whose view tree is retained - would otherwise never notice. The tab
+        // re-reads the grant only when it has no live camera.
+        if (currentTab == R.id.nav_camera) cameraScreen.onResume()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         cameraScreen.onDestroy()

@@ -173,7 +173,12 @@ class CameraScreen(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
         if (granted) {
+            // Cleared here rather than relying on render(), which is only
+            // reached if the bind succeeds. A grant that lands after a failed
+            // bind otherwise leaves the blocking card over a granted
+            // permission and the app looks permanently dead.
             permissionCard.visibility = View.GONE
+            render(UiState.WAITING)
             startCamera(prefs.cameraChoice)
         } else {
             render(UiState.WAITING, permissionBlocked = true)
@@ -194,6 +199,26 @@ class CameraScreen(
 
         if (hasCameraPermission()) startCamera(prefs.cameraChoice)
         else permissionLauncher.launch(Manifest.permission.CAMERA)
+    }
+
+    /**
+     * Re-checks the camera permission when the app returns to the foreground.
+     *
+     * A user who tapped "Don't allow" and then granted the permission from the
+     * system Settings screen comes back to a retained view tree: onBind() sees
+     * bound == true and returns, and no ActivityResult is delivered for a
+     * Settings grant. Nothing on this side re-read the permission, so the card
+     * stayed over a permission that was in fact granted.
+     *
+     * Acts only when no camera is live, so a working session is untouched.
+     */
+    fun onResume() {
+        if (!bound) return
+        if (cameraProvider != null) return
+        if (!hasCameraPermission()) return
+        permissionCard.visibility = View.GONE
+        render(UiState.WAITING)
+        startCamera(prefs.cameraChoice)
     }
 
     fun onUnbind() {
@@ -255,7 +280,16 @@ class CameraScreen(
         helpButton.setOnClickListener { showHelp() }
         retryButton.setOnClickListener {
             haptic(HapticFeedbackConstants.KEYBOARD_TAP)
-            startRecording()
+            // In the camera-failed state there is nothing to arm: the provider
+            // must be restarted. This is the only path that can recover from a
+            // failed first initialisation. In any other state retry means "try
+            // the sign again", which is what startRecording() does.
+            if (currentState == UiState.ERROR) {
+                render(UiState.INIT)
+                startCamera(prefs.cameraChoice)
+            } else {
+                startRecording()
+            }
         }
         clearButton.setOnClickListener { clearResult() }
         statusAction.setOnClickListener {
@@ -517,6 +551,13 @@ class CameraScreen(
     }
 
     private fun startCamera(choice: AppPreferences.CameraChoice) {
+        // CameraX caches its initialisation Future, including a FAILED one, so
+        // a first attempt that loses a race with another camera user makes every
+        // later getInstance() replay that same exception for the life of the
+        // process. Observed: "No available camera can be found", then
+        // "reaching the maximum number of retries", with "Try again" unable to
+        // recover until the process was killed.
+        if (cameraProvider == null) forgetCachedCameraProvider()
         val future = ProcessCameraProvider.getInstance(activity)
         future.addListener({
             try {
@@ -527,6 +568,39 @@ class CameraScreen(
                 render(UiState.ERROR, detail = activity.getString(R.string.error_camera_start))
             }
         }, ContextCompat.getMainExecutor(activity))
+    }
+
+    /**
+     * Drops CameraX's cached initialisation Future so the next getInstance()
+     * genuinely retries.
+     *
+     * Verified against camera-lifecycle 1.3.4 bytecode:
+     *
+     *   getInstance()                -> getstatic sAppInstance
+     *                                   invokevirtual getOrCreateCameraXInstance()
+     *   getOrCreateCameraXInstance() -> returns the cached mCameraXInitializeFuture
+     *                                   whenever it is non-null
+     *
+     * The cache is the INSTANCE field, not the static. sAppInstance is built by
+     * <clinit> and is never null; clearing it makes getInstance() throw
+     * NullPointerException on the invokevirtual, which is a crash and not a
+     * retry. shutdown() is the public entry that nulls the fields that matter.
+     * It cannot be reached the usual way after a failed init, because
+     * getInstance() returns a transformed Future whose .get() rethrows the same
+     * failure, so the static field is READ (never written) to obtain the
+     * instance.
+     *
+     * Called only when no provider is bound, so a live session is never
+     * disturbed.
+     */
+    private fun forgetCachedCameraProvider() {
+        runCatching {
+            val instance = ProcessCameraProvider::class.java
+                .getDeclaredField("sAppInstance")
+                .apply { isAccessible = true }
+                .get(null) as? ProcessCameraProvider
+            instance?.shutdown()
+        }
     }
 
     private fun analyserCallback(imageProxy: androidx.camera.core.ImageProxy) {
@@ -955,7 +1029,11 @@ class CameraScreen(
         // 0.15 margin scored below 0.20, so it does not change which captures
         // are accepted here. It only stops a pathological flat output from
         // being read out as a result.
-        val certain = result.margin >= 0.15f && percent >= 20f
+        // One place decides acceptance so it can be measured. Calibrated on 345
+        // authorised validation clips across five unseen signers: this rule
+        // accepts 86.1% of captures at 96.0% accuracy, and the 13.9% it declines
+        // are only 35.4% accurate. See ResultPolicy for the measurements.
+        val certain = ResultPolicy.isAccepted(result.margin, percent)
 
         captionText.text = result.prediction
         confidenceBadge.text = activity.getString(

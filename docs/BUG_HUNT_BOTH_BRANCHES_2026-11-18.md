@@ -525,6 +525,17 @@ nothing to commit, working tree clean clean. |
 | — | `v8_privacy/test_secure_demo.py`: the `0o700`/`0o600` mode assertion is now skipped on non-POSIX, because Windows `os.stat` reports the read-only attribute (511 for a dir, 448 for a file). The code was never wrong; the assertion tested the platform. | `55 passed, 1 skipped`. |
 | — | `v7_qa/test_atomic_zip_safety.py::test_backslash_entry_rejected`: widened the expected message. `zipfile` normalises `src\evil.txt` to `src/evil.txt` on write, so the entry is rejected as an unsafe *member type*, not an unsafe *path*. The protected property still holds. | Asserts `Unsafe (bundle path\|ZIP member type)`; passes. |
 
+| H7 | `src/main.py`: `predict()` answered a fully-masked all-zero input. Added `MIN_HAND_FRACTION = 0.15` matching `CameraScreen.kt`. | 3.1% coverage raises; 25% accepts; a real clip still predicts (LOCK1 0.2446). |
+| H8 | `src/landmark_frontend.py`: one landmarker cached per running mode; switching closes the previous. | image→video→image gives three distinct objects; identical predictions before/after. |
+| H9 | `scripts/ml/make_predictions.py`: `--out` and `--summary-out` derive from `--split`. | val run wrote 346 rows to `predictions_val.jsonl` at 89.31%; test deliverables kept identical md5s. |
+| — | `results/predictions_test.jsonl` regenerated with the nine-member ensemble. | 909/1249 = 72.78% → **1069/1251 = 85.45%**; now identical to `predictions.jsonl` on all 1,251 clips (was 328 differing). |
+| — | `src/main.py` (his tree): verify `PINNED_DETECTOR_SHA256`, which was declared and never compared. | corrupted detector rejected with a hash mismatch; pristine detector still loads. Commit `5282632`. |
+| — | `scripts/release/compliance_final.py`: C05-zip-safety keyed on files actually opened, not the configured list. | empty → `NOT_MEASURED`; traversal zip → `FAIL`; clean zip → `PASS`. Commit `313f6a5`. |
+| — | `evaluation/device/conftest.py`: match absence errors only (was masking real assertions), and emit a tuple longrepr so `-rs` works. | A probe test asserting the filename appears in a string still FAILS; `-rs` prints skip reasons. Commits `84e8d67`. |
+| — | `compliance_final/test_compliance_final.py`: the clean-repo fixture now contains a zip, so C05 has something to inspect. | `compliance_final` 53 passed, 0 failed. Commit `e2aad44`. |
+| — | `docs/hackathon/WHAT_ABHIJEET_BRANCH_CONTAINS.md`: the velocity-scale formula was wrong by 31×. | Corrected to `3700/(1000×duration)`; reproduces every row of the table (1.44× / 2.22× / 66% / 26%). Commit `56ce3db`. |
+| — | `docs/hackathon/DEV_HANDOFF_MODEL.md`: per-frame 133/199 ms and ~159 s cold start were the retracted contended figures. | Now 14.5–16.4 / 22.7–25.1 ms and 62.6 s, with the artifacts cited. Commit `bc2edfa`. |
+
 **Not fixed, deliberately:** `release_final`'s closure builder still demands
 `models/landmark_classifier_fp16.tflite` and fails closed when it is absent. That is a
 release gate doing its job on an artifact that no longer exists; weakening it to make a

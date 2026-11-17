@@ -459,11 +459,18 @@ def _check_zips(root: Path, zip_path=None) -> dict:
             continue
         seen.add(key)
         hits += [f"{p}: {v}" for v in zip_safety_violations(p)]
-    status = "PASS" if targets and not hits else ("FAIL" if hits else "NOT_MEASURED")
+    # `targets` is the CONFIGURED list; `seen` is what actually exists. Using
+    # targets here made this report PASS having opened no file at all: on this
+    # checkout four paths are configured and zero exist, and it printed PASS.
+    # A safety check that never opened a zip is NOT_MEASURED, not PASS.
+    status = "FAIL" if hits else ("PASS" if seen else "NOT_MEASURED")
+    detail = ("ZIP traversal/absolute/symlink/hardlink/external-attr/duplicate "
+              "members and size limits (committed provisional zips plus any "
+              "passed --zip).")
+    if not seen:
+        detail += " No configured or supplied zip exists, so nothing was inspected."
     return {"check": "C05-zip-safety", "status": status,
-            "detail": "ZIP traversal/absolute/symlink/hardlink/external-attr/duplicate "
-                      "members and size limits (committed provisional zips plus any "
-                      "passed --zip).", "where": hits[:15]}
+            "detail": detail, "where": hits[:15]}
 
 
 def _check_temp_media(root: Path) -> dict:

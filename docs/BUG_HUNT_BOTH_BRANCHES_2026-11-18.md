@@ -277,6 +277,57 @@ document's 502, and `test-report.json` says 472 — three different inventories.
 
 ---
 
+### H7 — `predict()` answered a clip with a fully-masked all-zero input
+
+The gate was `present.max() >= 0.5`, which one detected frame satisfies. The 32-to-24
+resample then steps over that frame for **8 of the 32 possible positions** (2, 6, 10,
+14, 17, 21, 25, 29), so the model receives an all-zero feature matrix and an all-zero
+mask and still answers.
+
+```
+positions whose single frame survives as a mask step:
+  [0, 1, 3, 4, 5, 7, 8, 9, 11, 12, 13, 15, 16, 18, 19, 20, 22, 23, 24, 26, 27, 28, 30, 31]
+positions that vanish entirely:
+  [2, 6, 10, 14, 17, 21, 25, 29]
+
+255 features all zero: True | mask sum: 0.0
+ensemble returns: [('BREAKFAST1', 0.0661), ('KNIGHT1', 0.0439), ('ANYONE', 0.0429)]
+margin top1-top2: 0.0222   (the app gate needs >= 0.15)
+```
+
+The Android app already refuses this — `CameraScreen.kt` requires
+`MIN_HAND_FRACTION = 0.15` — so the Python entry point was the looser of the two on
+identical input. **Fixed** by adding the same floor to `src/main.py`; verified that
+3.1% coverage now raises, 25% still accepts, and a real pilot clip still predicts
+(YEAR -> LOCK1 0.2446).
+
+### H8 — `get_landmarker()` cached one landmarker for all running modes
+
+`_init_model()`'s warm-up always builds an IMAGE landmarker, so a later
+`mode="video"` caller received an IMAGE object; `detect_for_video()` then raises
+inside MediaPipe and `detect_hands()` catches it as "no hand", silently scoring 0/32
+frames instead of failing.
+
+```
+image then video same object: True   (before)
+image then video same object: False  (after)
+video then image same object: False  (after)
+```
+
+**Fixed**: one landmarker per mode, closing the previous one on switch. A real clip
+predicts identically before and after (LOCK1 0.2446).
+
+### H9 — `make_predictions.py` wrote val results into test-named deliverables
+
+`--out` defaulted to `results/predictions.jsonl` and `--summary-out` to
+`results/eval_summary_test.json` regardless of `--split`, so a `--split val` run put
+validation rows into the file named for test and its summary into
+`eval_summary_test.json`.
+
+**Fixed**: both derive from `--split`. Verified with a real val run — 346 rows to
+`predictions_val.jsonl` at 89.31% (reproducing the committed val figure) while
+`eval_summary_test.json` and `predictions.jsonl` kept identical md5s.
+
 ### H4 — `src/main.py` declares a detector hash and never checks it, so a corrupted detector loads and predicts
 
 `PINNED_DETECTOR_SHA256` is defined at `src/main.py:102`. `_sha256_file` is called exactly

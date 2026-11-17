@@ -141,6 +141,99 @@ inconsistent parity references are committed together.
 
 ---
 
+## The Android feature pipeline: one real formula bug that is provably inert, and one
+## constant that is doing more work than it should [verified]
+
+I compared `FeatureTransform.kt` against `src/features.py` step by step. Nine of the ten
+steps match exactly — slot convention, root-centring, the shared wrist→MCP scale
+(including z), the pre-centring ordering of inter-hand geometry, velocity/acceleration
+differencing, the 255/381 widths and column order, stage-2 interpolation, the attention
+mask, name-based tensor binding, and mean-logit-then-softmax aggregation. That is
+careful work.
+
+### The inert bug: `geom[0]` drops `dz` in the 381 path
+
+Python measures the inter-hand distance over the full coordinate vector:
+
+```python
+# src/features.py:137-138, with xy = landmarks[..., :3 if use_z else 2]
+d = (hands_xy[1][WRIST] - hands_xy[0][WRIST]) / scale
+return np.array([np.linalg.norm(d), d[0], d[1]], np.float32)
+```
+
+Kotlin always uses two coordinates:
+
+```kotlin
+// FeatureTransform.kt:134-136
+val dx = (hands[1][WRIST * coords] - hands[0][WRIST * coords]) / scale
+val dy = (hands[1][WRIST * coords + 1] - hands[0][WRIST * coords + 1]) / scale
+geom[t * 3] = sqrt(dx * dx + dy * dy)
+```
+
+and the comment at `FeatureTransform.kt:104-106` asserts *"Geometry is ALWAYS x/y only
+… that is what src/features.py does"* — which is false for the z path.
+
+**It cannot change a single prediction, and the reason is worth recording.** MediaPipe
+defines landmark 0 as the depth origin, so the wrist's z is zero by construction. Across
+the entire corpus (3,390 clips) the largest `|wrist z|` is **1.71e-06**, so `dz` in
+`geom[0]` is bounded by **3.4e-06** in normalised units. On 1,049 both-hands frames the
+relative understatement is 0.000 to three decimals. The formula is wrong; the term it
+drops is zero. No action needed beyond deleting the false comment, because the next
+person to touch this code will trust it.
+
+### The constant that matters: `CAPTURE_SPAN_MS = 3700`
+
+`HandTracker.kt:129` fixes the live capture window at 3.7 s and resamples 32 frames
+across it. The reasoning documented at `:106-128` is correct and important: because
+`features.py` differences without `dt`, the sample step *is* the time base, so feeding
+consecutive 33 ms camera frames would have made every velocity ~3.5x too small. Fixing
+that was right.
+
+But the value is calibrated to the wrong number. It comes from "the extractor's own
+docstring records a typical clip as 110 frames, about 3.7 s" — and that docstring
+(`src/landmark_frontend.py:136-139`) is describing **one** clip where the first 32 frames
+yielded no detections; it is an anecdote, not a corpus statistic. Measured over 3,388
+real ASL Citizen clips:
+
+| | value |
+| --- | --- |
+| median clip duration | **2.57 s** |
+| mean | 2.82 s |
+| p10 / p90 | 1.67 s / 4.26 s |
+| clips at or above 3.67 s (110 frames) | **16%** |
+| span that would be correct for the median clip | **2,574 ms** |
+
+Since velocity scales with the sample step, a 3.7 s window against training's per-clip
+span multiplies every velocity and acceleration by `3700 / (1000 × duration/31)`:
+
+| | factor |
+| --- | --- |
+| median clip | **1.44×** |
+| p90 (short clips) | **2.22×** |
+| p10 (long clips) | 0.87× |
+| clips where the factor exceeds 1.25× | **66%** |
+| clips where it exceeds 2× | 17% |
+| clips within 20% of the training scale | **26%** |
+
+So on three clips in four the phone feeds the model velocities at materially the wrong
+amplitude — most often too large, because most signs are shorter than the assumed
+window. This is a distribution shift in the input, not a code defect: the constant is
+doing the best it can with no clip length to go on. But 26% agreement with the training
+scale is a plausible contributor to the on-device accuracy gap, and it is the only
+feature-side difference I found that is both real and large.
+
+Two ways to narrow it, neither of which I would attempt before the deadline:
+
+1. Move 3700 → ~2600, which matches the median but is still one number for all clips.
+2. Better: derive the window from sign onset if the recorder already detects it
+   (`SignRecorder.kt` has a segmenter), so the span tracks the sign rather than a global
+   assumption. That is the only version that reproduces training's per-clip sampling.
+
+**Do not change it without re-measuring.** A different span changes the input
+distribution, so any on-device accuracy figure taken before the change stops applying.
+
+---
+
 ## The numbers, with the population each belongs to
 
 | Figure | Population | Whose | Safe to quote? |

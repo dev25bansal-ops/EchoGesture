@@ -1,6 +1,49 @@
-# 04 — The live-only risk I could quantify, and the one I could not
+# 04 — The live-only risk, and the measurement that now exists
 
-## The defect
+## First measurement of the real analyser rate — it does NOT support the hypothesis
+
+A real analyser-rate record has now been produced (on the emulator, since no
+phone was available). One capture, one `profile` line:
+
+```
+frames=32 dur_ms=12061 fps=29.5 hand_frames=0 ...
+profile fps=29.4 interval_p50=34 interval_p95=35 analyse_p50=13
+        convert_p50=1 detect_p50=12 detect_p95=22 delivered=684 dropped=0
+        limit=CAMERA
+```
+
+Reading it:
+
+| Quantity | Value | Meaning |
+| --- | --- | --- |
+| `fps` | **29.4** | The analyser is running at roughly camera rate |
+| `interval_p50` | 34 ms | Frames arrive every ~34 ms, i.e. ~29 fps |
+| `analyse_p50` | 13 ms | Total per-frame work is 13 ms of a 34 ms budget |
+| `convert_p50` | 1 ms | YUV→Bitmap is not the cost |
+| `detect_p50` | 12 ms | MediaPipe is not the cost |
+| `dropped` | 0 | Nothing was discarded |
+| `limit` | **CAMERA** | The camera, not the app, sets the pace |
+
+**At 29 fps a median 2.2 s sign yields ~64 frames, not 20.** That is well above
+the 32-frame budget, so the pass-through path below is *not* taken and the
+timestamp sampler runs normally.
+
+This **weakens the leading live hypothesis** rather than confirming it. On a
+device that analyses at 30 fps, the frame-budget theory does not bite.
+
+Two honest caveats: this is an **emulator**, whose synthetic camera may hand
+frames over differently from a real sensor; and the emulator never contains a
+hand, so the detector cost here is for empty frames and is a floor, not a
+realistic figure. A phone running MediaPipe on real hands may be slower. The
+record above is a real measurement of this device, not of the user's.
+
+**It does not close the question.** It means the question must be asked again on
+a phone. It no longer licenses the conclusion that a low frame budget is the
+cause.
+
+---
+
+## The defect itself — unchanged and still unpatched
 
 `RecordingFeatures.sample()` (RecordingFeatures.kt:40-49):
 
@@ -80,26 +123,32 @@ distribution relative to training, it could make a working path worse.
 
 So it is documented, not patched.
 
-## Correction — the profiler was dead code, now wired
+## Why the profiler wrote nothing — three separate causes
 
-An earlier commit in this session ported `AnalysisProfiler` into the branch but
-**never called it**. It compiled, it appeared in the source tree, and it
-recorded nothing. A `recordProfiler` flush did not exist on this branch at all,
-and `HandTracker.analyse` did not time its stages.
+Chasing this produced three findings, and the third is the one that mattered.
 
-That is now fixed (`0ede145`):
+**Cause 1: it was never called.** An earlier commit ported `AnalysisProfiler`
+but never invoked it. It compiled, it appeared in the source tree, and it
+recorded nothing.
 
-- `HandTracker.analyse` wraps `toBitmap()` and `detectForVideo()` with their own
-  timers and calls `profiler.record(arrival, convert, detect, sensorTimestampNs)`.
-- `DiagnosticsLog.recordProfiler` exists on this branch and writes a `profile`
-  line.
-- `CameraScreen.logDiagnostic` flushes a snapshot beside each capture record.
+**Cause 2: the wrong function was instrumented.** `logDiagnostic()` looked like
+the obvious place to flush a snapshot, and it is a real function that really
+writes capture records. But the no-hand capture path that fires on this hardware
+goes through `logRecordingUnusable()`, which calls `diagnostics.record()`
+**directly** and never enters `logDiagnostic()` at all. Traces added to
+`logDiagnostic()` could not fire — and did not.
 
-So the instruction at the end of this file is now actionable. Previously it
-would have produced nothing, which would have looked like "the analyser is fine"
-when in fact nothing was measured. **That is the exact class of error this
-packet exists to prevent, and it was caught by trying to run the command
-rather than by reading the code.**
+**Cause 3: Gradle's build cache.** `./gradlew :app:assembleDebug` reported
+`compileDebugKotlin FROM-CACHE` after source edits, so an APK was built from
+stale classes. A change that "had no effect" had in fact never been compiled.
+`--no-build-cache` is required for a trustworthy build after editing Kotlin.
+
+The fix is in `logRecordingUnusable()`: it now flushes the profile as well, and
+records an explicit `profile_unavailable` note when the tracker is gone rather
+than leaving a silent gap.
+
+Verified end to end on the device — the `profile` line in the section above is
+the output of that fix.
 
 ## The experiment that would settle it
 

@@ -980,16 +980,30 @@ class CameraScreen(
         // rejection rate is measurable alongside accepted captures.
         val r = outcome.recording
         val sampled = r?.let { RecordingFeatures.sample(it) } ?: emptyList()
+        // The real capture rate, not a hardcoded 0. A no-hands attempt still
+        // tells the reader how fast frames were arriving, and writing 0 there
+        // made a 2.5-fps capture indistinguishable from a dead analyser.
+        val rateFps = r?.let { RecordingFeatures.fpsOf(it) } ?: 0f
         diagnostics.record(
             HandTracker.Capture(
                 sampled,
                 r?.durationMs ?: 0L,
-                0f,
+                rateFps,
                 sampled.count { it.hands.isNotEmpty() }
             ),
             null,
             0L
         )
+        // A rejected recording is exactly when the analysis rate matters most:
+        // it is the difference between "the signer was out of frame" and "the
+        // analyser was barely running". This path bypasses logDiagnostic
+        // entirely, so the profile has to be flushed here as well.
+        val snapshot = tracker?.profiler?.snapshot()
+        if (snapshot != null) {
+            runCatching { diagnostics.recordProfiler(snapshot) }
+        } else {
+            runCatching { diagnostics.recordNote("profile_unavailable tracker=null") }
+        }
     }
 
     private fun finishProcessing() {
@@ -1098,8 +1112,21 @@ class CameraScreen(
         // says what the MODEL was given; this says what the CAMERA delivered,
         // which is the only way to measure the real analysis rate. Without it,
         // a frame-count figure gets mistaken for throughput.
-        runCatching { diagnostics.recordProfiler(tracker?.profiler?.snapshot() ?: return) }
-            .onFailure { Log.w("CameraScreen", "profile write failed: ${it.javaClass.simpleName}") }
+        //
+        // The tracker is read at call time and may already be null: the capture
+        // path runs on inferExecutor, and onUnbind() clears `tracker` when the
+        // user leaves the tab. A null tracker must not silently swallow this
+        // write, because an absent profile line is indistinguishable from "the
+        // analyser measured nothing".
+        val profilerSnapshot = tracker?.profiler?.snapshot()
+        if (profilerSnapshot != null) {
+            runCatching { diagnostics.recordProfiler(profilerSnapshot) }
+                .onFailure { Log.w("CameraScreen", "profile write failed: ${it.javaClass.simpleName}") }
+        } else {
+            runCatching {
+                diagnostics.recordNote("profile_unavailable tracker=${if (tracker == null) "null" else "present"}")
+            }.onFailure { Log.w("CameraScreen", "note write failed: ${it.javaClass.simpleName}") }
+        }
     }
 
     private fun speakResult(text: String) {

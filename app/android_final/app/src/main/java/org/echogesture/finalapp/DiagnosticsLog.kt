@@ -59,9 +59,32 @@ class DiagnosticsLog(context: Context) {
             append(" total_ms=").append(totalMs)
         }
 
+        // Drop the header as well as blank lines: every write re-emits the
+        // header, so keeping the previous one would stack a copy per record.
         val existing = runCatching {
             if (file.isFile) file.readLines() else emptyList()
-        }.getOrDefault(emptyList()).filter { it.isNotBlank() }
+        }.getOrDefault(emptyList()).filter { it.isNotBlank() && !it.startsWith("#") }
+
+        val kept = (existing + line).takeLast(MAX_RECORDS)
+        file.writeText(HEADER + "\n" + kept.joinToString("\n") + "\n")
+        Unit
+    }
+
+    /**
+     * Appends a free-form note from the capture path.
+     *
+     * Used where a measurement could not be taken, so the absence is recorded
+     * as a fact instead of leaving a gap that reads as "nothing to report". A
+     * batch of `profile_unavailable` lines is itself the finding: it means the
+     * tracker was gone by the time the capture was logged.
+     */
+    fun recordNote(note: String) = synchronized(lock) {
+        val line = "note $note"
+        // Drop the header as well as blank lines: every write re-emits the
+        // header, so keeping the previous one would stack a copy per record.
+        val existing = runCatching {
+            if (file.isFile) file.readLines() else emptyList()
+        }.getOrDefault(emptyList()).filter { it.isNotBlank() && !it.startsWith("#") }
 
         val kept = (existing + line).takeLast(MAX_RECORDS)
         file.writeText(HEADER + "\n" + kept.joinToString("\n") + "\n")
@@ -102,9 +125,11 @@ class DiagnosticsLog(context: Context) {
             append(" limit=").append(snapshot.limit)
         }
 
+        // Drop the header as well as blank lines: every write re-emits the
+        // header, so keeping the previous one would stack a copy per record.
         val existing = runCatching {
             if (file.isFile) file.readLines() else emptyList()
-        }.getOrDefault(emptyList()).filter { it.isNotBlank() }
+        }.getOrDefault(emptyList()).filter { it.isNotBlank() && !it.startsWith("#") }
 
         val kept = (existing + line).takeLast(MAX_RECORDS)
         file.writeText(HEADER + "\n" + kept.joinToString("\n") + "\n")

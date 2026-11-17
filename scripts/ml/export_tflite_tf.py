@@ -179,4 +179,15 @@ def main():
 
 
 if __name__ == "__main__":
+    # This script takes no arguments, but it DOES mutate models/: it rewrites
+    # landmark_classifier_int8.tflite, landmark_model_meta.json and
+    # landmark_labels.json. Without this guard `--help`, a typo, or any stray
+    # flag started a full conversion and overwrote tracked artifacts, which is
+    # the worst possible response to someone asking what the script does.
+    import sys as _sys
+    if len(_sys.argv) > 1:
+        print(__doc__)
+        print("This script takes no arguments and rewrites files under models/.")
+        print("It did NOT run. Invoke it with no arguments to perform the export.")
+        raise SystemExit(2)
     main()

@@ -108,6 +108,14 @@ def main():
         signer_ok[signer] = signer_ok.get(signer, 0) + int(hit)
         signer_n[signer] = signer_n.get(signer, 0) + 1
 
+    # Refuse before touching the output file. `results/predictions.jsonl` is a
+    # tracked deliverable; opening it in "w" truncates it even if the very next
+    # statement raises, which is how an empty cache silently destroyed it.
+    if not preds:
+        raise SystemExit(
+            f"scored 0 clips from {args.cache}/{args.split} — refusing to overwrite "
+            f"{args.out} with an empty deliverable")
+
     out = ROOT / args.out
     with open(out, "w", encoding="utf-8") as fh:
         for r in preds:

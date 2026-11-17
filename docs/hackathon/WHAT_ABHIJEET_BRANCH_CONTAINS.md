@@ -204,7 +204,8 @@ real ASL Citizen clips:
 | span that would be correct for the median clip | **2,574 ms** |
 
 Since velocity scales with the sample step, a 3.7 s window against training's per-clip
-span multiplies every velocity and acceleration by `3700 / (1000 × duration/31)`:
+span multiplies every velocity and acceleration by the ratio of the two sample steps,
+`(3700/31) / (1000 × duration/31)`, which simplifies to `3700 / (1000 × duration)`:
 
 | | factor |
 | --- | --- |

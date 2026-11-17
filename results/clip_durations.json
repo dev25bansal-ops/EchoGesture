@@ -26,7 +26,8 @@
    "pct_clips_above_2x": 17.4,
    "pct_within_20pct": 25.9
   },
-  "span_correct_for_median_clip_ms": 2574
+  "span_correct_for_median_clip_ms": 2574,
+  "formula": "velocity_factor = (3700/31) / (1000*duration_s/31) = 3700 / (1000*duration_s)"
  },
  "durations_s": [
   7.467,

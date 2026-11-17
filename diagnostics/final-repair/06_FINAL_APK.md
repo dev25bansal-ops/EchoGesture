@@ -3,8 +3,8 @@
 | Field | Value |
 | --- | --- |
 | Path | `~/Desktop/EchoGesture-Final-Fixed/EchoGesture-Final-Fixed.apk` |
-| SHA-256 | `a40e717f35bdacf041f0212887cb26f2b1e8066c732017dc04bdf8418a95680b` |
-| Size | 83,253,714 bytes |
+| SHA-256 | `9aebf4cbd8f2722ba119e43761e1e40e39d2405d4836177c4bc9eabe7ca3fa40` |
+| Size | 82,826,339 bytes |
 | Package | `org.echogesture.finalapp` |
 | Version | `1.0` (versionCode 1) |
 | minSdk / targetSdk | 24 / 34 |

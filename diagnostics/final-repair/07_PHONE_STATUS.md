@@ -102,4 +102,25 @@ whether `04_LIVE_RISK.md` is the answer.
 
 **Note on the profiler:** an earlier build in this session had `AnalysisProfiler`
 present but never called, so the file would not have contained a `profile` line
-at all. Fixed in `0ede145`. If the line is absent on a build, that is why.
+at all. Fixed in `3708a7e`. If the line is absent on a build, that is why.
+
+## First real analyser measurement (emulator, not a phone)
+
+```
+profile fps=29.4 interval_p50=34 interval_p95=35 analyse_p50=13
+        convert_p50=1 detect_p50=12 detect_p95=22 delivered=684 dropped=0
+        limit=CAMERA
+```
+
+The analyser runs at ~29 fps, spends 13 ms of a 34 ms budget, and drops nothing.
+MediaPipe costs 12 ms; the YUV->Bitmap copy costs 1 ms.
+
+**This weakens the low-frame-budget hypothesis.** At 29 fps a median 2.2 s sign
+yields ~64 frames, well above the 32-frame pass-through threshold, so that path
+is not taken. Two caveats keep it from being a phone result: the emulator's
+synthetic camera may deliver frames differently from a real sensor, and it never
+contains a hand, so the detector cost is measured on empty frames and is a floor.
+
+The question is now narrower and still open: if a phone also analyses near
+30 fps, the frame budget is not the cause and the failure lies in something this
+session could not observe.

@@ -110,7 +110,7 @@ forbids.
 | Suite | Result |
 | --- | --- |
 | JVM unit tests | **128 pass, 0 fail** |
-| Instrumentation tests | **27 pass, 0 fail** |
+| Instrumentation tests | **30 pass, 0 fail** |
 | Clip accuracy (device) | 26/30 native, 24/30 squash |
 | Clip accuracy (Python) | 302/345 |
 
@@ -123,7 +123,7 @@ forbids.
 ## 11. APK full SHA-256
 
 ```
-a40e717f35bdacf041f0212887cb26f2b1e8066c732017dc04bdf8418a95680b
+9aebf4cbd8f2722ba119e43761e1e40e39d2405d4836177c4bc9eabe7ca3fa40
 ```
 
 Rebuilt from the pushed commit and re-hashed to confirm the file matches the

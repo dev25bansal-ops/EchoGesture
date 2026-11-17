@@ -28,9 +28,21 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--cache", default=".scratch/landmarks_native")
     ap.add_argument("--split", default="test")
-    ap.add_argument("--out", default="results/predictions.jsonl")
-    ap.add_argument("--summary-out", default="results/eval_summary_test.json")
+    # Derived from --split, not hardcoded. The old defaults named the test
+    # deliverables unconditionally, so `--split val` wrote val rows into
+    # results/predictions.jsonl and a val summary into eval_summary_test.json —
+    # two files that say "test" while holding validation data.
+    ap.add_argument("--out", default=None,
+                    help="default: results/predictions_<split>.jsonl for val, "
+                         "results/predictions.jsonl for test")
+    ap.add_argument("--summary-out", default=None,
+                    help="default: results/eval_summary_<split>.json")
     args = ap.parse_args()
+    if args.out is None:
+        args.out = ("results/predictions.jsonl" if args.split == "test"
+                    else f"results/predictions_{args.split}.jsonl")
+    if args.summary_out is None:
+        args.summary_out = f"results/eval_summary_{args.split}.json"
 
     import numpy as np
     import ai_edge_litert.interpreter as lit

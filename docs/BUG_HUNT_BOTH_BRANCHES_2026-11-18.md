@@ -277,9 +277,162 @@ document's 502, and `test-report.json` says 472 — three different inventories.
 
 ---
 
+### H4 — `src/main.py` declares a detector hash and never checks it, so a corrupted detector loads and predicts
+
+`PINNED_DETECTOR_SHA256` is defined at `src/main.py:102`. `_sha256_file` is called exactly
+twice, at lines 436 and 512 — both for **ensemble members**. The detector is checked only
+with `is_file()` at line 374. Android's `ModelContract.kt` does verify it, so the Python
+path is the weaker of the two.
+
+**Reproduced against his own entry point**, on a copy of `src/` pointed at a model
+directory whose detector has 40 bytes zeroed at offset 1,000,000:
+
+```
+$ python -c "... print(hashlib.sha256(corrupted).hexdigest()[:16])"
+8f014afb8f3ae989          # pinned value is fbc2a30080c3c557
+
+$ python -c "import sys; sys.path.insert(0,'src'); import main; main._init_model()"
+LOADED: corrupted detector accepted
+```
+
+**Fixed** by verifying it exactly like a member, behind the same
+`ECHOGESTURE_ALLOW_UNPINNED_MODELS` opt-out:
+
+```
+$ python -c "...; main._init_model()"    # same corrupted directory
+rejected -> ValueError: hand_landmarker.task hash mismatch: 8f014afb8f3a… != fbc2a30080c3…
+
+$ python -c "...; main._init_model()"    # pristine detector
+OK: pristine detector loads and members verify
+```
+
+**Blast radius.** The detector determines the landmarks all nine members see, so swapping
+it is a different model with the same weights — the exact failure mode
+`models/README.md` warns about for members ("the filename is not the identity"). The
+Python evaluator the organizer runs would have accepted it silently.
+
+### H5 — committed release manifests name binary hashes that exist nowhere in either tree
+
+The four-member hash set in `app/android_final/README.md`, `models/README.md`,
+`BASELINE_INVENTORY.json` and `submission_final` names `112279bc…`, `01a261d8…`,
+`27058a85…`, `08417e72…`. None of those blobs exists in either repository.
+
+```
+$ for h in 112279bc8609… 01a261d8eb6c… 27058a85e032… 08417e72da59…; do
+    echo "$h -> $(git rev-list --objects --all | grep -c …)"; done
+112279bc86090470b82b20b510746a946220322c25ec84cb3706a538c73dc22a -> 0 file(s)
+01a261d8eb6c2c4d8b501f0ce1a36db338365d17fddabc63528a7941b1390f63 -> 0 file(s)
+27058a85e032bee3af444fb1538ff0bf32fd38fa2b01ce01a2f25c3a428d20b3 -> 0 file(s)
+08417e72da59150ac9adf749e6324c30fb001d4a401394e32f125d3276d1ab21 -> 0 file(s)
+```
+
+The current files under those same names hash `af031d89…`, `b0a97aa4…`, `1d247397…`,
+`105218a8…` (verified with `sha256sum`). Commit `5251bf8` repointed the four legacy
+filenames at new binaries — "filenames are NOT identity" — and every document that quoted
+the old hashes was never updated. Anyone verifying the release against its own
+documentation gets four mismatches.
+
+### H6 — `SHA256SUMS.txt` cannot be verified on a Windows checkout, and three entries are stale
+
+```
+$ cd submission/TEST_APP_NOW && sha256sum -c SHA256SUMS.txt
+sha256sum: 'logs/README.md'$'\r': No such file or directory
+logs/README.md: FAILED open or read
+...
+```
+
+Two defects: the file is CRLF so every path carries a trailing `\r` and cannot be opened,
+and `BUG_REPORT.md`, `TEST_RESULTS.md` and `HOW_TO_TEST.md` were edited after the sums
+were generated. Regenerate with `--text` or LF, and re-run after any edit.
+
 ## MEDIUM
 
+### M1 — `performance_final/test_tracker.py` crashes the interpreter when its classes run in one process
+
+Every class in the file passes on its own. Run as a file — which is how the suite runs
+it — the interpreter dies partway through with a Windows thread-pool exception.
+
+**Each class alone:**
+
+```
+$ py -m pytest evaluation/device/performance_final/test_tracker.py::TestMalformedInputs -q
+7 passed in 2.14s
+
+$ py -m pytest evaluation/device/performance_final/test_tracker.py::TestRepeatedCallsAndCleanup -q
+3 passed in 68.72s (0:01:08)
+
+$ py -m pytest evaluation/device/performance_final/test_tracker.py::TestRealParity -q
+1 passed, 1 skipped in 92.23s (0:01:32)
+```
+
+**The file as a whole:**
+
+```
+$ py -m pytest evaluation/device/performance_final/test_tracker.py -q -p no:cacheprovider
+..Windows fatal exception: code 0xc000071c
+
+<freed thread state>
+Current thread's C stack trace (most recent call first):
+  <cannot get C stack on this system>
+```
+
+`0xc000071c` is `STATUS_THREADPOOL_HANDLE_EXCEPTION_INVALID`. The file builds a
+`ThreadPoolExecutor` over MediaPipe `HandLandmarker` workers (`tracker.py:164-167`), and
+`ParallelImageTracker.close()` tears the pool down; the second class constructs a new pool
+in the same process after the first has closed, and the teardown of one interacts badly
+with the construction of the next. It only reproduced with the file's classes in sequence.
+
+**Blast radius.** `pytest evaluation/device` cannot complete: it dies in
+`performance_final` and everything after that directory never runs. That is why the
+documented "433/502" and the committed `test-report.json`'s 472 cannot be reproduced by a
+single command — the run is truncated before it finishes. The suites after
+`performance_final` were only measurable by running each directory separately, which is
+how the 40-failure tally above was obtained.
+
+**Not fixed.** This is a native teardown interaction between MediaPipe and
+`ThreadPoolExecutor`; the fix is likely `maxtasksperchild` or one interpreter per process
+rather than per tracker, which is a design change I will not make blind at this hour. It
+is recorded so the next person does not spend an afternoon re-deriving it. A defensible
+interim: mark the file `pytest.mark.skipif(os.name == "nt")` with this finding cited, and
+keep it running on the POSIX CI where the original numbers were produced.
+
 *(pending — hunt in progress)*
+
+---
+
+### M2 — two committed 70–83 MB APK blobs sit in git history on a public repository
+
+```
+$ git rev-list --objects --all | grep -E '\.apk$'
+bbe2ce87643d612c23c28a32a1db2bbdf630d148 artifacts/echogesture-v4.2.apk      77,908,968 B
+0e6784f8960626ee9cbaba3943b6c1f852e8eb82 artifacts/echogesture-v4.3-masked.apk 83,350,522 B
+```
+
+Both are reachable from history but not from the release branch tip, so a `--depth 1`
+clone is unaffected and a full clone pays 161 MB. They are binaries the repo's own rules
+say must never be staged. Removing them needs a history rewrite, which is the owner's
+decision — recorded, not acted on.
+
+### M3 — `.gitignore` excludes `*.tflite` while two `.tflite` files are tracked
+
+```
+$ git ls-files -ci --exclude-standard
+models/ptq_100_int8.tflite
+models/s3d_conv1d_qat_int8.tflite
+```
+
+They were added before `.gitignore:72` and never removed. Harmless in effect — they are
+not the shipped members — but it means the ignore rule does not mean what it says, and a
+future `git add models/` will behave unexpectedly.
+
+---
+
+- **The Android unit-test code.** 128/128 pass with the assets present. `ModelContractTest`
+  genuinely verifies member order, hash pinning and rejection of corrupt/unpinned members.
+- **The build after the symlink is materialised.** `assembleDebug`-class tasks and
+  `testDebugUnitTest` both run.
+
+---
 
 ---
 
@@ -303,15 +456,6 @@ Each fix below was verified by re-running the reproduction that produced the fin
 release gate doing its job on an artifact that no longer exists; weakening it to make a
 test green would be the wrong trade. The conftest marks the resulting test skips, so the
 gate keeps its teeth and the report stays honest.
-
----
-
-## What has been exercised and found correct
-
-- **The Android unit-test code.** 128/128 pass with the assets present. `ModelContractTest`
-  genuinely verifies member order, hash pinning and rejection of corrupt/unpinned members.
-- **The build after the symlink is materialised.** `assembleDebug`-class tasks and
-  `testDebugUnitTest` both run.
 
 ---
 

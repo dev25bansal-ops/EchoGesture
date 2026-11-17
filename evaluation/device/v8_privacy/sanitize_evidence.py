@@ -111,19 +111,24 @@ def _redact_string(text: str, *, repo_root=None) -> str:
     stripped = text.strip()
     # Whole-string path (the common artifacts/manifest case).
     if stripped and (_WIN_ABS_RE.match(stripped) or _POSIX_ABS_RE.match(stripped)):
-        # Windows-absolute paths are not parsed as such on POSIX, so
-        # extract the basename with backslash awareness first.
-        _win_base = stripped.replace("\\", "/").rstrip("/").rsplit("/", 1)[-1]
-        if _WIN_ABS_RE.match(stripped):
-            return _win_base
-        candidate = Path(stripped)
+        # Try repo-relative FIRST, for both path styles. The Windows branch used
+        # to return the basename before this ran, so a path inside the repo lost
+        # its `models/` prefix and any other directory context — the repo-relative
+        # behaviour was unreachable on Windows while working on POSIX.
         if repo_root is not None:
             try:
-                rel = candidate.resolve().relative_to(Path(repo_root).resolve())
+                # Path() parses both separators on Windows; on POSIX a backslash
+                # path is not absolute, so normalise first.
+                probe = stripped.replace("\\", "/") if _WIN_ABS_RE.match(stripped) else stripped
+                rel = Path(probe).resolve().relative_to(Path(repo_root).resolve())
                 return rel.as_posix()
             except (ValueError, OSError):
                 pass
-        return candidate.name
+        # Outside the repo: Windows-absolute paths are not parsed as such on
+        # POSIX, so extract the basename with backslash awareness.
+        if _WIN_ABS_RE.match(stripped):
+            return stripped.replace("\\", "/").rstrip("/").rsplit("/", 1)[-1]
+        return Path(stripped).name
     # Embedded private path inside prose / notes.
     if _PRIVATE_PATH_RE.search(text):
         return "[redacted-path]"

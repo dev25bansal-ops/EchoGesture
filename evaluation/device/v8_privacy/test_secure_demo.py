@@ -89,6 +89,11 @@ class PrivateDirTest(unittest.TestCase):
             worker.results.get(timeout=10)
             self.assertTrue(seen)
             dir_mode, file_mode = seen[0]
+            if os.name != "posix":
+                # POSIX permission bits do not exist on Windows: os.stat reports
+                # the read-only attribute, so 0o700 is 511 there and 448 for a
+                # file. Asserting them would test the platform, not the code.
+                self.skipTest("POSIX permission bits are not available on this platform")
             self.assertEqual(dir_mode, 0o700)
             self.assertEqual(file_mode, 0o600)
         finally:

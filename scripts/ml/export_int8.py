@@ -116,10 +116,26 @@ def main():
     # Frame count and feature width ship beside the model. src/main.py reads
     # this to size its input; .scratch (where training writes its own copy)
     # is gitignored and will not exist on the evaluator's machine.
+    #
+    # Merge, never replace: the shipped sidecar is a nine-member ensemble
+    # manifest. Opening it in "w" with a bare dict deletes `members`,
+    # `members_detail` and `quantization`, after which src/main.py raises
+    # FileNotFoundError and the APK packaging gate (app/build.gradle.kts,
+    # which requires quantization == "float16") refuses to build.
     meta_path = ROOT / "models" / "landmark_model_meta.json"
-    json.dump({"frames": frames, "feature_dim": FEATURE_DIM,
-               "classes": len(vocab), "backbone": backbone, "dim": dim},
-              open(meta_path, "w"), indent=2)
+    try:
+        meta = json.load(open(meta_path, encoding="utf-8"))
+        if not isinstance(meta, dict):
+            meta = {}
+    except (FileNotFoundError, json.JSONDecodeError):
+        meta = {}
+    meta.update({"frames": frames, "feature_dim": FEATURE_DIM,
+                 "classes": len(vocab), "backbone": backbone, "dim": dim})
+    meta.setdefault("quantization", "int8")
+    keep = sorted(meta.get("members", []))
+    if keep:
+        print(f"preserving {len(keep)} ensemble member entries in {meta_path.name}")
+    json.dump(meta, open(meta_path, "w", encoding="utf-8"), indent=2)
     print(f"meta  {meta_path}  frames={frames} feature_dim={FEATURE_DIM}")
 
     # ------------------------------------------------------------ sanity check

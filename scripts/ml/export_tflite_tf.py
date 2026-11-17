@@ -146,13 +146,33 @@ def main():
             f"({float_acc*100:.1f}% -> {int8_acc*100:.1f}%). Not shipping."
         )
 
-    json.dump({"frames": frames, "feature_dim": FEATURE_DIM,
-               "classes": len(vocab), "backbone": str(ckpt["backbone"]), "dim": dim,
-               "val_top1_int8": round(int8_acc, 4),
-               "val_top1_float": round(float_acc, 4),
-               "int8_drop_pp": round(drop * 100, 2),
-               "size_kb": round(size_kb, 1)},
-              open(ROOT / "models" / "landmark_model_meta.json", "w"), indent=2)
+    # Merge into the existing sidecar rather than replacing it. This script
+    # exports ONE INT8 model; the shipped file is a nine-member ensemble
+    # manifest carrying `members`, `members_detail` and `quantization`. Writing
+    # a bare dict here deletes those keys, and src/main.py then falls back to a
+    # single-model file that does not exist, so predict() raises
+    # FileNotFoundError. Costs one read to avoid destroying the release.
+    meta_path = ROOT / "models" / "landmark_model_meta.json"
+    try:
+        meta = json.load(open(meta_path, encoding="utf-8"))
+        if not isinstance(meta, dict):
+            meta = {}
+    except (FileNotFoundError, json.JSONDecodeError):
+        meta = {}
+    meta.update({"frames": frames, "feature_dim": FEATURE_DIM,
+                 "classes": len(vocab), "backbone": str(ckpt["backbone"]), "dim": dim,
+                 "val_top1_int8": round(int8_acc, 4),
+                 "val_top1_float": round(float_acc, 4),
+                 "int8_drop_pp": round(drop * 100, 2),
+                 "size_kb": round(size_kb, 1)})
+    # This artifact is INT8; if the sidecar describes the shipped FP16 ensemble
+    # it already says so, and overwriting that would break the APK's packaging
+    # gate (app/build.gradle.kts requires exactly "float16").
+    meta.setdefault("quantization", "int8")
+    keep = sorted(meta.get("members", []))
+    if keep:
+        print(f"preserving {len(keep)} ensemble member entries in {meta_path.name}")
+    json.dump(meta, open(meta_path, "w", encoding="utf-8"), indent=2)
     json.dump({g: n for n, g in enumerate(vocab)},
               open(ROOT / "models" / "landmark_labels.json", "w"), indent=0)
     print("labels and meta written")

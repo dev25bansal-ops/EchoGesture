@@ -16,6 +16,7 @@ import sys
 import tempfile
 import unittest
 import zipfile
+import zipfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent          # evaluation/device/compliance_final/
@@ -331,6 +332,15 @@ class StrictGateTests(unittest.TestCase):
                "top1_accuracy,>=70,50.0,%,generic-device,x,PASS,ok\n")
         _write_publish(repo)
         _write_license_notice(repo)
+        # C05-zip-safety is a MANDATORY gate and reports NOT_MEASURED when no
+        # zip exists to inspect, which blocks a strict run by design. A fixture
+        # that is meant to clear every gate therefore has to contain the thing
+        # the gate is about; without this the test asserted a clean repo was
+        # clean while one mandatory check had nothing to check.
+        zips = repo / "scripts" / "release" / "release_lab"
+        zips.mkdir(parents=True, exist_ok=True)
+        with zipfile.ZipFile(zips / "provisional.zip", "w") as z:
+            z.writestr("src/main.py", "# clean\n")
         return repo
 
     def _run_main(self, *args):

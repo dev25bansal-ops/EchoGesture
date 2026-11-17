@@ -80,16 +80,52 @@ distribution relative to training, it could make a working path worse.
 
 So it is documented, not patched.
 
+## Correction — the profiler was dead code, now wired
+
+An earlier commit in this session ported `AnalysisProfiler` into the branch but
+**never called it**. It compiled, it appeared in the source tree, and it
+recorded nothing. A `recordProfiler` flush did not exist on this branch at all,
+and `HandTracker.analyse` did not time its stages.
+
+That is now fixed (`0ede145`):
+
+- `HandTracker.analyse` wraps `toBitmap()` and `detectForVideo()` with their own
+  timers and calls `profiler.record(arrival, convert, detect, sensorTimestampNs)`.
+- `DiagnosticsLog.recordProfiler` exists on this branch and writes a `profile`
+  line.
+- `CameraScreen.logDiagnostic` flushes a snapshot beside each capture record.
+
+So the instruction at the end of this file is now actionable. Previously it
+would have produced nothing, which would have looked like "the analyser is fine"
+when in fact nothing was measured. **That is the exact class of error this
+packet exists to prevent, and it was caught by trying to run the command
+rather than by reading the code.**
+
 ## The experiment that would settle it
 
 With a phone attached:
 
-1. Enable capture diagnostics.
+1. Settings → enable **Capture diagnostics** (the toggle is real and writes
+   `diagnostics = true`; verified on the emulator).
 2. Perform one sign.
-3. Read the `profile` record written by `DiagnosticsLog.recordProfiler`:
-   `fps= interval_p50= analyse_p50= convert_p50= detect_p50= delivered= dropped=`.
+3. Read the record:
+
+```bash
+adb shell run-as org.echogesture.finalapp cat files/diagnostics.txt
+```
+
+The `profile` line gives:
+
+```
+profile fps= interval_p50= interval_p95= analyse_p50= convert_p50= detect_p50=
+        detect_p95= delivered= dropped= limit=
+```
 
 If `fps` reads at or above ~20 and `dropped` is low, this risk is closed and
 recognition problems lie elsewhere. If `fps` reads near 10, this becomes the
 leading explanation and the fix is to resample by timestamp below the budget as
 well — with the measured before/after that a change of that size requires.
+
+`limit=` names which side is the constraint, so the answer is direct rather than
+inferred: `ANALYSER` means the app is too slow, `CAMERA` means the sensor is
+delivering slowly and no app-side change would help.

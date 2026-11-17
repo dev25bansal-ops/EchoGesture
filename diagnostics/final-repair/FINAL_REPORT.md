@@ -109,8 +109,8 @@ forbids.
 
 | Suite | Result |
 | --- | --- |
-| JVM unit tests | **117 pass, 0 fail** |
-| Instrumentation tests | **19 pass, 0 fail** (1 skip needs a pushed clip) |
+| JVM unit tests | **128 pass, 0 fail** |
+| Instrumentation tests | **27 pass, 0 fail** |
 | Clip accuracy (device) | 26/30 native, 24/30 squash |
 | Clip accuracy (Python) | 302/345 |
 
@@ -123,7 +123,7 @@ forbids.
 ## 11. APK full SHA-256
 
 ```
-39295e6ae1c61f648d16f359323c38fe1a343c943dd727b4b7015efd298f35b6
+a40e717f35bdacf041f0212887cb26f2b1e8066c732017dc04bdf8418a95680b
 ```
 
 Rebuilt from the pushed commit and re-hashed to confirm the file matches the

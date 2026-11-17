@@ -85,10 +85,21 @@ from one real session to confirm or kill.
 ## What to do first with a phone in hand
 
 1. Install `EchoGesture-Final-Fixed.apk`.
-2. Settings → enable capture diagnostics.
+2. Settings → enable **Capture diagnostics**.
 3. Perform one known sign.
 4. `adb shell run-as org.echogesture.finalapp cat files/diagnostics.txt`
 
 The `profile` line gives `fps=`, `interval_p50=`, `analyse_p50=`, `convert_p50=`,
-`detect_p50=`, `delivered=`, `dropped=`. That single line decides whether
-`04_LIVE_RISK.md` is the answer.
+`detect_p50=`, `delivered=`, `dropped=`, `limit=`. That single line decides
+whether `04_LIVE_RISK.md` is the answer.
+
+**Note on `adb`:** it is not on this machine's PATH. Use the full path:
+
+```bash
+/Users/abhijeetmiskin/AppData/ActionMesh-fork/android-toolchain/sdk/platform-tools/adb \
+  shell run-as org.echogesture.finalapp cat files/diagnostics.txt
+```
+
+**Note on the profiler:** an earlier build in this session had `AnalysisProfiler`
+present but never called, so the file would not have contained a `profile` line
+at all. Fixed in `0ede145`. If the line is absent on a build, that is why.

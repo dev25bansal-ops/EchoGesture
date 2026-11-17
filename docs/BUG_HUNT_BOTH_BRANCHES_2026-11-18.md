@@ -436,6 +436,26 @@ future `git add models/` will behave unexpectedly.
 
 ---
 
+## The test suites, measured
+
+| Suite | Before | After | Note |
+| --- | --- | --- | --- |
+| Android JVM (`./gradlew testDebugUnitTest`) | 128 tests, **11 failed** | 128 tests, **0 failed** | weights absent vs supplied |
+| Python `evaluation/device` | **aborts at collection**, 509 + 2 errors | **258 passed, 0 failed, 0 errors, 41 skipped** | excluding the one file that crashes the interpreter (M1) |
+| Android APK (`assembleDebug`) | **BUILD FAILED** (symlink, then assets) | **BUILD SUCCESSFUL**, 82,715,330 B | |
+
+The Python total is per-directory, because a single process cannot complete the whole
+suite (M1). Every skip is a named absent prerequisite, not a suppressed failure — the
+conftest matches exact filenames and only while the file is absent, so a genuine
+regression in the same test still fails.
+
+**What this does NOT establish.** None of these runs measures the model. The Android
+tests are JVM unit tests with a fixture; the Python suite is harness
+self-consistency. On-device accuracy, latency and camera behaviour remain unmeasured, as
+they were before this session.
+
+---
+
 ## FIXED in this session
 
 Each fix below was verified by re-running the reproduction that produced the finding.
@@ -447,6 +467,9 @@ Each fix below was verified by re-running the reproduction that produced the fin
 | H3 | `app/android_final/README.md` asset-prep command updated from four members to all nine, and the hash table regenerated from the actual binaries. | Following the new command verbatim: `./gradlew --offline assembleDebug` → **BUILD SUCCESSFUL**, `app-debug.apk` 82,715,330 B. |
 | H2 | New `pytest.ini` with `--import-mode=importlib` (fixes the duplicate-basename collision) and `--ignore` for the non-pytest `test_parity.py` script (fixes the collection abort). | Collection: 509 tests + 2 errors → **519 tests, 0 errors**. |
 | H2b | New `evaluation/device/conftest.py` converting failures caused by four absent prerequisites into skips, matched on exact filenames and only while the file is absent. | `release_final` + `release_ensemble` + `quantization_final` + `v7_release` + `v7_qa`: 22 failures → **58 passed, 21 skipped, 0 failed**. |
+| — |  truncated the tracked  to 0 bytes before crashing on . Now refuses before opening the file when it scored nothing. | Empty : file md5 went  →  (0 bytes) before; after, prints "refusing to overwrite" and the md5 is unchanged. |
+| — |  had no argument parser, so  or any typo ran a full TF conversion and rewrote three tracked files under . Now exits 2 with usage on any argument. |  prints usage and exits; On branch hackathon/dev-model
+nothing to commit, working tree clean clean. |
 | — | `v8_privacy/sanitize_evidence.py`: the Windows-absolute branch returned the basename before the repo-relative logic ran, so repo-relative redaction was unreachable on Windows. Now tries repo-relative first for both path styles. | `_redact_string(r'E:\...\models\m.tflite', repo_root=...)` → `models/m.tflite` (was `m.tflite`); suite 54→55 passing, then 55 passed / 1 skipped. |
 | — | `v8_privacy/test_secure_demo.py`: the `0o700`/`0o600` mode assertion is now skipped on non-POSIX, because Windows `os.stat` reports the read-only attribute (511 for a dir, 448 for a file). The code was never wrong; the assertion tested the platform. | `55 passed, 1 skipped`. |
 | — | `v7_qa/test_atomic_zip_safety.py::test_backslash_entry_rejected`: widened the expected message. `zipfile` normalises `src\evil.txt` to `src/evil.txt` on write, so the entry is rejected as an unsafe *member type*, not an unsafe *path*. The protected property still holds. | Asserts `Unsafe (bundle path\|ZIP member type)`; passes. |

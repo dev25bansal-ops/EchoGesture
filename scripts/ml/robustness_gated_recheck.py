@@ -45,8 +45,23 @@ def acc_at_gate(probs, ys, margin):
     top1, top2 = s[:, -1], s[:, -2]
     keep = (top1 - top2) >= margin
     if keep.sum() == 0:
-        return float("nan"), 0.0
+        # No clip cleared the gate. Report that as None, never NaN: json.dumps
+        # writes a bare `NaN` token for float("nan"), which is not valid JSON and
+        # which a strict parser or a schema validator rejects outright. A None
+        # plus coverage 0.0 says "nothing was measured" unambiguously.
+        return None, 0.0
     return 100.0 * float(np.mean(np.argmax(probs[keep], 1) == ys[keep])), float(keep.mean())
+
+
+def _out_path(value: str):
+    """Absolute paths are used as given; relative ones resolve against the repo.
+
+    ROOT / "/abs/path" yields the absolute path, but ROOT / "results/x.json" is
+    what the docs promise, and a caller in another cwd otherwise writes outside
+    the repo. Resolving here means --out behaves the same from anywhere.
+    """
+    p = Path(value)
+    return p if p.is_absolute() else ROOT / p
 
 
 def main():
@@ -55,7 +70,7 @@ def main():
     ap.add_argument("--split", default="test")
     ap.add_argument("--corruption", default="drop_hand_25pct")
     ap.add_argument("--seed", type=int, default=None,
-                    help="seed for the corruption; default = R.SEED")
+                    help="seed for the corruption; default 1234 (robustness.py line 229)")
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--out", default=".scratch/bughunt2/gate_recheck.json")
     args = ap.parse_args()
@@ -100,6 +115,17 @@ def main():
                          ("stricter gate margin>=0.30", 0.30)]:
         c, cc = acc_at_gate(clean_p, ys, margin)
         dr, dc = acc_at_gate(drop_p, ys, margin)
+        if c is None or dr is None:
+            # Nothing cleared this gate, so there is no delta to report and no
+            # verdict to give. NOT_MEASURED is the honest third state; calling it
+            # PASS or FAIL would both be inventions.
+            rows.append({"mode": name, "gate_margin": margin,
+                         "clean_pct": None, "drop_pct": None, "delta_pp": None,
+                         "clean_coverage": round(cc, 3), "drop_coverage": round(dc, 3),
+                         "verdict": "NOT_MEASURED"})
+            print(f"{name:26s} no clip cleared this gate "
+                  f"(clean cov {cc*100:.0f}%, drop cov {dc*100:.0f}%)  NOT_MEASURED")
+            continue
         delta = c - dr
         rows.append({"mode": name, "gate_margin": margin, "clean_pct": round(c, 2),
                      "drop_pct": round(dr, 2), "delta_pp": round(delta, 2),
@@ -111,7 +137,7 @@ def main():
 
     json.dump({"corruption": args.corruption, "cache": args.cache, "split": args.split,
                "n_clips": len(ys), "seed": seed, "rows": rows},
-              open(ROOT / args.out, "w"), indent=2)
+              open(_out_path(args.out), "w"), indent=2, allow_nan=False)
     print(f"\nwrote {args.out}")
 
 

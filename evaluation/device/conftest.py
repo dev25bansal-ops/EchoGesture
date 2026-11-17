@@ -64,17 +64,33 @@ def pytest_runtest_makereport(item, call):
         return
 
     longrepr = str(rep.longrepr)
+    # Only an ABSENCE error counts. Matching the bare filename would rewrite a
+    # genuine assertion failure — "expected models/landmark_classifier_fp16.tflite
+    # in bundle" contains the name too — into a skip, which is the one thing this
+    # hook must never do. These are the exact shapes the code raises:
+    #   FileNotFoundError: [Errno 2] No such file or directory: '<path>'
+    #   ValueError: Closure asset missing or empty: <rel>
+    ABSENCE_MARKERS = (
+        "FileNotFoundError",
+        "No such file or directory",
+        "Closure asset missing or empty",
+        "Selected model is missing",
+        "Cannot open",          # ai_edge_litert on a missing .tflite
+        "model allocation is null/empty",
+    )
+    if not any(m in longrepr for m in ABSENCE_MARKERS):
+        return
+
     for path in ABSENT_PREREQUISITES:
         if path.exists():
             continue
-        # Match on the filename, which is what both FileNotFoundError and the
-        # closure builder's ValueError carry.
         if path.name in longrepr:
             rep.outcome = "skipped"
-            rep.longrepr = (
-                f"prerequisite absent: {path.relative_to(REPO).as_posix()} "
-                f"({ABSENT_PREREQUISITES[path]})"
-            )
+            # pytest asserts a skipped report's longrepr is a TUPLE (path, line,
+            # reason) in its -rs rendering; a plain string here raises
+            # INTERNALERROR. Measured with and without -rs.
+            rep.longrepr = (str(path), 0,
+                            f"prerequisite absent ({ABSENT_PREREQUISITES[path]})")
             return
 
     for message, path in _MISSING_WITHOUT_NAME.items():

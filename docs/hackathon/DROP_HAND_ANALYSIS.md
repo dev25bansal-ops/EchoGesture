@@ -53,14 +53,14 @@ point, on the same corrupted clips:
 
 | operating point | clean | drop_hand_25pct | delta | coverage clean / corrupted |
 | --- | --: | --: | --: | --- |
-| raw, every clip | 85.45% | 79.94% | **+5.52 FAIL** | 100% / 100% |
-| **app gate, margin ≥ 0.15** | 92.13% | 90.89% | **+1.24 PASS** | 86% / 80% |
-| stricter gate, margin ≥ 0.30 | 96.11% | 94.78% | +1.33 PASS | 76% / 69% |
+| raw, every clip (harness corruption) | 85.45% | 79.70% | **+5.76 FAIL** | 100% / 100% |
+| **app gate, margin ≥ 0.15** | 92.13% | 89.74% | **+2.39 PASS** | 86% / 80% |
+| stricter gate, margin ≥ 0.30 | 96.11% | 94.44% | +1.66 PASS | 76% / 69% |
 
 The gate trades coverage for accuracy, and the coverage is reported because that trade
 is the honest part: at margin ≥ 0.15 the system answers 86% of clean clips (up from
 85.45% raw accuracy to 92.13% on what it answers) and, under a quarter-hand dropout,
-still answers 80% of them at 90.89%. **The criterion is met at the operating point the
+still answers 80% of them at 89.74%. **The criterion is met at the operating point the
 product actually uses.** The unconditional row is kept in `results.csv` beside it so
 the raw number is never hidden.
 

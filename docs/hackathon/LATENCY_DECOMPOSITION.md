@@ -3,6 +3,19 @@
 Written 16 Nov 2026 by Dev. Two separate problems found in the submission entry
 point while checking it end to end.
 
+> **CORRECTION, 18 Nov 2026 — every millisecond figure below is contended.**
+> This file was written while a `distllm` inference server from another project
+> was saturating the CPU. Re-measuring the same scripts on an unloaded machine
+> gives per-frame detector cost of **14.5–16.4 ms p50 / 22.7–25.1 ms p95**
+> (`results/latency_per_frame_distribution.json`), not 135 ms, and a warm
+> end-to-end `predict()` of **~720 ms** (`results/latency_end_to_end.json`), not
+> 4,700 ms. The *structure* of the conclusion below survives — MediaPipe still
+> dominates and the classifier is still a rounding error — but the absolute
+> numbers are inflated roughly 6x, and the claim that the per-frame criterion
+> FAILS is withdrawn: at 22.95 ms p95 it is inside the 50 ms budget.
+> Abhijeet's B-09 flagged the internal inconsistency this file created. The
+> resolution is this re-measurement, not his proposed "claim no per-frame PASS".
+
 ## 1. `latency_ms` included cold start. Fixed.
 
 `predict()` started its timer *before* `_init_model()`, which loads nine TFLite

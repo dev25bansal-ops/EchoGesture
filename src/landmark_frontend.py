@@ -13,18 +13,22 @@ signer appearance and background. Landmarks discard both and keep only the
 geometry that defines the sign - the approach every Kaggle GISLR top-5 entry
 converged on independently.
 
-Latency budget (measured on this machine, single process, no contention):
-MediaPipe HandLandmarker measures 133 ms/frame p50 (min 69, p95 199) at 256x256
-with 2 hands on this machine (16 Nov, n=192 frames, scripts/ml/latency_per_frame.py).
-VIDEO mode with tracker reuse measured 142 ms p50 — reuse does not rescue this
-build. An earlier ~23 ms figure had no retained artifact behind it and was
-retracted. The classifier is ~3-4 ms per clip for the nine-member ensemble.
+Latency budget (measured on this machine, three consecutive clean runs):
+MediaPipe HandLandmarker measures 14.5-16.4 ms/frame p50 and 22.7-25.1 ms p95 at
+256x256 with 2 hands (n=160 frames per run, `scripts/ml/latency_per_frame.py`,
+retained in `results/latency_per_frame_distribution.json`). The classifier adds
+~3-4 ms per clip for the nine-member ensemble.
 
-So the per-frame latency criterion FAILS on this desktop: the floor alone (~69 ms)
-is above the 50 ms budget. This is a desktop x86 Python measurement; the Android
-app uses a different detector path (detectForVideo at native 640x480) and has
-never been measured. Reported separately in results.csv so the two are never
-conflated.
+An earlier measurement reported 133 ms/frame p50 and this file previously called
+the criterion a FAIL on that basis. That figure was taken while a `distllm`
+inference server from another project was saturating the CPU; re-running the same
+script on an unloaded machine gives the numbers above. Per-frame detector cost is
+inside the 50 ms budget. The retraction of the original ~23 ms figure was itself
+wrong — see the correction note in `docs/hackathon/CLAIMS_AND_LIMITS.md`.
+
+This is a desktop x86 Python measurement; the Android app uses a different detector
+path (detectForVideo at native 640x480) and has never been measured. Reported
+separately in results.csv so the two are never conflated.
 """
 
 from __future__ import annotations

@@ -492,11 +492,16 @@ future `git add models/` will behave unexpectedly.
 | Suite | Before | After | Note |
 | --- | --- | --- | --- |
 | Android JVM (`./gradlew testDebugUnitTest --rerun-tasks`) | 128 tests, **11 failed** | **128 tests, 0 failed, 0 errors, 0 skipped** | weights absent vs supplied; re-run forced |
-| Python `evaluation/device` | **aborts at collection**, 509 + 2 errors | **258 passed, 0 failed, 0 errors, 41 skipped** | excluding the one file that crashes the interpreter (M1) |
+| Python `evaluation/device` | **aborts at collection**, 509 + 2 errors | **259 passed, 0 failed, 0 errors, 40 skipped** | excluding the one file that crashes the interpreter (M1) |
 | Android APK (`assembleDebug`) | **BUILD FAILED** (symlink, then assets) | **BUILD SUCCESSFUL**, 82,715,330 B | |
 
 The Python total is per-directory, because a single process cannot complete the whole
-suite (M1). Every skip is a named absent prerequisite, not a suppressed failure — the
+suite (M1): `performance_final/test_tracker.py` crashes the interpreter with
+`0xc000071c` when its classes run in sequence, so it is excluded from the count
+rather than silently counted as passing.
+
+Final: **259 passed, 0 failed, 0 errors, 40 skipped**. Every skip is a named
+absent prerequisite. Every skip is a named absent prerequisite, not a suppressed failure — the
 conftest matches exact filenames and only while the file is absent, so a genuine
 regression in the same test still fails.
 

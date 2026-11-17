@@ -53,6 +53,8 @@ HANDS = 2
 
 _TASK = None
 _LANDMARKER = None
+# Which running_mode the cached landmarker was built for; see get_landmarker().
+_LANDMARKER_MODE = None
 
 
 def _task_path() -> Path:
@@ -66,9 +68,21 @@ def get_landmarker(mode: str = "image"):
     the same per-frame cost; VIDEO additionally reuses its tracker across calls,
     which matters when frames arrive one at a time.
     """
-    global _LANDMARKER
-    if _LANDMARKER is not None:
+    global _LANDMARKER, _LANDMARKER_MODE
+    # One landmarker per mode, not one per process. A VIDEO-mode landmarker has
+    # its own tracker state and must be driven by detect_for_video(); handing it
+    # to the image path — or the reverse — raises inside MediaPipe, and
+    # detect_hands() catches that as "no hand", so the clip silently scores 0/32
+    # frames instead of failing loudly. Measured: after an IMAGE warm-up, a
+    # mode="video" caller got 0 of 8 frames; video-first got 5 of 8.
+    if _LANDMARKER is not None and _LANDMARKER_MODE == mode:
         return _LANDMARKER
+    if _LANDMARKER is not None and _LANDMARKER_MODE != mode:
+        try:
+            _LANDMARKER.close()
+        except Exception:
+            pass
+        _LANDMARKER = None
 
     import mediapipe as mp
     from mediapipe.tasks import python as mp_python
@@ -91,6 +105,7 @@ def get_landmarker(mode: str = "image"):
         min_tracking_confidence=0.3,
     )
     _LANDMARKER = vision.HandLandmarker.create_from_options(opts)
+    _LANDMARKER_MODE = mode
     return _LANDMARKER
 
 

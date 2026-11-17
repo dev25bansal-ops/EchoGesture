@@ -159,6 +159,32 @@ class CameraScreen(
     private var recordingTicker: Runnable? = null
 
     /**
+     * Frames the analyser has been handed, and whether the analyser is
+     * currently attached. Exposed for lifecycle tests: the point of unloading
+     * the camera off-tab is that this stops climbing.
+     */
+    @Volatile
+    internal var analysedFrameCount: Long = 0L
+        private set
+
+    @Volatile
+    internal var analyserAttached: Boolean = false
+        private set
+
+    /**
+     * Bumped whenever this screen is detached. An inference that was already
+     * running when the user navigated away carries the generation it started
+     * in, so its result is discarded rather than painted onto a screen the
+     * user has since left and returned to.
+     */
+    @Volatile
+    private var resultGeneration: Long = 0L
+
+    /** Last status pair painted into the live pill; -1 means "none yet". */
+    private var liveStatusTextRes: Int = -1
+    private var liveStatusTint: Int = -1
+
+    /**
      * How long the recording has been running, as the UI shows it. Kept in
      * elapsed real time from the same clock the frames are stamped with, so
      * the number on screen and the interval the model receives are the same
@@ -188,21 +214,54 @@ class CameraScreen(
         wireControls()
         frameGuide.attachTo(previewView)
         applyPreferences()
-        modelIdentity.text = activity.getString(R.string.camera_state_preparing)
-        render(UiState.INIT)
+        // Only claim "preparing camera" when the models are genuinely not
+        // loaded yet. Re-binding a tab whose models are already in memory must
+        // keep showing the nine-model identity footer — overwriting it here
+        // would make the app look like it reloaded the ensemble on every tab
+        // switch.
+        // The live pill is a fresh view tree after a re-bind; drop the cached
+        // status so the first frame after returning is always painted.
+        liveStatusTextRes = -1
+        liveStatusTint = -1
+        if (!modelReady) {
+            modelIdentity.text = activity.getString(R.string.camera_state_preparing)
+        }
+        render(if (modelReady) UiState.WAITING else UiState.INIT)
         speaker.initialise()
 
         if (hasCameraPermission()) startCamera(prefs.cameraChoice)
         else permissionLauncher.launch(Manifest.permission.CAMERA)
     }
 
+    /**
+     * Detach everything the Camera tab holds while another tab is on screen.
+     *
+     * Leaving this tab previously only removed the view: the analyser kept
+     * receiving frames and running MediaPipe on them, and a recording in
+     * progress kept its ticker and its buffered frames. That burned CPU and
+     * battery on Glossary/History/Settings for no benefit, and a half-finished
+     * recording could survive into a later visit.
+     */
     fun onUnbind() {
         if (!bound) return
         bound = false
+        stopRecordingTicker()
+        // Drop any in-flight recording: its frames belong to an interval the
+        // user has already navigated away from, and resuming it later would
+        // classify a gap they never signed through.
+        runCatching { tracker?.cancelRecording() }
+        // In-flight inference cannot be cancelled, but its result must not be
+        // painted onto a screen the user has left. The generation counter
+        // makes the completion handler discard it.
+        resultGeneration++
+        processing = false
+        runCatching { imageAnalysis?.clearAnalyzer() }
+        analyserAttached = false
         runCatching { cameraProvider?.unbindAll() }
         camera = null
         imageAnalysis = null
         preview = null
+        if (currentState != UiState.INIT) render(UiState.INIT)
     }
 
     /** Called by the Activity once the assets are verified and interpreters exist. */
@@ -456,6 +515,14 @@ class CameraScreen(
     }
 
     private fun setLiveStatus(textRes: Int, @androidx.annotation.ColorRes tint: Int) {
+        // The analyser calls this for every frame it processes — ~30/s. TextView
+        // re-measures and re-draws even when the string is identical, and in a
+        // quiet room the state rarely changes. Skipping the write when neither
+        // the text nor the tint changed removes a layout pass per frame without
+        // changing what is on screen.
+        if (liveStatusTextRes == textRes && liveStatusTint == tint) return
+        liveStatusTextRes = textRes
+        liveStatusTint = tint
         liveStatus.setText(textRes)
         liveStatus.setTextColor(ContextCompat.getColor(activity, tint))
     }
@@ -530,6 +597,7 @@ class CameraScreen(
     }
 
     private fun analyserCallback(imageProxy: androidx.camera.core.ImageProxy) {
+        analysedFrameCount++
         val t = tracker
         if (t == null) {
             imageProxy.close()
@@ -573,6 +641,7 @@ class CameraScreen(
                 .build()
                 .also { a -> a.setAnalyzer(trackerExecutor) { analyserCallback(it) } }
             imageAnalysis = analysis
+            analyserAttached = true
 
             val newPreview = Preview.Builder().build().also {
                 it.setSurfaceProvider(previewView.surfaceProvider)
@@ -888,12 +957,20 @@ class CameraScreen(
                 return
             }
             val started = System.nanoTime()
+            val generation = resultGeneration
             val tensors = RecordingFeatures.buildBoth(recording)
             val result = c.predict(tensors.featuresXY, tensors.mask, tensors.featuresXYZ)
             val totalMs = (System.nanoTime() - started) / 1_000_000L
             processing = false
             if (prefs.diagnostics) logDiagnostic(capture, result, totalMs)
-            activity.runOnUiThread { renderResult(result, totalMs, capture) }
+            activity.runOnUiThread {
+                // The user may have navigated away while this ran. Painting a
+                // result onto a detached screen would both show a stale
+                // prediction on return and leave the card in a state whose
+                // recording no longer exists.
+                if (generation != resultGeneration) return@runOnUiThread
+                renderResult(result, totalMs, capture)
+            }
         } catch (t: Throwable) {
             processing = false
             render(UiState.ERROR, detail = activity.getString(R.string.error_inference))

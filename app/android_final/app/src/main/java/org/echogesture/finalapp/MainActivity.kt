@@ -122,6 +122,13 @@ class MainActivity : AppCompatActivity() {
     // ---- navigation ---------------------------------------------------------
 
     private fun showTab(itemId: Int) {
+        // Detach the Camera tab whenever it is not the destination. Without
+        // this the analyser keeps running MediaPipe on frames for a screen
+        // nobody is looking at, and a half-finished recording carries across
+        // a tab change.
+        if (currentTab == R.id.nav_camera && itemId != R.id.nav_camera) {
+            cameraScreen.onUnbind()
+        }
         currentTab = itemId
         contentHost.removeAllViews()
         when (itemId) {

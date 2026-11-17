@@ -25,7 +25,8 @@ deck, a demo script or a README without being qualified the same way here.
 | Claim | Number | The caveat |
 | --- | --- | --- |
 | Landmark robustness | +5.52 raw / **+1.24 gated PASS** | Unconditional per-clip scoring fails on `drop_hand_25pct` (+5.52); at the app's own margin ≥ 0.15 acceptance gate it is +1.24 PASS (92.13% clean / 90.89% corrupted, 86%/80% coverage). Both rows ship in `results.csv`. A harder-hand-dropout retrain was also tried and lost more clean accuracy than it recovered. See [DROP_HAND_ANALYSIS.md](DROP_HAND_ANALYSIS.md) |
-| Cold start | **159 s** | One-time per process, and 135 s of it is MediaPipe building its graph on the first `detect()`. Now paid inside `_init_model()`, so it does not pollute a timed prediction |
+| Cold start | **62.6 s** | One-time per process: import 0.9 s + MediaPipe graph build 60.9 s + first predict 0.9 s. Paid inside `_init_model()`, so it never lands in a scored prediction. The earlier 159 s was measured under CPU contention. Pinning to 8 cores made it *worse* (94 s) — MediaPipe wants more cores |
+| End-to-end per clip | **~720 ms** | Warm `predict()` on a 32-frame clip, desktop x86. The detector is ~600 ms of it (20.3 ms/frame); the nine-member classifier is 4.2 ms, i.e. 0.6%. This does not come down without a cheaper detector model. The earlier 4,650 ms was CPU-contended |
 
 ### Confidence is the strongest demo claim we have
 

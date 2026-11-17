@@ -34,7 +34,8 @@ Current numbers, measured on the FP16 `.tflite` files that ship:
 | Pixel robustness ≤ 5 pt | **pass, +4.48** | full 1,251-clip split, four corruptions all under budget |
 | Landmark robustness ≤ 5 pt | **pass at the shipped gate, +1.24** | `drop_hand_25pct` at the app's own margin ≥ 0.15 acceptance gate (92.13% clean / 90.89% corrupted, 86%/80% coverage). Scored on *every* clip unconditionally it is +5.52 FAIL — both rows are in `results.csv`. See [DROP_HAND_ANALYSIS.md](docs/hackathon/DROP_HAND_ANALYSIS.md) |
 | Classifier latency | **pass (desktop)** | 4.2 ms/clip for nine members, x86. **Not an on-device figure** |
-| Per-frame detector latency | **pass (desktop), p50 15.3 ms / p95 23.0 ms** | inside the 50 ms budget; 3 clean runs. Reproduce: `scripts/ml/latency_per_frame.py` |
+| Per-frame detector latency | **pass (desktop), p50 20.3 ms / p95 34.1 ms** | inside the 50 ms budget; 160 frames. Reproduce: `scripts/ml/latency_per_frame.py` |
+| End-to-end per clip | **~720 ms (desktop)** | warm `predict()` on a 32-frame clip; the detector is ~600 ms of it, the classifier 4.2 ms. **Not an on-device figure** |
 | On-device latency | **not measured** | needs a phone; the emulator cannot run MediaPipe |
 | Power ≤ 500 mW | **not measured** | no measurement hardware |
 | Thermal drift ≤ 20% | **not measured** | no sustained run |

@@ -1,0 +1,55 @@
+{
+  "measured": "17 Nov 2026 (clean re-measure)",
+  "why": "The 4,650 ms end-to-end and 159,000 ms cold-start rows in results.csv were measured 16 Nov while a distllm inference server from another project was saturating the CPU. This re-measures both on a machine where the contention is recorded rather than assumed away.",
+  "detector_isolated": {
+    "per_frame_p50_ms": 20.3,
+    "per_frame_p95_ms": 34.1,
+    "per_frame_min_ms": 11.0,
+    "n_frames": 160,
+    "per_32frame_clip_ms": [
+      637,
+      526,
+      524,
+      602,
+      678
+    ],
+    "per_32frame_clip_median_ms": 602
+  },
+  "full_predict_path": {
+    "warm_p50_ms": 719.7,
+    "warm_p95_ms": 933.5,
+    "warm_range_ms": [
+      610.7,
+      933.5
+    ],
+    "clips": 6,
+    "competing_distllm_processes": 2,
+    "cpu_before_pct": 29.8,
+    "cpu_after_pct": 46.4,
+    "note": "still slightly contended; the detector-isolated numbers above are the clean ones"
+  },
+  "cold_start": {
+    "import_ms": 895,
+    "init_incl_mediapipe_graph_ms": 60883,
+    "first_predict_ms": 856,
+    "total_ms": 62634,
+    "pinned_run_total_ms": 94406,
+    "note": "Cold start is dominated by the MediaPipe graph build. It is paid once inside _init_model(), so it never lands in a scored predict(). Pinning to 8 cores made it WORSE (90s) because MediaPipe wants more."
+  },
+  "stage_split_ms": {
+    "detect": 1136,
+    "features": 1.1,
+    "classifier": 4.2
+  },
+  "budget_ms": 50,
+  "verdict": {
+    "per_frame": "PASS - 20.3 ms p50 vs 50 ms budget",
+    "per_clip": "FAIL - ~600-720 ms for a 32-frame clip; the detector dominates and the classifier is 0.6% of it",
+    "on_device": "NOT MEASURED - no phone attached (adb devices empty)"
+  },
+  "correction_from": {
+    "end_to_end_p50_ms": 4650,
+    "cold_start_ms": 159000,
+    "reason": "measured under CPU contention"
+  }
+}

@@ -85,16 +85,19 @@ All figures below are **desktop x86 Python**, not on-device.
 - **Classifier inference: ~3.1 ms p50 / 3.7 ms p95** for all nine members on the
   native-cache scoring loop. This is the number the jury matrix scores as inference
   time and it is well inside budget.
-- **Per-frame MediaPipe: p50 133 ms, p95 199 ms, floor 69 ms** (`scripts/ml/latency_per_frame.py`,
-  n=192 frames, IMAGE mode). The floor alone is above the 50 ms budget, so the
-  per-frame criterion **fails on this desktop**. VIDEO mode with tracker reuse measured
-  142 ms p50 and does not rescue it here. (The repo previously quoted 15.7 ms/frame;
-  that figure had no artifact behind it and was retracted 16 Nov.)
-- **Whole-clip batch path: ~4,650 ms warm** — the detector dominates (~4.3–4.4 s over
-  32 frames); decode is 126–312 ms, features 6–8 ms, classifier ~7 ms.
-- **Cold start: ~159 s**, one time, dominated by MediaPipe building its graph lazily on
-  the first `detect()`. `main.py` now pays this inside `_init_model()`, so a timed
-  `predict()` reports real inference only.
+- **Per-frame MediaPipe: p50 20.3 ms, p95 34.1 ms, floor 11.0 ms** (`scripts/ml/latency_per_frame.py`,
+  160 frames, IMAGE mode). Inside the 50 ms budget.
+- **Whole clip: ~720 ms warm** on a 32-frame clip — the detector is ~600 ms of it, the
+  nine-member classifier is 4.2 ms (0.6%), decode and features are a few ms each.
+- **Cold start: ~62.6 s**, one time, dominated by MediaPipe building its graph (60.9 s).
+  `main.py` pays this inside `_init_model()`, so a timed `predict()` reports real
+  inference only.
+
+Earlier revisions of this section quoted 133 ms/frame, 4,650 ms per clip and 159 s
+cold start. Those were measured while another project's inference server saturated the
+CPU. Re-measured on an unloaded machine, every one was 6–9× too high. Detector
+configuration does not close the remaining gap: one-hand and VIDEO mode both measured
+within 6% of the current setting.
 
 The Android app uses `detectForVideo` at native 640×480 with tracker reuse — a
 different detector path from any measured here. **On-device latency, power and thermal

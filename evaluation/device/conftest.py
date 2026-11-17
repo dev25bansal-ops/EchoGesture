@@ -57,7 +57,10 @@ _MISSING_WITHOUT_NAME = {
 def pytest_runtest_makereport(item, call):
     outcome = yield
     rep = outcome.get_result()
-    if rep.outcome != "failed" or call.when != "call":
+    # A missing prerequisite surfaces as an ERROR in setup as often as a FAILURE
+    # in call: v7_int8 opens its audit JSON in setUpClass, so pytest reports
+    # "error", not "failed", and a call-only hook never sees it.
+    if rep.outcome not in ("failed", "error"):
         return
 
     longrepr = str(rep.longrepr)

@@ -130,6 +130,11 @@
     <string name="settings_clear_history">Clear saved history</string>
 
     <string name="settings_model_ensemble">%1$d-model ensemble</string>
+    <!-- The layout references this via android:text, which performs no
+         formatting, so the parameterised string above renders literally as
+         "%1$d-model ensemble" on screen. This plain form is what the layout
+         must use. -->
+    <string name="settings_model_ensemble_plain">9-model ensemble</string>
     <string name="settings_model_ensemble_detail">logit-averaged, one softmax</string>
     <string name="settings_model_precision">FP16 TFLite</string>
     <string name="settings_model_precision_detail">float16 weights, float32 input/output</string>

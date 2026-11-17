@@ -391,7 +391,7 @@
                 style="@style/Text.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/settings_model_ensemble" />
+                android:text="@string/settings_model_ensemble_plain" />
 
             <TextView
                 style="@style/Text.Caption"

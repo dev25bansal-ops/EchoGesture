@@ -1094,6 +1094,12 @@ class CameraScreen(
     ) {
         runCatching { diagnostics.record(capture, result, totalMs) }
             .onFailure { Log.w("CameraScreen", "diagnostic write failed: ${it.javaClass.simpleName}") }
+        // Also flush what the analyser actually did. The capture record above
+        // says what the MODEL was given; this says what the CAMERA delivered,
+        // which is the only way to measure the real analysis rate. Without it,
+        // a frame-count figure gets mistaken for throughput.
+        runCatching { diagnostics.recordProfiler(tracker?.profiler?.snapshot() ?: return) }
+            .onFailure { Log.w("CameraScreen", "profile write failed: ${it.javaClass.simpleName}") }
     }
 
     private fun speakResult(text: String) {

@@ -30,6 +30,17 @@ class HandTracker private constructor(
     private val lock = Any()
 
     /**
+     * Real analysed-frame timing.
+     *
+     * Kept on the tracker rather than derived from capture counts, because a
+     * capture's frame count is what survived sampling (capped at 32), not what
+     * the camera delivered. Reading the analyser rate off a capture produced the
+     * widely-quoted "5-10 fps" figure from a run that was actually capped at 32
+     * samples. This is the measurement that answers the question honestly.
+     */
+    val profiler = AnalysisProfiler()
+
+    /**
      * Explicit record mode (START → sign → STOP). Separate from [ring]: the
      * ring is always rolling, a recording exists only between two presses.
      * Guarded by [lock] like the ring, so a frame can never be offered to a
@@ -278,21 +289,37 @@ class HandTracker private constructor(
         // frame that arrived before the user tapped must not be credited to
         // the capture window just because its analysis finished after it.
         val frameAtMs = SystemClock.elapsedRealtime()
+        var convertMs = 0L
+        var detectMs = 0L
         return try {
             // toBitmap() copies the YUV planes into a fresh ARGB_8888 bitmap
             // and does NOT apply rotation; rotation is passed to MediaPipe via
             // ImageProcessingOptions below, exactly once.
+            val convertStart = SystemClock.elapsedRealtime()
             val bitmap = imageProxy.toBitmap()
+            convertMs = SystemClock.elapsedRealtime() - convertStart
             mpImage = BitmapImageBuilder(bitmap).build()
             // detectForVideo() is synchronous: by the time it returns MediaPipe
             // has copied the pixels into its packet, so closing mpImage (which
             // recycles `bitmap`) afterwards is safe.
+            val detectStart = SystemClock.elapsedRealtime()
             val result = landmarker.detectForVideo(
                 mpImage,
                 ImageProcessingOptions.builder()
                     .setRotationDegrees(imageProxy.imageInfo.rotationDegrees)
                     .build(),
                 nextFrameTs.getAndAdd(FRAME_INTERVAL_MS)
+            )
+            detectMs = SystemClock.elapsedRealtime() - detectStart
+            // Real analysed-frame timing, including the camera's own sensor
+            // timestamp so dropped frames can be counted. Without this the live
+            // analysis rate is unknowable and every "it feels slow on my phone"
+            // report stays a guess.
+            profiler.record(
+                arrivalMs = frameAtMs,
+                convertDurationMs = convertMs,
+                detectDurationMs = detectMs,
+                sensorTimestampNs = imageProxy.imageInfo.timestamp
             )
             val frame = Frame(toHands(result), frameAtMs)
             // The ring is a rolling buffer of the recent past. It is never

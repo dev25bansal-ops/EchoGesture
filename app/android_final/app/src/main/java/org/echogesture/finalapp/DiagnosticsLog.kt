@@ -72,6 +72,45 @@ class DiagnosticsLog(context: Context) {
         runCatching { if (file.isFile) file.readText() else "" }.getOrDefault("")
     }
 
+    /**
+     * Appends the measured analysis-path profile.
+     *
+     * This is the record that answers "how fast is the analyser actually
+     * running on this phone" with numbers instead of speculation: the stage
+     * split says whether the detector or the YUV-to-Bitmap copy dominates, the
+     * arrival interval says what the camera delivered, and the derived drop
+     * count says how many frames the analyser never saw.
+     *
+     * Deliberately separate from the per-capture records above, because it
+     * describes the camera, not a sign. Reading an analysis rate off a capture's
+     * frame count is what produced the old "5-10 fps" figure from a run that was
+     * actually capped at 32 samples.
+     *
+     * No pixels, no landmarks, no identifiers.
+     */
+    fun recordProfiler(snapshot: AnalysisProfiler.Snapshot) = synchronized(lock) {
+        val line = buildString {
+            append("profile fps=").append(String.format("%.1f", snapshot.effectiveFps))
+            append(" interval_p50=").append(snapshot.intervalP50)
+            append(" interval_p95=").append(snapshot.intervalP95)
+            append(" analyse_p50=").append(snapshot.analysisP50)
+            append(" convert_p50=").append(snapshot.convertP50)
+            append(" detect_p50=").append(snapshot.detectP50)
+            append(" detect_p95=").append(snapshot.detectP95)
+            append(" delivered=").append(snapshot.delivered)
+            append(" dropped=").append(snapshot.dropped)
+            append(" limit=").append(snapshot.limit)
+        }
+
+        val existing = runCatching {
+            if (file.isFile) file.readLines() else emptyList()
+        }.getOrDefault(emptyList()).filter { it.isNotBlank() }
+
+        val kept = (existing + line).takeLast(MAX_RECORDS)
+        file.writeText(HEADER + "\n" + kept.joinToString("\n") + "\n")
+        Unit
+    }
+
     fun clear() = synchronized(lock) {
         runCatching { file.delete() }
         Unit

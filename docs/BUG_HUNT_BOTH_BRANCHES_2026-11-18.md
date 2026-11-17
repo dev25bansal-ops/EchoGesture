@@ -440,7 +440,7 @@ future `git add models/` will behave unexpectedly.
 
 | Suite | Before | After | Note |
 | --- | --- | --- | --- |
-| Android JVM (`./gradlew testDebugUnitTest`) | 128 tests, **11 failed** | 128 tests, **0 failed** | weights absent vs supplied |
+| Android JVM (`./gradlew testDebugUnitTest --rerun-tasks`) | 128 tests, **11 failed** | **128 tests, 0 failed, 0 errors, 0 skipped** | weights absent vs supplied; re-run forced |
 | Python `evaluation/device` | **aborts at collection**, 509 + 2 errors | **258 passed, 0 failed, 0 errors, 41 skipped** | excluding the one file that crashes the interpreter (M1) |
 | Android APK (`assembleDebug`) | **BUILD FAILED** (symlink, then assets) | **BUILD SUCCESSFUL**, 82,715,330 B | |
 

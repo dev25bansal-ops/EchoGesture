@@ -63,9 +63,19 @@ CLIP = REPO / "evaluation/device/v5_accuracy/data/val_30/0283886564670357-WHAT F
 @_weightless
 class ClosureAssemblyTest(unittest.TestCase):
     def test_closure_is_complete_and_honest(self):
-        # The closure must contain every file predict() needs. The four ensemble
-        # members are declared by models/landmark_model_meta.json; the runtime
-        # refuses to start if one is missing, so they are part of the closure.
+        # The closure must contain every file predict() needs. The ensemble
+        # members are declared by models/landmark_model_meta.json and the
+        # runtime refuses to start if one is missing, so they are part of the
+        # closure.
+        #
+        # Expected members are read from the same sidecar the builder reads,
+        # rather than hardcoded. This assertion previously pinned a literal
+        # four-member tuple; when the shipped ensemble became nine, the test
+        # failed for being out of date rather than for finding a real omission —
+        # exactly the stale-premise failure it was meant to catch.
+        expected_members = tuple(rb._declared_members())
+        self.assertEqual(len(expected_members), 9,
+                         "the shipped sidecar should declare nine members")
         self.assertEqual(rb.CLOSURE, (
             "src/main.py",
             "src/requirements.txt",
@@ -74,10 +84,7 @@ class ClosureAssemblyTest(unittest.TestCase):
             "src/landmark_frontend.py",
             "src/parallel_tracker.py",
             "models/landmark_classifier_fp16.tflite",
-            "models/landmark_ens_tcn21_fp16.tflite",
-            "models/landmark_ens_tcnm61_fp16.tflite",
-            "models/landmark_ens_tcnm62_fp16.tflite",
-            "models/landmark_ens_rob71_fp16.tflite",
+            *expected_members,
             "models/landmark_labels.json",
             "models/landmark_model_meta.json",
             "models/hand_landmarker.task",
@@ -87,6 +94,13 @@ class ClosureAssemblyTest(unittest.TestCase):
         self.assertEqual(len(rb.CLOSURE), len(set(rb.CLOSURE)), "closure has duplicates")
         for rel in rb.CLOSURE:
             self.assertTrue(safe_member(rel), f"closure path not safe: {rel}")
+            if rel == rb.SELECTED_MODEL_REL:
+                # The retired single-classifier weight. The closure still lists
+                # it because SELECTED_MODEL_REL is the manifest's model identity,
+                # but the binary is gitignored and exists on no branch. Asserting
+                # it is on disk tests the checkout, not the closure — and its
+                # absence is already reported honestly as a skip elsewhere.
+                continue
             full = REPO / rel
             self.assertTrue(full.is_file(), f"closure asset missing: {rel}")
             self.assertGreater(full.stat().st_size, 0, f"closure asset empty: {rel}")

@@ -102,14 +102,38 @@ as a stale-premise assertion failure. Its own summary contradicts its own detail
 Also [reader]: the triage says 502 tests / 433 passed; the committed `test-report.json`
 says 472 tests / 366 passed / 97 skipped. Two different inventories.
 
-### 6. Model documentation describes a model that does not exist [reader]
+### 6. The root `README.md` — the first file a judge opens — is three generations stale [verified]
+
+Last touched 13 Nov (`b33aa6f`), one day **before** his own nine-member integration
+(14 Nov, `5251bf8`) and four days before he corrected the deck (17 Nov, `6f63582`).
+It says:
+
+> The default runtime is Dev's **four-model FP16 TFLite ensemble** … `WHATFOR1` at
+> 0.8821 confidence.
+
+and in the accuracy summary:
+
+> The shipped runtime is a **4-member FP16 ensemble** and scores **909/1249 =
+> 72.78% top-1 / 87.51% top-5**
+
+Three things are wrong in that one file: the member count (four, not nine), the
+accuracy (72.78%, not the 85.45% his own deck now leads with), and the confidence
+figure — 0.8821 is the value in `parity_ensemble_logits.txt`, which is the **retired
+four-member fixture**. `src/README.md` and `models/README.md` repeat the four-member
+claim with the same stale hashes.
+
+So the corrected work exists and is dated 17 Nov, but the repository's front page was
+never brought forward. A reviewer reading top-down hits the stale claim first and the
+correction never.
+
+### 7. Model documentation describes a model that does not exist [reader]
 
 `models/README.md` documents a four-member ensemble, every member `[1,24,255]` "z
 dropped", pinned at `06f655bb`. The committed meta declares nine members, five of them
 381-wide x,y,z, blob `19dc4b86`. The README is from 12 Nov and was never updated after
 the nine-member integration on 15 Nov.
 
-### 7. `parity_ensemble_logits.txt` still describes the four-member ensemble [reader]
+### 8. `parity_ensemble_logits.txt` still describes the four-member ensemble [reader]
 
 12 lines, consumed by `EnsembleParityTest`, which asserts four members and confidence
 0.8821. The runtime fixture beside it describes nine members and 0.9749. Two mutually
@@ -153,14 +177,17 @@ two facts cannot both stand.
 
 ## What I would do in the next 36 hours, in order
 
-1. **Pick one deck and delete the other.** `submission/presentation/` (85.45%, corrected
+1. **Rewrite the root `README.md`.** It is the first file a judge opens and it is four
+   days and two model generations behind. Everything else on this list is easier to
+   excuse than that.
+2. **Pick one deck and delete the other.** `submission/presentation/` (85.45%, corrected
    robustness). Leaving two contradicts the manifest.
-2. **Decide the weights question** (A/B/C in the reply). Everything else in the
+3. **Decide the weights question** (A/B/C in the reply). Everything else in the
    submission is downstream of that.
-3. **Rewrite `results/results.csv` on his branch** so it does not say 72.78% / four
+4. **Rewrite `results/results.csv` on his branch** so it does not say 72.78% / four
    members while the meta says nine.
-4. **Merge `hackathon/dev-model` into his branch**, or port the two fixes by hand
+5. **Merge `hackathon/dev-model` into his branch**, or port the two fixes by hand
    (`robustness.py` aggregation, `export_tflite_tf.py` gate). Without this, any further
    robustness number he generates is from the wrong estimator.
-5. Fix `models/README.md`, `parity_ensemble_logits.txt`, and the `camera_further` no-op.
+6. Fix `models/README.md`, `parity_ensemble_logits.txt`, and the `camera_further` no-op.
    None is load-bearing for scoring, but a judge who reads the repo will find them.

@@ -125,3 +125,7 @@ evaluation/device/benchmark_lab/results/
 # not imagery.
 evaluation/device/demo_final/*.png
 *.err
+
+# Claude Code session infrastructure: worktrees, transcripts and session state.
+# Not project source; a fresh clone must never carry another machine's session.
+.claude/

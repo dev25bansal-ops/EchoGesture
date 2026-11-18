@@ -155,7 +155,14 @@ def read_frames(video_path: str | Path, max_frames: int = 32, size: int | None =
     """
     cap = cv2.VideoCapture(str(video_path))
     if not cap.isOpened():
-        return []
+        # Distinguish "cannot decode this file" from "decoded fine but no hands".
+        # Returning [] here made both look identical, and main.py reported an
+        # unreadable file (a text file named .mp4, a zero-byte file, a truncated
+        # download) as "No hand detected in any frame of: ..." — sending the
+        # reader to debug the video's CONTENT when the file itself is unopenable.
+        raise ValueError(
+            f"Could not decode video: {video_path} "
+            "(the file is missing, empty, truncated, or not a video)")
     total = int(cap.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
     out = []
     if total > max_frames:

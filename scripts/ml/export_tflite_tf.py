@@ -90,9 +90,12 @@ def main():
     if max_abs > 1e-2 or agree < 0.99:
         sys.exit("REFUSING: TF port does not reproduce PyTorch. Not exporting.")
 
-    pt_acc = float((pt_pred == y[:200]).mean())
-    tf_acc = float((tf_pred == y[:200]).mean())
-    print(f"val top-1 (first 200): torch {pt_acc*100:.1f}%  tf {tf_acc*100:.1f}%")
+    # Compute the float baseline over the SAME set the INT8 gate scores. The old
+    # version used y[:200] here and the full set below, so the two accuracies
+    # were not comparable and the gate's `drop` was meaningless.
+    pt_acc = float((pt_pred == y).mean())
+    tf_acc = float((tf_pred == y).mean())
+    print(f"val top-1 (all {len(y)}): torch {pt_acc*100:.1f}%  tf {tf_acc*100:.1f}%")
 
     # ---------------------------------------------------- 2. INT8 + TFLite
     def rep():
@@ -128,10 +131,18 @@ def main():
         preds.append(int(interp.get_tensor(o_det["index"])[0].argmax()))
     preds = np.array(preds)
     int8_acc = float((preds == y).mean())
-    print(f"INT8 TFLite val top-1: {int8_acc*100:.2f}%  (torch {pt_acc*100:.1f}% on subset)")
-    drop = 0.0
+    print(f"INT8 TFLite val top-1: {int8_acc*100:.2f}%  (float {pt_acc*100:.1f}% on the same {len(y)} clips)")
+    # `drop = 0.0` made this gate dead code: `if drop > 0.15` could never fire, so
+    # the script advertised a quantisation check that no artifact could ever fail.
+    # It now compares the INT8 accuracy against the float baseline measured on the
+    # same clips above, and deletes the artifact before refusing.
+    drop = pt_acc - int8_acc
     if drop > 0.15:
-        sys.exit(f"REFUSING: INT8 dropped {drop*100:.1f}pp vs float. Not shipping.")
+        OUT.unlink()
+        sys.exit(
+            f"REFUSING: INT8 dropped {drop*100:.1f}pp vs float "
+            f"({pt_acc*100:.1f}% -> {int8_acc*100:.1f}%). Not shipping.")
+    print(f"INT8 gate: {drop*100:+.2f}pp vs float (budget 15.0pp) - PASS")
 
     json.dump({"frames": frames, "feature_dim": FEATURE_DIM,
                "classes": len(vocab), "backbone": str(ckpt["backbone"]), "dim": dim,

@@ -165,15 +165,23 @@ def ensemble_probs(models, lm, pres, frames):
     widths = {}
     for uz in {m_use_z(m) for m, _b in models}:
         widths[uz] = build_features(lm, pres, expected_frames=frames, use_z=uz)
-    out = []
+    # Mean LOGITS, then one softmax - the shipped aggregator. This function
+    # averaged `torch.softmax(lg, 1)` per member, which is a different estimator:
+    # the docstring above warns against it and the code did it anyway, so every
+    # robustness figure this harness produced described a model that does not
+    # ship. On this project mean-probability measured +0.9 on test / -0.9 on val
+    # and was rejected for exactly that reason.
+    logits = []
     for m, backbone in models:
         use_z = m_use_z(m)
         feats, mask = widths[use_z]
         with torch.no_grad():
             lg = m(torch.from_numpy(feats)[None],
                    torch.from_numpy(mask)[None])
-            out.append(torch.softmax(lg, 1)[0].numpy())
-    return np.mean(out, axis=0)
+            logits.append(lg[0].numpy())
+    avg = np.mean(logits, axis=0)
+    e = np.exp(avg - avg.max())
+    return e / e.sum()
 
 
 def m_use_z(model):

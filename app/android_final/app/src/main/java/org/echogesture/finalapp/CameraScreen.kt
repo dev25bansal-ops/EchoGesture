@@ -146,6 +146,8 @@ class CameraScreen(
     private var preview: Preview? = null
 
     @Volatile private var tracker: HandTracker? = null
+    // Detector asset name, kept so the ERROR retry can rebuild a failed tracker.
+    @Volatile private var trackerAsset: String? = null
     @Volatile private var classifier: LandmarkClassifier? = null
     @Volatile private var contractContract: LoadedModel? = null
     @Volatile private var modelReady = false
@@ -238,6 +240,10 @@ class CameraScreen(
         classifier = newClassifier
         contractContract = loaded
         modelReady = true
+        // Remember how to build a tracker, so the ERROR retry below can rebuild
+        // the one that failed instead of re-running startCamera against the same
+        // dead detector forever.
+        trackerAsset = ModelContract.DETECTOR_ASSET
         modelIdentity.text = activity.getString(
             R.string.settings_model_ensemble,
             loaded.members.size
@@ -256,12 +262,20 @@ class CameraScreen(
     }
 
     fun onDestroy() {
+        // Stop the workers BEFORE closing the tracker they run on. The previous
+        // order closed the tracker first, and HandTracker.close() calls
+        // landmarker.close() -> TaskRunner.close(), which is NOT synchronised in
+        // mediapipe tasks-core 0.10.14 (process/send/addPackets are, close() is
+        // not). A frame that had already passed HandTracker's `closed` check
+        // could still be inside detectForVideo() while the native graph was torn
+        // down underneath it. shutdownNow() first means no worker can be
+        // mid-detect when the landmarker closes.
+        trackerExecutor.shutdownNow()
+        inferExecutor.shutdownNow()
         tracker?.close()
         classifier?.close()
         tracker = null
         classifier = null
-        trackerExecutor.shutdownNow()
-        inferExecutor.shutdownNow()
     }
 
     fun currentCaption(): String? =
@@ -300,6 +314,11 @@ class CameraScreen(
             when (currentState) {
                 UiState.ERROR -> {
                     trackerFailureReported = false
+                    // Rebuild the tracker before retrying. A detector that
+                    // failed to initialise (low memory, delegate contention) does
+                    // not recover by re-running startCamera, and the old retry
+                    // left the user cycling ERROR -> "try again" -> ERROR forever.
+                    rebuildTrackerIfPossible()
                     startCamera(prefs.cameraChoice)
                     render(UiState.WAITING)
                 }
@@ -713,6 +732,30 @@ class CameraScreen(
         if (trackerFailureReported) return
         trackerFailureReported = true
         render(UiState.ERROR, detail = activity.getString(R.string.error_camera_start))
+    }
+
+    /**
+     * Rebuild the hand tracker after a detector failure.
+     *
+     * The ERROR retry previously only re-ran startCamera(), which rebinds the
+     * SAME tracker instance - so a detector that failed to initialise produced
+     * ERROR -> "try again" -> ERROR indefinitely. Failures here are logged and
+     * left alone: if the detector cannot be constructed, startCamera will fail
+     * again and the user gets the same ERROR with a real reason, which is better
+     * than a crash on the retry path.
+     */
+    private fun rebuildTrackerIfPossible() {
+        val asset = trackerAsset ?: return
+        runCatching {
+            tracker?.close()
+            // analyserCallback() reads the `tracker` field on every frame, and
+            // the analyser is already bound to trackerExecutor by the time this
+            // runs, so swapping the field is sufficient - nothing to re-attach.
+            // (imageAnalysis is null on this path: startCamera() recreates it.)
+            tracker = HandTracker.create(activity, asset)
+        }.onFailure { e ->
+            android.util.Log.w("CameraScreen", "tracker rebuild failed", e)
+        }
     }
 
     // ---- capture ------------------------------------------------------------

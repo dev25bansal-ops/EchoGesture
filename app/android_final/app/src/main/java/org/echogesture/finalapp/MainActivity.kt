@@ -131,6 +131,15 @@ class MainActivity : AppCompatActivity() {
     // ---- navigation ---------------------------------------------------------
 
     private fun showTab(itemId: Int) {
+        // Unbind the camera when leaving its tab. onUnbind() had no caller, so
+        // the ImageAnalysis bound in onBind() stayed attached to the Activity's
+        // lifecycle after the view was removed - each Camera -> Settings -> Camera
+        // cycle then tore down and re-created a camera the user never stopped,
+        // and could leave a second ImageAnalysis consuming sensor frames into a
+        // detached PreviewView.
+        if (currentTab == R.id.nav_camera && itemId != R.id.nav_camera) {
+            cameraScreen.onUnbind()
+        }
         currentTab = itemId
         contentHost.removeAllViews()
         when (itemId) {

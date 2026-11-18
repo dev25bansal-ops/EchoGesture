@@ -1027,16 +1027,23 @@ class CameraScreen(
         // tells the reader how fast frames were arriving, and writing 0 there
         // made a 2.5-fps capture indistinguishable from a dead analyser.
         val rateFps = r?.let { RecordingFeatures.fpsOf(it) } ?: 0f
-        diagnostics.record(
-            HandTracker.Capture(
-                sampled,
-                r?.durationMs ?: 0L,
-                rateFps,
-                sampled.count { it.hands.isNotEmpty() }
-            ),
-            null,
-            0L
-        )
+        // Wrapped like every other diagnostics call site. This runs on the UI
+        // thread from finishRecording() (a too-short tap is the common trigger),
+        // and DiagnosticsLog.record() does a whole-file readLines + writeText;
+        // an unguarded throw there (disk full, filesystem error) would escape to
+        // the main looper and crash the app on the most common failure path.
+        runCatching {
+            diagnostics.record(
+                HandTracker.Capture(
+                    sampled,
+                    r?.durationMs ?: 0L,
+                    rateFps,
+                    sampled.count { it.hands.isNotEmpty() }
+                ),
+                null,
+                0L
+            )
+        }
         // A rejected recording is exactly when the analysis rate matters most:
         // it is the difference between "the signer was out of frame" and "the
         // analyser was barely running". This path bypasses logDiagnostic

@@ -42,6 +42,14 @@ class Speaker(context: Context) {
                 })
             } else {
                 available.set(false)
+                // Allow a later retry to re-initialise. Without this, a TTS
+                // service that was momentarily unavailable at launch left
+                // `initialised` true for the whole session and every subsequent
+                // initialise() no-oped, so "Speak results" could never recover
+                // and permanently reported "No offline voice available".
+                runCatching { tts?.shutdown() }
+                tts = null
+                initialised.set(false)
             }
             listener?.onAvailabilityChanged(available.get())
             pending?.let { text ->
@@ -64,7 +72,16 @@ class Speaker(context: Context) {
             initialise()
             return false
         }
-        if (!available.get()) return false
+        if (!available.get()) {
+            // Still initialising, or no voice at all. Queue only while the init
+            // callback has not landed yet; once it has and reported a failure,
+            // `tts` is null again (see initialise's failure branch) so this
+            // branch means "in flight". Queueing here is what the doc above
+            // promises, and without it a Speak tapped just after launch showed
+            // a false "No offline voice available" even though a voice existed.
+            if (initialised.get()) pending = text
+            return false
+        }
         return speakNow(text, engine)
     }
 

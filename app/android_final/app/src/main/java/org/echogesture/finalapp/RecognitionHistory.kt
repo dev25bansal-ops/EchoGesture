@@ -42,6 +42,11 @@ class RecognitionHistory(context: Context) {
 
     fun add(label: String, score: Float, timestampMillis: Long = System.currentTimeMillis()) {
         entries.add(0, Entry(label, score, timestampMillis))
+        // Cap the list. With saveHistory on, every add re-serialises the whole
+        // list into a single SharedPreferences string on the UI thread, so an
+        // unbounded history turns each recognition into O(n) work that grows
+        // without limit during a demo or a long session.
+        while (entries.size > MAX_ENTRIES) entries.removeAt(entries.size - 1)
         persistIfEnabled()
         notifyChanged()
     }
@@ -83,23 +88,32 @@ class RecognitionHistory(context: Context) {
 
     private fun load() {
         val raw = prefs.getString(KEY_ENTRIES, null) ?: return
+        // Build into a temp list and skip individual bad rows. The previous
+        // version cleared `entries` and then added in a loop, so a single
+        // malformed row (a missing "ts"/"score"/"label", e.g. written by an
+        // older schema - the stored object carries no version key) threw
+        // mid-loop, runCatching swallowed it, and every valid entry AFTER that
+        // row was silently dropped. The next add() then persisted the truncated
+        // list, making the loss permanent with nothing on screen to signal it.
+        val loaded = ArrayList<Entry>()
         runCatching {
             val array = JSONArray(raw)
-            entries.clear()
             for (i in 0 until array.length()) {
-                val o = array.getJSONObject(i)
-                entries.add(
-                    Entry(
-                        label = o.getString("label"),
-                        score = o.getDouble("score").toFloat(),
-                        timestampMillis = o.getLong("ts")
-                    )
-                )
+                val o = runCatching { array.getJSONObject(i) }.getOrNull() ?: continue
+                val label = runCatching { o.getString("label") }.getOrNull() ?: continue
+                val score = runCatching { o.getDouble("score").toFloat() }.getOrNull() ?: continue
+                val ts = runCatching { o.getLong("ts") }.getOrNull() ?: continue
+                loaded.add(Entry(label = label, score = score, timestampMillis = ts))
             }
         }
+        entries.clear()
+        entries.addAll(loaded)
     }
 
     private companion object {
         const val KEY_ENTRIES = "entries"
+
+        /** Newest-first cap. Keeps one recognition's persistence cost bounded. */
+        const val MAX_ENTRIES = 500
     }
 }

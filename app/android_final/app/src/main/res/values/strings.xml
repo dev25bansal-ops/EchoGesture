@@ -112,7 +112,7 @@
     <string name="settings_show_guidance">Framing guide</string>
     <string name="settings_show_guidance_detail">Show the hand-placement guide over the preview</string>
     <string name="settings_haptics">Haptic feedback</string>
-    <string name="settings_haptics_detail">Short vibration on capture, result and error</string>
+    <string name="settings_haptics_detail">Short vibration on button taps, capture and result</string>
     <string name="settings_caption_size">Result text size</string>
     <string name="settings_caption_size_detail">Size of the recognised sign on the result card</string>
     <string name="caption_size_small">Small</string>
@@ -150,11 +150,11 @@
 
     <!-- Help -->
     <string name="help_quick_title">New here?</string>
-    <string name="help_quick_body">Hold your hands inside the frame. Tap Start sign, perform one sign, then tap Finish sign — the app reads exactly what you recorded.</string>
+    <string name="help_quick_body">Hold your hands inside the frame. Tap Start sign, perform one sign, then tap Finish sign — the app trims to the motion and classifies that.</string>
     <string name="help_title">How to use EchoGesture</string>
     <string name="help_step_1">Point the camera so the signer’s hands are clearly visible.</string>
     <string name="help_step_2">Keep both hands inside the frame guide.</string>
-    <string name="help_step_3">Tap Start sign, perform one supported sign from beginning to end, then tap Finish sign. The app analyses exactly that interval and nothing outside it.</string>
+    <string name="help_step_3">Tap Start sign, perform one supported sign from beginning to end, then tap Finish sign. The app trims idle frames from the ends and classifies the movement itself — nothing outside what you recorded is used.</string>
     <string name="help_step_4">Keep both hands in view for the whole sign. If the recording is too short or shows no hands, the app says so instead of guessing.</string>
     <string name="help_step_5">Read the recognised sign and the alternatives offered.</string>
     <string name="help_privacy">Everything runs on this phone. Nothing is uploaded.</string>

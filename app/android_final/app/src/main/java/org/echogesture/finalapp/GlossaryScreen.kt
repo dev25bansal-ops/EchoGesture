@@ -68,6 +68,12 @@ class GlossaryScreen(
         adapter.submit(all)
         subtitle.text = activity.getString(R.string.glossary_subtitle, all.size)
         updateCount()
+        // Empty/list visibility is otherwise only assigned in applyQuery, which
+        // runs only from the TextWatcher. With no query typed (the normal path)
+        // the empty view kept whatever state it had, so after a model load the
+        // list stayed GONE and the screen looked blank even though the adapter
+        // had 100 signs. Re-apply the current query so visibility matches.
+        applyQuery(search.text?.toString().orEmpty())
     }
 
     fun onHistoryChanged() {

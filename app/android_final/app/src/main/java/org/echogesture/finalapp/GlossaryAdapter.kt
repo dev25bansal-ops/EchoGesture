@@ -42,7 +42,13 @@ class GlossaryAdapter(
             all
         } else {
             val needle = normalise(query)
-            all.filter { normalise(it).contains(needle) }
+            // A query of only digits or punctuation normalises to "". A bare
+            // contains("") is true for every label, so searching "8" matched all
+            // 100 signs and never showed the empty state - and "8HOUR" is a real
+            // label, so the sign the user wanted was buried in a full list.
+            // An unusable query means no usable match, not every match.
+            if (needle.isEmpty()) emptyList()
+            else all.filter { normalise(it).contains(needle) }
         }
         notifyDataSetChanged()
     }

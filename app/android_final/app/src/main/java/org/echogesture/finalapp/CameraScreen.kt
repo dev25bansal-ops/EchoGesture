@@ -66,7 +66,16 @@ class CameraScreen(
      * rather than a flag so the button, the live pill and the timer cannot
      * disagree about whether capture is in progress.
      */
-    enum class UiState { INIT, WAITING, RECORDING, PROCESSING, RESULT, NO_HANDS, LOW_FRAMES, ERROR }
+    /**
+     * AUTO_ARMED and AUTO_SIGNING are the one-tap flow: the user taps Start
+     * once, the segmenter decides where the sign began and ended, and the app
+     * classifies it with no second tap. They are separate states from the
+     * manual RECORDING path, which stays available as the fallback.
+     */
+    enum class UiState {
+        INIT, WAITING, RECORDING, PROCESSING, RESULT, NO_HANDS, LOW_FRAMES, ERROR,
+        AUTO_ARMED, AUTO_SIGNING
+    }
 
     companion object {
         /**
@@ -109,6 +118,8 @@ class CameraScreen(
 
     private val resultCard: View = root.findViewById(R.id.resultCard)
     private val captionText: TextView = root.findViewById(R.id.captionText)
+    private val resultLabel: TextView = root.findViewById(R.id.resultLabel)
+    private val alternativesLabel: TextView = root.findViewById(R.id.alternativesLabel)
     private val confidenceBadge: TextView = root.findViewById(R.id.confidenceBadge)
     private val alternativesText: TextView = root.findViewById(R.id.alternativesText)
     private val latencyText: TextView = root.findViewById(R.id.latencyText)
@@ -169,6 +180,15 @@ class CameraScreen(
     private var lastHandFrames = 0
     private var bound = false
 
+    /**
+     * Bumped whenever a result must no longer be painted.
+     *
+     * In-flight inference cannot be cancelled, so a completion that lands after
+     * the user cleared the card, left the tab, or started a new attempt is
+     * discarded instead of overwriting what is now on screen.
+     */
+    private var resultGeneration = 0
+
     private val permissionLauncher = activity.registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
@@ -224,6 +244,12 @@ class CameraScreen(
     fun onUnbind() {
         if (!bound) return
         bound = false
+        // Drop an armed or in-progress one-tap attempt: leaving the tab must
+        // not leave the segmenter buffering frames nobody will classify.
+        runCatching { tracker?.disarmAuto() }
+        // In-flight inference cannot be cancelled, but its result must not be
+        // painted onto a screen the user has left.
+        resultGeneration++
         runCatching { cameraProvider?.unbindAll() }
         camera = null
         imageAnalysis = null
@@ -274,7 +300,15 @@ class CameraScreen(
             when (currentState) {
                 UiState.RECORDING -> finishRecording()
                 UiState.PROCESSING -> Unit // button is disabled, but be explicit
-                else -> startRecording()
+                // One tap arms the segmenter; the same button then acts as the
+                // manual fallback the brief requires, finishing the sign early
+                // if the automatic end does not fire.
+                // While armed the button reads "Stop waiting", so it must
+                // actually cancel. Leaving this as Unit trapped the user in a
+                // state with no way out except leaving the tab.
+                UiState.AUTO_ARMED -> cancelAutoCapture()
+                UiState.AUTO_SIGNING -> finishAutoCapture()
+                else -> startAutoCapture()
             }
         }
         helpButton.setOnClickListener { showHelp() }
@@ -359,7 +393,9 @@ class CameraScreen(
                 when (state) {
                     UiState.PROCESSING -> R.string.capture_action_processing
                     UiState.RECORDING -> R.string.record_finish
-                    else -> R.string.record_start
+                    UiState.AUTO_ARMED -> R.string.auto_cancel
+                    UiState.AUTO_SIGNING -> R.string.auto_finish_now
+                    else -> R.string.start_recognition
                 }
             )
 
@@ -416,6 +452,23 @@ class CameraScreen(
                     setLiveStatus(R.string.result_label, R.color.success)
                     resultCard.visibility = View.VISIBLE
                     revealResult()
+                }
+                UiState.AUTO_ARMED -> {
+                    // One tap already happened; the app is watching. The
+                    // primary button stays enabled as "Stop waiting" so the
+                    // user is never trapped without an exit.
+                    hideStatus()
+                    resultCard.visibility = View.GONE
+                    guidanceText.visibility =
+                        if (prefs.showGuidance) View.VISIBLE else View.GONE
+                    setLiveStatus(R.string.auto_ready, R.color.text_on_dark)
+                }
+                UiState.AUTO_SIGNING -> {
+                    hideStatus()
+                    resultCard.visibility = View.GONE
+                    guidanceText.visibility =
+                        if (prefs.showGuidance) View.VISIBLE else View.GONE
+                    setLiveStatus(R.string.auto_signing_status, R.color.text_on_dark)
                 }
                 UiState.NO_HANDS -> {
                     showStatus(
@@ -614,13 +667,36 @@ class CameraScreen(
             val (frames, handFrames) = t.status()
             lastFrames = frames
             lastHandFrames = handFrames
+
+            // The segmenter may have just completed a sign on this very frame.
+            // Consumed here, exactly once, so a sign is never classified twice.
+            val completed = t.takeAutoOutcome()
+            val autoState = t.autoState()
+
             activity.runOnUiThread {
-                if (currentState == UiState.WAITING) {
-                    setLiveStatus(
-                        if (handFrames > 0) R.string.camera_state_detected
-                        else R.string.camera_state_searching,
-                        R.color.text_on_dark
-                    )
+                if (completed != null) {
+                    onAutoSignComplete(completed)
+                } else {
+                    when (autoState) {
+                        AutoSegmenter.State.ARMED ->
+                            if (currentState == UiState.AUTO_ARMED) {
+                                setLiveStatus(R.string.auto_ready, R.color.text_on_dark)
+                            }
+                        AutoSegmenter.State.SIGNING ->
+                            if (currentState == UiState.AUTO_ARMED) {
+                                // The sign has begun; move the whole screen into
+                                // the signing state so the button becomes the
+                                // manual Finish fallback.
+                                render(UiState.AUTO_SIGNING)
+                            }
+                        else -> if (currentState == UiState.WAITING) {
+                            setLiveStatus(
+                                if (handFrames > 0) R.string.camera_state_detected
+                                else R.string.camera_state_searching,
+                                R.color.text_on_dark
+                            )
+                        }
+                    }
                 }
             }
         } else if (t.consecutiveFailures() >= HandTracker.FAILURE_THRESHOLD) {
@@ -834,6 +910,65 @@ class CameraScreen(
     }
 
     /** FINISH: freeze the interval and classify exactly it. */
+    // ---- one-tap automatic capture -----------------------------------------
+
+    /**
+     * One tap. Arms the segmenter and waits.
+     *
+     * Deliberately does NOT start a SignRecorder: the two modes have separate
+     * state, so an armed one-tap attempt can never be confused with a manual
+     * recording that is in progress.
+     */
+    private fun startAutoCapture() {
+        val t = tracker ?: return
+        if (!hasCameraPermission() || camera == null) {
+            render(UiState.WAITING, permissionBlocked = !hasCameraPermission())
+            return
+        }
+        resultGeneration++
+        hideStatus()
+        t.armAuto(SystemClock.elapsedRealtime())
+        render(UiState.AUTO_ARMED)
+        haptic(HapticFeedbackConstants.KEYBOARD_TAP)
+    }
+
+    /** The user ended the sign themselves; keep what was captured. */
+    private fun finishAutoCapture() {
+        val t = tracker ?: return
+        val outcome = t.finishAutoManually(SystemClock.elapsedRealtime())
+        if (outcome != null) onAutoSignComplete(outcome)
+    }
+
+    private fun cancelAutoCapture() {
+        tracker?.disarmAuto()
+        render(UiState.WAITING)
+    }
+
+    /**
+     * A one-tap attempt has ended — either automatically or by the user.
+     *
+     * The segment is classified exactly once, here, on the inference executor.
+     * Nothing is classified for frames outside the segment the segmenter chose,
+     * which is the whole point of the one-tap flow: the model sees the sign, not
+     * the idle before and after it.
+     */
+    private fun onAutoSignComplete(outcome: AutoSegmenter.Outcome) {
+        val c = classifier ?: return
+        if (!outcome.isUsable) {
+            // Say why, rather than classifying a fragment. An unusable segment
+            // is an input-quality failure and must not become a guess.
+            render(UiState.NO_HANDS, detail = activity.getString(R.string.auto_too_short))
+            haptic(HapticFeedbackConstants.LONG_PRESS)
+            return
+        }
+        val generation = ++resultGeneration
+        render(UiState.PROCESSING)
+        val recording = SignRecorder.Recording(outcome.frames, outcome.startedAtMs, outcome.endedAtMs)
+        inferExecutor.execute {
+            runInference(recording, c, generation)
+        }
+    }
+
     private fun finishRecording() {
         val t = tracker ?: return
         val c = classifier ?: return
@@ -852,7 +987,8 @@ class CameraScreen(
         }
         val recording = (outcome as SignRecorder.Result.Usable).recording
         render(UiState.PROCESSING)
-        inferExecutor.execute { runInference(recording, c) }
+        val generation = ++resultGeneration
+        inferExecutor.execute { runInference(recording, c, generation) }
     }
 
     private fun cancelRecording() {
@@ -923,7 +1059,11 @@ class CameraScreen(
      * four pinned interpreters, same mean-logit → single-softmax aggregation.
      * Record mode differs only in which frames it hands over.
      */
-    private fun runInference(recording: SignRecorder.Recording, c: LandmarkClassifier) {
+    private fun runInference(
+        recording: SignRecorder.Recording,
+        c: LandmarkClassifier,
+        generation: Int = resultGeneration
+    ) {
         try {
             if (recording.frameCount == 0) {
                 processing = false
@@ -967,7 +1107,12 @@ class CameraScreen(
             val totalMs = (System.nanoTime() - started) / 1_000_000L
             processing = false
             if (prefs.diagnostics) logDiagnostic(capture, result, totalMs)
-            activity.runOnUiThread { renderResult(result, totalMs, capture) }
+            activity.runOnUiThread {
+                // Drop a result the user can no longer see: they cleared the
+                // card, left the tab, or started another attempt while this
+                // inference was running.
+                if (generation == resultGeneration) renderResult(result, totalMs, capture)
+            }
         } catch (t: Throwable) {
             processing = false
             render(UiState.ERROR, detail = activity.getString(R.string.error_inference))
@@ -1049,12 +1194,29 @@ class CameraScreen(
         // are only 35.4% accurate. See ResultPolicy for the measurements.
         val certain = ResultPolicy.isAccepted(result.margin, percent)
 
-        captionText.text = result.prediction
+        // A guess that the policy declined must NOT be presented as the
+        // recognised sign. Before this, captionText got result.prediction
+        // unconditionally, so a 6%-margin reading was shown under the heading
+        // "Recognised sign" and spoken aloud - the exact failure the user
+        // reported. The gloss is now shown only when accepted; otherwise the
+        // headline says it was not recognised and the guess moves to a
+        // clearly-labelled reference line.
+        if (certain) {
+            captionText.text = result.prediction
+            resultLabel.setText(R.string.result_label)
+        } else {
+            captionText.text = activity.getString(R.string.result_uncertain_headline)
+            resultLabel.setText(R.string.result_label_diagnostic)
+        }
         confidenceBadge.text = activity.getString(
             R.string.result_score,
             "%.1f".format(percent)
         )
         alternativesText.text = result.top5.drop(1).joinToString("  ·  ")
+        alternativesLabel.setText(
+            if (certain) R.string.result_alternatives_label
+            else R.string.result_alternatives_label_diagnostic
+        )
 
         // Label the reliability, and report the real capture facts next to it.
         // The inference figure alone invited "43 ms" to be read as
@@ -1094,9 +1256,11 @@ class CameraScreen(
         render(UiState.RESULT)
         haptic(HapticFeedbackConstants.LONG_PRESS)
 
-        // Still recorded: an uncertain reading is real evidence about what the
-        // model saw, and hiding it would lose information the user asked for.
-        history.add(result.prediction, result.confidence)
+        // Only an accepted reading is added to recognised-sign history. A
+        // declined guess is still written to capture diagnostics, where it
+        // belongs, but it must not appear in the user's list of signs the app
+        // recognised - that list is a record of what the app claimed.
+        if (certain) history.add(result.prediction, result.confidence)
         if (prefs.speech && certain) speakResult(result.prediction)
     }
 

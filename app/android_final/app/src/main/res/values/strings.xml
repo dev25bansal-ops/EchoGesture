@@ -66,6 +66,20 @@
     <string name="result_alternatives_label">Alternatives</string>
     <string name="result_confidence_accepted">Best match — still confirm before relying on it</string>
     <string name="result_confidence_uncertain">Uncertain — this is the model\'s best guess, not a confirmed reading</string>
+    <!-- Shown in place of the gloss when the reading is not reliable. A guess
+         must never be presented as a recognised sign. -->
+    <string name="result_uncertain_headline">Sign not recognised reliably</string>
+    <string name="result_label_diagnostic">Best guess, for reference only</string>
+    <!-- One-tap flow -->
+    <string name="auto_ready">Ready — perform one sign</string>
+    <string name="auto_signing_status">Recognising your movement…</string>
+    <string name="start_recognition">Start Recognition</string>
+    <string name="auto_cancel">Stop waiting</string>
+    <string name="auto_finish_now">Finish now</string>
+    <string name="auto_discarded">Attempt cancelled. Nothing was recognised.</string>
+    <string name="auto_too_short">That sign was too short to read. Perform the whole sign once the app says it is ready.</string>
+    <string name="auto_unusable">That attempt could not be read. Try again with the whole sign inside the guide.</string>
+    <string name="result_alternatives_label_diagnostic">Other possibilities</string>
     <string name="result_capture_detail">Captured %1$d frames over %2$d ms at %3$d fps</string>
     <string name="result_latency_detail">Classifier took %1$d ms on this device</string>
     <string name="result_responsibility">A model score ranks the 100 known signs; it is not a calibrated probability that the reading is correct. Recognises one isolated sign at a time.</string>
@@ -150,11 +164,11 @@
 
     <!-- Help -->
     <string name="help_quick_title">New here?</string>
-    <string name="help_quick_body">Hold your hands inside the frame. Tap Start sign, perform one sign, then tap Finish sign — the app reads exactly what you recorded.</string>
+    <string name="help_quick_body">Hold your hands inside the frame and tap Start Recognition once. The app notices when your sign begins, captures it, and stops by itself. Tap Finish now only if it does not stop on its own.</string>
     <string name="help_title">How to use EchoGesture</string>
     <string name="help_step_1">Point the camera so the signer’s hands are clearly visible.</string>
     <string name="help_step_2">Keep both hands inside the frame guide.</string>
-    <string name="help_step_3">Tap Start sign, perform one supported sign from beginning to end, then tap Finish sign. The app analyses exactly that interval and nothing outside it.</string>
+    <string name="help_step_3">Tap Start Recognition once and perform one supported sign from beginning to end. The app finds where the sign starts and stops and reads exactly that interval. If it does not stop by itself, tap Finish now.</string>
     <string name="help_step_4">Keep both hands in view for the whole sign. If the recording is too short or shows no hands, the app says so instead of guessing.</string>
     <string name="help_step_5">Read the recognised sign and the alternatives offered.</string>
     <string name="help_privacy">Everything runs on this phone. Nothing is uploaded.</string>

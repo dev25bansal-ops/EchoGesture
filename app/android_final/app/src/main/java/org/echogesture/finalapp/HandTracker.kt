@@ -9,6 +9,7 @@ import com.google.mediapipe.framework.image.MPImage
 import com.google.mediapipe.tasks.core.BaseOptions
 import com.google.mediapipe.tasks.vision.core.ImageProcessingOptions
 import com.google.mediapipe.tasks.vision.core.RunningMode
+import androidx.annotation.VisibleForTesting
 import com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarker
 import com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarkerResult
 import java.util.concurrent.atomic.AtomicBoolean
@@ -21,7 +22,8 @@ import java.util.concurrent.atomic.AtomicLong
  * to RGB bitmaps on a background executor; nothing is persisted or uploaded.
  */
 class HandTracker private constructor(
-    private val landmarker: HandLandmarker
+    /** Null only for a test tracker; production construction always supplies one. */
+    private val landmarker: HandLandmarker?
 ) : AutoCloseable {
 
     private val nextFrameTs = AtomicLong(0L)
@@ -47,6 +49,19 @@ class HandTracker private constructor(
      * recording while the UI is finalising the previous one.
      */
     private val recorder = SignRecorder()
+
+    /**
+     * One-tap capture: decides where a sign starts and ends from the frames
+     * themselves, so the signer taps once and the app stops on its own.
+     *
+     * Kept beside [recorder] rather than replacing it: the manual two-tap path
+     * stays as the fallback the brief requires, and both are driven by the same
+     * analysed frames so they can never disagree about what the camera saw.
+     */
+    private val autoSegmenter = AutoSegmenter()
+
+    /** The completed one-tap segment waiting to be classified, if any. */
+    private var autoOutcome: AutoSegmenter.Outcome? = null
 
     /**
      * When the last capture was classified, or [Long.MIN_VALUE] if none yet.
@@ -258,6 +273,15 @@ class HandTracker private constructor(
          */
         const val FAILURE_THRESHOLD = 30
 
+        /**
+         * A tracker with no landmarker, for tests that drive the segmenter and
+         * recorder directly. Production code always goes through [create]; this
+         * exists so the capture state machines can be exercised without a
+         * camera or a native detector.
+         */
+        @VisibleForTesting
+        fun createForTest(context: Context): HandTracker = HandTracker(landmarker = null)
+
         fun create(context: Context, modelAssetPath: String): HandTracker {
             val options = HandLandmarker.HandLandmarkerOptions.builder()
                 .setBaseOptions(
@@ -303,7 +327,9 @@ class HandTracker private constructor(
             // has copied the pixels into its packet, so closing mpImage (which
             // recycles `bitmap`) afterwards is safe.
             val detectStart = SystemClock.elapsedRealtime()
-            val result = landmarker.detectForVideo(
+            val detector = landmarker
+                ?: throw IllegalStateException("no landmarker: test tracker cannot analyse")
+            val result = detector.detectForVideo(
                 mpImage,
                 ImageProcessingOptions.builder()
                     .setRotationDegrees(imageProxy.imageInfo.rotationDegrees)
@@ -335,6 +361,13 @@ class HandTracker private constructor(
                 // analysed frame, one place it arrives, so quick scan and
                 // record mode can never see different sequences.
                 recorder.offer(frame)
+
+                // One-tap path. offer() returns a non-null Outcome exactly once,
+                // on the frame where the sign is judged complete; that is handed
+                // to the UI thread, which classifies it immediately. A sign is
+                // never classified twice because the outcome is consumed here.
+                val done = autoSegmenter.offer(frame)
+                if (done != null) autoOutcome = done
             }
             consecutiveFailures.set(0)
             true
@@ -376,6 +409,64 @@ class HandTracker private constructor(
         lastCapturedAtMs = Long.MIN_VALUE
         recorder.cancel()
     }
+
+    // ---- one-tap automatic capture -----------------------------------------
+
+    /**
+     * Arms the one-tap segmenter at [nowMs]. Any half-finished attempt and any
+     * frame from the previous sign are discarded, so a new tap can never be
+     * classified using the last sign's frames.
+     */
+    fun armAuto(nowMs: Long): Unit = synchronized(lock) {
+        autoOutcome = null
+        autoSegmenter.arm(nowMs)
+    }
+
+    /** Disarms without classifying. Used when the user leaves the tab. */
+    fun disarmAuto(): Unit = synchronized(lock) {
+        autoOutcome = null
+        autoSegmenter.cancel()
+    }
+
+    /** Ends the current attempt now, keeping everything captured so far. */
+    fun finishAutoManually(nowMs: Long): AutoSegmenter.Outcome? = synchronized(lock) {
+        val o = autoSegmenter.finishManually(nowMs)
+        if (o != null) autoOutcome = o
+        autoOutcome
+    }
+
+    /**
+     * Hands back the completed segment exactly once.
+     *
+     * Consumed rather than read, so a segment the segmenter judged complete can
+     * never be classified twice — the UI calls this from the analyser callback
+     * and acts only on a non-null return.
+     */
+    fun takeAutoOutcome(): AutoSegmenter.Outcome? = synchronized(lock) {
+        val o = autoOutcome
+        autoOutcome = null
+        o
+    }
+
+    fun autoState(): AutoSegmenter.State = synchronized(lock) { autoSegmenter.state }
+
+    /**
+     * Offers an already-built frame to the same capture machinery [analyse]
+     * feeds, without an ImageProxy or a detector.
+     *
+     * Test-only: production frames always arrive through [analyse], so the two
+     * can never drift in behaviour because this method shares that code path's
+     * lock and data structures.
+     */
+    @VisibleForTesting
+    fun offerForTest(frame: Frame) = synchronized(lock) {
+        ring.addLast(frame)
+        while (ring.size > MAX_CAPTURE_FRAMES) ring.removeFirst()
+        recorder.offer(frame)
+        autoSegmenter.offer(frame)?.let { autoOutcome = it }
+    }
+
+    fun autoFrameCount(): Int = synchronized(lock) { autoSegmenter.frameCount() }
 
     // ---- explicit recording mode -------------------------------------------
 
@@ -423,7 +514,7 @@ class HandTracker private constructor(
 
     override fun close() {
         if (closed.compareAndSet(false, true)) {
-            landmarker.close()
+            landmarker?.close()
             synchronized(lock) {
                 ring.clear()
                 lastCapturedAtMs = Long.MIN_VALUE

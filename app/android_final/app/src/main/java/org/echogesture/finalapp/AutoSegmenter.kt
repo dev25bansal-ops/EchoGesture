@@ -44,6 +44,17 @@ class AutoSegmenter(
     private val config: Config = Config()
 ) {
 
+    companion object {
+        /**
+         * Hard bound on buffered frames.
+         *
+         * 600 frames is ~20 s at 30 fps, comfortably above [Config.maxSignMs],
+         * so it never truncates a normal attempt. It exists so a fast device or
+         * a clock anomaly cannot turn one attempt into unbounded memory growth.
+         */
+        const val MAX_BUFFERED_FRAMES = 600
+    }
+
     data class Config(
         /**
          * Hand must be present for this long before a sign can start. Guards
@@ -132,6 +143,16 @@ class AutoSegmenter(
         private set
 
     /** Frames buffered for the in-progress sign, oldest first. */
+    /**
+     * Frames buffered for the in-progress sign.
+     *
+     * Capped even though [Config.maxSignMs] already bounds an attempt in time:
+     * the timeout is a duration, and a device that delivers faster than expected
+     * would otherwise grow this list in proportion to its frame rate. Dropping
+     * the OLDEST frames past the cap is correct because only the model's 32
+     * evenly-spaced samples survive anyway, and a very long attempt is already a
+     * retry case.
+     */
     private val buffer = ArrayList<HandTracker.Frame>(128)
 
     /** Recent motion samples, used to measure the resting noise floor. */
@@ -294,6 +315,7 @@ class AutoSegmenter(
         hasHand: Boolean
     ): Outcome? {
         buffer.add(frame)
+        if (buffer.size > MAX_BUFFERED_FRAMES) buffer.removeAt(0)
 
         val floor = if (frozenFloor > 0f) frozenFloor else config.minFloor
         val moving = motion > floor * config.motionFloorMultiplier

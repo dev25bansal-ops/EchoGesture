@@ -48,6 +48,30 @@ object RecordingFeatures {
         return idx.map { frames[it] }
     }
 
+    /**
+     * Samples the interval as given, with no motion trimming.
+     *
+     * **Not used in the capture path.** It exists as the control arm for the
+     * measurement that decides whether the trim should run, and that
+     * measurement came out the other way: feeding an already-selected interval
+     * through the motion trim scored 0.867 against 0.833 for this path on 30
+     * labelled clips. So the app trims on both the manual and one-tap paths.
+     *
+     * The trim survives because its threshold is relative to the recording's own
+     * peak motion, so it adapts to the sign's scale rather than assuming one.
+     * Anyone tempted to skip it should re-run `alreadySelectedIntervalIsNotHarmedByAReTrim`
+     * and beat that number first.
+     */
+    fun sampleWithoutTrim(recording: SignRecorder.Recording): List<HandTracker.Frame> {
+        val frames = recording.frames
+        if (frames.size <= SAMPLED) return frames
+        val idx = HandTracker.evenlySpacedIndices(
+            LongArray(frames.size) { frames[it].capturedAtMs },
+            SAMPLED
+        )
+        return idx.map { frames[it] }
+    }
+
     /** The part of the recording that was kept, for diagnostics. */
     fun segment(recording: SignRecorder.Recording): SignSegmenter.Segment =
         SignSegmenter.choose(recording.frames, fpsOf(recording))

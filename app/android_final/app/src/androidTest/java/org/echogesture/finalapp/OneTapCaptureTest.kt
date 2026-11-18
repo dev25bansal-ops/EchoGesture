@@ -155,6 +155,86 @@ class OneTapCaptureTest {
         }
     }
 
+    /**
+     * Switching camera mid-attempt must not splice two cameras' frames.
+     *
+     * The tracker is unbound and rebound on a switch. Disarming first means the
+     * new camera starts from a clean buffer rather than continuing an attempt
+     * whose first half came from the other lens.
+     */
+    @Test
+    fun cameraSwitchDiscardsTheAttemptRatherThanSplicing() {
+        val t = tracker()
+        try {
+            t.armAuto(0L)
+            var now = 0L
+            for (i in 0 until 30) { now += 40; t.offerForTest(frame(now, 4f)) }
+            assertTrue(t.autoFrameCount() > 0)
+
+            // What onUnbind/rebind does around a camera switch.
+            t.disarmAuto()
+            assertEquals(AutoSegmenter.State.IDLE, t.autoState())
+            assertEquals("no frames may survive the switch", 0, t.autoFrameCount())
+            assertNull("the old attempt must not be classified", t.takeAutoOutcome())
+        } finally {
+            t.close()
+        }
+    }
+
+    /**
+     * Backgrounding must not leave an attempt armed over stale frames.
+     *
+     * Same lifecycle call the tab-switch path makes. On resume the user arms
+     * again deliberately; nothing from before is reused.
+     */
+    @Test
+    fun backgroundingSuspendsTheAttemptSafely() {
+        val t = tracker()
+        try {
+            t.armAuto(0L)
+            var now = 0L
+            for (i in 0 until 40) { now += 40; t.offerForTest(frame(now, 5f)) }
+            t.disarmAuto()          // the app goes to background
+
+            // A long gap, then a frame from "after" the resume.
+            t.offerForTest(frame(now + 30_000, 5f))
+            assertNull("no inference may run on frames held across the gap",
+                t.takeAutoOutcome())
+            assertEquals(0, t.autoFrameCount())
+        } finally {
+            t.close()
+        }
+    }
+
+    /**
+     * Rapid repeated taps keep a single attempt.
+     *
+     * The armed state is entered again rather than a second attempt being
+     * started alongside the first, so no duplicate outcome can be produced.
+     */
+    @Test
+    fun rapidRepeatedStartsKeepOneAttempt() {
+        val t = tracker()
+        try {
+            t.armAuto(0L)
+            t.armAuto(10L)
+            t.armAuto(20L)
+            assertEquals(AutoSegmenter.State.ARMED, t.autoState())
+
+            var now = 20L
+            for (i in 0 until 12) { now += 40; t.offerForTest(frame(now, 0f)) }
+            for (i in 0 until 40) {
+                now += 40; t.offerForTest(frame(now, if (i % 2 == 0) 2f else 6f))
+            }
+            for (i in 0 until 60) { now += 40; t.offerForTest(frame(now, 0f)) }
+
+            assertNotNull("exactly one outcome", t.takeAutoOutcome())
+            assertNull("and not more than one", t.takeAutoOutcome())
+        } finally {
+            t.close()
+        }
+    }
+
     /** The manual fallback still works while a sign is running. */
     @Test
     fun manualFinishWorksDuringASign() {

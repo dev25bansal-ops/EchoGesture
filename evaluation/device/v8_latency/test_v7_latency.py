@@ -4,10 +4,28 @@ import unittest
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+
+
+def _load_sibling(name: str):
+    """Import `name` from THIS file's directory, by path, not by module name.
+
+    Two sibling directories (v7_latency, v8_latency) ship same-named helper
+    modules with different contents, so a plain `import name` resolves to
+    whichever was imported first in the process. Loading by path makes the file
+    next to this one authoritative.
+    """
+    import importlib.util
+    path = HERE / f"{name}.py"
+    spec = importlib.util.spec_from_file_location(f"_local_{name}", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+ROOT = HERE.parents[2]
 sys.path.insert(0, str(HERE))
-import v7_candidates as cand
-
-
+cand = _load_sibling("v7_candidates")
+sys.path.insert(0, str(HERE))
+cand = _load_sibling("v7_candidates")
 class TestV7Contracts(unittest.TestCase):
     def test_constants(self):
         self.assertEqual(cand.MAX_FRAMES, 32)

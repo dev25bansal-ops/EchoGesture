@@ -18,9 +18,26 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+
+
+def _load_sibling(name: str):
+    """Import `name` from THIS file's directory, by path, not by module name.
+
+    Two sibling directories (v7_latency, v8_latency) ship same-named helper
+    modules with different contents, so a plain `import name` resolves to
+    whichever was imported first in the process. Loading by path makes the file
+    next to this one authoritative.
+    """
+    import importlib.util
+    path = HERE / f"{name}.py"
+    spec = importlib.util.spec_from_file_location(f"_local_{name}", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
 ROOT = HERE.parents[2]
 sys.path.insert(0, str(HERE))
-import v7_candidates as cand  # noqa: E402
+cand = _load_sibling("v7_candidates")
 
 
 def sha256(path: Path) -> str:

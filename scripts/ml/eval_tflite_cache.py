@@ -65,12 +65,17 @@ def main():
     print(f"{len(members)} tflite members, widths {widths}, frames {frames}")
 
     files = sorted((ROOT / args.cache / args.split).glob("*.npz"))
+    if not (ROOT / args.cache / args.split).is_dir():
+        sys.exit(f"REFUSING: {ROOT/args.cache/args.split} is not a directory - "
+                 f"check --cache/--split (a typo'd path used to score 0 clips, "
+                 f"write a 0.00% artifact and exit 0)")
     if args.limit:
         files = files[: args.limit]
 
     t0 = time.perf_counter()
     per_member_ok = {m["name"]: 0 for m in members}
     ens_ok = n = nodet = 0
+    per_clip_ms = []
     for p in files:
         d = np.load(p, allow_pickle=False)
         g = str(d["gloss"])
@@ -83,6 +88,7 @@ def main():
         lm = d["landmarks"].astype(np.float32)
         pres = d["present"].astype(np.float32)
 
+        t_clip = time.perf_counter()
         built = {}
         for uz in {m["use_z"] for m in members}:
             built[uz] = build_features(lm, pres, expected_frames=frames, use_z=uz)
@@ -101,26 +107,57 @@ def main():
         avg = np.mean(logits, axis=0)
         ens_ok += int(avg.argmax() == truth)
         n += 1
+        per_clip_ms.append((time.perf_counter() - t_clip) * 1000.0)
 
     el = time.perf_counter() - t0
+    if n == 0:
+        # Same class of defect the repo already fixed in robustness_gated_recheck:
+        # a zero-clip run is an error, not a 0.00% measurement. Emitting a
+        # well-formed JSON here was indistinguishable from a real run that
+        # collapsed, and downstream readers cannot tell the difference.
+        sys.exit(f"REFUSING: scored 0 clips from {args.cache}/{args.split} "
+                 f"(skipped {nodet} with no hand, {len(files)} files found). "
+                 f"No accuracy number exists for this input.")
+    lat_sorted = sorted(per_clip_ms)
+    p50 = lat_sorted[len(lat_sorted) // 2]
+    p95 = lat_sorted[min(len(lat_sorted) - 1, int(round(0.95 * (len(lat_sorted) - 1))))]
+
     print(f"\nscored {n} clips from {args.cache}/{args.split} "
           f"(skipped {nodet} with no hand) in {el:.0f}s")
     print(f"\n{'member':46s} {'top1':>8s}")
     for m in members:
-        print(f"  {m['name']:44s} {100*per_member_ok[m['name']]/max(1,n):7.2f}%")
-    ens = 100 * ens_ok / max(1, n)
+        print(f"  {m['name']:44s} {100*per_member_ok[m['name']]/n:7.2f}%")
+    ens = 100 * ens_ok / n
     print(f"\n  ENSEMBLE (mean-logit): {ens:.2f}%")
-    print(f"  classifier time: {1000*el/max(1,n):.1f} ms/clip for {len(members)} members")
+    # The field named "ms/clip" is total elapsed / clips: a mean over the whole
+    # scoring loop (decode is not in it, but np.load and build_features are).
+    # It is NOT a p95 - results.csv used to republish it as latency_model_only_p95,
+    # which understated the tail by ~1.3-2x. Both statistics are printed and
+    # both are written to the artifact, each labelled for what it is.
+    print(f"  classifier time: mean {1000*el/n:.1f} ms/clip, "
+          f"per-clip p50 {p50:.2f} / p95 {p95:.2f} ms for {len(members)} members")
 
     if args.out:
-        json.dump({
-            "cache": args.cache, "split": args.split, "n": n, "no_detection": nodet,
-            "ensemble_top1_pct": round(ens, 4),
-            "per_member_pct": {m["name"]: round(100*per_member_ok[m["name"]]/max(1, n), 4)
-                               for m in members},
-            "classifier_ms_per_clip": round(1000*el/max(1, n), 3),
-        }, open(args.out, "w"), indent=2)
-        print(f"wrote {args.out}")
+        # Resolve relative paths against the repo root, like every sibling
+        # script (make_predictions.py, robustness.py, train.py, ...). The old
+        # open(args.out) wrote next to the caller's cwd - silently outside the
+        # repo, or FileNotFoundError after all the scoring work.
+        out_path = Path(args.out)
+        if not out_path.is_absolute():
+            out_path = ROOT / out_path
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(out_path, "w", encoding="utf-8") as f:
+            json.dump({
+                "cache": args.cache, "split": args.split, "n": n, "no_detection": nodet,
+                "ensemble_top1_pct": round(ens, 4),
+                "per_member_pct": {m["name"]: round(100*per_member_ok[m["name"]]/n, 4)
+                                   for m in members},
+                "classifier_ms_per_clip": round(1000*el/n, 3),
+                "latency_mean_ms": round(float(np.mean(per_clip_ms)), 3),
+                "latency_p50_ms": round(float(p50), 3),
+                "latency_p95_ms": round(float(p95), 3),
+            }, f, indent=2, allow_nan=False)
+        print(f"wrote {out_path}")
 
 
 if __name__ == "__main__":

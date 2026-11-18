@@ -9,15 +9,21 @@ split (11 signers, none seen in training). Nothing is estimated or carried
 over from a paper.
 
 Two accuracy numbers are reported and they are NOT interchangeable:
-  - top1_accuracy        end-to-end through src/main.py `predict()`
-  - top1_accuracy_cached landmarks from the cache, classifier only
+  - top1_accuracy_end_to_end  through src/main.py `predict()` (--end-to-end)
+  - top1_accuracy_cached      landmarks from the cache, classifier only (default)
 
 The gap between them is the MediaPipe front end's contribution. Reporting only
 the cached number would hide a broken front end; reporting only the end-to-end
 number would hide classifier problems behind decode noise.
 
+The default scores the SHIPPED nine-member ensemble from
+models/landmark_model_meta.json (mean-logit, mask by name), not the retired
+single INT8 file - the previous default, landmark_classifier_fp16.tflite, was
+deleted in the ensemble commit and made this script crash on a bare invocation.
+
 Usage:
-    python scripts/ml/evaluate.py --ckpt .scratch/runs/model.pt --split test
+    python scripts/ml/evaluate.py --split test
+    python scripts/ml/evaluate.py --split test --end-to-end
 """
 
 import argparse
@@ -87,9 +93,68 @@ def load_classifier(model_path):
     return invoke, vocab, frames, use_z
 
 
+def load_ensemble_classifier():
+    """Score the SHIPPED nine-member ensemble, mean-logit, mask by name.
+
+    This is the path src/main.py and the app run. Returns
+    (invoke_from_landmarks, vocab, frames); invoke takes the raw per-clip
+    landmarks and presence flags and returns probabilities, because the nine
+    members do not share one feature width (four are 255-wide, five 381-wide).
+    """
+    from ai_edge_litert.interpreter import Interpreter
+
+    meta = json.load(open(ROOT / "models" / "landmark_model_meta.json", encoding="utf-8"))
+    labels = json.load(open(ROOT / "models" / "landmark_labels.json", encoding="utf-8"))
+    idx_label = {int(i): g for g, i in labels.items()}
+    vocab = [idx_label[i] for i in range(len(idx_label))]
+    frames = int(meta["frames"])
+    detail = {d["file"]: bool(d.get("use_z", False))
+              for d in meta.get("members_detail", []) or []}
+
+    members = []
+    for name in meta["members"]:
+        p = ROOT / "models" / name
+        if not p.exists():
+            sys.exit(f"Ensemble member missing: {p}")
+        interp = Interpreter(model_path=str(p))
+        interp.allocate_tensors()
+        dets = interp.get_input_details()
+        f_det = next((d for d in dets if "features" in d["name"]), dets[0])
+        m_det = next((d for d in dets if "mask" in d["name"]), None)
+        members.append({"it": interp, "f": f_det["index"],
+                        "m": m_det["index"] if m_det else None,
+                        "o": interp.get_output_details()[0]["index"],
+                        "use_z": detail.get(name, False)})
+
+    def invoke_from_landmarks(lm, pres):
+        from features import build_features
+        feats = {}
+        for uz in {m["use_z"] for m in members}:
+            feats[uz] = build_features(lm, pres, expected_frames=frames, use_z=uz)
+        logits = []
+        for m in members:
+            f, mk = feats[m["use_z"]]
+            m["it"].set_tensor(m["f"], f[None].astype(np.float32))
+            if m["m"] is not None:
+                m["it"].set_tensor(m["m"], mk[None].astype(np.float32))
+            m["it"].invoke()
+            logits.append(m["it"].get_tensor(m["o"])[0].astype(np.float32))
+        lg = np.mean(logits, axis=0)
+        e = np.exp(lg - lg.max())
+        return e / e.sum()
+
+    return invoke_from_landmarks, vocab, frames
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--ckpt", default="models/landmark_classifier_fp16.tflite")
+    # The default used to be landmark_classifier_fp16.tflite, deleted in
+    # cdafe12 when the ensemble replaced it - so the script could not run at all
+    # as shipped. Default to the ensemble manifest and score the mean-logit
+    # ensemble (the shipped path); a single --ckpt still works for ablations.
+    ap.add_argument("--ckpt", default=None,
+                    help="single .tflite classifier to score; default: the nine-member "
+                         "ensemble from models/landmark_model_meta.json (shipped path)")
     ap.add_argument("--split", default="test", choices=["train", "val", "test"])
     ap.add_argument("--frames", type=int, default=24)
     ap.add_argument("--end-to-end", action="store_true",
@@ -98,7 +163,17 @@ def main():
 
     from features import build_features
 
-    invoke, vocab, ck_frames, use_z = load_classifier(ROOT / args.ckpt)
+    if args.ckpt:
+        ckpt_path = ROOT / args.ckpt
+        if not ckpt_path.exists():
+            sys.exit(f"--ckpt {ckpt_path} does not exist. The former default "
+                     "models/landmark_classifier_fp16.tflite was removed when the "
+                     "ensemble became the shipped artifact; omit --ckpt to score "
+                     "the ensemble, or point at an existing .tflite file.")
+        invoke, vocab, ck_frames, use_z = load_classifier(ckpt_path)
+    else:
+        invoke, vocab, ck_frames = load_ensemble_classifier()
+        use_z = None
     vocab_idx = {g: i for i, g in enumerate(vocab)}
     idx_label = {i: g for g, i in vocab_idx.items()}
     frames = args.frames or ck_frames
@@ -113,6 +188,35 @@ def main():
     skipped = 0
     t_start = time.perf_counter()
 
+    # --end-to-end used to be parsed and advertised in the help text but never
+    # referenced, so passing it silently measured nothing extra while the module
+    # docstring promised a second, non-interchangeable accuracy number. Run the
+    # real MediaPipe front end + src/main.py predict() on the clips that have a
+    # video on disk, and report BOTH numbers, labelled.
+    e2e = None
+    if args.end_to_end:
+        from main import predict as e2e_predict
+        videos_dir = ROOT / ".scratch" / "aslcit_vocab_videos"
+        videos = {p.stem: p for p in videos_dir.glob("*.mp4")}
+        ok = tot = 0
+        e2e_skipped = 0
+        print(f"end-to-end: running src/main.py predict() on "
+              f"{len(rows)} clips (slow)")
+        for r in rows:
+            stem = Path(r["Video file"]).stem
+            vp = videos.get(stem)
+            if vp is None:
+                e2e_skipped += 1
+                continue
+            try:
+                res = e2e_predict(str(vp))
+            except ValueError:
+                e2e_skipped += 1   # no hand / no coverage - same skip rule
+                continue
+            tot += 1
+            ok += int(res["prediction"] == r["Gloss"])
+        e2e = (ok, tot, e2e_skipped)
+
     for r in rows:
         p = LANDMARKS / args.split / (Path(r["Video file"]).stem + ".npz")
         if not p.exists():
@@ -125,10 +229,13 @@ def main():
             continue
 
         t0 = time.perf_counter()
-        # use_z follows the model's own width, read from the graph rather than
-        # assumed: five of the nine shipped members take 381-wide x,y,z.
-        feats, mask = build_features(lm, pres, expected_frames=frames, use_z=use_z)
-        probs = invoke(feats, mask)
+        if args.ckpt:
+            # Single .tflite: width comes from the graph (255 -> x,y; 381 -> x,y,z).
+            feats, mask = build_features(lm, pres, expected_frames=frames, use_z=use_z)
+            probs = invoke(feats, mask)
+        else:
+            # Ensemble: invoke() takes the raw landmarks and builds each width.
+            probs = invoke(lm, pres)
         lat = (time.perf_counter() - t0) * 1000.0
         latencies.append(lat)
 
@@ -172,6 +279,19 @@ def main():
     accs = [c / t for c, t in per_signer.values()]
     print(f"  mean {100*np.mean(accs):.1f}%  min {100*min(accs):.1f}%  "
           f"max {100*max(accs):.1f}%")
+    e2e_pct = None
+    if e2e is not None:
+        e2e_ok, e2e_n, e2e_skipped = e2e
+        if e2e_n:
+            e2e_pct = round(100 * e2e_ok / e2e_n, 2)
+            print(f"end-to-end (src/main.py predict()): {e2e_pct:.2f}% "
+                  f"on {e2e_n} clips ({e2e_skipped} skipped: no video or no hand)")
+            print(f"classifier-only (cached landmarks): "
+                  f"{100*correct/n:.2f}% on {n} clips")
+            print(f"the {100*correct/n - e2e_pct:+.2f} pt gap is the MediaPipe "
+                  f"front end's contribution")
+        else:
+            print("end-to-end: no clips had a readable video; nothing measured")
 
     # ------------------------------------------------------------ write out
     out_jsonl = ROOT / "results" / f"predictions_{args.split}.jsonl"
@@ -198,6 +318,9 @@ def main():
         "per_signer_max_pct": round(100 * float(max(accs)), 2),
         "wall_s": round(time.perf_counter() - t_start, 1),
     }
+    if e2e_pct is not None:
+        summary["top1_accuracy_end_to_end_pct"] = e2e_pct
+        summary["top1_accuracy_cached_pct"] = round(100 * correct / n, 2)
     (ROOT / "results" / f"eval_summary_{args.split}.json").write_text(json.dumps(summary, indent=2))
     print(f"wrote results/eval_summary_{args.split}.json")
 

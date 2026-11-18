@@ -260,8 +260,12 @@ def main():
     el = time.perf_counter() - t0
     print(f"\ndone {finished}/{len(queue_items)} in {el/60:.1f} min  "
           f"ok={tally['ok']} no_hand={tally['miss']} unreadable={tally['dead']} errors={tally['err']}")
+    # Count the cache this run actually wrote to. This used to read the module
+    # constant OUT (the default .scratch/landmarks) regardless of --out, so a
+    # fresh extraction into a new directory reported the pre-existing default
+    # cache's counts (1789/346/1255) - a cache containing 1 clip appeared full.
     for s in ("train", "val", "test"):
-        n = len(list((OUT / s).glob("*.npz"))) if (OUT / s).exists() else 0
+        n = len(list((out_root / s).glob("*.npz"))) if (out_root / s).exists() else 0
         print(f"  {s}: {n} cached")
     return 0
 

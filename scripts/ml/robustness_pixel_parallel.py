@@ -104,7 +104,9 @@ def main():
     ap.add_argument("--seed", type=int, default=7)
     ap.add_argument("--cache", default=None,
                     help="landmark cache root (default .scratch/landmarks)")
-    ap.add_argument("--out", default="results/robustness_pixel_full.json")
+    ap.add_argument("--out", default=None,
+                    help="output path (default: results/robustness_pixel_full.json; "
+                         "a --limit run defaults to results/robustness_pixel_limit<N>.json)")
     args = ap.parse_args()
 
     import multiprocessing as mp
@@ -136,7 +138,17 @@ def main():
             merged.setdefault(k, []).extend(v)
 
     clean = merged["clean"]
-    base = 100 * sum(clean) / max(1, len(clean))
+    # A run that scored nothing is an ERROR, not a 0.00%/PASS measurement. The
+    # old `100*sum(v)/max(1,len(v))` turned an empty sample into 0.00% and every
+    # row "passed", and the default --out then overwrote the tracked
+    # results/robustness_pixel_full.json (the jury-criterion evidence) with an
+    # all-zero PASS block, exit code 0. Same defect class as BUG_HUNT H10,
+    # which prescribed exactly this guard.
+    if not clean:
+        sys.exit(f"REFUSING: scored 0 clips (n=0 clean) - check --cache "
+                 f"({args.cache!r}) and --split {args.split!r}; no accuracy "
+                 f"exists for this input and no artifact was written")
+    base = 100 * sum(clean) / len(clean)
     results = {}
     print()
     for k, v in merged.items():
@@ -158,12 +170,27 @@ def main():
     results["_meta"] = {
         "split": args.split, "size": args.size,
         "letterbox": args.letterbox, "workers": w,
+        "limit": args.limit,
         "clean_top1": round(base, 4),
         "worst_drop": round(worst, 4),
         "aggregator": "mean-logit (shipped)",
     }
-    Path(args.out).write_text(json.dumps(results, indent=2))
-    print(f"wrote {args.out}")
+    # A --limit smoke run must not overwrite the tracked full-split artifact
+    # unless --out names it explicitly.
+    if args.out is None:
+        out_rel = (f"results/robustness_pixel_limit{args.limit}.json"
+                   if args.limit else "results/robustness_pixel_full.json")
+    else:
+        out_rel = args.out
+    out_path = Path(out_rel)
+    if not out_path.is_absolute():
+        out_path = ROOT / out_path
+    if args.limit and out_path.resolve() == (ROOT / "results/robustness_pixel_full.json").resolve():
+        print(f"\nWARNING: this is a {args.limit}-clip LIMIT run writing over the "
+              f"tracked full-split artifact {out_rel}.")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(results, indent=2, allow_nan=False))
+    print(f"wrote {out_path}")
 
 
 if __name__ == "__main__":

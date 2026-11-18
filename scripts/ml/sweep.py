@@ -47,8 +47,12 @@ def load(split, vocab_idx, frames=24):
 
 
 def build_at(LM, PR, frames, offset_frac):
-    """Features for every clip, cropping `frames` starting at offset_frac of the clip."""
-    out = []
+    """Features for every clip, cropping `frames` starting at offset_frac.
+
+    Returns {use_z: X} - one matrix per feature width the models need, because
+    a 255-wide x,y model and a 381-wide x,y,z model cannot share one matrix.
+    """
+    crops = []
     for lm, pr in zip(LM, PR):
         T = len(pr)
         if T > frames:
@@ -57,15 +61,20 @@ def build_at(LM, PR, frames, offset_frac):
             lm2, pr2 = lm[s:s + frames], pr[s:s + frames]
         else:
             lm2, pr2 = lm, pr
-        f, _ = build_features(lm2, pr2, expected_frames=frames)
-        out.append(f)
-    return np.stack(out).astype(np.float32)
+        crops.append((lm2, pr2))
+    out = {}
+    for uz in (False, True):
+        mats = [build_features(lm, pr, expected_frames=frames, use_z=uz)[0]
+                for lm, pr in crops]
+        out[uz] = np.stack(mats).astype(np.float32)
+    return out
 
 
-def logits(models, X):
+def logits(models, Xs):
+    """Per-model logits; models are (module, use_z) pairs and Xs is {use_z: X}."""
     import torch
     with torch.no_grad():
-        return [m(torch.from_numpy(X), None).numpy() for m in models]
+        return [m(torch.from_numpy(Xs[uz]), None).numpy() for m, uz in models]
 
 
 def main():
@@ -82,11 +91,15 @@ def main():
         ck = torch.load(c, map_location="cpu", weights_only=True)
         vocab = ck["vocab"] if vocab is None else vocab
         frames = int(ck["frames"])
+        # in_dim from the checkpoint's stem - five of the nine shipped members
+        # are 381-wide z models and the 255 default refused to load them.
+        in_dim = int(ck["model"]["stem.weight"].shape[1])
         m = TemporalModel(len(ck["vocab"]), dim=int(ck["dim"]),
-                          frames=frames, backbone=str(ck["backbone"]))
+                          frames=frames, backbone=str(ck["backbone"]),
+                          in_dim=in_dim)
         m.load_state_dict(ck["model"])
         m.eval()
-        models.append(m)
+        models.append((m, in_dim != 255))
     vocab_idx = {g: i for i, g in enumerate(vocab)}
 
     LM, PR, Y = load(args.split, vocab_idx)

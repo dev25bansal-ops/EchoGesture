@@ -56,8 +56,15 @@ def main():
     frames = int(ckpt["frames"])
     dim = int(ckpt["dim"])
     backbone = str(ckpt["backbone"])
+    # in_dim from the checkpoint's stem, so a 381-wide z-checkpoint exports at
+    # its real width instead of failing to load against the 255 default.
+    in_dim = int(ckpt["model"]["stem.weight"].shape[1])
+    if in_dim != FEATURE_DIM:
+        print(f"checkpoint feature width {in_dim} (z-channel model); export "
+              f"uses that width, not FEATURE_DIM={FEATURE_DIM}")
 
-    model = TemporalModel(len(vocab), dim=dim, frames=frames, backbone=backbone)
+    model = TemporalModel(len(vocab), dim=dim, frames=frames, backbone=backbone,
+                          in_dim=in_dim)
     model.load_state_dict(ckpt["model"])
     model.eval()
 
@@ -66,7 +73,7 @@ def main():
     # ---------------------------------------------------------------- ONNX
     onnx_path = ROOT / "models" / "landmark_classifier.onnx"
     onnx_path.parent.mkdir(parents=True, exist_ok=True)
-    dummy = torch.randn(1, frames, FEATURE_DIM)
+    dummy = torch.randn(1, frames, in_dim)
     torch.onnx.export(
         wrapped, dummy, str(onnx_path),
         input_names=["features"], output_names=["logits"],
@@ -82,7 +89,7 @@ def main():
         if (ROOT / ".scratch" / "runs" / "calib.pt").exists() else None
     if calib is None:
         print("no calibration set found; falling back to synthetic (poor but loadable)")
-        calib = [torch.randn(1, frames, FEATURE_DIM) for _ in range(args.calib)]
+        calib = [torch.randn(1, frames, in_dim) for _ in range(args.calib)]
     else:
         calib = [c.unsqueeze(0) for c in calib[: args.calib]]
     print(f"calibration samples: {len(calib)}")
@@ -129,14 +136,14 @@ def main():
             meta = {}
     except (FileNotFoundError, json.JSONDecodeError):
         meta = {}
-    meta.update({"frames": frames, "feature_dim": FEATURE_DIM,
+    meta.update({"frames": frames, "feature_dim": in_dim,
                  "classes": len(vocab), "backbone": backbone, "dim": dim})
     meta.setdefault("quantization", "int8")
     keep = sorted(meta.get("members", []))
     if keep:
         print(f"preserving {len(keep)} ensemble member entries in {meta_path.name}")
     json.dump(meta, open(meta_path, "w", encoding="utf-8"), indent=2)
-    print(f"meta  {meta_path}  frames={frames} feature_dim={FEATURE_DIM}")
+    print(f"meta  {meta_path}  frames={frames} feature_dim={in_dim}")
 
     # ------------------------------------------------------------ sanity check
     import onnxruntime as ort

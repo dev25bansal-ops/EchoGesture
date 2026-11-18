@@ -109,23 +109,45 @@ def main():
     p50 = statistics.median(warm)
     p95 = warm[min(n - 1, int(round(0.95 * (n - 1))))]
 
-    # ---- stage split on the last clip
+    # ---- stage split on the last clip. Decode and detection are timed
+    # SEPARATELY: clip_to_landmarks = read_frames + detect_hands, and the
+    # committed artifact's hand-assembled `stage_split_ms.detect` (1,136 ms)
+    # actually included decode while the csv note paired it with the isolated
+    # detector-only 20.3 ms/frame - two different quantities under one name.
     lm = None
-    t0 = time.perf_counter()
-    from landmark_frontend import clip_to_landmarks
+    from landmark_frontend import read_frames, detect_hands
     from features import build_features
-    lm, pres = clip_to_landmarks(clips[-1], max_frames=max(32, M._FRAMES))
+    n_frames = max(32, M._FRAMES)
+    t0 = time.perf_counter()
+    frames = read_frames(clips[-1], max_frames=n_frames)
+    t_decode = (time.perf_counter() - t0) * 1000.0
+    t0 = time.perf_counter()
+    lm, pres = detect_hands(frames, mode="image")
     t_detect = (time.perf_counter() - t0) * 1000.0
 
     t0 = time.perf_counter()
+    built = {}
     for uz in set(M._MEMBER_USE_Z):
-        build_features(lm, pres, expected_frames=M._FRAMES, use_z=uz)
+        built[uz] = build_features(lm, pres, expected_frames=M._FRAMES, use_z=uz)
     t_feat = (time.perf_counter() - t0) * 1000.0
+
+    # The nine-member classifier alone, on the features just built - the
+    # quantity results.csv's latency_model_only row refers to.
+    import numpy as _np
+    t0 = time.perf_counter()
+    for interp, (in_idx, out_idx, mask_idx), uz in zip(
+            M._INTERPRETERS, M._MEMBER_IO, M._MEMBER_USE_Z):
+        f, mk = built[uz]
+        interp.set_tensor(in_idx, f[None, ...].astype(_np.float32))
+        if mask_idx >= 0:
+            interp.set_tensor(mask_idx, mk[None, ...].astype(_np.float32))
+        interp.invoke()
+    t_cls = (time.perf_counter() - t0) * 1000.0
 
     load_after = machine_load()
 
     rec = {
-        "measured": "16 Nov 2026",
+        "measured": time.strftime("%Y-%m-%d"),
         "clips": len(clips),
         "pinned_cores": args.affinity,
         "competing_distllm_processes": competing,
@@ -139,8 +161,19 @@ def main():
         "warm_min_ms": round(warm[0], 2),
         "warm_max_ms": round(warm[-1], 2),
         "warm_all_ms": [round(x, 2) for x in warm],
+        # One clip, same process, timed in sequence. decode + detect + features
+        # + classifier is the decomposition of a single predict() pass - unlike
+        # the artifact this replaces, whose stage keys did not exist in any
+        # committed version of this script.
+        "stage_split_ms": {"decode": round(t_decode, 1),
+                           "detect": round(t_detect, 1),
+                           "features": round(t_feat, 2),
+                           "classifier_nine_members": round(t_cls, 2)},
+        "stage_split_note": ("single last clip, timed in sequence after the warm "
+                             "loop; decode and detect are separate stages"),
         "stage_detect_ms": round(t_detect, 1),
         "stage_features_ms": round(t_feat, 2),
+        "stage_classifier_ms": round(t_cls, 2),
         "first_prediction": first.get("prediction"),
         "note": ("Warm latency_ms is the value predict() reports and the one the "
                  "evaluator scores. Cold start is one-time per process. If "
@@ -157,7 +190,8 @@ def main():
     print(f"  cold start TOTAL       {import_time_ms+init_ms+cold_ms:8.0f} ms (one time)")
     print(f"  warm p50 / p95         {p50:8.1f} / {p95:.1f} ms   (scored)")
     print(f"    range                {warm[0]:.1f} .. {warm[-1]:.1f} ms")
-    print(f"  stage: detect {t_detect:.0f} ms | features {t_feat:.1f} ms")
+    print(f"  stage (one clip): decode {t_decode:.0f} ms | detect {t_detect:.0f} ms "
+          f"| features {t_feat:.1f} ms | classifier {t_cls:.1f} ms")
     print(f"\nwrote {args.out}")
     if pinned:
         print("(pinned run — compare against an unpinned one)")

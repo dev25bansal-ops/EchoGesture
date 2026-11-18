@@ -32,8 +32,13 @@ LANDMARKS = ROOT / ".scratch" / "landmarks"
 
 
 def load_split(vocab_idx, frames, split):
-    """Feature matrices and labels for one split."""
-    X, y, signers = [], [], []
+    """Raw landmarks, presence, labels and signers for one split.
+
+    Features are built per checkpoint, not here: a 255-wide checkpoint needs
+    x,y and a 381-wide one x,y,z, so one shared feature matrix would force a
+    single width for every member.
+    """
+    LM, PR, y, signers = [], [], [], []
     for p in sorted((LANDMARKS / split).glob("*.npz")):
         d = np.load(p, allow_pickle=False)
         if float(d["present"].max()) < 0.5:
@@ -41,23 +46,32 @@ def load_split(vocab_idx, frames, split):
         g = str(d["gloss"])
         if g not in vocab_idx:
             continue
-        f, _ = build_features(d["landmarks"], d["present"], expected_frames=frames)
-        X.append(f)
+        LM.append(d["landmarks"])
+        PR.append(d["present"])
         y.append(vocab_idx[g])
         signers.append(str(d["participant"]))
-    return np.stack(X).astype(np.float32), np.array(y), signers
+    return LM, PR, np.array(y), signers
 
 
-def logits_for(ckpt_path, X):
+def logits_for(ckpt_path, LM, PR):
     """Softmax-free logits from one checkpoint."""
     import torch
     from train import TemporalModel
 
     ck = torch.load(ckpt_path, map_location="cpu", weights_only=True)
+    # in_dim from the checkpoint's stem: five of the nine shipped members are
+    # 381-wide z models, and the 255 default failed to load them ("size
+    # mismatch for stem.weight"), so those members could not be ensembled.
+    in_dim = int(ck["model"]["stem.weight"].shape[1])
+    frames = int(ck["frames"])
     m = TemporalModel(len(ck["vocab"]), dim=int(ck["dim"]),
-                      frames=int(ck["frames"]), backbone=str(ck["backbone"]))
+                      frames=frames, backbone=str(ck["backbone"]),
+                      in_dim=in_dim)
     m.load_state_dict(ck["model"])
     m.eval()
+    use_z = in_dim != 255
+    X = np.stack([build_features(lm, pr, expected_frames=frames, use_z=use_z)[0]
+                  for lm, pr in zip(LM, PR)]).astype(np.float32)
     with torch.no_grad():
         out = m(torch.from_numpy(X), None).numpy()
     return out, ck
@@ -88,12 +102,12 @@ def main():
 
     for split in args.splits.split(","):
         split = split.strip()
-        X, y, signers = load_split(vocab_idx, frames, split)
+        LM, PR, y, signers = load_split(vocab_idx, frames, split)
         print(f"\n=== {split} ({len(y)} clips) ===")
 
         all_logits = []
         for c in args.ckpts:
-            lg, _ = logits_for(c, X)
+            lg, _ = logits_for(c, LM, PR)
             all_logits.append(lg)
             report(Path(c).stem, lg.argmax(1), y, signers)
 

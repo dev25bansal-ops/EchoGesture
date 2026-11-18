@@ -207,7 +207,26 @@ class ClipReplayAccuracyTest {
         return bmp
     }
 
-    private class Outcome(val clip: String, val truth: String, val pred: String, val score: Float, val handFrames: Int, val frames: Int)
+    /**
+     * One scored clip, with everything the release report needs.
+     *
+     * `margin` and `accepted` come from the same [ResultPolicy] the app uses, so
+     * this harness reports the shipped acceptance decision rather than
+     * re-deriving one and drifting from the app.
+     */
+    private class Outcome(
+        val clip: String,
+        val truth: String,
+        val pred: String,
+        val top5: List<String>,
+        val score: Float,
+        val margin: Float,
+        val accepted: Boolean,
+        val handFrames: Int,
+        val frames: Int,
+        val decodeMs: Long,
+        val inferMs: Long
+    )
 
     /**
      * The live camera path runs MediaPipe in VIDEO mode; the parity test above
@@ -228,7 +247,9 @@ class ClipReplayAccuracyTest {
             .setMinTrackingConfidence(0.3f)
             .build()
         val landmarker = HandLandmarker.createFromOptions(instrumentation.targetContext, options)
+        val decodeStart = System.nanoTime()
         val (frames, _) = sampleFrames(file, 32, resize = false)
+        val decodeMs = (System.nanoTime() - decodeStart) / 1_000_000L
         if (frames.isEmpty()) {
             landmarker.close()
             return null
@@ -269,7 +290,11 @@ class ClipReplayAccuracyTest {
         val r = classifier.predict(xy.features, xy.mask, xyz.features)
         val name = file.name.removeSuffix(".mp4")
         val truth = if (name.contains("-")) name.substringAfter("-") else name
-        return Outcome(file.name, truth, r.prediction, r.confidence, hands, n)
+        val accepted = ResultPolicy.isAccepted(r.margin, r.confidence * 100f)
+        return Outcome(
+            file.name, truth, r.prediction, r.top5, r.confidence, r.margin, accepted,
+            hands, n, decodeMs, r.inferenceMillis.toLong()
+        )
     }
 
     /** Does VIDEO mode give the same answer as IMAGE mode on identical frames? */
@@ -313,7 +338,9 @@ class ClipReplayAccuracyTest {
     private fun classify(
         file: File, landmarker: HandLandmarker, classifier: LandmarkClassifier, resize: Boolean
     ): Outcome? {
+        val decodeStart = System.nanoTime()
         val (frames, _) = sampleFrames(file, 32, resize)
+        val decodeMs = (System.nanoTime() - decodeStart) / 1_000_000L
         if (frames.isEmpty()) return null
         val n = frames.size
         val landmarks = FloatArray(n * 2 * 21 * 3)
@@ -347,7 +374,11 @@ class ClipReplayAccuracyTest {
         val r = classifier.predict(xy.features, xy.mask, xyz.features)
         val name = file.name.removeSuffix(".mp4")
         val truth = if (name.contains("-")) name.substringAfter("-") else name
-        return Outcome(file.name, truth, r.prediction, r.confidence, hands, n)
+        val accepted = ResultPolicy.isAccepted(r.margin, r.confidence * 100f)
+        return Outcome(
+            file.name, truth, r.prediction, r.top5, r.confidence, r.margin, accepted,
+            hands, n, decodeMs, r.inferenceMillis.toLong()
+        )
     }
 
     /**
@@ -525,18 +556,58 @@ class ClipReplayAccuracyTest {
                 val tag = if (resize) "resize256" else "native"
                 var correct = 0
                 var total = 0
+                var rejected = 0
+                val rows = StringBuilder()
+                rows.append("clip,ground_truth,prediction,verdict,accepted,top5,")
+                rows.append("score,margin,hand_frames,sampled_frames,hand_coverage,")
+                rows.append("decode_ms,infer_ms,fail_reason\n")
                 for (f in files) {
                     val o = classify(f, landmarker, classifier, resize) ?: continue
                     total++
                     val ok = matchesTruth(o.pred, o.truth)
                     if (ok) correct++
+                    if (!o.accepted) rejected++
+                    // A declined reading is reported as REJECTED, not as a wrong
+                    // answer: the app said it was unsure, which is not the same
+                    // claim as naming the wrong sign.
+                    val verdict = when {
+                        !o.accepted -> "REJECTED"
+                        ok -> "CORRECT"
+                        else -> "WRONG"
+                    }
+                    val failReason = when {
+                        ok -> ""
+                        !o.accepted -> "declined_by_policy"
+                        else -> "misclassified"
+                    }
+                    rows.append("\"").append(o.clip).append("\",")
+                        .append("\"").append(o.truth).append("\",")
+                        .append("\"").append(o.pred).append("\",")
+                        .append(verdict).append(',')
+                        .append(o.accepted).append(',')
+                        .append("\"").append(o.top5.joinToString("|")).append("\",")
+                        .append("%.4f".format(o.score)).append(',')
+                        .append("%.4f".format(o.margin)).append(',')
+                        .append(o.handFrames).append(',')
+                        .append(o.frames).append(',')
+                        .append("%.3f".format(o.handFrames.toFloat() / o.frames.coerceAtLeast(1))).append(',')
+                        .append(o.decodeMs).append(',')
+                        .append(o.inferMs).append(',')
+                        .append(failReason).append('\n')
                     println(
                         "CLIP_ACC $tag ${o.clip} truth=${o.truth} pred=${o.pred} " +
-                            "score=${"%.4f".format(o.score)} hands=${o.handFrames}/${o.frames} " +
-                            (if (ok) "OK" else "WRONG")
+                            "score=${"%.4f".format(o.score)} margin=${"%.4f".format(o.margin)} " +
+                            "hands=${o.handFrames}/${o.frames} acc=${o.accepted} $verdict"
                     )
                 }
-                println("CLIP_ACC $tag SUMMARY correct=$correct total=$total " +
+                // Written where adb can pull it without root.
+                runCatching {
+                    val dir = instrumentation.targetContext.getExternalFilesDir(null)
+                        ?: instrumentation.targetContext.filesDir
+                    File(dir, "video_replay_$tag.csv").writeText(rows.toString())
+                    println("CLIP_ACC $tag wrote video_replay_$tag.csv")
+                }
+                println("CLIP_ACC $tag SUMMARY correct=$correct total=$total rejected=$rejected " +
                     "acc=${if (total > 0) "%.4f".format(correct.toFloat() / total) else "n/a"}")
             }
         } finally {

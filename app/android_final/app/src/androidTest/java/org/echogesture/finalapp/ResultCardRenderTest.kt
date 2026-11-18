@@ -297,17 +297,31 @@ class ResultCardRenderTest {
             val caption = activity.findViewById<TextView>(R.id.captionText)
             val reliability = activity.findViewById<TextView>(R.id.confidenceLabel)
 
-            // The prediction is still shown. That is the whole point: the app
-            // flags a guess, it does not hide one.
+            // A declined reading must NOT be presented as the recognised sign.
+            // The old contract asserted the opposite - that the guess appears in
+            // the caption - and that is exactly the behaviour the user reported
+            // as "it tells me the wrong word with confidence". The headline now
+            // says it was not recognised; the guess is shown only as reference.
             assertEquals(
-                "an uncertain result must still show its prediction",
-                "WHATFOR1",
+                "an uncertain result must not present its guess as the sign",
+                activity.getString(R.string.result_uncertain_headline),
                 caption.text.toString()
+            )
+            assertEquals(
+                "the label above it must mark the reading as reference only",
+                activity.getString(R.string.result_label_diagnostic),
+                activity.findViewById<TextView>(R.id.resultLabel).text.toString()
             )
             assertEquals(
                 "a sub-threshold margin must take the uncertain branch",
                 activity.getString(R.string.result_confidence_uncertain),
                 reliability.text.toString()
+            )
+            // The guess is still reachable, so the app informs without claiming.
+            val alternatives = activity.findViewById<TextView>(R.id.alternativesText)
+            assertTrue(
+                "the alternatives must still be listed for the reader",
+                alternatives.text.toString().contains("OFFEND")
             )
             // And the uncertain label must not read as a request to re-sign.
             assertTrue(

@@ -34,10 +34,21 @@ TASK = ROOT / "models" / "hand_landmarker.task"
 RECYCLE_EVERY = 150
 
 
-def extract_one(landmarker, mp, mp_image, src, frames_n):
-    """Read and detect one clip. Returns (landmarks, present) or None."""
+def extract_one(landmarker, mp, mp_image, src, frames_n, size=256):
+    """Read and detect one clip. Returns (landmarks, present) or None.
+
+    `size` is the square edge frames are resized to, or None to pass them at
+    native resolution. None matches what the Android app does: CameraScreen
+    captures 640x480 and HandTracker builds the MediaPipe image with no crop,
+    scale or letterbox, so the detector letterboxes internally itself.
+    """
     import cv2
     import numpy as np
+
+    def prep(f):
+        if size is None:
+            return cv2.cvtColor(f, cv2.COLOR_BGR2RGB)
+        return cv2.cvtColor(cv2.resize(f, (size, size)), cv2.COLOR_BGR2RGB)
 
     cap = cv2.VideoCapture(str(src))
     if not cap.isOpened():
@@ -60,13 +71,13 @@ def extract_one(landmarker, mp, mp_image, src, frames_n):
             if not ok:
                 break
             cur += 1
-            imgs.append(cv2.cvtColor(cv2.resize(f, (256, 256)), cv2.COLOR_BGR2RGB))
+            imgs.append(prep(f))
     else:
         while len(imgs) < frames_n:
             ok, f = cap.read()
             if not ok:
                 break
-            imgs.append(cv2.cvtColor(cv2.resize(f, (256, 256)), cv2.COLOR_BGR2RGB))
+            imgs.append(prep(f))
     cap.release()
     if not imgs:
         return None
@@ -93,7 +104,7 @@ def extract_one(landmarker, mp, mp_image, src, frames_n):
     return np.stack(seq), np.array(present, np.float32)
 
 
-def worker(wid, tasks, results, frames_n):
+def worker(wid, tasks, results, frames_n, size=256):
     """Pull clip paths off the shared queue until it is empty."""
     import numpy as np
     import mediapipe as mp
@@ -128,7 +139,7 @@ def worker(wid, tasks, results, frames_n):
                     )
                     landmarker = vision.HandLandmarker.create_from_options(opts)
 
-                out = extract_one(landmarker, mp, mp.Image, Path(src), frames_n)
+                out = extract_one(landmarker, mp, mp.Image, Path(src), frames_n, size=size)
                 if out is None:
                     results.put(("dead", dst, 0))
                     done += 1
@@ -161,7 +172,17 @@ def main():
     ap.add_argument("--frames", type=int, default=32)
     ap.add_argument("--splits", default="val,test,train")
     ap.add_argument("--limit", type=int, default=0, help="cap clips this run (0 = all)")
+    ap.add_argument("--size", default="256",
+                    help="square edge to resize frames to, or 'native' for no "
+                         "resize (what the Android app does). Default 256 keeps "
+                         "the original cache geometry.")
+    ap.add_argument("--out", default=None,
+                    help="output root (default .scratch/landmarks). Point this at "
+                         "a NEW directory to avoid overwriting an existing cache.")
     args = ap.parse_args()
+
+    size = None if str(args.size).lower() in ("native", "none", "0") else int(args.size)
+    out_root = Path(args.out) if args.out else OUT
 
     vocab = set(json.load(open(VOCAB, encoding="utf-8")))
     queue_items = []
@@ -169,7 +190,7 @@ def main():
         split = split.strip()
         if not split:
             continue
-        out_dir = OUT / split
+        out_dir = out_root / split
         out_dir.mkdir(parents=True, exist_ok=True)
         rows = list(csv.DictReader(open(ASLCIT / "splits" / f"{split}.csv", encoding="utf-8")))
         rows = [r for r in rows if r["Gloss"] in vocab]
@@ -190,13 +211,14 @@ def main():
         return 0
 
     print(f"{len(queue_items)} clips across {args.workers} workers "
-          f"({args.frames} frames each)", flush=True)
+          f"({args.frames} frames each, size={'native' if size is None else size}) "
+          f"-> {out_root}", flush=True)
 
     tasks, results = Queue(), Queue()
     for item in queue_items:
         tasks.put(item)
 
-    procs = [Process(target=worker, args=(i, tasks, results, args.frames), daemon=True)
+    procs = [Process(target=worker, args=(i, tasks, results, args.frames, size), daemon=True)
              for i in range(args.workers)]
     t0 = time.perf_counter()
     for p in procs:
@@ -238,8 +260,12 @@ def main():
     el = time.perf_counter() - t0
     print(f"\ndone {finished}/{len(queue_items)} in {el/60:.1f} min  "
           f"ok={tally['ok']} no_hand={tally['miss']} unreadable={tally['dead']} errors={tally['err']}")
+    # Count the cache this run actually wrote to. This used to read the module
+    # constant OUT (the default .scratch/landmarks) regardless of --out, so a
+    # fresh extraction into a new directory reported the pre-existing default
+    # cache's counts (1789/346/1255) - a cache containing 1 clip appeared full.
     for s in ("train", "val", "test"):
-        n = len(list((OUT / s).glob("*.npz"))) if (OUT / s).exists() else 0
+        n = len(list((out_root / s).glob("*.npz"))) if (out_root / s).exists() else 0
         print(f"  {s}: {n} cached")
     return 0
 

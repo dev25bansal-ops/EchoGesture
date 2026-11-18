@@ -195,6 +195,17 @@ def build_features(landmarks, present, expected_frames=None, use_z=False):
 
     feats = np.concatenate([flat, geom], axis=1).astype(np.float32)
 
+    # Contract check: the model's inputs must be finite. A single non-finite
+    # coordinate (a bad MediaPipe frame) otherwise flows through every ensemble
+    # member, makes the softmax all-NaN, and predict() used to return
+    # confidence=NaN. This is the single place every consumer (predict(),
+    # training, the eval scripts) passes through, so refuse here.
+    if not np.isfinite(feats).all():
+        n_bad = int((~np.isfinite(feats)).sum())
+        raise ValueError(
+            f"non-finite feature values: {n_bad} of {feats.size} (a NaN/Inf "
+            "landmark coordinate poisoned the feature stack)")
+
     expected = feature_dim(use_z)
     if feats.shape[1] != expected:
         raise AssertionError(f"expected {expected} features, got {feats.shape[1]}")

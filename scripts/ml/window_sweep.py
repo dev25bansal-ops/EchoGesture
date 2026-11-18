@@ -27,20 +27,38 @@ LANDMARKS = ROOT / ".scratch" / "landmarks" / "test"
 
 
 def load_models():
+    """Every shipped member with its input indices resolved BY NAME.
+
+    Index 0 is the (1,24) mask on every shipped member; the positional
+    get_input_details()[0] this file used fed features into the mask and
+    crashed with a dimension mismatch before printing any accuracy.
+    """
     meta = json.load(open(ROOT / "models/landmark_model_meta.json", encoding="utf-8"))
+    detail = {d["file"]: bool(d.get("use_z", False))
+              for d in meta.get("members_detail", []) or []}
     out = []
     for m in meta["members"]:
         it = lit.Interpreter(model_path=str(ROOT / "models" / m))
         it.allocate_tensors()
-        out.append((it, it.get_input_details()[0]["index"],
-                    it.get_output_details()[0]["index"]))
+        dets = it.get_input_details()
+        f_i = next(d["index"] for d in dets if "features" in d["name"])
+        m_i = next((d["index"] for d in dets if "mask" in d["name"]), -1)
+        out.append((it, f_i, it.get_output_details()[0]["index"], m_i,
+                    detail.get(m, False)))
     return out
 
 
-def logits(models, feats):
+def logits(models, lm, pres, frames=FRAMES):
+    """Mean-logit over members, each at its own feature width."""
+    built = {}
     lg = []
-    for it, ii, oi in models:
-        it.set_tensor(ii, feats[None].astype(np.float32))
+    for it, fi, oi, mi, uz in models:
+        if uz not in built:
+            built[uz] = build_features(lm, pres, expected_frames=frames, use_z=uz)
+        f, mask = built[uz]
+        it.set_tensor(fi, f[None].astype(np.float32))
+        if mi >= 0:
+            it.set_tensor(mi, mask[None].astype(np.float32))
         it.invoke()
         lg.append(it.get_tensor(oi)[0].astype(np.float32))
     return np.mean(lg, axis=0)
@@ -87,8 +105,7 @@ def main():
             sub_lm, sub_pres = lm[a:b], pres[a:b]
             if len(sub_pres) < 8:
                 sub_lm, sub_pres = lm, pres
-            f, _ = build_features(sub_lm, sub_pres, expected_frames=FRAMES)
-            per_clip[name].append((logits(models, f), y))
+            per_clip[name].append((logits(models, sub_lm, sub_pres), y))
 
     for name in conditions:
         rows = per_clip[name]

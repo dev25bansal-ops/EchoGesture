@@ -43,35 +43,37 @@ STRATEGIES = {
 
 
 def load_models():
+    """Every shipped member with its input indices resolved BY NAME.
+
+    Index 0 is the (1,24) mask on every shipped member (the converter does not
+    preserve declaration order), so positional get_input_details()[0] fed
+    features into the mask and crashed. Same by-name resolution as src/main.py.
+    """
     meta = json.load(open(ROOT / "models/landmark_model_meta.json", encoding="utf-8"))
-    detail = {d.get("file"): bool(d.get("use_z", False))
+    detail = {d["file"]: bool(d.get("use_z", False))
               for d in meta.get("members_detail", []) or []}
     out = []
     for m in meta["members"]:
         it = lit.Interpreter(model_path=str(ROOT / "models" / m))
         it.allocate_tensors()
-        # Inputs are resolved BY NAME. The converter reports the mask as input 0
-        # and the features as input 1, so `get_input_details()[0]` fed a (1,24)
-        # mask where a (1,24,F) feature matrix belongs and this script died with
-        # "Dimension mismatch. Got 3 but expected 2" against every current member.
-        dets = {d["name"]: d for d in it.get_input_details()}
-        f_det = next((d for n, d in dets.items() if "features" in n),
-                     it.get_input_details()[0])
-        m_det = next((d for n, d in dets.items() if "mask" in n), None)
-        out.append((it, f_det["index"],
-                    it.get_output_details()[0]["index"],
-                    m_det["index"] if m_det else None,
-                    detail.get(m, False),
-                    int(f_det["shape"][-1])))
+        dets = it.get_input_details()
+        f_i = next(d["index"] for d in dets if "features" in d["name"])
+        m_i = next((d["index"] for d in dets if "mask" in d["name"]), -1)
+        out.append((it, f_i, it.get_output_details()[0]["index"], m_i,
+                    detail.get(m, False)))
     return out
 
 
-def logits(models, feats_by_width):
+def logits(models, lm, pres):
+    """Mean-logit over members, each at its own feature width."""
+    built = {}
     lg = []
-    for it, fi, oi, mi, use_z, _width in models:
-        feats, mask = feats_by_width[use_z]
-        it.set_tensor(fi, feats[None].astype(np.float32))
-        if mi is not None:
+    for it, fi, oi, mi, uz in models:
+        if uz not in built:
+            built[uz] = build_features(lm, pres, expected_frames=FRAMES, use_z=uz)
+        f, mask = built[uz]
+        it.set_tensor(fi, f[None].astype(np.float32))
+        if mi >= 0:
             it.set_tensor(mi, mask[None].astype(np.float32))
         it.invoke()
         lg.append(it.get_tensor(oi)[0].astype(np.float32))
@@ -89,14 +91,7 @@ def clip_logits(models, lm, pres, windows):
         sub_lm, sub_pres = lm[a:b], pres[a:b]
         if len(sub_pres) < 8:
             sub_lm, sub_pres = lm, pres
-        # Build every width this ensemble actually uses: five members are
-        # 381-wide (x,y,z) and four are 255-wide, so one width cannot serve both.
-        widths = {}
-        for _it, _fi, _oi, _mi, use_z, _w in models:
-            if use_z not in widths:
-                widths[use_z] = build_features(sub_lm, sub_pres,
-                                               expected_frames=FRAMES, use_z=use_z)
-        out[name] = logits(models, widths)
+        out[name] = logits(models, sub_lm, sub_pres)
     return out
 
 

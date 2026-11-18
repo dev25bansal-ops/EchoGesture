@@ -8,14 +8,30 @@
 
 ## 0. Current Status (read this first)
 
-**The submission is not ready.** Three of the six scored metrics are unmeasured or failing:
+> **Updated 16 Nov 2026.** Everything below section 3 is the *original* research
+> narrative from early in the sprint, preserved as the record of why the approach
+> changed. The status figures in the original draft (§0, and the jury table in §2)
+> are from the retired S3D pixel model and are **superseded**. Current state:
 
-- Accuracy on unseen signers: **1.47%** (fail, target 70%)
-- End-to-end latency: **117.8 ms p95** (fail, target 50 ms)
-- Robustness / power / thermal: **not measured**
+The landmark pipeline is shipped and clears the accuracy target by 15 points:
 
-What does pass: model size (0.88 MB) and model inference (3.2 ms p95).
-See [RESULTS.md](RESULTS.md) for every measured number and how it was produced.
+| Criterion | Weight | State |
+| --- | --: | --- |
+| Top-1 accuracy | 35% | **85.45%**, 11 unseen signers, 1,251 clips — PASS (≥70) |
+| Model quantization | 20% | FP16, 8.51 MB ensemble + 7.8 MB detector ≈ 16.3 MB — PASS (<20) |
+| Edge latency | 20% | classifier 3.1 ms — PASS as inference; per-frame detector 133 ms — **FAIL** on desktop |
+| Robustness (pixel) | — | **+4.48 PASS** |
+| Robustness (landmark) | 25% | **+5.76 FAIL** on `drop_hand_25pct` only |
+| Power / thermal | — | **NOT MEASURED** — no device (20% of the rubric) |
+
+The authoritative current numbers are `docs/hackathon/FINAL_NUMBERS_2026-11-15.md`
+and `docs/hackathon/CLAIMS_AND_LIMITS.md`. The honest gaps are on-device latency,
+power and thermal, which need a physical phone. See
+`docs/hackathon/ON_DEVICE_MEASUREMENT_OPTIONS.md`.
+
+**Historical record (superseded):** the original §0 read "accuracy 1.47%, latency
+117.8 ms p95, robustness not measured" — that was the published S3D-Conv1D pixel model
+before the landmark rebuild. It is kept below as the record of the starting point.
 
 ---
 
@@ -43,10 +59,10 @@ See [RESULTS.md](RESULTS.md) for every measured number and how it was produced.
 
 | Category | Criterion | Target | Weight | EchoGesture Current Status |
 |---|---|---|---|---|
-| **Execution & Efficiency (40%)** | Model Quantization | 20 MB INT8 | 20% | **PASS** - 0.88 MB measured |
-| | Edge Latency | 50 ms p95 | 20% | **FAIL** - 117.8 ms p95 end-to-end measured (model alone is 3.2 ms; video decode dominates) |
-| **Quality & Accuracy (60%)** | Top-1 Accuracy | 70% on held-out | 35% | **FAIL** - 1.47% signer-disjoint measured vs 1.02% chance. 100% in-distribution control confirms the harness is correct |
-| | Robustness & HUD | 5 pt drop | 25% | **NOT MEASURED** - harness not written yet |
+| **Execution & Efficiency (40%)** | Model Quantization | <20 MB | 20% | **PASS** - 8.51 MB FP16 ensemble + 7.8 MB detector |
+| | Edge Latency | 50 ms p95 | 20% | classifier 3.1 ms PASS; per-frame detector 133 ms **FAIL** on desktop (on-device unmeasured) |
+| **Quality & Accuracy (60%)** | Top-1 Accuracy | 70% on held-out | 35% | **PASS** - 85.45% signer-disjoint, 11 unseen signers |
+| | Robustness & HUD | 5 pt drop | 25% | pixel **+4.48 PASS**; landmark **+5.76 FAIL** (drop_hand only); HUD = the Android app |
 
 ---
 
@@ -107,19 +123,19 @@ EchoGesture/
 │   ├── requirements.txt               # numpy, opencv-python, ai-edge-litert
 │   └── README.md                      # Execution guide for evaluators
 │
-├── models/                            # MODEL ARTIFACTS (< 2 MB total)
-│   ├── s3d_conv1d_qat_int8.tflite     # 880.1 KB QAT INT8 model
-│   ├── ptq_100_int8.tflite            # 883.1 KB Post-Training Quantized baseline
-│   └── label100.json                  # 100-class vocabulary mapping
+├── models/                            # MODEL ARTIFACTS (current: 9-member FP16 ensemble)
+│   ├── landmark_ens_*_fp16.tflite     # 9-member FP16 ensemble, 8.51 MB total
+│   ├── landmark_classifier_int8.tflite # INT8 reference (rejected, -6.37 pt)
+│   └── landmark_labels.json           # 100-class vocabulary mapping (ordered)
 │
 ├── results/                           # REQUIRED SUBMISSION RESULTS
 │   ├── results.csv                    # 6-metric team results sheet
-│   └── predictions.jsonl              # Evaluator prediction manifest
+│   └── predictions.jsonl              # Evaluator prediction manifest (1,251 rows)
 │
 └── evaluation/                        # RESEARCH & BENCHMARK HARNESSES
     ├── eval_asl_citizen.py            # Reproducible cross-signer evaluation script
     ├── eval_wlasl_signers.py          # WLASL in-distribution validation script
-    ├── asl_citizen_predictions.csv    # 1,705 clip predictions log
+    ├── asl_citizen_predictions.csv    # 1,705 clip predictions log (S3D baseline)
     ├── asl_citizen_ptq_results.json   # PTQ metrics output
     └── asl_citizen_qat_results.json   # QAT metrics output
 ```

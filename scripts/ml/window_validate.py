@@ -30,20 +30,41 @@ CONDITIONS = {
 
 
 def load_models():
+    """Every shipped member with its input indices resolved BY NAME.
+
+    get_input_details()[0] is the (1,24) MASK on every shipped member - the
+    converter does not preserve declaration order - so the old positional code
+    fed a (1,24,255) feature tensor into a (1,24) mask and died with
+    "Dimension mismatch. Got 3 but expected 2 for input 0" before producing any
+    number. src/main.py and eval_tflite_cache.py resolve by name for this
+    exact reason.
+    """
     meta = json.load(open(ROOT / "models/landmark_model_meta.json", encoding="utf-8"))
+    detail = {d["file"]: bool(d.get("use_z", False))
+              for d in meta.get("members_detail", []) or []}
     out = []
     for m in meta["members"]:
         it = lit.Interpreter(model_path=str(ROOT / "models" / m))
         it.allocate_tensors()
-        out.append((it, it.get_input_details()[0]["index"],
-                    it.get_output_details()[0]["index"]))
-    return out
+        dets = it.get_input_details()
+        f_i = next(d["index"] for d in dets if "features" in d["name"])
+        m_i = next((d["index"] for d in dets if "mask" in d["name"]), -1)
+        out.append((it, f_i, it.get_output_details()[0]["index"], m_i,
+                    detail.get(m, False)))
+    return out, detail
 
 
-def logits(models, feats):
+def logits(models, lm, pres, frames=FRAMES):
+    """Mean-logit over members, building each member's own feature width."""
+    built = {}
     lg = []
-    for it, ii, oi in models:
-        it.set_tensor(ii, feats[None].astype(np.float32))
+    for it, fi, oi, mi, uz in models:
+        if uz not in built:
+            built[uz] = build_features(lm, pres, expected_frames=frames, use_z=uz)
+        f, mask = built[uz]
+        it.set_tensor(fi, f[None].astype(np.float32))
+        if mi >= 0:
+            it.set_tensor(mi, mask[None].astype(np.float32))
         it.invoke()
         lg.append(it.get_tensor(oi)[0].astype(np.float32))
     return np.mean(lg, axis=0)
@@ -69,8 +90,7 @@ def run_split(split, models, labels_idx):
             sub_lm, sub_pres = lm[a:b], pres[a:b]
             if len(sub_pres) < 8:
                 sub_lm, sub_pres = lm, pres
-            f, _ = build_features(sub_lm, sub_pres, expected_frames=FRAMES)
-            ok += int(np.argmax(logits(models, f)) == y)
+            ok += int(np.argmax(logits(models, sub_lm, sub_pres)) == y)
         out[name] = ok / len(clips)
     return out, len(clips)
 
@@ -79,7 +99,7 @@ def main():
     vocab = json.load(open(ROOT / "models/landmark_labels.json", encoding="utf-8"))
     labels = [g for g, _ in sorted(vocab.items(), key=lambda kv: kv[1])]
     idx = {g: i for i, g in enumerate(labels)}
-    models = load_models()
+    models, _detail = load_models()
 
     rows = {}
     ns = {}
@@ -113,9 +133,8 @@ def main():
         corpus = {}
         for name, (lo, hi) in (("full", (0.0, 1.0)), ("last80", (0.20, 1.0))):
             a, b = int(T * lo), max(int(T * hi), int(T * lo) + 8)
-            f, _ = build_features(d["landmarks"][a:b], d["present"][a:b],
-                                  expected_frames=FRAMES)
-            corpus[name] = int(np.argmax(logits(models, f)) == y)
+            corpus[name] = int(np.argmax(
+                logits(models, d["landmarks"][a:b], d["present"][a:b])) == y)
         diffs.append(corpus["last80"] - corpus["full"])
 
     diffs = np.array(diffs)

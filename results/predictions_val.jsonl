@@ -1,0 +1,346 @@
+{"clip_id": "002040595117913435-SLIDE 2", "prediction": "SLIDE2", "top5": ["SLIDE2", "ROCKINGCHAIR1", "DRAG1", "BITE1", "WALK-TIGHTROPE-CL"], "confidence": 0.9673, "latency_ms": 12.891}
+{"clip_id": "006918970578539518-PARTY", "prediction": "PARTY1", "top5": ["PARTY1", "PATIENT2", "BACKPACK1", "IMPOSSIBLE", "SOCIETY"], "confidence": 0.8241, "latency_ms": 3.35}
+{"clip_id": "006951411960890663-FINE", "prediction": "FINE1", "top5": ["FINE1", "MEAT1", "MOVIE1", "FLOAT1", "SOCCER2"], "confidence": 0.6389, "latency_ms": 3.066}
+{"clip_id": "009883456113471967-EAT", "prediction": "EAT1", "top5": ["EAT1", "PONDER", "ALLOFSUDDEN", "SAIL2", "BREAKFAST1"], "confidence": 0.8958, "latency_ms": 3.013}
+{"clip_id": "011916793918304025-FINE", "prediction": "FINE1", "top5": ["FINE1", "VOICE", "BREAKFAST1", "CALENDAR1", "SCARF2"], "confidence": 0.8891, "latency_ms": 3.011}
+{"clip_id": "013975318087335875-SHARPEN 3", "prediction": "SHARPEN2", "top5": ["SHARPEN2", "MECHANIC1", "PARTY1", "HALLOWEEN1", "HURDLE/TRIP1"], "confidence": 0.8248, "latency_ms": 3.129}
+{"clip_id": "020001513874339905-HURDLE-TRIP", "prediction": "HURDLE/TRIP1", "top5": ["HURDLE/TRIP1", "MEAT1", "FLOAT1", "MECHANIC1", "SLIDE2"], "confidence": 0.2239, "latency_ms": 3.265}
+{"clip_id": "021193533049441937-SHAVE", "prediction": "SHAVE1", "top5": ["SHAVE1", "RAZOR2", "BASEBALLCAP", "LOCK1", "APPLE"], "confidence": 0.9222, "latency_ms": 2.835}
+{"clip_id": "027532349402833-DOWNSIZE", "prediction": "VLOG", "top5": ["VLOG", "DOWNSIZE1", "SCROLLDOWN", "SHARPEN2", "WHATFOR1"], "confidence": 0.5595, "latency_ms": 3.185}
+{"clip_id": "0283886564670357-WHAT FOR", "prediction": "WHATFOR1", "top5": ["WHATFOR1", "DEAF1", "SHARPEN2", "OFFEND", "PENNY"], "confidence": 0.9689, "latency_ms": 2.891}
+{"clip_id": "029833014387566248-SAIL 2", "prediction": "SAIL2", "top5": ["SAIL2", "DEMAND1", "BREAKFAST1", "HALLOWEEN1", "MOVIE1"], "confidence": 0.9291, "latency_ms": 3.45}
+{"clip_id": "032677896012150764-WHAT FOR", "prediction": "WHATFOR1", "top5": ["WHATFOR1", "DEAF1", "PENNY", "OFFEND", "SCROLLDOWN"], "confidence": 0.8425, "latency_ms": 3.148}
+{"clip_id": "03617049378353854-HOSPITAL", "prediction": "HOSPITAL1", "top5": ["HOSPITAL1", "VOICE", "MOUTH", "KNIGHT1", "DEMAND1"], "confidence": 0.8877, "latency_ms": 2.9}
+{"clip_id": "0392835216734122-EAT", "prediction": "EAT1", "top5": ["EAT1", "PONDER", "BREAKFAST1", "MICROSCOPE1", "UNDERWEAR1"], "confidence": 0.9489, "latency_ms": 3.062}
+{"clip_id": "03951129691638511-SQUEEZE", "prediction": "SQUEEZE", "top5": ["SQUEEZE", "PULLCONVINCE", "MICROSCOPE1", "SPECIAL1", "FLIP"], "confidence": 0.1823, "latency_ms": 2.985}
+{"clip_id": "04082737644135381-DUCK", "prediction": "DUCK2", "top5": ["DUCK2", "BITE1", "SLIDE2", "RABBIT2", "GOODYGOODYSHOEOPPOSITE"], "confidence": 0.9105, "latency_ms": 3.059}
+{"clip_id": "04368064534534177-METAL", "prediction": "METAL", "top5": ["METAL", "PENNY", "DEAF1", "NOON1", "RAZOR2"], "confidence": 0.8608, "latency_ms": 2.873}
+{"clip_id": "051718892767815605-MECHANIC", "prediction": "MECHANIC1", "top5": ["MECHANIC1", "SHARPEN2", "HALLOWEEN1", "BELT1", "PARTY1"], "confidence": 0.9048, "latency_ms": 3.093}
+{"clip_id": "05176661641171654-HALLOWEEN", "prediction": "HALLOWEEN1", "top5": ["HALLOWEEN1", "AXE1", "TEACH1", "MECHANIC1", "PONDER"], "confidence": 0.9773, "latency_ms": 3.158}
+{"clip_id": "05313536275990982-CEMETERY", "prediction": "CEMETERY", "top5": ["CEMETERY", "8HOUR", "TEACH1", "PARTY1", "EMPTY2"], "confidence": 0.5801, "latency_ms": 3.188}
+{"clip_id": "05472514438794285-CLOSE", "prediction": "CLOSE", "top5": ["CLOSE", "DEVELOP1", "LONGLINE", "ELEVATOR1", "AUTISM1"], "confidence": 0.7389, "latency_ms": 3.155}
+{"clip_id": "05621288177415629-RIVER", "prediction": "RIVER1", "top5": ["RIVER1", "DARK1", "FINE1", "CALENDAR1", "SINK"], "confidence": 0.865, "latency_ms": 2.897}
+{"clip_id": "06408604416165864-WHAT FOR", "prediction": "WHATFOR1", "top5": ["WHATFOR1", "PENNY", "DEAF1", "MOUTH", "CHEEK"], "confidence": 0.5243, "latency_ms": 3.224}
+{"clip_id": "06571173343741843-APPLE", "prediction": "APPLE", "top5": ["APPLE", "METAL", "ADVERTISE", "DRAG1", "RAZOR2"], "confidence": 0.9735, "latency_ms": 2.801}
+{"clip_id": "06585822033156608-PATIENT 2", "prediction": "PATIENT2", "top5": ["PATIENT2", "MYSELF", "CHEEK", "ANYONE", "ALLOFSUDDEN"], "confidence": 0.8613, "latency_ms": 2.964}
+{"clip_id": "07130413211667141-MEA CULPA", "prediction": "MEACULPA", "top5": ["MEACULPA", "MICROSCOPE1", "BACKPACK1", "BREAKFAST1", "COMB2"], "confidence": 0.6282, "latency_ms": 2.911}
+{"clip_id": "08197479357139326-PATIENT 2", "prediction": "PATIENT2", "top5": ["PATIENT2", "MYSELF", "BASEBALLCAP", "IMPOSSIBLE", "PARTY1"], "confidence": 0.7507, "latency_ms": 3.15}
+{"clip_id": "08349310104991292-GUESS", "prediction": "GUESS1", "top5": ["GUESS1", "COMB2", "CAPTURE", "BITE1", "AUTISM1"], "confidence": 0.8802, "latency_ms": 3.098}
+{"clip_id": "08629381582280149-MOUTH", "prediction": "MOUTH", "top5": ["MOUTH", "ANYONE", "CHEEK", "OFFEND", "MEACULPA"], "confidence": 0.8117, "latency_ms": 2.887}
+{"clip_id": "08826631701153853-GRAMMAR", "prediction": "GRAMMAR", "top5": ["GRAMMAR", "DOWNSIZE1", "CHEER", "PARTY1", "PENNY"], "confidence": 0.9381, "latency_ms": 3.487}
+{"clip_id": "08953386810820474-FOREIGNER", "prediction": "IMPOSSIBLE", "top5": ["IMPOSSIBLE", "FOREIGNER1", "RIGHT3", "SCARF2", "PATIENT2"], "confidence": 0.2445, "latency_ms": 2.942}
+{"clip_id": "09610249068216015-MYSELF", "prediction": "PATIENT2", "top5": ["PATIENT2", "MYSELF", "COMB2", "CHEEK", "ADVERTISE"], "confidence": 0.3022, "latency_ms": 3.065}
+{"clip_id": "09934450273931295-CHEEK", "prediction": "CHEEK", "top5": ["CHEEK", "PATIENT2", "ALLOFSUDDEN", "MYSELF", "CHEER"], "confidence": 0.5022, "latency_ms": 2.725}
+{"clip_id": "1013355672311258-CLOSE", "prediction": "DEVELOP1", "top5": ["DEVELOP1", "CLOSE", "ELEVATOR1", "AUTISM1", "CEMETERY"], "confidence": 0.4285, "latency_ms": 3.3}
+{"clip_id": "10542513580735968-HOW", "prediction": "HOW1", "top5": ["HOW1", "PULLCONVINCE", "LOCK1", "SOCIETY", "KNIGHT1"], "confidence": 0.9197, "latency_ms": 3.304}
+{"clip_id": "10557248501909733-MICROSCOPE", "prediction": "MICROSCOPE1", "top5": ["MICROSCOPE1", "8HOUR", "CHEESEGRATER", "TEACH1", "ADVERTISE"], "confidence": 0.9825, "latency_ms": 3.091}
+{"clip_id": "10913953302547807-DOWNSIZE", "prediction": "DOWNSIZE1", "top5": ["DOWNSIZE1", "GRAMMAR", "PARTY1", "PULLCONVINCE", "HURDLE/TRIP1"], "confidence": 0.7343, "latency_ms": 3.424}
+{"clip_id": "1141902422063672-COMB", "prediction": "COMB2", "top5": ["COMB2", "BACKPACK1", "SCARF2", "AUTISM1", "MICROSCOPE1"], "confidence": 0.9756, "latency_ms": 3.255}
+{"clip_id": "13539919271011525-SPECIAL", "prediction": "MECHANIC1", "top5": ["MECHANIC1", "JEWELRY", "JOKE", "SHARPEN2", "HALLOWEEN1"], "confidence": 0.1283, "latency_ms": 3.436}
+{"clip_id": "1362215264165989-DEVELOP", "prediction": "DEVELOP1", "top5": ["DEVELOP1", "CLOSE", "FINE1", "MOVIE1", "SOCCER2"], "confidence": 0.4796, "latency_ms": 3.536}
+{"clip_id": "13644697492397184-JOKE", "prediction": "JOKE", "top5": ["JOKE", "CAPTURE", "PULLCONVINCE", "OFFEND", "METAL"], "confidence": 0.9378, "latency_ms": 2.938}
+{"clip_id": "1378742805110198-COPY", "prediction": "COPY", "top5": ["COPY", "IMPOSSIBLE", "DEMAND1", "SAIL2", "BREAKFAST1"], "confidence": 0.835, "latency_ms": 3.389}
+{"clip_id": "14217897516103073-SCROLL DOWN", "prediction": "SCROLLDOWN", "top5": ["SCROLLDOWN", "DEAF1", "WHATFOR1", "TAIL1", "OFFEND"], "confidence": 0.7191, "latency_ms": 2.917}
+{"clip_id": "14432206279699766-BREAKFAST", "prediction": "BREAKFAST1", "top5": ["BREAKFAST1", "CLOSE", "NOON1", "BEE1", "DEVELOP1"], "confidence": 0.6269, "latency_ms": 2.984}
+{"clip_id": "15011820658062458-DOG", "prediction": "DOG1", "top5": ["DOG1", "INTUITIVE", "BABY2", "RIGHT3", "EMPTY2"], "confidence": 0.9052, "latency_ms": 2.762}
+{"clip_id": "15347326711184706-NOON", "prediction": "NOON1", "top5": ["NOON1", "BEE1", "HALLOWEEN1", "AXE1", "BREAKFAST1"], "confidence": 0.4234, "latency_ms": 3.057}
+{"clip_id": "15474555819828018-FLIP", "prediction": "FLIP", "top5": ["FLIP", "DOG1", "FAIL", "ROCKINGCHAIR1", "OFFEND"], "confidence": 0.8852, "latency_ms": 3.21}
+{"clip_id": "1550944296003025-MICROSCOPE", "prediction": "MICROSCOPE1", "top5": ["MICROSCOPE1", "JOKE", "RABBIT2", "CHEESEGRATER", "SWEATER2"], "confidence": 0.8308, "latency_ms": 3.502}
+{"clip_id": "1574579084805503-LONG LINE", "prediction": "LONGLINE", "top5": ["LONGLINE", "CHEER", "BASKETBALL1", "HALLOWEEN1", "CLOSE"], "confidence": 0.8752, "latency_ms": 3.475}
+{"clip_id": "16633914121192128-VLOG", "prediction": "VLOG", "top5": ["VLOG", "DOWNSIZE1", "ANYONE", "CAPTURE", "SOCIETY"], "confidence": 0.9758, "latency_ms": 3.263}
+{"clip_id": "16945051524554744-DEVELOP", "prediction": "DEVELOP1", "top5": ["DEVELOP1", "AUTISM1", "ELEVATOR1", "CALENDAR1", "FINE1"], "confidence": 0.5244, "latency_ms": 3.302}
+{"clip_id": "17005650435713515-PULL CONVINCE", "prediction": "DECIDE1", "top5": ["DECIDE1", "PULLCONVINCE", "JOKE", "FLIP", "SOCIETY"], "confidence": 0.2476, "latency_ms": 3.145}
+{"clip_id": "17011131896499232-PONDER", "prediction": "PONDER", "top5": ["PONDER", "TEACH1", "HALLOWEEN1", "AXE1", "PARTY1"], "confidence": 0.6675, "latency_ms": 3.203}
+{"clip_id": "17092802473126545-SQUEEZE", "prediction": "SQUEEZE", "top5": ["SQUEEZE", "CHEW1", "ADVERTISE", "SHAVE1", "DRAG1"], "confidence": 0.5509, "latency_ms": 3.114}
+{"clip_id": "1745452785017827-BASKETBALL", "prediction": "BASKETBALL1", "top5": ["BASKETBALL1", "LONGLINE", "CHEER", "COPY", "CLOSE"], "confidence": 0.9608, "latency_ms": 3.236}
+{"clip_id": "17849995657443585-OFFEND", "prediction": "OFFEND", "top5": ["OFFEND", "VLOG", "TAIL1", "ANYONE", "FLIP"], "confidence": 0.9518, "latency_ms": 2.939}
+{"clip_id": "1885338005619568-BASEBALL CAP", "prediction": "BASEBALLCAP", "top5": ["BASEBALLCAP", "CHEW1", "SHAVE1", "LOCK1", "PATIENT2"], "confidence": 0.7542, "latency_ms": 2.8}
+{"clip_id": "19720668760111892-ANYONE", "prediction": "ANYONE", "top5": ["ANYONE", "OFFEND", "TAIL1", "SCROLLDOWN", "VLOG"], "confidence": 0.6436, "latency_ms": 2.907}
+{"clip_id": "19778675091674147-AXE", "prediction": "AXE1", "top5": ["AXE1", "MEACULPA", "PONDER", "BREAKFAST1", "SAIL2"], "confidence": 0.8573, "latency_ms": 3.117}
+{"clip_id": "19884607898478812-SAIL 2", "prediction": "SAIL2", "top5": ["SAIL2", "COPY", "PENNY", "HALLOWEEN1", "GRAMMAR"], "confidence": 0.9691, "latency_ms": 3.275}
+{"clip_id": "20198961584817-BACKPACK", "prediction": "BACKPACK1", "top5": ["BACKPACK1", "JEWELRY", "ELEVATOR1", "ZEBRA", "COMB2"], "confidence": 0.8949, "latency_ms": 3.29}
+{"clip_id": "20458224320425433-HURDLE-TRIP", "prediction": "HURDLE/TRIP1", "top5": ["HURDLE/TRIP1", "SHARPEN2", "SAIL2", "MECHANIC1", "WALK-TIGHTROPE-CL"], "confidence": 0.8555, "latency_ms": 3.101}
+{"clip_id": "2147323352858992-ALL OF_SUDDEN", "prediction": "ALLOFSUDDEN", "top5": ["ALLOFSUDDEN", "DOG1", "PULLCONVINCE", "FLIP", "ANYONE"], "confidence": 0.9412, "latency_ms": 2.997}
+{"clip_id": "22086947347372266-MEA CULPA", "prediction": "MEACULPA", "top5": ["MEACULPA", "DARK1", "ELEVATOR1", "BREAKFAST1", "MICROSCOPE1"], "confidence": 0.9542, "latency_ms": 3.094}
+{"clip_id": "2252640115571123-ZEBRA", "prediction": "ZEBRA", "top5": ["ZEBRA", "JEWELRY", "BELT1", "CALENDAR1", "SCROLLDOWN"], "confidence": 0.9171, "latency_ms": 3.33}
+{"clip_id": "22650386685976165-DECIDE", "prediction": "DECIDE1", "top5": ["DECIDE1", "TICKLE", "SHOCKED", "BELT1", "RIVER1"], "confidence": 0.9646, "latency_ms": 3.241}
+{"clip_id": "22732217637347518-NOON", "prediction": "NOON1", "top5": ["NOON1", "BREAKFAST1", "HOSPITAL1", "BEE1", "LONGLINE"], "confidence": 0.9012, "latency_ms": 3.158}
+{"clip_id": "22806938606831628-FLIP", "prediction": "FLIP", "top5": ["FLIP", "DOG1", "SQUEEZE", "KNIGHT1", "FAIL"], "confidence": 0.6293, "latency_ms": 3.115}
+{"clip_id": "23447000304598498-MEAT", "prediction": "MEAT1", "top5": ["MEAT1", "FLOAT1", "SOCCER2", "HURDLE/TRIP1", "BITE1"], "confidence": 0.9397, "latency_ms": 3.351}
+{"clip_id": "24018785560856104-SQUEEZE", "prediction": "SQUEEZE", "top5": ["SQUEEZE", "DRAG1", "FOREIGNER1", "TAIL1", "FLIP"], "confidence": 0.4815, "latency_ms": 3.037}
+{"clip_id": "2443637258460738-WALK-TIGHTROPE-CL", "prediction": "WALK-TIGHTROPE-CL", "top5": ["WALK-TIGHTROPE-CL", "HURDLE/TRIP1", "ROCKINGCHAIR1", "SLIDE2", "MECHANIC1"], "confidence": 0.9385, "latency_ms": 3.172}
+{"clip_id": "24688740242146956-VLOG", "prediction": "VLOG", "top5": ["VLOG", "DOWNSIZE1", "PARTY1", "SHARPEN2", "SHOCKED"], "confidence": 0.8458, "latency_ms": 3.134}
+{"clip_id": "2518011428400748-FINE", "prediction": "FINE1", "top5": ["FINE1", "CALENDAR1", "ZEBRA", "JEWELRY", "SCROLLDOWN"], "confidence": 0.8623, "latency_ms": 2.911}
+{"clip_id": "2542749088067966-SWEATER 2", "prediction": "SWEATER2", "top5": ["SWEATER2", "ADVERTISE", "SOCIETY", "CHEER", "MICROSCOPE1"], "confidence": 0.9244, "latency_ms": 2.957}
+{"clip_id": "25500869855740893-ANYONE", "prediction": "ANYONE", "top5": ["ANYONE", "SOCIETY", "PATIENT2", "ALLOFSUDDEN", "CHEEK"], "confidence": 0.905, "latency_ms": 3.02}
+{"clip_id": "2553554139053429-BITE", "prediction": "BITE1", "top5": ["BITE1", "TICKLE", "CAPTURE", "SQUEEZE", "SCROLLDOWN"], "confidence": 0.7575, "latency_ms": 2.869}
+{"clip_id": "2560023931191153-MAPLE", "prediction": "MAPLE", "top5": ["MAPLE", "TAIL1", "8HOUR", "BEE1", "DEMAND1"], "confidence": 0.9178, "latency_ms": 3.027}
+{"clip_id": "2632949274164049-CHEESE GRATER", "prediction": "DRAG1", "top5": ["DRAG1", "APPLE", "SHAVE1", "RAZOR2", "CHEESEGRATER"], "confidence": 0.1846, "latency_ms": 2.935}
+{"clip_id": "2642023468678638-DEMAND", "prediction": "DEMAND1", "top5": ["DEMAND1", "SAIL2", "BREAKFAST1", "LOCK1", "COPY"], "confidence": 0.8328, "latency_ms": 3.303}
+{"clip_id": "2661502584826272-FAIL", "prediction": "FAIL", "top5": ["FAIL", "FLIP", "PULLCONVINCE", "DECIDE1", "DOG1"], "confidence": 0.7731, "latency_ms": 2.746}
+{"clip_id": "2664208219859696-MYSELF", "prediction": "MYSELF", "top5": ["MYSELF", "PATIENT2", "CHEEK", "BASEBALLCAP", "COMB2"], "confidence": 0.6179, "latency_ms": 2.897}
+{"clip_id": "270077213177649-DEMAND", "prediction": "DEMAND1", "top5": ["DEMAND1", "SINK", "SAIL2", "SHARPEN2", "LOCK1"], "confidence": 0.9864, "latency_ms": 3.129}
+{"clip_id": "2710513815020268-RAZOR 2", "prediction": "RAZOR2", "top5": ["RAZOR2", "SHAVE1", "HURDLE/TRIP1", "UNDERWEAR1", "TAIL1"], "confidence": 0.953, "latency_ms": 2.842}
+{"clip_id": "28202328150486666-RAZOR 2", "prediction": "SHARPEN2", "top5": ["SHARPEN2", "RAZOR2", "KNIGHT1", "PARTY1", "FLIP"], "confidence": 0.3116, "latency_ms": 2.873}
+{"clip_id": "2838376949179944-MOVIE", "prediction": "MOVIE1", "top5": ["MOVIE1", "MEAT1", "COPY", "DEVELOP1", "FLOAT1"], "confidence": 0.7633, "latency_ms": 3.137}
+{"clip_id": "28791918942913153-HOSPITAL", "prediction": "FOREIGNER1", "top5": ["FOREIGNER1", "FINE1", "HOSPITAL1", "ELEVATOR1", "LOCK1"], "confidence": 0.8351, "latency_ms": 3.299}
+{"clip_id": "29398177566155903-PARTY", "prediction": "PARTY1", "top5": ["PARTY1", "BACKPACK1", "CHEER", "TEACH1", "PONDER"], "confidence": 0.9346, "latency_ms": 3.03}
+{"clip_id": "3006731850276776-CHEEK", "prediction": "CHEEK", "top5": ["CHEEK", "COMB2", "PATIENT2", "RABBIT2", "METAL"], "confidence": 0.6802, "latency_ms": 3.025}
+{"clip_id": "3049387689711547-GUESS", "prediction": "GUESS1", "top5": ["GUESS1", "DRAG1", "ADVERTISE", "CAPTURE", "BITE1"], "confidence": 0.9481, "latency_ms": 2.868}
+{"clip_id": "3054167723169219-RIVER", "prediction": "RIVER1", "top5": ["RIVER1", "SINK", "COPY", "ROCKINGCHAIR1", "BASKETBALL1"], "confidence": 0.7437, "latency_ms": 3.329}
+{"clip_id": "30708690329373534-RIGHT 3", "prediction": "RIGHT3", "top5": ["RIGHT3", "DARK1", "AXE1", "HALLOWEEN1", "EMPTY2"], "confidence": 0.7049, "latency_ms": 3.027}
+{"clip_id": "3108143937298642-MOUTH", "prediction": "MOUTH", "top5": ["MOUTH", "ANYONE", "OFFEND", "CHEEK", "VOICE"], "confidence": 0.7915, "latency_ms": 2.772}
+{"clip_id": "3111036230854072-KNIGHT", "prediction": "MYSELF", "top5": ["MYSELF", "BACKPACK1", "HOW1", "AUTISM1", "LOCK1"], "confidence": 0.3126, "latency_ms": 3.021}
+{"clip_id": "3159241677201454-SHAVE", "prediction": "SHAVE1", "top5": ["SHAVE1", "RAZOR2", "TAIL1", "MAPLE", "CHEESEGRATER"], "confidence": 0.9897, "latency_ms": 2.716}
+{"clip_id": "3191470037860531-8 HOUR", "prediction": "8HOUR", "top5": ["8HOUR", "MAPLE", "ELEVATOR1", "BEE1", "TAIL1"], "confidence": 0.2922, "latency_ms": 2.98}
+{"clip_id": "32496216787069-HURDLE-TRIP", "prediction": "HURDLE/TRIP1", "top5": ["HURDLE/TRIP1", "MEAT1", "FLOAT1", "MECHANIC1", "BELT1"], "confidence": 0.3157, "latency_ms": 3.045}
+{"clip_id": "32588002483465517-SPECIAL", "prediction": "8HOUR", "top5": ["8HOUR", "SPECIAL1", "SOCCER2", "SAIL2", "CALENDAR1"], "confidence": 0.1457, "latency_ms": 3.152}
+{"clip_id": "3288386389330409-CHEESE GRATER", "prediction": "CHEESEGRATER", "top5": ["CHEESEGRATER", "DRAG1", "SHAVE1", "RAZOR2", "BACKPACK1"], "confidence": 0.9012, "latency_ms": 2.808}
+{"clip_id": "3366479979360135-BELT", "prediction": "BELT1", "top5": ["BELT1", "DECIDE1", "FAIL", "HALLOWEEN1", "FLOAT1"], "confidence": 0.9941, "latency_ms": 2.964}
+{"clip_id": "33793635075999173-SHOCKED", "prediction": "SHOCKED", "top5": ["SHOCKED", "DECIDE1", "RIVER1", "BASKETBALL1", "TICKLE"], "confidence": 0.9478, "latency_ms": 2.795}
+{"clip_id": "3410444103291186-BELT", "prediction": "BELT1", "top5": ["BELT1", "HALLOWEEN1", "GRAMMAR", "VOICE", "RABBIT2"], "confidence": 0.867, "latency_ms": 3.155}
+{"clip_id": "34122555816702826-CHEESE GRATER", "prediction": "CHEESEGRATER", "top5": ["CHEESEGRATER", "DRAG1", "SHAVE1", "RAZOR2", "APPLE"], "confidence": 0.4579, "latency_ms": 2.818}
+{"clip_id": "3423044704100937-SHAVE", "prediction": "PATIENT2", "top5": ["PATIENT2", "SHAVE1", "BASEBALLCAP", "CHEW1", "CHEER"], "confidence": 0.5134, "latency_ms": 3.067}
+{"clip_id": "34333964280187357-GUESS", "prediction": "GUESS1", "top5": ["GUESS1", "CAPTURE", "BITE1", "DRAG1", "APPLE"], "confidence": 0.915, "latency_ms": 2.748}
+{"clip_id": "3460314877226609-TAIL", "prediction": "TAIL1", "top5": ["TAIL1", "INTUITIVE", "RAZOR2", "KNIGHT1", "SLIDE2"], "confidence": 0.2998, "latency_ms": 2.845}
+{"clip_id": "3460692217935548-GOODY GOODY_SHOE_OPPOSITE", "prediction": "AUTISM1", "top5": ["AUTISM1", "GOODYGOODYSHOEOPPOSITE", "DOWNSIZE1", "CAPTURE", "BASKETBALL1"], "confidence": 0.3383, "latency_ms": 2.837}
+{"clip_id": "35242889021234824-SOCCER 2", "prediction": "SOCCER2", "top5": ["SOCCER2", "CLOSE", "DEAF1", "DEVELOP1", "SCROLLDOWN"], "confidence": 0.7558, "latency_ms": 2.886}
+{"clip_id": "35864673161352667-CHEESE GRATER", "prediction": "CHEESEGRATER", "top5": ["CHEESEGRATER", "DRAG1", "SHAVE1", "ADVERTISE", "BACKPACK1"], "confidence": 0.8374, "latency_ms": 3.549}
+{"clip_id": "36176458889227514-SINK", "prediction": "SINK", "top5": ["SINK", "ROCKINGCHAIR1", "CALENDAR1", "RIGHT3", "DEVELOP1"], "confidence": 0.4107, "latency_ms": 2.862}
+{"clip_id": "36751830509458006-CALENDAR", "prediction": "CALENDAR1", "top5": ["CALENDAR1", "ZEBRA", "JEWELRY", "MECHANIC1", "ROCKINGCHAIR1"], "confidence": 0.8606, "latency_ms": 3.037}
+{"clip_id": "36886872128101555-SLIDE 2", "prediction": "SLIDE2", "top5": ["SLIDE2", "ADVERTISE", "ELEVATOR1", "DUCK2", "ROCKINGCHAIR1"], "confidence": 0.3143, "latency_ms": 2.791}
+{"clip_id": "37307316304694527-BASEBALL CAP", "prediction": "BASEBALLCAP", "top5": ["BASEBALLCAP", "MYSELF", "LOCK1", "PATIENT2", "SHAVE1"], "confidence": 0.7058, "latency_ms": 2.805}
+{"clip_id": "3738312466703404-TEACH", "prediction": "TEACH1", "top5": ["TEACH1", "CHEER", "DOWNSIZE1", "BASKETBALL1", "HALLOWEEN1"], "confidence": 0.5533, "latency_ms": 2.888}
+{"clip_id": "37669210387957475-GOODY GOODY_SHOE_OPPOSITE", "prediction": "GOODYGOODYSHOEOPPOSITE", "top5": ["GOODYGOODYSHOEOPPOSITE", "AUTISM1", "DOWNSIZE1", "HURDLE/TRIP1", "CEMETERY"], "confidence": 0.9632, "latency_ms": 2.807}
+{"clip_id": "3795971851328137-RABBIT 2", "prediction": "RABBIT2", "top5": ["RABBIT2", "VOICE", "CHEEK", "SLIDE2", "FAIL"], "confidence": 0.9351, "latency_ms": 2.694}
+{"clip_id": "3796947997428477-MAPLE", "prediction": "MAPLE", "top5": ["MAPLE", "BEE1", "EMPTY2", "HALLOWEEN1", "8HOUR"], "confidence": 0.6327, "latency_ms": 2.883}
+{"clip_id": "38148520825309884-DEMAND", "prediction": "DEMAND1", "top5": ["DEMAND1", "SINK", "SAIL2", "LOCK1", "SHARPEN2"], "confidence": 0.9792, "latency_ms": 2.8}
+{"clip_id": "38489622716415495-EASY", "prediction": "EASY", "top5": ["EASY", "SAIL2", "RIGHT3", "PULLCONVINCE", "HOW1"], "confidence": 0.9668, "latency_ms": 2.955}
+{"clip_id": "38571484397842015-MOUTH", "prediction": "MOUTH", "top5": ["MOUTH", "DEMAND1", "VOICE", "SPECIAL1", "OFFEND"], "confidence": 0.9302, "latency_ms": 2.669}
+{"clip_id": "38643119676336557-ELEVATOR", "prediction": "ELEVATOR1", "top5": ["ELEVATOR1", "DEVELOP1", "CHEW1", "SCROLLDOWN", "DEAF1"], "confidence": 0.9052, "latency_ms": 2.901}
+{"clip_id": "3877478645046861-AXE", "prediction": "AXE1", "top5": ["AXE1", "NOON1", "MEACULPA", "MOVIE1", "SAIL2"], "confidence": 0.9661, "latency_ms": 2.744}
+{"clip_id": "38795171322133193-FAIL", "prediction": "FAIL", "top5": ["FAIL", "FLIP", "ROCKINGCHAIR1", "FLOAT1", "RIGHT3"], "confidence": 0.9386, "latency_ms": 2.901}
+{"clip_id": "3926479921771886-AUTISM", "prediction": "AUTISM1", "top5": ["AUTISM1", "BACKPACK1", "DARK1", "ZEBRA", "LOCK1"], "confidence": 0.9266, "latency_ms": 2.78}
+{"clip_id": "39474504957896217-MOVIE", "prediction": "MOVIE1", "top5": ["MOVIE1", "SINK", "MEACULPA", "COPY", "IMPOSSIBLE"], "confidence": 0.8645, "latency_ms": 3.098}
+{"clip_id": "3952172347699263-DEAF", "prediction": "DEAF1", "top5": ["DEAF1", "PENNY", "METAL", "DOWNSIZE1", "ANYONE"], "confidence": 0.922, "latency_ms": 2.604}
+{"clip_id": "40000406125135246-CHEER", "prediction": "CHEER", "top5": ["CHEER", "PARTY1", "DOWNSIZE1", "GRAMMAR", "BACKPACK1"], "confidence": 0.9521, "latency_ms": 2.881}
+{"clip_id": "4067481965556152-CHEW 2", "prediction": "IMPOSSIBLE", "top5": ["IMPOSSIBLE", "CHEW1", "SOCIETY", "HOW1", "LOCK1"], "confidence": 0.1193, "latency_ms": 2.741}
+{"clip_id": "4072365644872067-DECIDE", "prediction": "DECIDE1", "top5": ["DECIDE1", "TICKLE", "BELT1", "SWEATER2", "MICROSCOPE1"], "confidence": 0.8628, "latency_ms": 2.729}
+{"clip_id": "40736213240107166-PONDER", "prediction": "PONDER", "top5": ["PONDER", "HALLOWEEN1", "SAIL2", "ALLOFSUDDEN", "EAT1"], "confidence": 0.8993, "latency_ms": 2.717}
+{"clip_id": "4095802504728605-DEAF", "prediction": "DEAF1", "top5": ["DEAF1", "SCROLLDOWN", "DOWNSIZE1", "PENNY", "WHATFOR1"], "confidence": 0.7348, "latency_ms": 2.705}
+{"clip_id": "41119821062785955-GRAMMAR", "prediction": "GRAMMAR", "top5": ["GRAMMAR", "PARTY1", "DOWNSIZE1", "SHARPEN2", "HALLOWEEN1"], "confidence": 0.9647, "latency_ms": 2.843}
+{"clip_id": "4129170320860023-SPECIAL", "prediction": "SPECIAL1", "top5": ["SPECIAL1", "MICROSCOPE1", "8HOUR", "DECIDE1", "TICKLE"], "confidence": 0.4937, "latency_ms": 3.166}
+{"clip_id": "41400174274886226-DUCK", "prediction": "DUCK2", "top5": ["DUCK2", "BITE1", "SLIDE2", "RABBIT2", "ROCKINGCHAIR1"], "confidence": 0.9437, "latency_ms": 2.7}
+{"clip_id": "424117143455232-MECHANIC", "prediction": "MECHANIC1", "top5": ["MECHANIC1", "HALLOWEEN1", "CALENDAR1", "SHARPEN2", "PARTY1"], "confidence": 0.9898, "latency_ms": 3.101}
+{"clip_id": "4254167262351618-CHEW 2", "prediction": "CHEW1", "top5": ["CHEW1", "BASEBALLCAP", "LOCK1", "SHAVE1", "ANYONE"], "confidence": 0.2907, "latency_ms": 2.881}
+{"clip_id": "43742087186225564-KNIGHT", "prediction": "KNIGHT1", "top5": ["KNIGHT1", "PULLCONVINCE", "OFFEND", "JOKE", "FAIL"], "confidence": 0.7497, "latency_ms": 2.54}
+{"clip_id": "4471857764890683-SCROLL DOWN", "prediction": "SCROLLDOWN", "top5": ["SCROLLDOWN", "TAIL1", "ANYONE", "OFFEND", "DEAF1"], "confidence": 0.7898, "latency_ms": 2.537}
+{"clip_id": "44788803801657195-SOCCER 2", "prediction": "SOCCER2", "top5": ["SOCCER2", "IMPOSSIBLE", "SQUEEZE", "CHEESEGRATER", "TICKLE"], "confidence": 0.5416, "latency_ms": 3.012}
+{"clip_id": "4481998873282871-PONDER", "prediction": "PONDER", "top5": ["PONDER", "EAT1", "DARK1", "UNDERWEAR1", "MEACULPA"], "confidence": 0.197, "latency_ms": 2.817}
+{"clip_id": "45150943255202947-RABBIT 2", "prediction": "RABBIT2", "top5": ["RABBIT2", "FAIL", "BELT1", "VOICE", "SINK"], "confidence": 0.9728, "latency_ms": 2.758}
+{"clip_id": "45428891715253683-EMPTY 2", "prediction": "CLOSE", "top5": ["CLOSE", "SOCCER2", "DEVELOP1", "FINE1", "EMPTY2"], "confidence": 0.1528, "latency_ms": 2.743}
+{"clip_id": "45516937007036473-JEWELRY", "prediction": "JEWELRY", "top5": ["JEWELRY", "ZEBRA", "CALENDAR1", "BELT1", "BACKPACK1"], "confidence": 0.5581, "latency_ms": 2.893}
+{"clip_id": "4572108566423274-EMPTY 2", "prediction": "EMPTY2", "top5": ["EMPTY2", "TICKLE", "CEMETERY", "DECIDE1", "COMB2"], "confidence": 0.3206, "latency_ms": 3.227}
+{"clip_id": "45820068796551894-DECIDE", "prediction": "DECIDE1", "top5": ["DECIDE1", "SHOCKED", "TICKLE", "FOREIGNER1", "RIVER1"], "confidence": 0.9888, "latency_ms": 2.969}
+{"clip_id": "45836221682944944-GOODY GOODY_SHOE_OPPOSITE", "prediction": "GOODYGOODYSHOEOPPOSITE", "top5": ["GOODYGOODYSHOEOPPOSITE", "SHOCKED", "BASKETBALL1", "CEMETERY", "DECIDE1"], "confidence": 0.97, "latency_ms": 2.978}
+{"clip_id": "4596375275135087-BEE", "prediction": "RIGHT3", "top5": ["RIGHT3", "EMPTY2", "IMPOSSIBLE", "MOVIE1", "DEVELOP1"], "confidence": 0.3317, "latency_ms": 2.736}
+{"clip_id": "46170617189439445-MEAT", "prediction": "MEAT1", "top5": ["MEAT1", "SOCCER2", "MOVIE1", "CALENDAR1", "FLOAT1"], "confidence": 0.8479, "latency_ms": 3.321}
+{"clip_id": "4619102582986805-CAPTURE", "prediction": "CAPTURE", "top5": ["CAPTURE", "ADVERTISE", "METAL", "BITE1", "SHAVE1"], "confidence": 0.8884, "latency_ms": 3.313}
+{"clip_id": "461949850206256-BASEBALL CAP", "prediction": "BASEBALLCAP", "top5": ["BASEBALLCAP", "APPLE", "SHAVE1", "LOCK1", "DECIDE1"], "confidence": 0.9274, "latency_ms": 2.879}
+{"clip_id": "46249808811047255-VLOG", "prediction": "VLOG", "top5": ["VLOG", "DOWNSIZE1", "ANYONE", "PARTY1", "GRAMMAR"], "confidence": 0.9064, "latency_ms": 3.142}
+{"clip_id": "46279340594521323-TEACH", "prediction": "TEACH1", "top5": ["TEACH1", "CHEER", "AUTISM1", "DOWNSIZE1", "BASKETBALL1"], "confidence": 0.8282, "latency_ms": 3.095}
+{"clip_id": "4672262692116116-CHEEK", "prediction": "CHEEK", "top5": ["CHEEK", "PENNY", "JOKE", "ANYONE", "CHEER"], "confidence": 0.4933, "latency_ms": 3.192}
+{"clip_id": "4676918363461027-BITE", "prediction": "BITE1", "top5": ["BITE1", "DUCK2", "CAPTURE", "CHEW1", "GOODYGOODYSHOEOPPOSITE"], "confidence": 0.9388, "latency_ms": 2.874}
+{"clip_id": "4781635605012422-ELEVATOR", "prediction": "ELEVATOR1", "top5": ["ELEVATOR1", "CHEW1", "ADVERTISE", "8HOUR", "BASEBALLCAP"], "confidence": 0.9482, "latency_ms": 3.055}
+{"clip_id": "47947978638344724-SOCIETY", "prediction": "SOCIETY", "top5": ["SOCIETY", "PATIENT2", "TAIL1", "SQUEEZE", "CHEW1"], "confidence": 0.8657, "latency_ms": 2.71}
+{"clip_id": "48097577259527013-DRAG", "prediction": "DRAG1", "top5": ["DRAG1", "ADVERTISE", "CHEESEGRATER", "WALK-TIGHTROPE-CL", "SHAVE1"], "confidence": 0.6382, "latency_ms": 3.196}
+{"clip_id": "4854326686926205-FLOAT 3", "prediction": "FLOAT1", "top5": ["FLOAT1", "BABY2", "AXE1", "SOCCER2", "EASY"], "confidence": 0.9668, "latency_ms": 3.234}
+{"clip_id": "4888664874797979-SHARPEN 3", "prediction": "SHARPEN2", "top5": ["SHARPEN2", "PARTY1", "JEWELRY", "HURDLE/TRIP1", "WALK-TIGHTROPE-CL"], "confidence": 0.9683, "latency_ms": 3.193}
+{"clip_id": "48933001953207-ADVERTISE", "prediction": "ADVERTISE", "top5": ["ADVERTISE", "GUESS1", "SQUEEZE", "DRAG1", "AUTISM1"], "confidence": 0.6825, "latency_ms": 3.078}
+{"clip_id": "4939295276537865-IMPOSSIBLE", "prediction": "PARTY1", "top5": ["PARTY1", "RIGHT3", "DOWNSIZE1", "IMPOSSIBLE", "HOW1"], "confidence": 0.1228, "latency_ms": 2.937}
+{"clip_id": "4974799671016843-LOCK", "prediction": "LOCK1", "top5": ["LOCK1", "DEMAND1", "APPLE", "CLOSE", "FINE1"], "confidence": 0.8179, "latency_ms": 2.994}
+{"clip_id": "4985293038019454-BACKPACK", "prediction": "BACKPACK1", "top5": ["BACKPACK1", "JEWELRY", "ZEBRA", "AUTISM1", "CHEESEGRATER"], "confidence": 0.9563, "latency_ms": 2.794}
+{"clip_id": "5000642478362116-BITE", "prediction": "BITE1", "top5": ["BITE1", "DUCK2", "CAPTURE", "SQUEEZE", "GUESS1"], "confidence": 0.9664, "latency_ms": 2.936}
+{"clip_id": "5004269948712425-SOCCER 2", "prediction": "SOCCER2", "top5": ["SOCCER2", "DEAF1", "MEAT1", "CLOSE", "DEVELOP1"], "confidence": 0.702, "latency_ms": 2.862}
+{"clip_id": "5008852988399453-MYSELF", "prediction": "MYSELF", "top5": ["MYSELF", "PATIENT2", "CHEEK", "IMPOSSIBLE", "GUESS1"], "confidence": 0.5793, "latency_ms": 2.816}
+{"clip_id": "5026388790646275-CHEER", "prediction": "CHEER", "top5": ["CHEER", "BACKPACK1", "PARTY1", "DOWNSIZE1", "GRAMMAR"], "confidence": 0.9156, "latency_ms": 3.004}
+{"clip_id": "5072688386926076-COMB", "prediction": "COMB2", "top5": ["COMB2", "SCARF2", "JEWELRY", "BACKPACK1", "RABBIT2"], "confidence": 0.6944, "latency_ms": 2.814}
+{"clip_id": "5123454423358422-LOCK", "prediction": "LOCK1", "top5": ["LOCK1", "DEMAND1", "SINK", "RIVER1", "DRAG1"], "confidence": 0.9811, "latency_ms": 2.857}
+{"clip_id": "5147041918881023-PULL CONVINCE", "prediction": "PULLCONVINCE", "top5": ["PULLCONVINCE", "MEACULPA", "FAIL", "SOCIETY", "BREAKFAST1"], "confidence": 0.721, "latency_ms": 3.289}
+{"clip_id": "5153555196709101-OFFEND", "prediction": "OFFEND", "top5": ["OFFEND", "JOKE", "FLIP", "SHARPEN2", "KNIGHT1"], "confidence": 0.9855, "latency_ms": 3.008}
+{"clip_id": "5158284296267106-BEE", "prediction": "BEE1", "top5": ["BEE1", "NOON1", "8HOUR", "HALLOWEEN1", "SAIL2"], "confidence": 0.934, "latency_ms": 2.836}
+{"clip_id": "517119656141747-ZEBRA", "prediction": "ZEBRA", "top5": ["ZEBRA", "JEWELRY", "CALENDAR1", "MECHANIC1", "SCROLLDOWN"], "confidence": 0.9381, "latency_ms": 3.111}
+{"clip_id": "5208069588201667-DOG", "prediction": "ALLOFSUDDEN", "top5": ["ALLOFSUDDEN", "DOG1", "ANYONE", "PULLCONVINCE", "DOWNSIZE1"], "confidence": 0.6093, "latency_ms": 2.76}
+{"clip_id": "5240169854170185-LONG LINE", "prediction": "LONGLINE", "top5": ["LONGLINE", "CHEER", "BASKETBALL1", "HALLOWEEN1", "CLOSE"], "confidence": 0.9553, "latency_ms": 3.203}
+{"clip_id": "5259510122646855-HALLOWEEN", "prediction": "HALLOWEEN1", "top5": ["HALLOWEEN1", "AXE1", "CHEER", "MECHANIC1", "SHARPEN2"], "confidence": 0.9671, "latency_ms": 2.812}
+{"clip_id": "528682049477224-VOICE", "prediction": "VOICE", "top5": ["VOICE", "RABBIT2", "MOUTH", "HOSPITAL1", "UNDERWEAR1"], "confidence": 0.9231, "latency_ms": 3.126}
+{"clip_id": "5348408299826362-VOICE", "prediction": "VOICE", "top5": ["VOICE", "SCARF2", "EAT1", "MOUTH", "MEACULPA"], "confidence": 0.7812, "latency_ms": 2.872}
+{"clip_id": "5360738598037762-JEWELRY", "prediction": "JEWELRY", "top5": ["JEWELRY", "ZEBRA", "BELT1", "BACKPACK1", "HALLOWEEN1"], "confidence": 0.8167, "latency_ms": 3.314}
+{"clip_id": "5420413789790421-WALK-TIGHTROPE-CL", "prediction": "WALK-TIGHTROPE-CL", "top5": ["WALK-TIGHTROPE-CL", "SLIDE2", "BELT1", "ROCKINGCHAIR1", "MECHANIC1"], "confidence": 0.7242, "latency_ms": 3.172}
+{"clip_id": "5426366957483852-ALL OF_SUDDEN", "prediction": "ALLOFSUDDEN", "top5": ["ALLOFSUDDEN", "PATIENT2", "ANYONE", "DOG1", "DOWNSIZE1"], "confidence": 0.9653, "latency_ms": 2.799}
+{"clip_id": "5467156859776472-BITE", "prediction": "BITE1", "top5": ["BITE1", "DUCK2", "CAPTURE", "GUESS1", "BASKETBALL1"], "confidence": 0.4433, "latency_ms": 2.921}
+{"clip_id": "5535338426456671-MOVIE", "prediction": "MOVIE1", "top5": ["MOVIE1", "IMPOSSIBLE", "RIGHT3", "CALENDAR1", "MEAT1"], "confidence": 0.8545, "latency_ms": 2.902}
+{"clip_id": "5537545794516361-CHEW 2", "prediction": "CHEW1", "top5": ["CHEW1", "PATIENT2", "ALLOFSUDDEN", "CHEEK", "TAIL1"], "confidence": 0.322, "latency_ms": 3.024}
+{"clip_id": "5547731542068628-MICROSCOPE", "prediction": "MICROSCOPE1", "top5": ["MICROSCOPE1", "JOKE", "CHEESEGRATER", "DECIDE1", "TICKLE"], "confidence": 0.8338, "latency_ms": 2.81}
+{"clip_id": "5579456931257181-DOG", "prediction": "DOG1", "top5": ["DOG1", "ALLOFSUDDEN", "PULLCONVINCE", "FAIL", "FLIP"], "confidence": 0.3973, "latency_ms": 2.876}
+{"clip_id": "5601659028098682-DEAF", "prediction": "DEAF1", "top5": ["DEAF1", "PENNY", "ANYONE", "DOWNSIZE1", "ALLOFSUDDEN"], "confidence": 0.924, "latency_ms": 2.604}
+{"clip_id": "5640844255086905-SOCIETY", "prediction": "SOCIETY", "top5": ["SOCIETY", "LOCK1", "HOW1", "FLIP", "PULLCONVINCE"], "confidence": 0.9264, "latency_ms": 2.868}
+{"clip_id": "5648692132481579-SHOCKED", "prediction": "SHOCKED", "top5": ["SHOCKED", "DECIDE1", "CLOSE", "DEAF1", "SOCCER2"], "confidence": 0.8333, "latency_ms": 2.877}
+{"clip_id": "5658562793078117-CLOSE", "prediction": "CLOSE", "top5": ["CLOSE", "DEVELOP1", "LONGLINE", "BREAKFAST1", "DOG1"], "confidence": 0.9519, "latency_ms": 2.891}
+{"clip_id": "5673060607110498-CHEER", "prediction": "CHEER", "top5": ["CHEER", "BACKPACK1", "RABBIT2", "SOCIETY", "PONDER"], "confidence": 0.7292, "latency_ms": 2.888}
+{"clip_id": "5773958570762612-BABY 2", "prediction": "BABY2", "top5": ["BABY2", "SCARF2", "FINE1", "RIGHT3", "DOG1"], "confidence": 0.1343, "latency_ms": 2.699}
+{"clip_id": "5784034175717614-EASY", "prediction": "EASY", "top5": ["EASY", "DARK1", "CALENDAR1", "AUTISM1", "HOW1"], "confidence": 0.9368, "latency_ms": 2.904}
+{"clip_id": "5803218002565746-DOWNSIZE", "prediction": "DOWNSIZE1", "top5": ["DOWNSIZE1", "GRAMMAR", "CHEER", "CAPTURE", "VLOG"], "confidence": 0.9182, "latency_ms": 3.059}
+{"clip_id": "5851960225980641-HOSPITAL", "prediction": "HOSPITAL1", "top5": ["HOSPITAL1", "KNIGHT1", "LOCK1", "BACKPACK1", "AUTISM1"], "confidence": 0.7035, "latency_ms": 2.96}
+{"clip_id": "5927941339600333-SWEATER 2", "prediction": "SWEATER2", "top5": ["SWEATER2", "DECIDE1", "ADVERTISE", "METAL", "INTUITIVE"], "confidence": 0.9957, "latency_ms": 2.871}
+{"clip_id": "5929429678299929-8 HOUR", "prediction": "8HOUR", "top5": ["8HOUR", "ELEVATOR1", "MICROSCOPE1", "IMPOSSIBLE", "DEVELOP1"], "confidence": 0.9448, "latency_ms": 3.161}
+{"clip_id": "5962378845845178-RIVER", "prediction": "RIVER1", "top5": ["RIVER1", "COPY", "LOCK1", "DECIDE1", "SQUEEZE"], "confidence": 0.8349, "latency_ms": 2.802}
+{"clip_id": "5970349085112403-COPY", "prediction": "COPY", "top5": ["COPY", "DEVELOP1", "ADVERTISE", "ELEVATOR1", "CAPTURE"], "confidence": 0.1599, "latency_ms": 2.946}
+{"clip_id": "5972673726198154-DUCK", "prediction": "DUCK2", "top5": ["DUCK2", "SLIDE2", "BITE1", "CHEW1", "GOODYGOODYSHOEOPPOSITE"], "confidence": 0.9008, "latency_ms": 2.579}
+{"clip_id": "5989539775823847-INTUITIVE", "prediction": "ALLOFSUDDEN", "top5": ["ALLOFSUDDEN", "KNIGHT1", "MOUTH", "GUESS1", "ANYONE"], "confidence": 0.0903, "latency_ms": 2.648}
+{"clip_id": "6017960076513276-ELEVATOR", "prediction": "ELEVATOR1", "top5": ["ELEVATOR1", "DEVELOP1", "8HOUR", "ADVERTISE", "CHEER"], "confidence": 0.9411, "latency_ms": 2.991}
+{"clip_id": "6050297960065525-ROCKING CHAIR", "prediction": "ROCKINGCHAIR1", "top5": ["ROCKINGCHAIR1", "BASKETBALL1", "SINK", "TICKLE", "DOWNSIZE1"], "confidence": 0.687, "latency_ms": 2.938}
+{"clip_id": "6065657762917056-AUTISM", "prediction": "AUTISM1", "top5": ["AUTISM1", "BACKPACK1", "LOCK1", "DARK1", "KNIGHT1"], "confidence": 0.8097, "latency_ms": 2.673}
+{"clip_id": "6142521746642153-WHAT FOR", "prediction": "WHATFOR1", "top5": ["WHATFOR1", "PENNY", "DEAF1", "OFFEND", "SAIL2"], "confidence": 0.9595, "latency_ms": 2.751}
+{"clip_id": "6148470977348326-METAL", "prediction": "METAL", "top5": ["METAL", "PENNY", "JOKE", "DEAF1", "CHEEK"], "confidence": 0.8993, "latency_ms": 2.582}
+{"clip_id": "6152714959604932-BASKETBALL", "prediction": "BASKETBALL1", "top5": ["BASKETBALL1", "LONGLINE", "CHEER", "DOWNSIZE1", "DECIDE1"], "confidence": 0.82, "latency_ms": 3.053}
+{"clip_id": "6198098191835406-AUTISM", "prediction": "AUTISM1", "top5": ["AUTISM1", "BACKPACK1", "GUESS1", "DARK1", "LOCK1"], "confidence": 0.9932, "latency_ms": 2.798}
+{"clip_id": "6251993314243527-BASKETBALL", "prediction": "BASKETBALL1", "top5": ["BASKETBALL1", "EMPTY2", "ROCKINGCHAIR1", "CHEER", "RIGHT3"], "confidence": 0.2456, "latency_ms": 2.923}
+{"clip_id": "6263592697582419-LOCK", "prediction": "LOCK1", "top5": ["LOCK1", "DEMAND1", "MOVIE1", "SINK", "HOSPITAL1"], "confidence": 0.8376, "latency_ms": 2.737}
+{"clip_id": "6271713081961889-HOW", "prediction": "HOW1", "top5": ["HOW1", "SWEATER2", "MYSELF", "ADVERTISE", "HURDLE/TRIP1"], "confidence": 0.9946, "latency_ms": 2.928}
+{"clip_id": "6277946208350784-EASY", "prediction": "EASY", "top5": ["EASY", "SAIL2", "HALLOWEEN1", "CALENDAR1", "DARK1"], "confidence": 0.9818, "latency_ms": 2.897}
+{"clip_id": "6306112428699353-AUTISM", "prediction": "AUTISM1", "top5": ["AUTISM1", "CAPTURE", "BACKPACK1", "LOCK1", "CALENDAR1"], "confidence": 0.6911, "latency_ms": 2.966}
+{"clip_id": "6331495804836855-LOCK", "prediction": "LOCK1", "top5": ["LOCK1", "DEMAND1", "BREAKFAST1", "SHAVE1", "DRAG1"], "confidence": 0.8037, "latency_ms": 2.749}
+{"clip_id": "6376722418151588-SINK", "prediction": "FLOAT1", "top5": ["FLOAT1", "MECHANIC1", "FOREIGNER1", "ZEBRA", "FAIL"], "confidence": 0.2283, "latency_ms": 2.878}
+{"clip_id": "6414524542629407-ROCKING CHAIR", "prediction": "ROCKINGCHAIR1", "top5": ["ROCKINGCHAIR1", "BASKETBALL1", "PARTY1", "TICKLE", "UNDERWEAR1"], "confidence": 0.9519, "latency_ms": 2.846}
+{"clip_id": "6416983573445294-SHAVE", "prediction": "RAZOR2", "top5": ["RAZOR2", "SHAVE1", "PARTY1", "SLIDE2", "CHEESEGRATER"], "confidence": 0.2159, "latency_ms": 2.988}
+{"clip_id": "6440242014287687-FINE", "prediction": "FINE1", "top5": ["FINE1", "BITE1", "SQUEEZE", "DRAG1", "DEVELOP1"], "confidence": 0.2634, "latency_ms": 2.536}
+{"clip_id": "647818976594698-BABY 2", "prediction": "BABY2", "top5": ["BABY2", "DOG1", "AUTISM1", "PULLCONVINCE", "RIGHT3"], "confidence": 0.9756, "latency_ms": 2.844}
+{"clip_id": "6489487311042188-ALL OF_SUDDEN", "prediction": "ALLOFSUDDEN", "top5": ["ALLOFSUDDEN", "PENNY", "CHEEK", "PONDER", "RABBIT2"], "confidence": 0.5636, "latency_ms": 2.569}
+{"clip_id": "6495415212975224-UNDERWEAR", "prediction": "UNDERWEAR1", "top5": ["UNDERWEAR1", "BELT1", "INTUITIVE", "VOICE", "NOON1"], "confidence": 0.8782, "latency_ms": 3.008}
+{"clip_id": "6495857433033319-SWEATER 2", "prediction": "SWEATER2", "top5": ["SWEATER2", "DECIDE1", "METAL", "ADVERTISE", "FOREIGNER1"], "confidence": 0.9971, "latency_ms": 2.97}
+{"clip_id": "6496108914533325-PARTY", "prediction": "PARTY1", "top5": ["PARTY1", "TEACH1", "BACKPACK1", "CHEER", "HURDLE/TRIP1"], "confidence": 0.9947, "latency_ms": 2.766}
+{"clip_id": "6523145816470133-WHAT FOR", "prediction": "WHATFOR1", "top5": ["WHATFOR1", "PENNY", "DEAF1", "OFFEND", "KNIGHT1"], "confidence": 0.9555, "latency_ms": 2.759}
+{"clip_id": "6617551288076764-BASEBALL CAP", "prediction": "LOCK1", "top5": ["LOCK1", "ADVERTISE", "BASEBALLCAP", "SOCIETY", "SWEATER2"], "confidence": 0.1856, "latency_ms": 2.887}
+{"clip_id": "6651154954796614-SCARF 4", "prediction": "SCARF2", "top5": ["SCARF2", "COMB2", "EAT1", "JEWELRY", "VOICE"], "confidence": 0.6904, "latency_ms": 2.857}
+{"clip_id": "6660795760839453-CALENDAR", "prediction": "CALENDAR1", "top5": ["CALENDAR1", "LOCK1", "AUTISM1", "MECHANIC1", "FOREIGNER1"], "confidence": 0.793, "latency_ms": 2.862}
+{"clip_id": "6671187735704913-APPLE", "prediction": "APPLE", "top5": ["APPLE", "METAL", "PENNY", "BASEBALLCAP", "MYSELF"], "confidence": 0.5875, "latency_ms": 2.918}
+{"clip_id": "671764401941833-MOVIE", "prediction": "MOVIE1", "top5": ["MOVIE1", "RIGHT3", "CALENDAR1", "SAIL2", "DEVELOP1"], "confidence": 0.5144, "latency_ms": 2.845}
+{"clip_id": "682353770605032-ADVERTISE", "prediction": "ADVERTISE", "top5": ["ADVERTISE", "DRAG1", "FOREIGNER1", "SQUEEZE", "CHEESEGRATER"], "confidence": 0.6454, "latency_ms": 2.903}
+{"clip_id": "6898343982713611-RIGHT 3", "prediction": "RIGHT3", "top5": ["RIGHT3", "MOVIE1", "IMPOSSIBLE", "SINK", "FOREIGNER1"], "confidence": 0.4178, "latency_ms": 2.636}
+{"clip_id": "6919484550443733-FAIL", "prediction": "FAIL", "top5": ["FAIL", "PULLCONVINCE", "DOG1", "FLIP", "ALLOFSUDDEN"], "confidence": 0.5104, "latency_ms": 3.276}
+{"clip_id": "6940052288653344-MEAT", "prediction": "MEAT1", "top5": ["MEAT1", "SOCCER2", "FLOAT1", "BITE1", "HURDLE/TRIP1"], "confidence": 0.9784, "latency_ms": 3.104}
+{"clip_id": "6961575623504714-SHAVE", "prediction": "SHAVE1", "top5": ["SHAVE1", "CHEW1", "LOCK1", "BASEBALLCAP", "RAZOR2"], "confidence": 0.7868, "latency_ms": 2.976}
+{"clip_id": "697572736827275-COMB", "prediction": "COMB2", "top5": ["COMB2", "SCARF2", "BACKPACK1", "AUTISM1", "FOREIGNER1"], "confidence": 0.9344, "latency_ms": 2.722}
+{"clip_id": "6987156871330971-BEE", "prediction": "BEE1", "top5": ["BEE1", "BREAKFAST1", "MOUTH", "FINE1", "NOON1"], "confidence": 0.1604, "latency_ms": 2.687}
+{"clip_id": "7014710296796682-DARK", "prediction": "DARK1", "top5": ["DARK1", "CALENDAR1", "RIGHT3", "AUTISM1", "FOREIGNER1"], "confidence": 0.8599, "latency_ms": 2.953}
+{"clip_id": "7019796297629999-CAPTURE", "prediction": "CAPTURE", "top5": ["CAPTURE", "DOWNSIZE1", "JOKE", "GUESS1", "SHARPEN2"], "confidence": 0.9375, "latency_ms": 3.239}
+{"clip_id": "7019844699330071-TICKLE", "prediction": "TICKLE", "top5": ["TICKLE", "GRAMMAR", "BASKETBALL1", "DECIDE1", "DOWNSIZE1"], "confidence": 0.882, "latency_ms": 2.923}
+{"clip_id": "7028620841319688-FOREIGNER", "prediction": "FOREIGNER1", "top5": ["FOREIGNER1", "IMPOSSIBLE", "CHEESEGRATER", "PARTY1", "MOVIE1"], "confidence": 0.7899, "latency_ms": 3.03}
+{"clip_id": "7070837631682403-SPECIAL", "prediction": "SPECIAL1", "top5": ["SPECIAL1", "MICROSCOPE1", "MEAT1", "ADVERTISE", "SOCCER2"], "confidence": 0.9304, "latency_ms": 3.082}
+{"clip_id": "7099544803482227-SINK", "prediction": "SINK", "top5": ["SINK", "DEMAND1", "MEACULPA", "IMPOSSIBLE", "LOCK1"], "confidence": 0.3952, "latency_ms": 3.208}
+{"clip_id": "7124113884275678-METAL", "prediction": "METAL", "top5": ["METAL", "PENNY", "DEAF1", "NOON1", "ADVERTISE"], "confidence": 0.933, "latency_ms": 2.997}
+{"clip_id": "7157550855204442-SOCIETY", "prediction": "SOCIETY", "top5": ["SOCIETY", "FLIP", "SQUEEZE", "ALLOFSUDDEN", "MEACULPA"], "confidence": 0.9871, "latency_ms": 2.799}
+{"clip_id": "7166028187687812-SHOCKED", "prediction": "SHOCKED", "top5": ["SHOCKED", "UNDERWEAR1", "JEWELRY", "DECIDE1", "DEAF1"], "confidence": 0.987, "latency_ms": 3.21}
+{"clip_id": "717958009426233-NOON", "prediction": "NOON1", "top5": ["NOON1", "BEE1", "AXE1", "BASEBALLCAP", "HALLOWEEN1"], "confidence": 0.4136, "latency_ms": 2.743}
+{"clip_id": "7227604144782054-PENNY", "prediction": "PENNY", "top5": ["PENNY", "CHEEK", "ALLOFSUDDEN", "DEAF1", "SAIL2"], "confidence": 0.6912, "latency_ms": 2.961}
+{"clip_id": "7355641552290353-MECHANIC", "prediction": "MECHANIC1", "top5": ["MECHANIC1", "HALLOWEEN1", "JEWELRY", "SHARPEN2", "FAIL"], "confidence": 0.9664, "latency_ms": 2.964}
+{"clip_id": "7371501507543785-DEAF", "prediction": "DEAF1", "top5": ["DEAF1", "PENNY", "DOWNSIZE1", "WHATFOR1", "METAL"], "confidence": 0.873, "latency_ms": 3.106}
+{"clip_id": "7381539112820095-SHARPEN 3", "prediction": "SHARPEN2", "top5": ["SHARPEN2", "JOKE", "MECHANIC1", "BELT1", "GRAMMAR"], "confidence": 0.9524, "latency_ms": 3.177}
+{"clip_id": "7414219351354367-GUESS", "prediction": "GUESS1", "top5": ["GUESS1", "AUTISM1", "COMB2", "BITE1", "CAPTURE"], "confidence": 0.9688, "latency_ms": 2.738}
+{"clip_id": "742862485879747-PATIENT 2", "prediction": "PATIENT2", "top5": ["PATIENT2", "CHEEK", "MYSELF", "PARTY1", "ALLOFSUDDEN"], "confidence": 0.5807, "latency_ms": 2.772}
+{"clip_id": "744008724339543-EAT", "prediction": "EAT1", "top5": ["EAT1", "PULLCONVINCE", "UNDERWEAR1", "PONDER", "MOUTH"], "confidence": 0.9155, "latency_ms": 2.749}
+{"clip_id": "7445163687198764-PULL CONVINCE", "prediction": "PULLCONVINCE", "top5": ["PULLCONVINCE", "MEACULPA", "BACKPACK1", "CHEW1", "OFFEND"], "confidence": 0.9227, "latency_ms": 4.101}
+{"clip_id": "7516973642547613-HALLOWEEN", "prediction": "HALLOWEEN1", "top5": ["HALLOWEEN1", "PONDER", "TEACH1", "MECHANIC1", "AXE1"], "confidence": 0.9823, "latency_ms": 3.096}
+{"clip_id": "7542420326328318-OFFEND", "prediction": "OFFEND", "top5": ["OFFEND", "WHATFOR1", "SHARPEN2", "SCROLLDOWN", "ANYONE"], "confidence": 0.7547, "latency_ms": 2.903}
+{"clip_id": "7629092396207264-MAPLE", "prediction": "MAPLE", "top5": ["MAPLE", "8HOUR", "SOCCER2", "SPECIAL1", "MEAT1"], "confidence": 0.1473, "latency_ms": 2.782}
+{"clip_id": "7640741510643871-TEACH", "prediction": "TEACH1", "top5": ["TEACH1", "MECHANIC1", "CHEER", "AXE1", "PONDER"], "confidence": 0.9383, "latency_ms": 3.129}
+{"clip_id": "7684223825758543-AUTISM", "prediction": "AUTISM1", "top5": ["AUTISM1", "HOSPITAL1", "BACKPACK1", "LOCK1", "DARK1"], "confidence": 0.8918, "latency_ms": 2.908}
+{"clip_id": "7706511460115826-JOKE", "prediction": "JOKE", "top5": ["JOKE", "SHARPEN2", "KNIGHT1", "CAPTURE", "OFFEND"], "confidence": 0.9452, "latency_ms": 2.99}
+{"clip_id": "7713194149900888-CEMETERY", "prediction": "CEMETERY", "top5": ["CEMETERY", "SCARF2", "AUTISM1", "BASEBALLCAP", "EMPTY2"], "confidence": 0.9919, "latency_ms": 3.272}
+{"clip_id": "7713607971692202-NOON", "prediction": "NOON1", "top5": ["NOON1", "BEE1", "BREAKFAST1", "HOSPITAL1", "LONGLINE"], "confidence": 0.7695, "latency_ms": 2.956}
+{"clip_id": "7766224338473211-JEWELRY", "prediction": "HALLOWEEN1", "top5": ["HALLOWEEN1", "TEACH1", "PONDER", "COPY", "SPECIAL1"], "confidence": 0.1448, "latency_ms": 4.185}
+{"clip_id": "7779283353983693-ELEVATOR", "prediction": "ELEVATOR1", "top5": ["ELEVATOR1", "FLOAT1", "FOREIGNER1", "ZEBRA", "BACKPACK1"], "confidence": 0.3098, "latency_ms": 3.123}
+{"clip_id": "7803719476282813-BABY 2", "prediction": "BABY2", "top5": ["BABY2", "AUTISM1", "DOG1", "FINE1", "SCARF2"], "confidence": 0.9615, "latency_ms": 3.202}
+{"clip_id": "7844699478897115-ANYONE", "prediction": "ANYONE", "top5": ["ANYONE", "OFFEND", "SCROLLDOWN", "WHATFOR1", "VLOG"], "confidence": 0.6898, "latency_ms": 2.947}
+{"clip_id": "7868401196600863-CAPTURE", "prediction": "CAPTURE", "top5": ["CAPTURE", "DOWNSIZE1", "BITE1", "SQUEEZE", "SCROLLDOWN"], "confidence": 0.9891, "latency_ms": 2.905}
+{"clip_id": "7873618416168222-TICKLE", "prediction": "TICKLE", "top5": ["TICKLE", "RIVER1", "GRAMMAR", "IMPOSSIBLE", "DECIDE1"], "confidence": 0.9505, "latency_ms": 3.175}
+{"clip_id": "7877312690929996-DEVELOP", "prediction": "DEVELOP1", "top5": ["DEVELOP1", "CLOSE", "FINE1", "MOVIE1", "ELEVATOR1"], "confidence": 0.5917, "latency_ms": 2.952}
+{"clip_id": "7927387280867586-KNIGHT", "prediction": "KNIGHT1", "top5": ["KNIGHT1", "OFFEND", "JOKE", "PATIENT2", "ANYONE"], "confidence": 0.5375, "latency_ms": 2.969}
+{"clip_id": "799770954333842-DOG", "prediction": "DOG1", "top5": ["DOG1", "ALLOFSUDDEN", "FLIP", "FAIL", "VOICE"], "confidence": 0.3969, "latency_ms": 2.78}
+{"clip_id": "8020642832084848-SCARF 4", "prediction": "SCARF2", "top5": ["SCARF2", "AUTISM1", "PATIENT2", "BABY2", "EAT1"], "confidence": 0.6031, "latency_ms": 2.886}
+{"clip_id": "8141449797127183-HALLOWEEN", "prediction": "HALLOWEEN1", "top5": ["HALLOWEEN1", "AXE1", "RIGHT3", "PONDER", "SAIL2"], "confidence": 0.9973, "latency_ms": 3.042}
+{"clip_id": "8152932257681471-CEMETERY", "prediction": "CEMETERY", "top5": ["CEMETERY", "BASEBALLCAP", "SHAVE1", "TAIL1", "CHEESEGRATER"], "confidence": 0.8697, "latency_ms": 2.956}
+{"clip_id": "8166700420399404-CHEEK", "prediction": "COMB2", "top5": ["COMB2", "CHEEK", "GUESS1", "MYSELF", "MOUTH"], "confidence": 0.1616, "latency_ms": 2.766}
+{"clip_id": "8168319957829147-FLOAT 3", "prediction": "FLOAT1", "top5": ["FLOAT1", "FOREIGNER1", "FAIL", "MOVIE1", "SOCCER2"], "confidence": 0.8014, "latency_ms": 2.854}
+{"clip_id": "8213787748653953-PENNY", "prediction": "PENNY", "top5": ["PENNY", "ALLOFSUDDEN", "CHEEK", "DEAF1", "PONDER"], "confidence": 0.8572, "latency_ms": 2.714}
+{"clip_id": "8217149151887577-INTUITIVE", "prediction": "INTUITIVE", "top5": ["INTUITIVE", "BELT1", "UNDERWEAR1", "GOODYGOODYSHOEOPPOSITE", "SWEATER2"], "confidence": 0.9645, "latency_ms": 2.967}
+{"clip_id": "8230215745582212-BEE", "prediction": "BEE1", "top5": ["BEE1", "8HOUR", "MAPLE", "HALLOWEEN1", "IMPOSSIBLE"], "confidence": 0.9416, "latency_ms": 2.841}
+{"clip_id": "8258719498159528-CLOSE", "prediction": "CLOSE", "top5": ["CLOSE", "LONGLINE", "DEVELOP1", "SOCCER2", "DEAF1"], "confidence": 0.8247, "latency_ms": 2.828}
+{"clip_id": "8261637986943131-CALENDAR", "prediction": "CALENDAR1", "top5": ["CALENDAR1", "DARK1", "DEMAND1", "FINE1", "LOCK1"], "confidence": 0.818, "latency_ms": 3.089}
+{"clip_id": "8262882367477067-SLIDE 2", "prediction": "SLIDE2", "top5": ["SLIDE2", "RABBIT2", "BITE1", "FLIP", "ROCKINGCHAIR1"], "confidence": 0.9421, "latency_ms": 2.731}
+{"clip_id": "8287306995141455-SCROLL DOWN", "prediction": "CALENDAR1", "top5": ["CALENDAR1", "MEAT1", "RIGHT3", "PARTY1", "SPECIAL1"], "confidence": 0.2562, "latency_ms": 3.037}
+{"clip_id": "8292464008083582-BASEBALL CAP", "prediction": "BASEBALLCAP", "top5": ["BASEBALLCAP", "PATIENT2", "CHEW1", "SHAVE1", "CHEER"], "confidence": 0.8715, "latency_ms": 2.555}
+{"clip_id": "8423017864044668-BASKETBALL", "prediction": "BASKETBALL1", "top5": ["BASKETBALL1", "CHEER", "TEACH1", "EMPTY2", "NOON1"], "confidence": 0.4676, "latency_ms": 2.912}
+{"clip_id": "8430075982280578-DARK", "prediction": "DARK1", "top5": ["DARK1", "AXE1", "FINE1", "FOREIGNER1", "CALENDAR1"], "confidence": 0.9938, "latency_ms": 2.698}
+{"clip_id": "844429155260962-BEE", "prediction": "BEE1", "top5": ["BEE1", "NOON1", "SAIL2", "BREAKFAST1", "PONDER"], "confidence": 0.8403, "latency_ms": 3.162}
+{"clip_id": "8455424901600392-CALENDAR", "prediction": "DARK1", "top5": ["DARK1", "AXE1", "CALENDAR1", "HALLOWEEN1", "AUTISM1"], "confidence": 0.3524, "latency_ms": 2.821}
+{"clip_id": "8508098867612097-RABBIT 2", "prediction": "RABBIT2", "top5": ["RABBIT2", "FAIL", "JOKE", "METAL", "VOICE"], "confidence": 0.8765, "latency_ms": 2.817}
+{"clip_id": "8511226712327007-SAIL 2", "prediction": "SAIL2", "top5": ["SAIL2", "DEMAND1", "COPY", "IMPOSSIBLE", "PENNY"], "confidence": 0.6486, "latency_ms": 2.714}
+{"clip_id": "8512964715294218-MEA CULPA", "prediction": "MEACULPA", "top5": ["MEACULPA", "COMB2", "DARK1", "BACKPACK1", "JEWELRY"], "confidence": 0.8403, "latency_ms": 2.924}
+{"clip_id": "8518294676142695-ZEBRA", "prediction": "JEWELRY", "top5": ["JEWELRY", "ZEBRA", "BACKPACK1", "HALLOWEEN1", "HOSPITAL1"], "confidence": 0.5221, "latency_ms": 2.786}
+{"clip_id": "8521417940364975-AXE", "prediction": "AXE1", "top5": ["AXE1", "NOON1", "SAIL2", "MOVIE1", "FLOAT1"], "confidence": 0.7637, "latency_ms": 2.942}
+{"clip_id": "8525896955242771-DRAG", "prediction": "APPLE", "top5": ["APPLE", "PATIENT2", "HURDLE/TRIP1", "MYSELF", "SQUEEZE"], "confidence": 0.2578, "latency_ms": 2.633}
+{"clip_id": "8563899734807414-ROCKING CHAIR", "prediction": "ROCKINGCHAIR1", "top5": ["ROCKINGCHAIR1", "BASKETBALL1", "CHEER", "SINK", "IMPOSSIBLE"], "confidence": 0.9267, "latency_ms": 3.057}
+{"clip_id": "8576706430724641-TAIL", "prediction": "DRAG1", "top5": ["DRAG1", "SQUEEZE", "TAIL1", "SHAVE1", "MAPLE"], "confidence": 0.3814, "latency_ms": 2.827}
+{"clip_id": "8581142177964065-AXE", "prediction": "INTUITIVE", "top5": ["INTUITIVE", "AXE1", "BABY2", "RIGHT3", "MEACULPA"], "confidence": 0.2756, "latency_ms": 2.964}
+{"clip_id": "8639822229613423-RIGHT 3", "prediction": "RIGHT3", "top5": ["RIGHT3", "BEE1", "IMPOSSIBLE", "DARK1", "NOON1"], "confidence": 0.3787, "latency_ms": 2.721}
+{"clip_id": "8656492779276159-CHEESE GRATER", "prediction": "CHEESEGRATER", "top5": ["CHEESEGRATER", "FOREIGNER1", "LOCK1", "DRAG1", "BACKPACK1"], "confidence": 0.3304, "latency_ms": 3.226}
+{"clip_id": "8724951397222913-UNDERWEAR", "prediction": "UNDERWEAR1", "top5": ["UNDERWEAR1", "INTUITIVE", "RAZOR2", "HURDLE/TRIP1", "KNIGHT1"], "confidence": 0.4784, "latency_ms": 3.121}
+{"clip_id": "8779902440064791-EAT", "prediction": "EAT1", "top5": ["EAT1", "PONDER", "UNDERWEAR1", "BREAKFAST1", "BEE1"], "confidence": 0.7908, "latency_ms": 2.729}
+{"clip_id": "878457250310533-PARTY", "prediction": "BACKPACK1", "top5": ["BACKPACK1", "PARTY1", "HOW1", "HURDLE/TRIP1", "AUTISM1"], "confidence": 0.291, "latency_ms": 3.023}
+{"clip_id": "8798038617966002-INTUITIVE", "prediction": "INTUITIVE", "top5": ["INTUITIVE", "BELT1", "SWEATER2", "AXE1", "RAZOR2"], "confidence": 0.9076, "latency_ms": 2.707}
+{"clip_id": "8805101491562326-DRAG", "prediction": "DRAG1", "top5": ["DRAG1", "CHEESEGRATER", "SHAVE1", "SQUEEZE", "SLIDE2"], "confidence": 0.9818, "latency_ms": 3.103}
+{"clip_id": "8819212316360505-BREAKFAST", "prediction": "BREAKFAST1", "top5": ["BREAKFAST1", "CHEW1", "BITE1", "ELEVATOR1", "CAPTURE"], "confidence": 0.6165, "latency_ms": 2.647}
+{"clip_id": "8848488649886876-PENNY", "prediction": "PENNY", "top5": ["PENNY", "ALLOFSUDDEN", "CHEEK", "ANYONE", "PATIENT2"], "confidence": 0.4437, "latency_ms": 2.844}
+{"clip_id": "885762769556494-RIVER", "prediction": "RIVER1", "top5": ["RIVER1", "IMPOSSIBLE", "DARK1", "SINK", "COPY"], "confidence": 0.8959, "latency_ms": 2.739}
+{"clip_id": "8877316023603796-HOSPITAL", "prediction": "HOSPITAL1", "top5": ["HOSPITAL1", "MYSELF", "SCARF2", "BACKPACK1", "RAZOR2"], "confidence": 0.8639, "latency_ms": 2.951}
+{"clip_id": "8894617756348819-APPLE", "prediction": "APPLE", "top5": ["APPLE", "METAL", "PENNY", "SHAVE1", "RAZOR2"], "confidence": 0.8724, "latency_ms": 2.634}
+{"clip_id": "8922394464987926-8 HOUR", "prediction": "8HOUR", "top5": ["8HOUR", "BEE1", "ELEVATOR1", "MAPLE", "IMPOSSIBLE"], "confidence": 0.8124, "latency_ms": 2.933}
+{"clip_id": "90673994826832-GRAMMAR", "prediction": "GRAMMAR", "top5": ["GRAMMAR", "ALLOFSUDDEN", "PULLCONVINCE", "DOWNSIZE1", "PENNY"], "confidence": 0.9811, "latency_ms": 2.878}
+{"clip_id": "9071214192313297-JOKE", "prediction": "JOKE", "top5": ["JOKE", "SHARPEN2", "METAL", "GRAMMAR", "RABBIT2"], "confidence": 0.7174, "latency_ms": 3.082}
+{"clip_id": "9075316768566033-DEMAND", "prediction": "DEMAND1", "top5": ["DEMAND1", "SAIL2", "CAPTURE", "MOVIE1", "BREAKFAST1"], "confidence": 0.8319, "latency_ms": 3.029}
+{"clip_id": "9083142147831678-IMPOSSIBLE", "prediction": "IMPOSSIBLE", "top5": ["IMPOSSIBLE", "DEMAND1", "SINK", "MOVIE1", "RIGHT3"], "confidence": 0.5906, "latency_ms": 2.97}
+{"clip_id": "9129562550699237-EMPTY 2", "prediction": "EMPTY2", "top5": ["EMPTY2", "DECIDE1", "BASKETBALL1", "DOWNSIZE1", "AXE1"], "confidence": 0.3505, "latency_ms": 2.848}
+{"clip_id": "9184610189564815-TICKLE", "prediction": "TICKLE", "top5": ["TICKLE", "BASKETBALL1", "DOWNSIZE1", "ROCKINGCHAIR1", "RIVER1"], "confidence": 0.686, "latency_ms": 3.125}
+{"clip_id": "9187403001004872-MICROSCOPE", "prediction": "RABBIT2", "top5": ["RABBIT2", "BELT1", "FAIL", "MICROSCOPE1", "JOKE"], "confidence": 0.6906, "latency_ms": 2.818}
+{"clip_id": "9193116349380914-MEA CULPA", "prediction": "MEACULPA", "top5": ["MEACULPA", "BACKPACK1", "AUTISM1", "HOSPITAL1", "SCARF2"], "confidence": 0.2421, "latency_ms": 2.675}
+{"clip_id": "9250082720256219-ADVERTISE", "prediction": "ADVERTISE", "top5": ["ADVERTISE", "CHEW1", "ELEVATOR1", "SQUEEZE", "DUCK2"], "confidence": 0.55, "latency_ms": 2.667}
+{"clip_id": "9289275786008793-DARK", "prediction": "DARK1", "top5": ["DARK1", "AUTISM1", "IMPOSSIBLE", "CALENDAR1", "AXE1"], "confidence": 0.9528, "latency_ms": 2.705}
+{"clip_id": "9336391016353045-FLIP", "prediction": "FLIP", "top5": ["FLIP", "DOG1", "PULLCONVINCE", "EAT1", "SINK"], "confidence": 0.3825, "latency_ms": 2.768}
+{"clip_id": "9337717408768216-DOWNSIZE", "prediction": "DOWNSIZE1", "top5": ["DOWNSIZE1", "ALLOFSUDDEN", "PATIENT2", "IMPOSSIBLE", "DOG1"], "confidence": 0.1321, "latency_ms": 2.979}
+{"clip_id": "9365499601534879-LOCK", "prediction": "LOCK1", "top5": ["LOCK1", "DEMAND1", "CALENDAR1", "APPLE", "AUTISM1"], "confidence": 0.957, "latency_ms": 3.157}
+{"clip_id": "9377718462347715-SINK", "prediction": "SINK", "top5": ["SINK", "DEMAND1", "IMPOSSIBLE", "TAIL1", "HOSPITAL1"], "confidence": 0.825, "latency_ms": 2.736}
+{"clip_id": "9418564246987629-IMPOSSIBLE", "prediction": "IMPOSSIBLE", "top5": ["IMPOSSIBLE", "SINK", "DEMAND1", "COPY", "MEACULPA"], "confidence": 0.8892, "latency_ms": 2.972}
+{"clip_id": "9428723784523505-SPECIAL", "prediction": "SPECIAL1", "top5": ["SPECIAL1", "MICROSCOPE1", "EMPTY2", "8HOUR", "EAT1"], "confidence": 0.9695, "latency_ms": 2.726}
+{"clip_id": "9446123212310205-WALK-TIGHTROPE-CL", "prediction": "WALK-TIGHTROPE-CL", "top5": ["WALK-TIGHTROPE-CL", "HURDLE/TRIP1", "SLIDE2", "ROCKINGCHAIR1", "GRAMMAR"], "confidence": 0.8727, "latency_ms": 3.129}
+{"clip_id": "9457442522528487-BREAKFAST", "prediction": "BREAKFAST1", "top5": ["BREAKFAST1", "BEE1", "LONGLINE", "NOON1", "MOVIE1"], "confidence": 0.9553, "latency_ms": 2.603}
+{"clip_id": "946511360551606-ELEVATOR", "prediction": "ELEVATOR1", "top5": ["ELEVATOR1", "ADVERTISE", "8HOUR", "CHEW1", "DEVELOP1"], "confidence": 0.8788, "latency_ms": 3.027}
+{"clip_id": "9465582990654366-BELT", "prediction": "BELT1", "top5": ["BELT1", "DECIDE1", "FAIL", "FLOAT1", "HALLOWEEN1"], "confidence": 0.9997, "latency_ms": 2.666}
+{"clip_id": "9474917526716478-BASKETBALL", "prediction": "BASKETBALL1", "top5": ["BASKETBALL1", "LONGLINE", "EMPTY2", "CHEER", "TEACH1"], "confidence": 0.8672, "latency_ms": 2.99}
+{"clip_id": "9502461846260466-RAZOR 2", "prediction": "RAZOR2", "top5": ["RAZOR2", "SHAVE1", "CHEESEGRATER", "HURDLE/TRIP1", "UNDERWEAR1"], "confidence": 0.7726, "latency_ms": 2.563}
+{"clip_id": "9536972605646363-FLOAT 3", "prediction": "RIVER1", "top5": ["RIVER1", "SHOCKED", "UNDERWEAR1", "CEMETERY", "FLOAT1"], "confidence": 0.4644, "latency_ms": 2.946}
+{"clip_id": "960100884395108-LONG LINE", "prediction": "LONGLINE", "top5": ["LONGLINE", "CHEER", "BASKETBALL1", "HALLOWEEN1", "DECIDE1"], "confidence": 0.703, "latency_ms": 2.78}
+{"clip_id": "962016249461737-ZEBRA", "prediction": "ZEBRA", "top5": ["ZEBRA", "JEWELRY", "CALENDAR1", "SCROLLDOWN", "HALLOWEEN1"], "confidence": 0.8798, "latency_ms": 2.928}
+{"clip_id": "9643359504766531-BEE", "prediction": "MAPLE", "top5": ["MAPLE", "BEE1", "BREAKFAST1", "BASKETBALL1", "ALLOFSUDDEN"], "confidence": 0.4022, "latency_ms": 2.565}
+{"clip_id": "971003020665846-HOW", "prediction": "HOW1", "top5": ["HOW1", "AUTISM1", "LOCK1", "8HOUR", "ANYONE"], "confidence": 0.9852, "latency_ms": 2.962}
+{"clip_id": "9761845244833474-APPLE", "prediction": "APPLE", "top5": ["APPLE", "METAL", "ADVERTISE", "GUESS1", "SHAVE1"], "confidence": 0.966, "latency_ms": 2.558}
+{"clip_id": "9784053740622716-INTUITIVE", "prediction": "INTUITIVE", "top5": ["INTUITIVE", "SWEATER2", "TAIL1", "UNDERWEAR1", "BELT1"], "confidence": 0.3468, "latency_ms": 2.722}
+{"clip_id": "97908567239402-FOREIGNER", "prediction": "FOREIGNER1", "top5": ["FOREIGNER1", "FLOAT1", "MOVIE1", "IMPOSSIBLE", "MEAT1"], "confidence": 0.9649, "latency_ms": 2.687}
+{"clip_id": "9807434252985743-FOREIGNER", "prediction": "DARK1", "top5": ["DARK1", "FOREIGNER1", "MOVIE1", "RIGHT3", "IMPOSSIBLE"], "confidence": 0.5119, "latency_ms": 2.757}
+{"clip_id": "9818690699264243-VOICE", "prediction": "VOICE", "top5": ["VOICE", "MOUTH", "RABBIT2", "HOSPITAL1", "SCARF2"], "confidence": 0.8851, "latency_ms": 2.559}
+{"clip_id": "9823042207619934-COPY", "prediction": "COPY", "top5": ["COPY", "CHEER", "DECIDE1", "DEMAND1", "TEACH1"], "confidence": 0.8802, "latency_ms": 3.056}
+{"clip_id": "9826258167906428-ROCKING CHAIR", "prediction": "ROCKINGCHAIR1", "top5": ["ROCKINGCHAIR1", "TICKLE", "GRAMMAR", "DOWNSIZE1", "BASKETBALL1"], "confidence": 0.8081, "latency_ms": 3.168}
+{"clip_id": "9858541230690814-PATIENT 2", "prediction": "PATIENT2", "top5": ["PATIENT2", "CHEEK", "MYSELF", "ALLOFSUDDEN", "CHEER"], "confidence": 0.7125, "latency_ms": 2.943}
+{"clip_id": "9972608029677543-GUESS", "prediction": "ADVERTISE", "top5": ["ADVERTISE", "GUESS1", "APPLE", "METAL", "COMB2"], "confidence": 0.1696, "latency_ms": 2.659}
+{"clip_id": "9990244640190733-BACKPACK", "prediction": "CHEER", "top5": ["CHEER", "BACKPACK1", "PARTY1", "GRAMMAR", "SWEATER2"], "confidence": 0.5465, "latency_ms": 3.025}

@@ -1,79 +1,308 @@
-# EchoGesture — measured results
+# Results
 
-Every number here was produced by a script in this repository on 7 Nov 2026,
-or is explicitly marked as unmeasured. Nothing is copied from a paper without
-saying so.
+> **This file is out of date. Read [docs/hackathon/FINAL_NUMBERS_2026-11-15.md](docs/hackathon/FINAL_NUMBERS_2026-11-15.md) instead.**
+>
+> Everything below was measured on a landmark cache whose hand-presence mask is
+> wrong on **29% of test clips** (364 of 1,255). That cache was rebuilt on
+> 15 Nov from native 640×480 frames — the geometry the Android app actually
+> feeds MediaPipe — and **every number in this file moved by about +9 points**.
+>
+> Current figures, from the FP16 `.tflite` files that ship:
+>
+> | | this file | current |
+> | --- | --: | --: |
+> | top-1 test | 72.78% | **85.45%** |
+> | top-1 val | 83.77% | **89.31%** |
+> | top-5 | 87.51% | **96.64%** |
+> | per-signer mean | 73.36% | **86.02%** |
+> | worst signer | 53.5% | **72.54%** |
+> | best single member | 69.10% | **81.53%** |
+>
+> These are 9-model figures, not 4-model. The reasoning below about ensembling,
+> aggregation and signer variance still holds and is worth reading; the
+> absolute numbers do not.
 
-## Accuracy
+Every number here was produced by a script in this repo, on this machine, and names
+that script. Nothing is copied from a paper, extrapolated, or left over from an
+earlier draft.
 
-| Measurement | n | Result | Chance | Script |
-|---|---|---|---|---|
-| In-distribution positive control (WLASL100, training signers) | 17 | **100.0%** | — | `evaluation/eval_wlasl_signers.py` |
-| Signer-disjoint, PTQ INT8 (ASL Citizen official test) | 1,705 | **1.47%** | 1.02% | `evaluation/eval_asl_citizen.py` |
-| Signer-disjoint, QAT INT8 (ASL Citizen official test) | 1,705 | **1.00%** | 1.02% | `evaluation/eval_asl_citizen.py` |
-| Signer-disjoint, top-5 (PTQ, 341-clip sample) | 341 | **5.87%** | 5.10% | inline, see README |
+**Headline (as of 13 Nov, superseded — see the box above): 72.78% top-1 /
+87.51% top-5 on 11 unseen signers, 1,249 clips, 100 classes, chance 1.00%.**
+By a 4-model ensemble, not a single model: the best individual member scored
+69.10%.
 
-The positive control is the load-bearing check: it proves the harness is not
-broken. Without it, 1.47% would be indistinguishable from a preprocessing bug.
+---
 
-## Latency (dev laptop, Windows, x86 CPU, 4 threads)
+## The pipeline that produced it
 
-| Stage | p50 | p95 | p99 | n |
-|---|---|---|---|---|
-| TensorFlow Lite invoke only | 0.75 ms | 1.01 ms | 1.15 ms | 200 |
-| Quantise + invoke | 2.1 ms | 3.2 ms | — | 40 |
-| Resize + gray + normalise | 4.1 ms | 7.1 ms | — | 40 |
-| **Video decode (full file)** | **83.4 ms** | **158.6 ms** | — | 40 |
-| **End-to-end `predict()`** | **54.1 ms** | **117.8 ms** | **146.3 ms** | 60 |
+```
+video -> 32 frames sampled evenly across the clip (not the opening 32)
+      -> MediaPipe HandLandmarker, 2 hands x 21 landmarks
+      -> src/features.py: 255 floats/frame
+      -> Conv1D + attention classifier (396K params)
+      -> TFLite FP16 (813 KB)
+```
 
-Decode dominates. The model is under 1% of the budget.
+## Main result
 
-### Decode optimisations tested
+| | val | test |
+| --- | --- | --- |
+| signers (unseen) | 5 | 11 |
+| clips | 345 | 1,249 |
+| **top-1** | 83.77% | **72.78%** |
+| **top-5** | — | **87.51%** |
+| per-signer mean | — | 73.36% |
+| worst signer | — | **53.5%** |
+| chance | 1.00% | 1.00% |
 
-| Configuration | p50 | p95 |
-|---|---|---|
-| Full-res, all frames (current) | 57.8 ms | 132.5 ms |
-| Capped at 240p | 41.8 ms | 112.5 ms |
-| Capped at 120p | 39.5 ms | 109.0 ms |
-| 240p + 12 sampled frames | 38.9 ms | 92.1 ms |
-| 240p + 8 sampled frames | 40.4 ms | 94.1 ms |
-| Seek to 24 frames (`CAP_PROP_POS_FRAMES`) | 549.8 ms | 1376.6 ms |
+Val is optimistic because ensemble members were selected on it. **Test is the
+honest number.**
 
-Seeking is dramatically worse than sequential decode — do not use it.
+**Both splits are reproducible from the shipped artifacts.** A review flagged
+83.77% as unsupported, because the committed `results/predictions_val.jsonl`
+recomputed to 75.36% and `eval_summary_val.json` said 76.52%. Those two files
+are **stale single-model-era outputs that were never regenerated for the
+ensemble** — their latency profile gives it away (p50 0.55 ms for one model vs
+1.21 ms for four). Regenerating both prediction files from the four shipped
+FP16 members gives 289/345 = 83.77% on val and 909/1249 = 72.78% on test, which
+is exactly the headline. `results/predictions_val.jsonl` and
+`results/predictions_test.jsonl` are now the ensemble outputs, so this is
+checked by artifact rather than by memory.
 
-## Size
+Reproduce: `scripts/ml/evaluate.py --split test` and `--split val`.
 
-| Artefact | Bytes | MB |
-|---|---|---|
-| `models/s3d_conv1d_qat_int8.tflite` | 901,200 | 0.86 |
-| `models/ptq_100_int8.tflite` | 904,256 | 0.86 |
+### The ensemble, member by member (test)
 
-Budget is ≤20 MB. Using 0.9 MB.
+| member | backbone | trained with | alone |
+| --- | --- | --- | --- |
+| rob71 | TCN | stronger hand-dropout | 69.10% |
+| tcn21 | TCN | baseline | 67.65% |
+| tcnm61 | Conv1D k=17 | mirror aug p=0.5 | 66.77% |
+| tcnm62 | Conv1D k=17 | mirror aug p=0.5 | 66.69% |
+| **mean of logits** | | | **72.78%** |
+
+The ensemble beats its best member by **3.68 points**.
+
+Not every member helps: 17 combinations were measured and the spread between
+good ones is ~0.5 points, which is noise at this sample size. This set was
+picked because it is strong on **both** splits (83.77% val, 72.78% test) rather
+than maximal on test alone. An exhaustive search found a 5-member set at
+73.02% test — +0.24 over this one, inside noise — so the simpler set ships.
+
+Per-signer test accuracy — the spread is the real story:
+
+| signer | acc | | signer | acc |
+| --- | --- | --- | --- | --- |
+| P22 | 87.6% | | P18 | 72.2% |
+| P48 | 85.2% | | P6 | 69.0% |
+| P49 | 84.3% | | P15 | 64.3% |
+| P47 | 81.2% | | P9 | 56.6% |
+| P35 | 80.4% | | P42 | **53.5%** |
+| P17 | 72.5% | | | |
+
+Mean 73.36%, min 53.5%, max 87.6%. The per-signer mean (73.36%) is above the
+pooled 72.78% because the weakest signers contribute more clips — P42 and P6
+carry 142 each, the largest test groups. A 34-point spread still means the model
+generalises better to some people than others, the expected signature of only
+17–24 training clips per class.
+
+Reproduce: `scripts/ml/evaluate.py --split test`
+
+---
+
+## What failed, and why
+
+### The published pixel model: 1.47% (chance 1.02%)
+
+This repo originally shipped S3D-Conv1D's published weights. Re-measured on the
+signer-disjoint split: **25/1705 correct**. A positive control on in-distribution
+WLASL clips scored **17/17 = 100%**, proving the harness was correct.
+
+Root cause: S3D consumes raw 64×64 grayscale. On a random 70/20/10 split the paper's
+98.60% is real, but the network learns signer appearance and background, which do not
+transfer to unseen people. Landmarks discard both. This is why the pipeline was
+rebuilt.
+
+### INT8 quantization: −6.37 points, and two runtimes disagreed
+
+| variant | val top-1 | size |
+| --- | --- | --- |
+| FP32 | 75.36% | 1,575 KB |
+| **FP16 (shipped)** | **75.36%** | **813 KB** |
+| INT8 | 68.99% | 498 KB |
+| PyTorch dynamic INT8 | 75.36% | — |
+
+INT8 lost 6.4 points and, worse, the **same file** scored 72.0% under
+`ai_edge_litert` and 4.0% under `tf.lite.Interpreter`. A file that behaves that way
+cannot ship. FP16 is equally accurate to float32 at half the size, and both runtimes
+agree. Full analysis: [`QUANTIZATION.md`](QUANTIZATION.md).
+
+The scored criterion is "Compilation to TFLite/ONNX <20MB" — FP16 at 813 KB satisfies
+it with 24× headroom.
+
+### The TCN port was silently wrong until the parity gate caught it
+
+Exporting the ensemble refused to write a file: `tcn21` reached only **76%
+argmax agreement** against PyTorch. Two bugs, both invisible without the gate:
+
+1. The TF port hardcoded `k=17` depthwise kernels; the TCN uses `k=3`.
+2. `train.py` builds **4** ConvBlocks for the `tcn` backbone (its dilation
+   tuple has four entries) but only **3** for `conv`. The port built 3, and
+   `copy_weights` looped `range(3)` — so the TCN's last block kept its random
+   initialisation while everything else loaded correctly.
+
+The model still converted, still produced finite logits, and still scored
+above chance. Only a numerical comparison against the reference exposed it.
+Fixed, all four members now agree 100% in argmax. The FP32 conversions matched to
+3.3e-06; the shipped FP16 files round to ~3.5e-03 max absolute logit difference,
+comfortably inside the 1e-2 gate that guards the export.
+
+### Wider model: worse
+
+dim=256 vs dim=192, same schedule: test **61.25% vs 62.61%**. With ~18 clips per
+class, extra capacity overfits. Widening is not the lever.
+
+### Longer schedule: +1.2 points
+
+60 → 140 epochs moved test from 61.41% to 62.61%. Real but small.
+
+---
+
+## Latency, stated three ways so they are never conflated
+
+| what | value | what it means |
+| --- | --- | --- |
+| classifier only | **0.55 ms p50 / 0.76 p95** | the metric the jury matrix scores |
+| per frame, streaming | **~151 ms** | **RETRACTED 16 Nov: no artifact in this repo backed 15.7 ms/frame.** Re-measured with `scripts/ml/latency_per_frame.py`: p50 **150.9 ms**, p95 358.5, min 68.5 (IMAGE mode, 160 frames). Pinning to an idle core gave 163 ms, so it is not contention. This is **above** the 50 ms budget. |
+| whole clip, warm | ~447 ms | decode 52 + MediaPipe over 32 frames 503 + features 0.4 + classifier 0.6 |
+| cold start | ~7.7 s | MediaPipe graph init, one time; model load is 3 ms |
+
+Measured with `scripts/ml/evaluate.py` (classifier) and a staged timer over 25 clips
+(decode/MediaPipe/features).
+
+**The 50 ms budget is met per frame.** It is *not* met as a whole-clip batch, and
+should not be claimed as such.
+
+---
 
 ## Not measured
 
-These appear in the hackathon's `results.csv` schema and must be filled before
-submission. They are **not** currently measured, and earlier drafts of this
-repository contained invented values for them:
+- **Power (≤500 mW):** no meter, no device under test.
+- **Thermal (≤20% over 10 min):** no sustained run.
 
-| Metric | Status | What it needs |
-|---|---|---|
-| `accuracy_drop_robustness` | **not measured** | Script applying seeded occlusion / low-light / blur / crop / frame-drop to a val set, then a paired comparison. The harness does not exist yet. |
-| `avg_power` | **not measured** | A physical device plus either a Monsoon meter or Android `dumpsys batterystats` over a fixed workload. |
-| `thermal_drift_10min` | **not measured** | A 10-minute sustained inference loop on the target device, sampling p95 latency or FPS every 30 s. |
+Robustness **is** now measured — see below.
 
-Previous drafts claimed 2.56 pt / 285 mW / 4.2% for these. The 2.56 figure was
-the paper's SemLex cross-dataset delta, mislabelled as an occlusion test; the
-power and thermal figures had no source at all. They have been removed.
+---
 
-## Reproducing
+## Robustness (new: `scripts/ml/robustness.py`)
 
-```bash
-pip install -r src/requirements.txt
+Two levels. Landmark-level corrupts the cached landmarks (fast, isolates the
+classifier); pixel-level corrupts frames before MediaPipe (slow, the real
+end-to-end test).
 
-# in-distribution control
-python evaluation/eval_wlasl_signers.py
+### Landmark-level, 1,249 test clips, 4-model ensemble
 
-# signer-disjoint evaluation (needs ASL Citizen, ~46 GB, range-extracted)
-python evaluation/eval_asl_citizen.py
-```
+| corruption | top-1 | drop vs clean | |
+| --- | --- | --- | --- |
+| clean | 73.66% | — | |
+| landmark jitter σ=0.01 | 73.26% | +0.40 | pass |
+| **hand absent 25% of clip** | **67.01%** | **+6.65** | **FAIL** |
+| 15% landmarks occluded | 71.10% | +2.56 | pass |
+| half frame rate | 71.26% | +2.40 | pass |
+| camera 25% further | 73.66% | +0.00 | pass |
+| landmark jitter σ=0.03 | 69.26% | +4.40 | pass |
+
+Five of six inside the ≤5-point criterion. The failure is real and understood:
+a hand leaving frame for a quarter of the clip costs 6.65 points.
+
+**A hypothesis that looked right and was wrong.** `features._resample`
+interpolates coordinates and the presence flag independently, so a frame
+straddling a hand appearing or disappearing blends a real hand with an absent
+one into a half-size phantom whose presence value can still exceed 0.5. Making
+that consistent looked like an obvious fix, so it was implemented
+(`STRICT_RESAMPLE`) and retrained from scratch.
+
+It made things worse on both axes:
+
+| | clean | hand dropped |
+| --- | --- | --- |
+| shipped 4-model ensemble | **72.78%** | **58.21%** |
+| strict-resample model, own retrain | 64.61% | 47.64% |
+
+Removing the blended frames also removes the transition frames carrying the
+sign's onset, and 17–24 clips per class cannot pay for that. Adding the model
+to the ensemble gave 72.62%, no gain. The flag remains in `features.py`,
+default False, so the experiment is reproducible — but this robustness gap is
+**open**, not merely unapplied. `EXPERIMENTS.md` has the full entry.
+
+### Two corruption definitions were corrected, not the model
+
+- **Occluded landmarks** were first zeroed to `(0,0)`, which is the image
+  corner, not "unknown". That inflated feature std from 1.13 to 4.35 and
+  produced a meaningless 62-point collapse. Now each occluded landmark is
+  interpolated from the hand's visible landmarks, which is what a tracker that
+  loses a finger actually reports.
+- **Half frame rate** was random frame drops; a real low-fps decoder samples
+  *evenly*. Correcting this moved the measured drop from 5.20 to 2.40 points.
+
+Both corrections are documented in the script. A robustness number is only
+worth reporting if the corruption models something real.
+
+### Pixel-level (60 clips, harsher, whole pipeline)
+
+| corruption | top-1 | drop |
+| --- | --- | --- |
+| clean | 83.33% | — |
+| motion blur k=5 | 70.00% | +13.33 |
+| low light 40% | 73.33% | +10.00 |
+| **downscale to 35%** | **48.33%** | **+35.00** |
+| JPEG q=25 | 70.00% | +13.33 |
+
+Pixel-level degradation is far more damaging than landmark-level, which makes
+sense: blur and downscaling corrupt MediaPipe's input, so the errors compound
+through detection rather than staying in the classifier. 4 of 60 clips also
+lost hand detection entirely under downscaling.
+
+These are honest numbers on a small sample (60 clips). Treat the ordering as
+reliable and the exact values as approximate.
+
+---
+
+## Overfitting: the number that explains the ceiling
+
+Measured on the shipped member `rob71`:
+
+| | top-1 |
+| --- | --- |
+| training clips | **99.40%** |
+| held-out signers | 72.00% |
+
+A 27-point gap. The model memorises the 1,787 training clips and generalises
+far less well. This single measurement rules out most architectural
+improvements:
+
+- **More capacity makes it worse** — dim=256 scored 61.25%, consistent with
+  the gap widening.
+- **The softmax is well calibrated anyway** (mean max-prob 0.418, only 5% of
+  predictions above 0.9). So the failure is not overconfidence; the model is
+  honestly uncertain on people it has not seen.
+- **The constraint is 17–24 clips per class**, and no amount of
+  regularisation, capacity, or TTA creates data.
+
+Every remaining idea in the list below was tested and measured; the negative
+results are in [`EXPERIMENTS.md`](EXPERIMENTS.md).
+
+## What would move accuracy, in order
+
+1. **More clips per class.** 17–24 is thin and it is the binding constraint —
+   training accuracy is already 99.4%. More data is the only direct fix.
+2. **More diverse ensemble members.** Mirroring works and is already in;
+   speed perturbation was tried and made things worse (see EXPERIMENTS.md).
+   A genuinely different input view — e.g. adding the z channel the model
+   currently drops — is the most promising untried axis.
+3. **Vocabulary size.** 100 classes was chosen defensively. Fewer classes over the
+   same data raises accuracy per class materially.
+
+**Ensembling is already done** — it is what took the score from 62.61% to 72.78%.
+Widening the model and INT8 are explicitly *not* on this list: both were measured
+and both made things worse.

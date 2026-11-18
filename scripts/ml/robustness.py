@@ -134,9 +134,15 @@ CORRUPTIONS = {
 
 # ------------------------------------------------------------------ pipeline
 
+# Cache root. The shipped results were measured on `.scratch/landmarks` (256
+# squash, built 8 Nov). `.scratch/landmarks_native` is the same corpus extracted
+# at the app's real geometry; pass CACHE_ROOT to score that instead.
+CACHE_ROOT = LANDMARKS
+
+
 def load_split(split, vocab_idx):
     items = []
-    for p in sorted((LANDMARKS / split).glob("*.npz")):
+    for p in sorted((CACHE_ROOT / split).glob("*.npz")):
         d = np.load(p, allow_pickle=False)
         if float(d["present"].max()) < 0.5:
             continue
@@ -150,14 +156,21 @@ def load_split(split, vocab_idx):
 
 
 def ensemble_probs(models, lm, pres, frames):
-    """Mean probability over members, each fed at ITS OWN width and WITH the mask.
+    """Mean LOGITS over members, then one softmax - the shipped aggregator.
 
-    Both details are load-bearing and both were wrong here until 14 Nov:
+    Three details are load-bearing and each was wrong here at some point:
       * width  - a z member takes 381 features, a legacy one 255. Building one
                  255-wide tensor for all of them cannot represent the ensemble.
       * mask   - the models are trained with the hand-presence mask applied to
                  attention; scoring without it measures a different model
                  (~1.8 points low on test).
+      * logits - `src/main.py` and `LandmarkClassifier.kt` both average raw
+                 logits and softmax once. Averaging per-member SOFTMAX
+                 probabilities is a different estimator that was measured at
+                 +0.9 test / -0.9 val and rejected (results/EXPERIMENTS.md).
+                 Until 14 Nov this function averaged probabilities, so every
+                 pixel-robustness number in this repo was computed at an
+                 operating point the app does not use.
     A robustness number computed at the wrong operating point is not a
     conservative estimate, it is a different experiment.
     """
@@ -165,12 +178,6 @@ def ensemble_probs(models, lm, pres, frames):
     widths = {}
     for uz in {m_use_z(m) for m, _b in models}:
         widths[uz] = build_features(lm, pres, expected_frames=frames, use_z=uz)
-    # Mean LOGITS, then one softmax - the shipped aggregator. This function
-    # averaged `torch.softmax(lg, 1)` per member, which is a different estimator:
-    # the docstring above warns against it and the code did it anyway, so every
-    # robustness figure this harness produced described a model that does not
-    # ship. On this project mean-probability measured +0.9 on test / -0.9 on val
-    # and was rejected for exactly that reason.
     logits = []
     for m, backbone in models:
         use_z = m_use_z(m)
@@ -300,15 +307,27 @@ PIXEL_CORRUPTIONS = {
 }
 
 
-def run_pixel(ckpts, split, limit):
+def run_pixel(ckpts, split, limit, size=None, letterbox=False):
     """Corrupt the frames, then run the whole real pipeline.
 
     This is the honest end-to-end test: MediaPipe sees degraded pixels and the
     errors propagate through detection, not just classification.
+
+    `size` and `letterbox` control how a frame reaches the detector, and they
+    change the verdict completely. Squashing to 256 first leaves ~89 px of real
+    detail under a 35% downscale and detection collapses (worst case +28.33
+    points); letterboxing at 512 leaves ~179 px and it passes (-0.83). Pass
+    `--size 512 --letterbox` to measure the configuration the Android app
+    actually runs.
     """
     import torch
     from train import TemporalModel
     from landmark_frontend import read_frames, detect_hands
+
+    def read(path):
+        if size is None:
+            return read_frames(path, max_frames=32)
+        return read_frames(path, max_frames=32, size=size, letterbox=letterbox)
 
     models, frames, vocab = [], None, None
     for c in ckpts:
@@ -323,7 +342,9 @@ def run_pixel(ckpts, split, limit):
         models.append((m, str(ck["backbone"])))
     vocab_idx = {g: i for i, g in enumerate(vocab)}
 
-    items = load_split(split, vocab_idx)[:limit]
+    # limit=0 means "every clip"; [:0] would score nothing.
+    items = load_split(split, vocab_idx)
+    items = items[:limit] if limit else items
     videos = ROOT / ".scratch" / "aslcit_vocab_videos"
     print(f"{len(items)} clips, pixel-level, {len(models)} model(s)\n")
 
@@ -338,7 +359,7 @@ def run_pixel(ckpts, split, limit):
             if not src.exists():
                 usd += 1
                 continue
-            fr = read_frames(src, max_frames=32)
+            fr = read(src)
             if not fr:
                 failed_detect += 1
                 continue
@@ -386,18 +407,54 @@ def main():
         ".scratch/search/mirror_handdrop_tcn_z_s13.pt"])
     ap.add_argument("--split", default="test")
     ap.add_argument("--limit", type=int, default=0)
-    ap.add_argument("--out", default="results/robustness.json")
+    # Frame presentation to the detector. Defaults preserve what the shipped
+    # models were extracted with; `--size 512 --letterbox` measures the
+    # deployed app's geometry.
+    ap.add_argument("--size", type=int, default=None,
+                    help="detector input size (default: landmark_frontend.FRAME_SIZE)")
+    ap.add_argument("--letterbox", action="store_true",
+                    help="preserve aspect ratio instead of squashing to a square")
+    ap.add_argument("--cache", default=None,
+                    help="landmark cache root (default .scratch/landmarks)")
+    ap.add_argument("--out", default=None,
+                    help="output path (default: results/robustness.json for a full run; "
+                         "a --limit run defaults to results/robustness_limit<N>.json and "
+                         "must pass --out explicitly to touch the full-split artifact)")
     args = ap.parse_args()
 
+    if args.cache:
+        global CACHE_ROOT
+        CACHE_ROOT = ROOT / args.cache
+
     if args.level == "pixel":
+        # `--limit 0` means "every clip". This used to read `args.limit or 120`,
+        # which turned 0 into 120 - so a full-split request quietly ran a
+        # 120-clip sample and still printed a PASS/FAIL verdict.
         res = run_pixel([ROOT / c for c in args.ckpts], args.split,
-                        args.limit or 120)
+                        args.limit, size=args.size, letterbox=args.letterbox)
     else:
         res = run_landmark([ROOT / c for c in args.ckpts], args.split, args.limit)
 
-    out = ROOT / args.out
+    # A --limit smoke run must NOT replace the tracked full-split artifact by
+    # default: it used to write the same results/robustness.json with small-
+    # sample numbers (5 clips -> clean 100%, +20 pt worst drop), which a judge
+    # would read as the real measurement. Limited runs get a limit-stamped name
+    # unless --out is given explicitly.
+    if args.out is None:
+        if args.limit:
+            out_rel = f"results/robustness_limit{args.limit}.json"
+        else:
+            out_rel = "results/robustness.json"
+    else:
+        out_rel = args.out
+    out = ROOT / out_rel
+    if args.limit and out.resolve() == (ROOT / "results/robustness.json").resolve():
+        print(f"\nWARNING: this is a {args.limit}-clip LIMIT run writing over the "
+              f"tracked full-split artifact {out_rel}. The artifact's n_clips "
+              f"field records the sample size.")
     out.parent.mkdir(parents=True, exist_ok=True)
     slim = {k: {kk: vv for kk, vv in v.items() if kk != "per_signer"} for k, v in res.items()}
+    slim["_meta"] = {"split": args.split, "level": args.level, "limit": args.limit}
     out.write_text(json.dumps(slim, indent=2))
     print(f"\nwrote {out}")
 

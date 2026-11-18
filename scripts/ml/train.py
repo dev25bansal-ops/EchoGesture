@@ -108,10 +108,16 @@ class TemporalModel(nn.Module):
 # ---------------------------------------------------------------- data
 
 class ClipDataset(Dataset):
-    def __init__(self, items, frames, train=False):
+    def __init__(self, items, frames, train=False, jitter_sigma=0.01):
         self.items = items
         self.frames = frames
         self.train = train
+        # Per-landmark noise applied to raw x,y. 0.01 was the original fixed
+        # value; measured low-light degradation shifts landmarks by ~0.0293, so
+        # training at 0.01 never showed the model the noise level it meets in the
+        # dark (see results/pixel_matrix/ and the sigma sweep in
+        # docs/hackathon/PIXEL_ROBUSTNESS_FINDINGS.md).
+        self.jitter_sigma = float(jitter_sigma)
 
     def __len__(self):
         return len(self.items)
@@ -139,7 +145,7 @@ class ClipDataset(Dataset):
             # whole hand is precisely what we normalise away, so we do not
             # fake it.
             if np.random.rand() < 0.5:
-                noise = np.random.randn(*lm[..., :2].shape) * 0.01
+                noise = np.random.randn(*lm[..., :2].shape) * self.jitter_sigma
                 lm = lm.copy()
                 lm[..., :2] += noise.astype(np.float32)
                 # a landmark that jittered out of frame is not a real
@@ -168,8 +174,8 @@ class ClipDataset(Dataset):
         return torch.from_numpy(feats), torch.from_numpy(mask), label, signer
 
 
-def index_split(vocab_idx, split):
-    d = LANDMARKS / split
+def index_split(vocab_idx, split, root=None):
+    d = (root or LANDMARKS) / split
     items, skipped, empty = [], 0, 0
     for p in sorted(d.glob("*.npz")):
         rec = np.load(p, allow_pickle=False)
@@ -232,6 +238,10 @@ def main():
     ap.add_argument("--train-split", default="train",
                     help="landmark subdir to train on; trainval adds the val "
                          "signers (test stays held out)")
+    ap.add_argument("--landmarks", default=None,
+                    help="cache root to train on (default .scratch/landmarks). Use .scratch/landmarks_native to train at the app's geometry.")
+    ap.add_argument("--jitter-sigma", type=float, default=0.01,
+                    help="per-landmark noise on raw x,y during training (was hardcoded 0.01)")
     ap.add_argument("--strict-resample", action="store_true",
                     help="use the corrected _resample (must match at inference)")
     args = ap.parse_args()
@@ -245,13 +255,15 @@ def main():
     vocab = json.load(open(VOCAB, encoding="utf-8"))
     vocab_idx = {g: i for i, g in enumerate(vocab)}
 
-    train_items, sk_tr = index_split(vocab_idx, args.train_split)
-    val_items, sk_va = index_split(vocab_idx, "val")
+    lm_root = Path(args.landmarks) if args.landmarks else None
+    train_items, sk_tr = index_split(vocab_idx, args.train_split, lm_root)
+    val_items, sk_va = index_split(vocab_idx, "val", lm_root)
     print(f"train clips: {len(train_items)} (skipped {sk_tr}) | val: {len(val_items)} (skipped {sk_va})")
     if not train_items:
         sys.exit("no training clips found - run extract_landmarks.py first")
 
-    train_dl = DataLoader(ClipDataset(train_items, args.frames, train=True),
+    train_dl = DataLoader(ClipDataset(train_items, args.frames, train=True,
+                                      jitter_sigma=args.jitter_sigma),
                           batch_size=args.batch, shuffle=True, num_workers=args.workers,
                           persistent_workers=args.workers > 0)
     val_dl = DataLoader(ClipDataset(val_items, args.frames, train=False),

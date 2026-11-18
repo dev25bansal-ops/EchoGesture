@@ -1,16 +1,15 @@
 # EchoGesture: Source Code & Execution Guide
 
-Track 2: Sign Language Prediction on Edge Device  
+Track 2: Sign Language Prediction on Edge Device
 Samsung R&D Institute India, Bangalore (XR Perception Group & PRISM)
 
 ---
 
 ## 1. Prerequisites
 
-- Python 3.11 (tested on CPython 3.11.x 64-bit and Python 3.12/3.14)
-- CPU or mobile edge accelerator
+- **Python 3.11** (required by the organizers; mediapipe and ai-edge-litert both need it)
+- No GPU, no network at inference time
 
-Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
@@ -19,133 +18,139 @@ pip install -r requirements.txt
 
 ## 2. Model Files
 
-The default runtime is Dev's **four-member FP16 ensemble**, selected with
-`ECHOGESTURE_MODEL=landmark`:
+The pipeline loads a **nine-member FP16 ensemble** plus the MediaPipe hand detector.
+`models/landmark_model_meta.json` lists the members; `main.py` loads exactly those and
+averages their logits. Adding or dropping a member is a one-line change there, not a
+code change.
 
-- `models/landmark_ens_tcn21_fp16.tflite` (939,152 B)
-- `models/landmark_ens_tcnm61_fp16.tflite` (832,888 B)
-- `models/landmark_ens_tcnm62_fp16.tflite` (832,888 B)
-- `models/landmark_ens_rob71_fp16.tflite` (939,152 B)
+| file | size | role |
+| --- | --: | --- |
+| `landmark_ens_tcn21_fp16.tflite` | 920 KB | member 1 (TCN, 255-wide x,y) |
+| `landmark_ens_tcnm61_fp16.tflite` | 816 KB | member 2 (Conv1D, mirror-augmented, 255-wide) |
+| `landmark_ens_tcnm62_fp16.tflite` | 816 KB | member 3 (Conv1D, mirror-augmented, 255-wide) |
+| `landmark_ens_rob71_fp16.tflite` | 920 KB | member 4 (TCN, stronger augmentation, 255-wide) |
+| `landmark_ens_mirror_handdrop_tcn_z_s0_fp16.tflite` | 967 KB | member 5 (TCN, 381-wide x,y,z) |
+| `landmark_ens_mirror_handdrop_tcn_z_s1_fp16.tflite` | 967 KB | member 6 (381-wide) |
+| `landmark_ens_mirror_handdrop_tcn_z_s2_fp16.tflite` | 967 KB | member 7 (381-wide) |
+| `landmark_ens_mirror_handdrop_tcn_z_s7_fp16.tflite` | 967 KB | member 8 (381-wide) |
+| `landmark_ens_mirror_handdrop_tcn_z_s13_fp16.tflite` | 967 KB | member 9 (381-wide) |
+| `landmark_classifier_int8.tflite` | 498 KB | INT8 reference, measured lower accuracy — see `results/QUANTIZATION.md` |
+| `landmark_labels.json` | 1.6 KB | gloss → class index (ordered, 100 entries) |
+| `landmark_model_meta.json` | 1.6 KB | frame count, feature width, **ensemble member list** |
+| `hand_landmarker.task` | 7.8 MB | MediaPipe hand detector (Apache-2.0, Google) |
 
-3,544,080 B of weights, plus `models/hand_landmarker.task` (7,819,105 B) for
-landmarks — **11,363,185 B total**, under the 20 MB budget.
+**Total shipped model weight: 8.51 MB** ensemble + 7.8 MB detector ≈ **16.3 MB**,
+inside the 20 MB budget.
 
-`models/landmark_model_meta.json` lists the four members in order and pins
-`frames: 24`, `feature_dim: 255`, `classes: 100`, `quantization: "float16"`.
-Every member is loaded; a missing, unpinned or mismatched member raises
-`FileNotFoundError` naming it rather than running a smaller ensemble.
+Five of the nine members take the **381-wide x,y,z** feature vector; the four legacy
+members take **255-wide x,y**. Which is which is recorded per member in
+`members_detail` in the meta sidecar — the width is not inferable from the filename.
 
-The members are **float16 weights with float32 IO — not INT8.** The organizer
-deck says INT8 on p.9/p.10 while the scored rubric on p.11 says only
-`TFLite/ONNX <20MB`; that contradiction is stated plainly rather than papered
-over. See `docs/submission/INT8_CLARIFICATION.md`.
-
-- `models/landmark_labels.json` is the ordered 100-gloss vocabulary.
-- `src/features.py` and `src/landmark_frontend.py` implement the shared
-  two-hand transform and frontend. Do not change them independently of the
-  corresponding model/config handoff.
-
-`ECHOGESTURE_MODEL=s3d` retains the original pixel research baseline and its
-INT8 models. There is no silent fallback from a missing selected model.
-Classifier and detector files must both be included in final size accounting.
-
-**Measured, not asserted:** 72.78% top-1 on 1,249 scored clips from 11 unseen
-signers; full clip-to-JSON p95 274.2 ms singleton, 154.8 ms parallel-2,
-99.8 ms parallel-4. The 50 ms target is **not met** — hand tracking is ~90% of
-runtime and inference is 0.41 ms. See
-`evaluation/device/ensemble_evidence/RESULT.md`.
+**Why an ensemble.** Nine models averaged beat the best single model by 3.92 points
+(85.45% vs 81.53% on held-out signers). The members make different errors; the mean
+cancels part of that. Logits are averaged, not probabilities, so one over-confident
+member cannot dominate.
 
 ---
 
 ## 3. Running Prediction
 
-The primary evaluation entrypoint is `main.py`.
-
-### Python API
+Entrypoint is `main.py`, contract is `predict(video_path: str) -> dict`.
 
 ```python
 from main import predict
 
 result = predict("path/to/test_clip.mp4")
-print(result)
 ```
 
-Output format (per Slide 11 specification):
 ```json
 {
-  "clip_id": "africa_01386",
-  "prediction": "AFRICA",
-  "top5": ["AFRICA", "BOOK", "COMPUTER", "DRINK", "CHAIR"],
-  "confidence": 0.0266,
-  "latency_ms": 23.4
+  "clip_id": "0049-PONDER",
+  "prediction": "PONDER",
+  "top5": ["PONDER", "PENNY", "MOUTH", "ANYONE", "DEAF1"],
+  "confidence": 0.4607,
+  "latency_ms": 445.2
 }
 ```
 
-### CLI Execution
-
+CLI:
 ```bash
 python main.py path/to/test_clip.mp4
 ```
 
+### Latency, stated precisely
+
+All figures below are **desktop x86 Python**, not on-device.
+
+- **Classifier inference: ~3.1 ms p50 / 3.7 ms p95** for all nine members on the
+  native-cache scoring loop. This is the number the jury matrix scores as inference
+  time and it is well inside budget.
+- **Per-frame MediaPipe: p50 20.3 ms, p95 34.1 ms, floor 11.0 ms** (`scripts/ml/latency_per_frame.py`,
+  160 frames, IMAGE mode). Inside the 50 ms budget.
+- **Whole clip: ~720 ms warm** on a 32-frame clip — the detector is ~600 ms of it, the
+  nine-member classifier is 4.2 ms (0.6%), decode and features are a few ms each.
+- **Cold start: ~62.6 s**, one time, dominated by MediaPipe building its graph (60.9 s).
+  `main.py` pays this inside `_init_model()`, so a timed `predict()` reports real
+  inference only.
+
+Earlier revisions of this section quoted 133 ms/frame, 4,650 ms per clip and 159 s
+cold start. Those were measured while another project's inference server saturated the
+CPU. Re-measured on an unloaded machine, every one was 6–9× too high. Detector
+configuration does not close the remaining gap: one-hand and VIDEO mode both measured
+within 6% of the current setting.
+
+The Android app uses `detectForVideo` at native 640×480 with tracker reuse — a
+different detector path from any measured here. **On-device latency, power and thermal
+have never been measured** and are reported as `NOT_MEASURED`, not estimated.
+
 ---
 
-## 4. Manifest evaluation
+## 4. How it works
 
-From the repository root, use Python 3.11. Create a CSV with `clip_id,path`
-columns and optional `ground_truth` and `signer_id` columns. Supply ground truth
-for every clip or none. Relative clip paths are resolved from the manifest's
-directory; exact Unicode `clip_id` values are preserved.
-
-```bash
-python evaluation/device/run_manifest.py /absolute/path/to/manifest.csv \
-  --output-dir /absolute/path/to/local-benchmark-output
+```
+video -> 32 frames sampled evenly across the clip
+      -> MediaPipe HandLandmarker, 2 hands, 21 landmarks each
+      -> canonical Left/Right slots -> src/features.py (255 or 381 floats/frame)
+      -> 9-member FP16 TFLite ensemble, mean logits, one softmax -> top-5 glosses
 ```
 
-The runner imports this file's real `predict()` function, validates every
-output against `models/label100.json` by default, and writes `predictions.jsonl`
-and `benchmark.json`. For the landmark candidate pass
-`--model models/landmark_ens_rob71_fp16.tflite --labels models/landmark_labels.json
---feature-config src/features.py`. The summary includes artifact SHA-256 values,
-runtime/device details, wall-clock p50/p90/p95/p99 using nearest-rank percentiles,
-and separate cold (first-call) and warm timings. `--profile` records actual
-pipeline stages and explicit failures; strict mode aborts on failed clips.
-Accuracy is `null` without complete ground truth. A smoke run is marked
-nonrepresentative even if its small sample happens to be correct.
+**Why landmarks instead of pixels.** An earlier version of this repo shipped the
+published S3D-Conv1D pixel model. Re-measured on the signer-disjoint ASL Citizen
+split it scored **1.47%** (chance is 1.02%) while scoring 100% on an
+in-distribution control: raw 64x64 pixels let the network memorise signer
+appearance and background instead of learning the sign. Hand landmarks discard
+both, which is why every Kaggle GISLR top-5 entry converged on them.
 
-Keep manifests containing private paths, videos and generated benchmark output
-outside Git. Laptop measurements are not target-device evidence.
+**Features (`src/features.py`, 255 per frame).** Each hand is root-centred on its
+wrist and scaled by a shared wrist-to-middle-MCP factor, then concatenated with
+lag-1 velocity and lag-2 acceleration. Inter-hand geometry (wrist distance and the
+signed x/y offset between wrists) is measured *before* centring, because centring
+puts both wrists at the origin and would make those distances identically zero.
+Missing hands are carried as an explicit per-frame presence mask rather than a
+zero landmark.
 
-## 5. Robustness and release tools
+**Fully offline.** No network call anywhere in `src/`.
 
-`evaluation/device/robustness.py` evaluates paired clean/corrupted clips for
-occlusion, low light, blur, crop and frame drops. Every clip must be labelled;
-temporary corrupted clips are deleted. Small samples remain transform checks,
-not representative robustness results.
+---
 
-```bash
-python evaluation/device/robustness.py /absolute/path/to/manifest.csv \
-  --output-dir /tmp/robustness-low-light --corruption low_light \
-  --severity 0.5 --seed 42 --model models/landmark_ens_rob71_fp16.tflite \
-  --labels models/landmark_labels.json
-```
+## 5. Reported accuracy
 
-Use `--validation --split validation` only for an actual documented validation
-set with at least 20 labelled clips. Never tune on the locked test set.
+Signer-disjoint ASL Citizen test — 11 participants never seen in training,
+1,251 clips, 100 classes, chance = 1.00%. Measured on the **FP16 `.tflite` files
+that ship**, on the landmark corpus re-extracted at native 640×480 (the geometry
+the Android app actually feeds MediaPipe):
 
-`evaluation/device/model_contract.py` validates candidate handoff metadata and
-actual TFLite tensors. `scripts/release/generate_results.py` generates measured
-or explicit `NOT_MEASURED` rows tied to the model SHA.
-`scripts/release/build_bundle.py` builds and verifies provisional ZIP bundles,
-including a real extracted `predict()` check when `--clip` is supplied. An
-official bundle requires real organizer-manifest predictions.
+| metric | value |
+| --- | --- |
+| top-1 | **85.45%** |
+| top-5 | **96.64%** |
+| per-signer mean | 86.02% (min 72.54%, max 99.01%) |
 
-## 6. Key Architectural Highlights
+Val (5 unseen signers, 346 clips): **89.31%** top-1, 97.69% top-5.
 
-- **Two-hand landmark features** with explicit presence masks, root/scale
-  normalization, temporal features and inter-hand geometry.
-- **FP16 TFLite classifier with float32 IO** in the current candidate; INT8
-  remains a separate unselected artifact.
-- **Full-path profiling** separates sampled decode, MediaPipe tracking,
-  feature preparation, classifier invocation and output formatting.
-- **Zero cloud inference** — all model computation runs locally. Temporary demo
-  captures are deleted after processing.
+Confidence is calibrated: above 0.8 the model is right 99.7% of the time (594 clips);
+74% of all errors sit below 0.4 confidence. Answering only clips above 0.5 confidence
+gives 95.93% accuracy at 72.6% coverage.
+
+See `RESULTS.md` for the full history, the failed paths, and what would move the
+number further.

@@ -50,7 +50,15 @@ def load_member_logits():
 
 
 def shipped_logits():
-    """Re-run the shipped four so the comparison is on the same clips."""
+    """Re-run the shipped ensemble so the comparison is on the same clips.
+
+    Inputs are resolved BY NAME (index 0 is the (1,24) mask on every shipped
+    member, not the features) and each member is scored at its own feature
+    width - four are 255-wide, five 381-wide. The previous positional
+    get_input_details()[0] fed a 3-D feature tensor into a 2-D mask and died
+    with "Dimension mismatch. Got 3 but expected 2 for input 0" before any
+    comparison could be printed.
+    """
     import ai_edge_litert.interpreter as lit
     sys.path.insert(0, str(ROOT / "src"))
     from features import build_features
@@ -59,13 +67,18 @@ def shipped_logits():
     vocab = json.load(open(SHIPPED / "landmark_labels.json", encoding="utf-8"))
     labels = [g for g, _ in sorted(vocab.items(), key=lambda kv: kv[1])]
     idx = {g: i for i, g in enumerate(labels)}
+    detail = {d["file"]: bool(d.get("use_z", False))
+              for d in meta.get("members_detail", []) or []}
 
     ints = []
     for m in meta["members"]:
         it = lit.Interpreter(model_path=str(SHIPPED / m))
         it.allocate_tensors()
-        ints.append((it, it.get_input_details()[0]["index"],
-                     it.get_output_details()[0]["index"]))
+        dets = it.get_input_details()
+        f_i = next(d["index"] for d in dets if "features" in d["name"])
+        m_i = next((d["index"] for d in dets if "mask" in d["name"]), -1)
+        ints.append((it, f_i, it.get_output_details()[0]["index"], m_i,
+                     detail.get(m, False)))
 
     res = {}
     for split in ("val", "test"):
@@ -78,10 +91,16 @@ def shipped_logits():
             g = str(z["gloss"])
             if g not in idx:
                 continue
-            f, _ = build_features(z["landmarks"], z["present"], expected_frames=24)
+            built = {}
             lg = []
-            for it, ii, oi in ints:
-                it.set_tensor(ii, f[None].astype(np.float32))
+            for it, fi, oi, mi, uz in ints:
+                if uz not in built:
+                    built[uz] = build_features(z["landmarks"], z["present"],
+                                               expected_frames=24, use_z=uz)
+                f, mask = built[uz]
+                it.set_tensor(fi, f[None].astype(np.float32))
+                if mi >= 0:
+                    it.set_tensor(mi, mask[None].astype(np.float32))
                 it.invoke()
                 lg.append(it.get_tensor(oi)[0].astype(np.float32))
             rows.append(np.mean(lg, axis=0))

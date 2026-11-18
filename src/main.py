@@ -139,6 +139,11 @@ _IDX_TO_LABEL = {}
 _LAST_PROFILE = None
 _ACTIVE_MODEL = None
 _FRAMES = 24
+
+# Mirrors CameraScreen.kt's MIN_HAND_FRACTION. The app refuses to classify below
+# this share of frames carrying a hand; the Python entry point must not be the
+# looser of the two on the same clip.
+MIN_HAND_FRACTION = 0.15
 _FEATURE_DIM = 255
 _MODEL_BACKEND = "s3d"
 
@@ -716,6 +721,20 @@ def predict(video_path: str, *, clip_id: str | None = None, profile: bool = Fals
                       engine=tracking_engine)
         if landmarks.shape[0] == 0 or float(present.max()) < 0.5:
             raise ValueError(f"No hand detected in any frame of: {video_path}")
+        # presence in ONE sampled frame satisfies the check above, but the
+        # resample to the model's frame count can step over that frame entirely:
+        # 8 of the 32 sampled positions are skipped by the 32->24 grid. When that
+        # happens every feature is zero and the mask is all-zero, and the
+        # ensemble still returned a gloss (measured: BREAKFAST1 at 0.0661).
+        # The app already refuses this - CameraScreen.kt uses 0.15 - so the
+        # Python entry point must not be the looser of the two.
+        coverage = float((present.max(axis=1) >= 0.5).mean())
+        if coverage < MIN_HAND_FRACTION:
+            raise ValueError(
+                f"Hand detected in only {coverage:.1%} of sampled frames of "
+                f"{video_path}; refusing below {MIN_HAND_FRACTION:.0%}. The model "
+                "resamples frames, so a hand in one frame can be resampled away "
+                "entirely and produce an all-zero, fully-masked input.")
         started_ns = time.perf_counter_ns()
         # Both widths and the mask come from ONE landmark extraction. The mask
         # is computed after temporal resampling, exactly as training did; it is

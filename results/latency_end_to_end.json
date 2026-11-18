@@ -1,0 +1,87 @@
+{
+ "measured": "2026-11-18",
+ "clips": 6,
+ "pinned_cores": null,
+ "competing_distllm_processes": 0,
+ "load_before": {
+  "cpu_percent": 29.1,
+  "cpu_count": 28
+ },
+ "load_after": {
+  "cpu_percent": 27.4,
+  "cpu_count": 28
+ },
+ "import_ms": 105.0,
+ "init_ms_incl_mediapipe_graph": 11346.8,
+ "cold_first_predict_ms": 684.8,
+ "cold_start_total_ms": 12136.6,
+ "warm_p50_ms": 576.75,
+ "warm_p95_ms": 704.7,
+ "warm_min_ms": 493.03,
+ "warm_max_ms": 704.7,
+ "warm_all_ms": [
+  493.03,
+  521.19,
+  573.58,
+  579.91,
+  604.58,
+  704.7
+ ],
+ "stage_split_ms": {
+  "decode": 100.4,
+  "detect": 607.4,
+  "features": 0.73,
+  "classifier_nine_members": 3.17
+ },
+ "stage_split_note": "single last clip, timed in sequence after the warm loop; decode and detect are separate stages",
+ "stage_detect_ms": 607.4,
+ "stage_features_ms": 0.73,
+ "stage_classifier_ms": 3.17,
+ "first_prediction": "SAIL2",
+ "note": "Warm latency_ms is the value predict() reports and the one the evaluator scores. Cold start is one-time per process. If competing_distllm_processes > 0 the CPU was shared; re-run with --affinity to confirm.",
+ "runs": [
+  {
+   "measured": "2026-11-18 run A (workflow agent)",
+   "warm_p50_ms": 748.51,
+   "warm_p95_ms": 871.69,
+   "warm_all_ms": [
+    562.2,
+    609.6,
+    694.63,
+    802.4,
+    817.8,
+    871.69
+   ],
+   "cold_start_total_ms": 14718.2,
+   "init_ms_incl_mediapipe_graph": 13649.3,
+   "stage_split_ms": {
+    "decode": 103.9,
+    "detect": 653.0,
+    "features": 0.78,
+    "classifier_nine_members": 3.95
+   }
+  },
+  {
+   "measured": "2026-11-18 run B (Dev, independent re-run)",
+   "warm_p50_ms": 576.75,
+   "warm_p95_ms": 704.7,
+   "warm_all_ms": [
+    493.03,
+    521.19,
+    573.58,
+    579.91,
+    604.58,
+    704.7
+   ],
+   "cold_start_total_ms": 12136.6,
+   "init_ms_incl_mediapipe_graph": 11347.0,
+   "stage_split_ms": {
+    "decode": 100.0,
+    "detect": 607.0,
+    "features": 0.7,
+    "classifier_nine_members": 3.2
+   }
+  }
+ ],
+ "note_two_runs": "Two independent clean runs on 18 Nov, 0 competing distllm processes both times, give warm p50 577-749 ms and cold start 12.1-14.7 s. MediaPipe's lazy graph build dominates cold start and varies with machine state, so quote the range rather than either endpoint. The stage split is stable across both runs: detect is ~87% of a 32-frame pass, the nine-member classifier is ~0.5%."
+}

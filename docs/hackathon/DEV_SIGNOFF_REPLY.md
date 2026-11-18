@@ -52,12 +52,20 @@ Measured both ways on the same 1,249 clips:
 | Path | clean top-1 | correct |
 | --- | --- | --: |
 | shipped FP16 TFLite ensemble | 72.78% | **909** |
-| PyTorch checkpoints (`robustness.json`) | 73.66% | **920** |
+| PyTorch checkpoints (`robustness.json`, as of 12 Nov) | 73.66% | **920** |
 
 **Difference: exactly −11 clips**, matching the audit's 920 − 909. It is the
 inference path, not a bug in the shipped predictions. The robustness deltas
 should keep being read as relative shifts within one path, never compared
 across the two.
+
+**Current-artifact correction (18 Nov):** the 73.66% / 920 above is the value
+`results/robustness.json` held when this reply was written (commits 4594bfa →
+da0f31a). The file was regenerated on the 14th/15th when the landmark cache was
+rebuilt (117a51a, a30e60d) and now holds **76.94% (961/1249)**, so the live
+path no longer reproduces 920 and the −11-clip arithmetic only holds against the
+Nov-12 snapshot. The point being made — two inference paths, read deltas within
+one — is unaffected; the absolute comparator is date-pinned.
 
 ---
 

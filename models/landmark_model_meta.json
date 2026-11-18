@@ -14,7 +14,7 @@
     "landmark_ens_mirror_handdrop_tcn_z_s13_fp16.tflite"
   ],
   "quantization": "float16",
-  "ensemble_test_top1": 0.7702,
+  "ensemble_test_top1": 0.8545,
   "members_detail": [
     {
       "file": "landmark_ens_tcn21_fp16.tflite",

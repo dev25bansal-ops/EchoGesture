@@ -1,0 +1,19 @@
+{
+  "cache": ".scratch/landmarks_native",
+  "split": "val",
+  "n": 346,
+  "no_detection": 0,
+  "ensemble_top1_pct": 89.3064,
+  "per_member_pct": {
+    "landmark_ens_tcn21_fp16.tflite": 83.237,
+    "landmark_ens_tcnm61_fp16.tflite": 82.3699,
+    "landmark_ens_tcnm62_fp16.tflite": 83.526,
+    "landmark_ens_rob71_fp16.tflite": 86.9942,
+    "landmark_ens_mirror_handdrop_tcn_z_s0_fp16.tflite": 83.237,
+    "landmark_ens_mirror_handdrop_tcn_z_s1_fp16.tflite": 85.5491,
+    "landmark_ens_mirror_handdrop_tcn_z_s2_fp16.tflite": 87.2832,
+    "landmark_ens_mirror_handdrop_tcn_z_s7_fp16.tflite": 83.815,
+    "landmark_ens_mirror_handdrop_tcn_z_s13_fp16.tflite": 85.2601
+  },
+  "classifier_ms_per_clip": 29.39
+}

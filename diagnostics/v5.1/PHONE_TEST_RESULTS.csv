@@ -1,0 +1,21 @@
+# NO PHYSICAL PHONE WAS ATTACHED DURING THIS SESSION.
+# adb devices -l showed only emulator-5554 (sdk_gphone64_arm64).
+# system_profiler found no USB Android device.
+# Every row below is therefore NOT_TESTED, not a pass or a fail.
+# A live-phone result must not be inferred from clip replay or from the emulator.
+attempt_id,device,intended_gloss,predicted,score,margin,hand_coverage,capture_ms,auto_stopped,had_to_press_finish,correct,notes
+1,none,N/A,,,,,,NOT_TESTED,NOT_TESTED,NOT_TESTED,no physical device attached
+2,none,N/A,,,,,,NOT_TESTED,NOT_TESTED,NOT_TESTED,no physical device attached
+3,none,N/A,,,,,,NOT_TESTED,NOT_TESTED,NOT_TESTED,no physical device attached
+4,none,N/A,,,,,,NOT_TESTED,NOT_TESTED,NOT_TESTED,no physical device attached
+5,none,N/A,,,,,,NOT_TESTED,NOT_TESTED,NOT_TESTED,no physical device attached
+6,none,N/A,,,,,,NOT_TESTED,NOT_TESTED,NOT_TESTED,no physical device attached
+7,none,N/A,,,,,,NOT_TESTED,NOT_TESTED,NOT_TESTED,no physical device attached
+8,none,N/A,,,,,,NOT_TESTED,NOT_TESTED,NOT_TESTED,no physical device attached
+9,none,N/A,,,,,,NOT_TESTED,NOT_TESTED,NOT_TESTED,no physical device attached
+10,none,N/A,,,,,,NOT_TESTED,NOT_TESTED,NOT_TESTED,no physical device attached
+11,none,N/A,,,,,,NOT_TESTED,NOT_TESTED,NOT_TESTED,no physical device attached
+12,none,N/A,,,,,,NOT_TESTED,NOT_TESTED,NOT_TESTED,no physical device attached
+13,none,N/A,,,,,,NOT_TESTED,NOT_TESTED,NOT_TESTED,no physical device attached
+14,none,N/A,,,,,,NOT_TESTED,NOT_TESTED,NOT_TESTED,no physical device attached
+15,none,N/A,,,,,,NOT_TESTED,NOT_TESTED,NOT_TESTED,no physical device attached

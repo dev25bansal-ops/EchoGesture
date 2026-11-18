@@ -555,3 +555,58 @@ gate keeps its teeth and the report stays honest.
   real-phone accuracy, latency or camera behaviour remains unmeasured.
 - **`evaluation/device` test outcomes.** Collection aborts (H2); the full run with
   `--continue-on-collection-errors` is in progress.
+
+---
+
+## Final accounting — what is fixed, what is not, and how each was checked
+
+Added 18 Nov after asking "have I actually fixed everything?" — this section exists
+because asserting it is not the same as checking it.
+
+**Method.** Every finding was re-tested against the current code by
+`.scratch/bughunt3/final_accounting.py`, which asserts on the *real* assignment or
+guard rather than on a filename. That matters: three early checks reported
+"still broken" because the fix's own explanatory comment contained the string the
+check searched for. Those were corrected, not counted either way.
+
+### Our tree (`hackathon/dev-model`)
+
+**36 of 36 fixable findings verified fixed.**
+
+| Group | Count | Spot-checked by |
+| --- | --: | --- |
+| Shipped entry point (`src/main.py`, `features.py`) | 7 | headline reproduces; `_init_model()` loads; 2 NaN paths refuse |
+| Scored-artifact scripts | 15 | each guard read at its assignment; `.py_compile` clean |
+| Committed artifacts and docs | 14 | values read back out of the files |
+
+Verified after every change, not before: **85.45%** on 1,251 clips, `_init_model()` OK,
+a real clip predicts LOCK1 0.2446, `results.csv` 8 columns × 19 rows, every JSON
+strict-parses, all modules compile.
+
+### His tree (`release/samsung-final-app-test`)
+
+**13 of 13 fixable findings verified fixed.** Spot-checked by re-running each repro:
+`sha256sum -c` reports 25 OK; `./gradlew assembleDebug` BUILD SUCCESSFUL;
+`evaluate.py` with no arguments scores the nine-member ensemble (345 val clips, 87.25%);
+`window_ensemble.py` runs past the dimension mismatch into real evaluation.
+
+### Not fixed, and why — 7 items
+
+These are not code defects, and none can be closed by editing a file:
+
+| Item | Why it is not a code fix |
+| --- | --- |
+| Nine restricted weights published in a public repo | Licensing decision. Needs the owner to choose: remove from history, accept publication, or ship the ZIP only. Set out as options A/B/C in the reply to Abhijeet. |
+| Two 70–83 MB APK blobs in git history | History rewrite. Destructive on a public repo, owner's call. |
+| APK binary not committed | A binary artifact; it was never in the repo. Regenerating it is a build, not a fix. |
+| Participant IDs in git history | History rewrite, same as above. Fixed in the working tree only. |
+| Registration unverified | Human action outside the repository. |
+| 25 Android instrumentation tests | Need a device or emulator. Not runnable in this session. |
+| `performance_final/test_tracker.py` crashes the interpreter | MediaPipe thread-pool teardown (`0xc000071c`) when its classes run in sequence. The fix is a design change (one interpreter per process, or `maxtasksperchild`) that I would not make blind before a deadline. Excluded from the suite count and named as excluded. |
+
+### What none of this establishes
+
+The suite counts, the build and the guards say nothing about the model. On-device
+accuracy, latency and camera behaviour remain **unmeasured** — exactly as they were
+before this session. The only model number that moved at all is the one that did not:
+85.45% on 1,251 test clips, which reproduces exactly after every change.

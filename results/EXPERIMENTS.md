@@ -562,13 +562,15 @@ native 640×480 cache. Best signer-disjoint val **87.3%**.
 
 | | clean | drop_hand_25pct | drop |
 | --- | --: | --: | --: |
-| shipped nine-member ensemble | **85.45%** | **79.94%** | +5.51 |
+| shipped nine-member ensemble | **85.45%** | **79.70%** | +5.76 |
 | new model (harder hand-dropout) | 80.26% | 75.14% | +5.12 |
 
 **The new model is worse on both axes.** Its drop is 0.64 points smaller only because
 its clean baseline is 5.2 points lower; in absolute terms it is worse under hand-drop
-than the shipped ensemble (75.14 vs 79.94). Adding a lower-accuracy correlated member
-does not help.
+than the shipped ensemble (75.14 vs 79.70). Adding a lower-accuracy correlated member
+does not help. (Shipped row uses the harness corruption, both-zeroed — 79.94 was the
+coords-kept diagnostic and is retracted as a baseline; arithmetic check: 5.76 − 5.12
+= 0.64, and 79.70 − 75.14 = 4.56.)
 
 Conclusion: harder hand-dropout augmentation at this corpus size (17–24 clips/class,
 32 signers) trades more clean accuracy than it recovers under the corruption. The

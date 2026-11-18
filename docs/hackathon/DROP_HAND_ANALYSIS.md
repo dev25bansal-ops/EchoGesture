@@ -5,7 +5,7 @@ Written 16 Nov 2026 by Dev. The only failing criterion left is
 
 ## The decomposition
 
-Same 1,249 test clips, native cache, clean baseline **85.45%**. Three versions
+Same 1,251 test clips, native cache, clean baseline **85.45%**. Three versions
 of the corruption, differing only in which half of the hand is erased:
 
 | condition | accuracy | drop |
@@ -85,14 +85,18 @@ epochs, jitter σ=0.03, best val 87.3% — measured:
 
 | | clean | drop_hand_25pct |
 | --- | --: | --: |
-| shipped nine-member ensemble | **85.45%** | **79.94%** |
+| shipped nine-member ensemble | **85.45%** | **79.70%** |
 | retrained, harder hand-dropout | 80.26% | 75.14% |
 
-The retrained model's drop is 0.64 points smaller but its *absolute* hand-drop accuracy
-is 4.8 points worse, because it gave up 5.2 points of clean accuracy to get there. At
-17–24 clips per class, harder augmentation trades more than it recovers. So the
-training-time lever is now closed by measurement too — the criterion stays a reported
-limitation, not a fixable one within this corpus. `EXPERIMENTS.md` has the entry.
+The retrained model's drop is 0.64 points smaller (5.76 → 5.12) but its *absolute*
+hand-drop accuracy is 4.6 points worse, because it gave up 5.2 points of clean
+accuracy to get there. (The shipped row is the harness value, both-zeroed — the
+79.94 coords-kept diagnostic from the table above must not be used as a baseline;
+read against 79.94 the retrain looks 0.39 points better and only 4.8 points worse,
+which is the retracted comparison.) At 17–24 clips per class, harder augmentation
+trades more than it recovers. So the training-time lever is now closed by
+measurement too — the criterion stays a reported limitation, not a fixable one
+within this corpus. `EXPERIMENTS.md` has the entry.
 
 The realistic options are (a) report it honestly as one known weakness — now the
 justified choice — or (b) genuinely more diverse signer data, which this corpus does

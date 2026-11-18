@@ -192,7 +192,7 @@ np.ones((32,2),np.float32), expected_frames=24)` → shape `(24, 255)`.
 | TF↔PyTorch parity, all 9 members | 100% argmax agreement; FP16 max&#124;d&#124; 3.8e-06–6.1e-05 (gate: 1e-2) |
 | Classifier latency | **3.1 ms p50 / 3.7 ms p95** for the nine members (desktop x86, native-cache loop) |
 | Per-frame MediaPipe | **p50 14.5–16.4 ms / p95 22.7–25.1 ms** desktop x86, three clean runs (n=160 frames each) — inside the 50 ms budget. The 133/199 ms figures this row used to carry were measured under CPU contention and are retracted; see `results/latency_per_frame_distribution.json`. |
-| Cold start | **62.6 s**, one time, MediaPipe graph build on first `detect()` (the 159 s figure came from the same contended run; see `results/latency_end_to_end.json`) |
+| Cold start | **15–63 s**, one time, MediaPipe's lazy graph build on first `detect()`. Measured 62.6 s on 17 Nov and 14.7 s on an 18 Nov clean re-run of the same script; the spread is machine-state dependent (the 159 s figure came from a contended run). See `results/latency_end_to_end.json` |
 
 ### Known failure cases
 

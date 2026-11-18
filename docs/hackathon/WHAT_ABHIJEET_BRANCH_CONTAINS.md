@@ -214,12 +214,12 @@ span multiplies every velocity and acceleration by the ratio of the two sample s
 | p10 (long clips) | 0.87× |
 | clips where the factor exceeds 1.25× | **66%** |
 | clips where it exceeds 2× | 17% |
-| clips within 20% of the training scale | **26%** |
+| clips within 20% of the training scale | **21.8%** |
 
-So on three clips in four the phone feeds the model velocities at materially the wrong
+So on four clips in five the phone feeds the model velocities at materially the wrong
 amplitude — most often too large, because most signs are shorter than the assumed
 window. This is a distribution shift in the input, not a code defect: the constant is
-doing the best it can with no clip length to go on. But 26% agreement with the training
+doing the best it can with no clip length to go on. But 21.8% agreement with the training
 scale is a plausible contributor to the on-device accuracy gap, and it is the only
 feature-side difference I found that is both real and large.
 

@@ -69,7 +69,9 @@ That is a measurement error, not a model error. It makes the model look about
 five points worse than it is, and it does so through exactly the signal the
 attention mask consumes.
 
-One caveat I will not paper over: 0/128 on train and 9% on val versus 29% on test
+One caveat I will not paper over: 0/138 on train (the artifact's sampled count -
+the audit requested 128 samples but the stride it computes yields 138 candidates,
+and all 138 were checked) and 9% on val versus 29% on test
 is a strange shape. A degradation confined to the *last* split written would
 explain it, and test files are timestamped 11:55–11:58 while train runs 11:59–12:01
 — i.e. test was written *first*, not last. So I do not have a mechanism that

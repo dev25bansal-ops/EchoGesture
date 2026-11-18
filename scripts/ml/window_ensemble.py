@@ -44,19 +44,35 @@ STRATEGIES = {
 
 def load_models():
     meta = json.load(open(ROOT / "models/landmark_model_meta.json", encoding="utf-8"))
+    detail = {d.get("file"): bool(d.get("use_z", False))
+              for d in meta.get("members_detail", []) or []}
     out = []
     for m in meta["members"]:
         it = lit.Interpreter(model_path=str(ROOT / "models" / m))
         it.allocate_tensors()
-        out.append((it, it.get_input_details()[0]["index"],
-                    it.get_output_details()[0]["index"]))
+        # Inputs are resolved BY NAME. The converter reports the mask as input 0
+        # and the features as input 1, so `get_input_details()[0]` fed a (1,24)
+        # mask where a (1,24,F) feature matrix belongs and this script died with
+        # "Dimension mismatch. Got 3 but expected 2" against every current member.
+        dets = {d["name"]: d for d in it.get_input_details()}
+        f_det = next((d for n, d in dets.items() if "features" in n),
+                     it.get_input_details()[0])
+        m_det = next((d for n, d in dets.items() if "mask" in n), None)
+        out.append((it, f_det["index"],
+                    it.get_output_details()[0]["index"],
+                    m_det["index"] if m_det else None,
+                    detail.get(m, False),
+                    int(f_det["shape"][-1])))
     return out
 
 
-def logits(models, feats):
+def logits(models, feats_by_width):
     lg = []
-    for it, ii, oi in models:
-        it.set_tensor(ii, feats[None].astype(np.float32))
+    for it, fi, oi, mi, use_z, _width in models:
+        feats, mask = feats_by_width[use_z]
+        it.set_tensor(fi, feats[None].astype(np.float32))
+        if mi is not None:
+            it.set_tensor(mi, mask[None].astype(np.float32))
         it.invoke()
         lg.append(it.get_tensor(oi)[0].astype(np.float32))
     return np.mean(lg, axis=0)
@@ -73,8 +89,14 @@ def clip_logits(models, lm, pres, windows):
         sub_lm, sub_pres = lm[a:b], pres[a:b]
         if len(sub_pres) < 8:
             sub_lm, sub_pres = lm, pres
-        f, _ = build_features(sub_lm, sub_pres, expected_frames=FRAMES)
-        out[name] = logits(models, f)
+        # Build every width this ensemble actually uses: five members are
+        # 381-wide (x,y,z) and four are 255-wide, so one width cannot serve both.
+        widths = {}
+        for _it, _fi, _oi, _mi, use_z, _w in models:
+            if use_z not in widths:
+                widths[use_z] = build_features(sub_lm, sub_pres,
+                                               expected_frames=FRAMES, use_z=use_z)
+        out[name] = logits(models, widths)
     return out
 
 

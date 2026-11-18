@@ -87,9 +87,78 @@ def load_classifier(model_path):
     return invoke, vocab, frames, use_z
 
 
+def load_ensemble_classes():
+    """Score the SHIPPED nine-member ensemble from the meta sidecar.
+
+    The default --ckpt named models/landmark_classifier_fp16.tflite, which is
+    retired and exists on no branch, so plain `python scripts/ml/evaluate.py`
+    always died with "Could not open ... The model allocation is null/empty".
+    This loads every member the sidecar declares and averages LOGITS then one
+    softmax - the aggregator src/main.py and the Android app use.
+    """
+    meta = json.load(open(ROOT / "models" / "landmark_model_meta.json", encoding="utf-8"))
+    detail = {d.get("file"): bool(d.get("use_z", False))
+              for d in meta.get("members_detail", []) or []}
+    from ai_edge_litert.interpreter import Interpreter
+    from features import build_features
+    labels = json.load(open(ROOT / "models" / "landmark_labels.json", encoding="utf-8"))
+    idx_label = {int(i): g for g, i in labels.items()}
+    vocab = [idx_label[i] for i in range(len(idx_label))]
+    frames = int(meta["frames"])
+
+    members = []
+    for name in meta["members"]:
+        interp = Interpreter(model_path=str(ROOT / "models" / name))
+        interp.allocate_tensors()
+        dets = interp.get_input_details()
+        f_det = next((d for d in dets if "features" in d["name"]), dets[0])
+        m_det = next((d for d in dets if "mask" in d["name"]), None)
+        members.append({
+            "it": interp, "f": f_det["index"],
+            "o": interp.get_output_details()[0]["index"],
+            "m": m_det["index"] if m_det else None,
+            "use_z": detail.get(name, False),
+        })
+
+    # `invoke(feats, mask)` keeps the caller's existing shape, but the caller
+    # built ONE width - and this ensemble needs both (four 255-wide, five
+    # 381-wide). So the features are rebuilt per member from a closure-held copy
+    # of the raw landmarks that the caller passes through `feats` on first use.
+    state = {}
+
+    def prime(lm, pres):
+        """Called once per clip with the raw landmarks."""
+        state["lm"], state["pres"] = lm, pres
+        state["built"] = {}
+
+    def invoke(feats=None, mask=None):
+        built = state.get("built")
+        if built is None:
+            raise RuntimeError("load_ensemble_classes().invoke called before prime()")
+        logits = []
+        for mb in members:
+            uz = mb["use_z"]
+            if uz not in built:
+                built[uz] = build_features(state["lm"], state["pres"],
+                                           expected_frames=frames, use_z=uz)
+            f, mk = built[uz]
+            mb["it"].set_tensor(mb["f"], f[None, ...].astype(np.float32))
+            if mb["m"] is not None:
+                mb["it"].set_tensor(mb["m"], mk[None, ...].astype(np.float32))
+            mb["it"].invoke()
+            logits.append(mb["it"].get_tensor(mb["o"])[0].astype(np.float32))
+        avg = np.mean(logits, axis=0)
+        e = np.exp(avg - avg.max())
+        return e / e.sum()
+
+    return invoke, prime, vocab, frames
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--ckpt", default="models/landmark_classifier_fp16.tflite")
+    ap.add_argument("--ckpt", default=None,
+                    help="single .tflite classifier; default: the nine-member "
+                         "ensemble from models/landmark_model_meta.json")
     ap.add_argument("--split", default="test", choices=["train", "val", "test"])
     ap.add_argument("--frames", type=int, default=24)
     ap.add_argument("--end-to-end", action="store_true",
@@ -98,7 +167,12 @@ def main():
 
     from features import build_features
 
-    invoke, vocab, ck_frames, use_z = load_classifier(ROOT / args.ckpt)
+    if args.ckpt is None:
+        invoke, prime, vocab, ck_frames = load_ensemble_classes()
+        use_z = None
+    else:
+        invoke, vocab, ck_frames, use_z = load_classifier(ROOT / args.ckpt)
+        prime = None
     vocab_idx = {g: i for i, g in enumerate(vocab)}
     idx_label = {i: g for g, i in vocab_idx.items()}
     frames = args.frames or ck_frames
@@ -125,10 +199,16 @@ def main():
             continue
 
         t0 = time.perf_counter()
-        # use_z follows the model's own width, read from the graph rather than
-        # assumed: five of the nine shipped members take 381-wide x,y,z.
-        feats, mask = build_features(lm, pres, expected_frames=frames, use_z=use_z)
-        probs = invoke(feats, mask)
+        if use_z is None:
+            # Ensemble path: hand the raw landmarks to the loader, which builds
+            # every width the members need (four 255-wide, five 381-wide).
+            prime(lm, pres)
+            probs = invoke()
+        else:
+            # Single-model path: that model's width follows its own graph, read
+            # rather than assumed - a 381-wide member takes x,y,z.
+            feats, mask = build_features(lm, pres, expected_frames=frames, use_z=use_z)
+            probs = invoke(feats, mask)
         lat = (time.perf_counter() - t0) * 1000.0
         latencies.append(lat)
 

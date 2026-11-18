@@ -22,7 +22,8 @@
 | Suite | Count | Result |
 | --- | --- | --- |
 | JVM (`AutoSegmenterTest`, `RecordingFeaturesTest`, others) | 146 | 0 failures |
-| Instrumentation (`OneTapCaptureTest` alone) | 9 | 0 failures |
+| Instrumentation, full suite on device | **35** | **0 failures** (1,018 s) |
+| of which `OneTapCaptureTest` | 9 | 0 failures |
 
 ## Verified on the device (manual UI walkthrough)
 

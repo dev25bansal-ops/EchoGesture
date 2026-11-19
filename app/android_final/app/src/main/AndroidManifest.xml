@@ -14,6 +14,20 @@
 
     <uses-feature android:name="android.hardware.camera.any" android:required="true" />
 
+    <!-- Package visibility for TextToSpeech (Android 11+, targetSdk 34).
+         Without this the app cannot SEE any TTS engine, so Speaker.initialise()
+         fails on every Android 11+ device and the speak-result feature reports
+         "no offline voice available" even when an engine is installed. The
+         project's own test device runs Android 16, so this is the shipping
+         configuration, not an edge case. Still fully offline: reading the
+         installed voice packs is local, and the app itself has no INTERNET
+         permission above. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
+
     <application
         android:allowBackup="false"
         android:icon="@drawable/ic_launcher_foreground"

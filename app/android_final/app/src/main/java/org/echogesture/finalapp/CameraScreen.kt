@@ -487,7 +487,8 @@ class CameraScreen(
                         R.string.no_hands_detail_for_state,
                         icon = R.drawable.ic_warning,
                         tint = R.color.warning,
-                        tone = Tone.WARNING
+                        tone = Tone.WARNING,
+                        detail = detail
                     )
                     setLiveStatus(R.string.camera_state_no_hands, R.color.warning)
                 }
@@ -529,12 +530,19 @@ class CameraScreen(
         icon: Int,
         @androidx.annotation.ColorRes tint: Int,
         tone: Tone = Tone.NEUTRAL,
-        action: Boolean = false
+        action: Boolean = false,
+        detail: String? = null
     ) {
         statusCard.visibility = View.VISIBLE
         resultCard.visibility = View.GONE
         statusTitle.setText(titleRes)
-        statusDetail.setText(detailRes)
+        // A caller that computed a SPECIFIC reason wins over the generic string.
+        // finishRecording() already turns each SignRecorder.Rejection into the
+        // right sentence and passes it as `detail`; before this it was dropped on
+        // the floor for NO_HANDS, so "recording too short", "camera stalled" and
+        // "too few frames" all showed "No hands in view" — advice that is simply
+        // wrong for three of those four cases.
+        if (detail != null) statusDetail.text = detail else statusDetail.setText(detailRes)
         statusIcon.setImageResource(icon)
         statusIcon.imageTintList =
             android.content.res.ColorStateList.valueOf(ContextCompat.getColor(activity, tint))

@@ -332,6 +332,18 @@
                 android:layout_marginTop="@dimen/space_2"
                 android:text="@string/settings_clear_history" />
 
+            <!-- Export exists so a consented test session can be handed over
+                 without a USB cable. It is a deliberate tap, never automatic,
+                 and the file carries capture statistics only - no pixels, no
+                 landmarks, no identifiers. -->
+            <Button
+                android:id="@+id/exportDiagnosticsButton"
+                style="@style/Widget.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_2"
+                android:text="@string/settings_export_diagnostics" />
+
             <View
                 style="@style/Divider"
                 android:layout_marginTop="@dimen/space_3" />

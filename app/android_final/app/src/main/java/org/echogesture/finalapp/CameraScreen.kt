@@ -869,6 +869,8 @@ class CameraScreen(
                     val result = c.predict(xy.features, xy.mask, xyz.features)
                     val totalMs = (System.nanoTime() - started) / 1_000_000L
                     finishProcessing()
+                    // No Attempt here: this is the manual quick-scan path, which
+                    // has no segmenter decision to report.
                     if (prefs.diagnostics) logDiagnostic(capture, result, totalMs)
                     activity.runOnUiThread { renderResult(result, totalMs, capture) }
                 } catch (t: Throwable) {
@@ -933,6 +935,49 @@ class CameraScreen(
     }
 
     /** The user ended the sign themselves; keep what was captured. */
+    /**
+     * Measures what the segmenter actually saw, for the failure triage.
+     *
+     * These are the numbers that separate the failure categories: a low
+     * hand-bearing fraction points at the detector, a dropout-boundary at the
+     * segmenter, and a healthy capture with a confident wrong answer at the
+     * model. Computed once per attempt, from the frames that were kept.
+     */
+    private fun attemptOf(outcome: AutoSegmenter.Outcome): DiagnosticsLog.Attempt {
+        val frames = outcome.frames
+        var longest = 0
+        var run = 0
+        var both = 0
+        var flips = 0
+        var prevSlots: Set<Int>? = null
+        for (f in frames) {
+            val slots = f.hands.map { it.slot }.toSet()
+            if (slots.isEmpty()) {
+                run++
+                if (run > longest) longest = run
+            } else {
+                run = 0
+                if (slots.size == 2) both++
+                // A flip is a frame where a slot that was present vanishes while
+                // the other appears: the classic handedness swap signature.
+                val p = prevSlots
+                if (p != null && p.isNotEmpty() && slots.isNotEmpty() && p != slots) flips++
+                prevSlots = slots
+            }
+        }
+        val maskSteps = frames.count { it.hands.isNotEmpty() }
+            .let { if (frames.isEmpty()) 0 else Math.round(it * 24f / frames.size) }
+        return DiagnosticsLog.Attempt(
+            endReason = outcome.reason.name,
+            startedAtMs = outcome.startedAtMs,
+            endedAtMs = outcome.endedAtMs,
+            maskSteps = maskSteps.coerceIn(0, 24),
+            bothHandsFrames = both,
+            longestDropoutFrames = longest,
+            slotFlips = flips
+        )
+    }
+
     private fun finishAutoCapture() {
         val t = tracker ?: return
         val outcome = t.finishAutoManually(SystemClock.elapsedRealtime())
@@ -965,7 +1010,7 @@ class CameraScreen(
         render(UiState.PROCESSING)
         val recording = SignRecorder.Recording(outcome.frames, outcome.startedAtMs, outcome.endedAtMs)
         inferExecutor.execute {
-            runInference(recording, c, generation)
+            runInference(recording, c, generation, attemptOf(outcome))
         }
     }
 
@@ -1062,7 +1107,8 @@ class CameraScreen(
     private fun runInference(
         recording: SignRecorder.Recording,
         c: LandmarkClassifier,
-        generation: Int = resultGeneration
+        generation: Int = resultGeneration,
+        attempt: DiagnosticsLog.Attempt? = null
     ) {
         try {
             if (recording.frameCount == 0) {
@@ -1273,9 +1319,10 @@ class CameraScreen(
     private fun logDiagnostic(
         capture: HandTracker.Capture,
         result: LandmarkClassifier.Result?,
-        totalMs: Long
+        totalMs: Long,
+        attempt: DiagnosticsLog.Attempt? = null
     ) {
-        runCatching { diagnostics.record(capture, result, totalMs) }
+        runCatching { diagnostics.record(capture, result, totalMs, attempt) }
             .onFailure { Log.w("CameraScreen", "diagnostic write failed: ${it.javaClass.simpleName}") }
         // Also flush what the analyser actually did. The capture record above
         // says what the MODEL was given; this says what the CAMERA delivered,

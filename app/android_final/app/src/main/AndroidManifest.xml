@@ -31,5 +31,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- Shares ONLY the diagnostics export directory (see
+             res/xml/file_paths.xml). Adding this does not grant the app any new
+             permission: it is a way to hand a private file to a share target the
+             user picks, not a way to reach files. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
     </application>
 </manifest>

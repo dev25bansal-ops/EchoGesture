@@ -142,6 +142,12 @@
     <string name="settings_privacy_no_internet">This app does not request the internet permission.</string>
     <string name="settings_privacy_no_video">No video or images are saved.</string>
     <string name="settings_clear_history">Clear saved history</string>
+    <!-- Deliberate, user-initiated share. Capture statistics only: frame counts,
+         timings, presence flags, predictions. No images, no landmarks, no
+         identifiers, and never sent anywhere without the user picking a target. -->
+    <string name="settings_export_diagnostics">Export diagnostics…</string>
+    <string name="settings_export_empty">No diagnostics recorded yet. Turn on Capture diagnostics, perform a sign, then export.</string>
+    <string name="settings_export_chooser">Share diagnostics</string>
 
     <string name="settings_model_ensemble">%1$d-model ensemble</string>
     <!-- The layout references this via android:text, which performs no

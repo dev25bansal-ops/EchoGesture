@@ -46,6 +46,7 @@ class SettingsScreen(
     private val captionMedium: RadioButton = root.findViewById(R.id.captionMedium)
     private val captionLarge: RadioButton = root.findViewById(R.id.captionLarge)
     private val clearHistoryButton: Button = root.findViewById(R.id.clearHistoryButton)
+    private val exportDiagnosticsButton: Button = root.findViewById(R.id.exportDiagnosticsButton)
     private val modelHash: TextView = root.findViewById(R.id.modelHash)
     private val modelMembers: TextView = root.findViewById(R.id.modelMembers)
     private val aboutVersion: TextView = root.findViewById(R.id.aboutVersion)
@@ -146,6 +147,44 @@ class SettingsScreen(
                     Toast.makeText(activity, R.string.history_cleared, Toast.LENGTH_SHORT).show()
                 }
                 .show()
+        }
+        exportDiagnosticsButton.setOnClickListener { exportDiagnostics() }
+    }
+
+    /**
+     * Hands the diagnostics record to whatever the user picks in the system
+     * share sheet.
+     *
+     * Nothing leaves the device until they choose a target, and the app has no
+     * INTERNET permission, so the only routes are the ones the user selects.
+     * An empty record is reported rather than sharing a blank file.
+     */
+    private fun exportDiagnostics() {
+        val file = diagnostics.exportCopy(
+            java.text.SimpleDateFormat("yyyy-MM-dd HH:mm", java.util.Locale.US)
+                .format(java.util.Date())
+        )
+        if (file == null) {
+            Toast.makeText(activity, R.string.settings_export_empty, Toast.LENGTH_LONG).show()
+            return
+        }
+        runCatching {
+            val uri = androidx.core.content.FileProvider.getUriForFile(
+                activity, "${activity.packageName}.fileprovider", file
+            )
+            val send = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(android.content.Intent.EXTRA_STREAM, uri)
+                putExtra(android.content.Intent.EXTRA_SUBJECT, "EchoGesture diagnostics")
+                addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            activity.startActivity(
+                android.content.Intent.createChooser(
+                    send, activity.getString(R.string.settings_export_chooser)
+                )
+            )
+        }.onFailure {
+            Toast.makeText(activity, R.string.settings_export_empty, Toast.LENGTH_LONG).show()
         }
     }
 

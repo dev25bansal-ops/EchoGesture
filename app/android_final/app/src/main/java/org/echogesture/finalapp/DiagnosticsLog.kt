@@ -35,10 +35,33 @@ class DiagnosticsLog(context: Context) {
      * Appends one capture record. Bounded to [MAX_RECORDS] lines so a long
      * session cannot fill the disk; oldest records are dropped first.
      */
+    /**
+     * Extra per-attempt facts the failure triage needs.
+     *
+     * Kept separate from [HandTracker.Capture] because these describe the
+     * SEGMENTER's decision, not the sampled window: when it decided the sign
+     * began and ended, and why it stopped. Without them a wrong prediction
+     * cannot be told apart from a correctly-classified fragment of a sign.
+     */
+    data class Attempt(
+        val endReason: String = "",
+        val startedAtMs: Long = 0L,
+        val endedAtMs: Long = 0L,
+        /** Model steps with a hand present, of 24. */
+        val maskSteps: Int = 0,
+        /** Frames where both slots were occupied. */
+        val bothHandsFrames: Int = 0,
+        /** Longest run of consecutive hand-less frames. */
+        val longestDropoutFrames: Int = 0,
+        /** Times the left/right slot assignment flipped between adjacent frames. */
+        val slotFlips: Int = 0
+    )
+
     fun record(
         capture: HandTracker.Capture,
         result: LandmarkClassifier.Result?,
-        totalMs: Long
+        totalMs: Long,
+        attempt: Attempt? = null
     ) = synchronized(lock) {
         val present = capture.frames.joinToString("") { f ->
             if (f.hands.isEmpty()) "0" else f.hands.joinToString("") { it.slot.toString() }
@@ -57,6 +80,17 @@ class DiagnosticsLog(context: Context) {
             append(" margin=").append(result?.margin?.let { String.format("%.4f", it) } ?: "")
             append(" infer_ms=").append(result?.inferenceMillis ?: -1)
             append(" total_ms=").append(totalMs)
+            if (attempt != null) {
+                append(" end_reason=").append(attempt.endReason)
+                append(" onset_ms=").append(attempt.startedAtMs)
+                append(" end_ms=").append(attempt.endedAtMs)
+                append(" seg_ms=")
+                    .append((attempt.endedAtMs - attempt.startedAtMs).coerceAtLeast(0))
+                append(" mask_steps=").append(attempt.maskSteps).append("/24")
+                append(" both_hands=").append(attempt.bothHandsFrames)
+                append(" longest_dropout=").append(attempt.longestDropoutFrames)
+                append(" slot_flips=").append(attempt.slotFlips)
+            }
         }
 
         // Drop the header as well as blank lines: every write re-emits the
@@ -142,6 +176,35 @@ class DiagnosticsLog(context: Context) {
     }
 
     fun exists(): Boolean = file.isFile
+
+    /**
+     * Copies the record into a shareable file and returns it, or null when
+     * there is nothing to share.
+     *
+     * Written to `files/export/`, which is the only directory the FileProvider
+     * in `res/xml/file_paths.xml` exposes. The copy is separate from the live
+     * record so a share can never be handed a file the app keeps appending to
+     * while another process reads it.
+     *
+     * Called only from an explicit user tap.
+     */
+    fun exportCopy(generatedAt: String): java.io.File? = synchronized(lock) {
+        if (!file.isFile) return null
+        val body = runCatching { file.readText() }.getOrDefault("")
+        if (body.isBlank()) return null
+        runCatching {
+            val dir = java.io.File(file.parentFile, "export").apply { mkdirs() }
+            val out = java.io.File(dir, "echogesture-diagnostics.txt")
+            out.writeText(
+                "# Exported from EchoGesture settings on $generatedAt.\n" +
+                    "# Capture statistics only: frame counts, timings, presence\n" +
+                    "# flags and predicted glosses. No images, no landmarks, no\n" +
+                    "# identifiers. Shared only because the user chose to.\n" +
+                    body
+            )
+            out
+        }.getOrNull()
+    }
 
     /** Path shown to the user so they can retrieve it over USB adb. */
     fun path(): String = file.absolutePath

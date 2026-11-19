@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The only path ever shared is the diagnostics export directory. Camera frames
+  and the app's other private files are deliberately NOT listed, so a malformed
+  share intent cannot reach them.
+
+  Diagnostics exports are capture statistics: frame counts, timings, presence
+  flags, predicted glosses. No images, no landmarks, no identifiers.
+-->
+<paths>
+    <files-path name="diagnostics_export" path="export/" />
+</paths>

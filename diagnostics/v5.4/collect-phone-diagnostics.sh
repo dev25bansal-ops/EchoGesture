@@ -24,8 +24,12 @@ echo
 
 # A physical device is the point of this script; the emulator camera is
 # synthetic and never contains a hand.
-if ! "$ADB" devices | grep -qE '^[0-9A-Za-z]+[[:space:]]+device$'; then
+# Count lines whose second field is exactly "device". The separator adb emits is
+# a TAB, and BSD grep's -E does not expand [[:space:]] reliably under /bin/sh, so
+# split on any whitespace with awk instead.
+if [ "$("$ADB" devices | awk '$2=="device"' | wc -l | tr -d ' ')" -eq 0 ]; then
   echo "No authorised device. Enable USB debugging and accept the prompt." >&2
+  echo "If the phone shows 'unauthorized', unlock it and tap Allow." >&2
   exit 1
 fi
 
@@ -36,7 +40,7 @@ if echo "$MODEL" | grep -qiE 'sdk_gphone|emulator'; then
   echo "Live-camera results from it are not phone results." >&2
 fi
 
-echo "Package: $("$ADB" shell dumpsys package $PKG 2>/dev/null | grep -m1 versionName | tr -d '\r')"
+echo "Package: $("$ADB" shell dumpsys package $PKG 2>/dev/null | grep -m1 versionName | tr -d '\r' | tr -s ' ')"
 echo "Camera permission: $("$ADB" shell dumpsys package $PKG 2>/dev/null | grep -m1 'android.permission.CAMERA:' | tr -d '\r')"
 echo
 

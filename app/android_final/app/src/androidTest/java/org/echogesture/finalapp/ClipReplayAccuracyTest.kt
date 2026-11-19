@@ -452,7 +452,15 @@ class ClipReplayAccuracyTest {
                     if (run == 1) lastRealTs = ts
                     val result = landmarker.detectForVideo(img, ts)
                     img.close()
-                    copy.recycle()
+                    // Deliberately NOT recycling `copy`. runTwoClocks runs the
+                    // same frame list twice, and every Decoded shares the same
+                    // source bitmaps; recycling an intermediate copy is safe on
+                    // its own, but recycling the SOURCE (`df.bitmap`) would make
+                    // the second run read freed pixels. That exact use-after-free
+                    // SIGSEGV'd on the Vivo V2404 on 2026-11-19
+                    // (Fatal signal 11, SEGV_MAPERR in pool-7-thread-1). Letting
+                    // GC reclaim `copy` avoids the whole class of error; the
+                    // peak cost is one ARGB_8888 frame at a time.
                     for (k in result.landmarks().indices) {
                         val cat = result.handedness()[k].firstOrNull()?.categoryName() ?: "Right"
                         val slot = if (cat.equals("Left", ignoreCase = true)) 0 else 1

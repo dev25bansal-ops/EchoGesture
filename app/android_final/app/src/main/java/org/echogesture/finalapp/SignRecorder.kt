@@ -42,6 +42,8 @@ class SignRecorder(
         NO_FRAMES,
         /** The interval is shorter than [MIN_DURATION_MS]. */
         TOO_SHORT,
+        /** The interval holds fewer than [MIN_FRAMES] analysed frames. */
+        TOO_FEW_FRAMES,
         /** The interval ran past [MAX_DURATION_MS]; recording auto-stopped. */
         TOO_LONG,
         /** The camera delivered nothing for longer than [STALL_MS]. */
@@ -134,6 +136,17 @@ class SignRecorder(
             inside.isEmpty() -> Result.Unusable(Rejection.NO_FRAMES, recording)
             nowMs - began < MIN_DURATION_MS -> Result.Unusable(Rejection.TOO_SHORT, recording)
             tooLong -> Result.Unusable(Rejection.TOO_LONG, recording)
+            // Duration and frame count are INDEPENDENT failure modes and only
+            // duration used to be guarded. Measured on the Vivo V2404
+            // (2026-11-20): a capture ran 1540 ms -- well past the 400 ms floor
+            // -- but the analyser had been running at 1.9 fps, so it held just
+            // 4 frames. Four frames cannot describe a sign, and classifying
+            // them produced a confident-looking wrong answer.
+            //
+            // 8 is the smallest sample that still covers a sign's beginning,
+            // middle and end after the segmenter trims idle: the corpus minimum
+            // for a correctly-classified clip was 7 hand-bearing frames of 32.
+            inside.size < MIN_FRAMES -> Result.Unusable(Rejection.TOO_FEW_FRAMES, recording)
             else -> {
                 val stalled = longestGapMs(inside)
                 val coverage = inside.count { it.hands.isNotEmpty() }.toFloat() / inside.size
@@ -163,6 +176,19 @@ class SignRecorder(
          */
         const val MIN_DURATION_MS = 400L
         const val MAX_DURATION_MS = 12_000L
+
+        /**
+         * Fewest analysed frames a recording may hold and still be classified.
+         *
+         * Guards the case duration cannot: a capture can run for a comfortable
+         * 1.5 s while the analyser is delivering under 2 fps, leaving a handful
+         * of samples that cannot describe a sign. Measured on the Vivo V2404:
+         * one such capture held 4 frames and was classified anyway.
+         *
+         * 8 is set from the corpus, where the fewest hand-bearing frames in a
+         * correctly-classified clip was 7 of 32.
+         */
+        const val MIN_FRAMES = 8
 
         /**
          * Largest gap between consecutive analysed frames that still counts as

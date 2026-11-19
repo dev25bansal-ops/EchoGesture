@@ -699,9 +699,31 @@ class CameraScreen(
                 // finds MORE hands at the clip's native resolution (41.4% of
                 // frames) than at the 256x256 squash training used (37.6%), so
                 // this is a landscape target, not a square one — squashing
-                // aspect ratio is what loses detections. Not resizing in
-                // HandTracker preserves the detector's own letterboxing.
-                .setTargetResolution(android.util.Size(640, 480))
+                // aspect ratio is what loses detections.
+                //
+                // setTargetResolution is only a HINT. Measured on the Vivo
+                // V2404 with a camera frame dump (2026-11-20): asking for
+                // 640x480 delivered 960x960 frames, a square 1.5x upscale in
+                // each axis. That costs 2.25x the pixels per frame in both
+                // toBitmap() and detectForVideo(), which is exactly the
+                // currency the analyser is short of when it runs at 1.9 fps.
+                // ResolutionSelector with an explicit AspectRatioStrategy
+                // pins the shape instead of leaving it to the device.
+                .setResolutionSelector(
+                    androidx.camera.core.resolutionselector.ResolutionSelector.Builder()
+                        .setAspectRatioStrategy(
+                            androidx.camera.core.resolutionselector.AspectRatioStrategy
+                                .RATIO_4_3_FALLBACK_AUTO_STRATEGY
+                        )
+                        .setResolutionStrategy(
+                            androidx.camera.core.resolutionselector.ResolutionStrategy(
+                                android.util.Size(640, 480),
+                                androidx.camera.core.resolutionselector.ResolutionStrategy
+                                    .FALLBACK_RULE_CLOSEST_HIGHER_THEN_LOWER
+                            )
+                        )
+                        .build()
+                )
                 .build()
                 .also { a -> a.setAnalyzer(trackerExecutor) { analyserCallback(it) } }
             imageAnalysis = analysis
@@ -958,6 +980,7 @@ class CameraScreen(
 
     private fun messageFor(reason: SignRecorder.Rejection): Int = when (reason) {
         SignRecorder.Rejection.TOO_SHORT -> R.string.record_too_short
+        SignRecorder.Rejection.TOO_FEW_FRAMES -> R.string.record_too_few_frames
         SignRecorder.Rejection.NO_FRAMES -> R.string.record_no_frames
         SignRecorder.Rejection.NOT_STARTED -> R.string.record_no_frames
         SignRecorder.Rejection.CAMERA_STALLED -> R.string.record_stalled

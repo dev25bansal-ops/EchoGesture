@@ -77,6 +77,18 @@ class HandTracker private constructor(
     var frameDumpDir: java.io.File? = null
     private val dumpedFrames = AtomicInteger(0)
 
+    /**
+     * Separate worker for the dump's PNG encoding, so a diagnostic capture never
+     * steals time from the analyser it is meant to be measuring. Single thread
+     * and unbounded queue is fine: the dump is capped by [MAX_DUMP_FRAMES] and
+     * only ever armed for one recording.
+     */
+    private val dumpExecutor: java.util.concurrent.ExecutorService? by lazy {
+        java.util.concurrent.Executors.newSingleThreadExecutor { r ->
+            Thread(r, "frame-dump").apply { isDaemon = true }
+        }
+    }
+
     /** Arms a single-capture frame dump into [dir]; the next recording fills it. */
     fun armFrameDump(dir: java.io.File) {
         dir.mkdirs()
@@ -136,6 +148,9 @@ class HandTracker private constructor(
 
         /** Frames resampled across the window into the model's 24-step input. */
         const val RING_CAPACITY = 32
+
+        /** Upper bound on dumped frames per recording, so a long one cannot fill the disk. */
+        const val MAX_DUMP_FRAMES = 40
 
         /**
          * The capture window is a span of REAL TIME, not a frame count.
@@ -372,17 +387,45 @@ class HandTracker private constructor(
             // bitmap itself -- dumping the unrotated copy would hand the offline
             // pipeline an upside-down frame and make the comparison meaningless.
             frameDumpDir?.let { dir ->
+                // Cheap here, expensive later: the ROTATED COPY is made on this
+                // thread (it must be, the bitmap is recycled when detectForVideo
+                // returns) but the PNG ENCODE AND WRITE happen on a separate
+                // worker.
+                //
+                // This is a measured regression, not a precaution. The first
+                // version encoded inline, on the analyser's own thread, and the
+                // profiler showed the cost directly: interval_p95 went to
+                // 200-254 ms and analysed rate fell to 2.8-4.7 fps on captures,
+                // because a ~800 KB PNG of a 960x960 frame takes tens of
+                // milliseconds and the analyser thread is a single thread with
+                // no slack. Diagnostics stays ON for a consenting test session,
+                // so this ran on every capture.
                 runCatching {
                     val rot = imageProxy.imageInfo.rotationDegrees
                     val m = android.graphics.Matrix()
                     if (rot != 0) m.postRotate(rot.toFloat())
                     val shown = if (rot == 0) bitmap
                     else Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, m, true)
-                    val f = java.io.File(dir, "frame_%03d.png".format(dumpedFrames.getAndIncrement()))
-                    java.io.FileOutputStream(f).use {
-                        shown.compress(Bitmap.CompressFormat.PNG, 100, it)
+                    val idx = dumpedFrames.getAndIncrement()
+                    // Bounded: a long recording cannot fill the disk. 40 frames
+                    // is more than any capture after MIN_FRAMES trimming.
+                    if (idx < MAX_DUMP_FRAMES && dumpExecutor != null) {
+                        val snapshot = shown.copy(Bitmap.Config.ARGB_8888, false)
+                        if (shown !== bitmap) shown.recycle()
+                        runCatching {
+                            dumpExecutor?.execute {
+                                runCatching {
+                                    val f = java.io.File(dir, "frame_%03d.png".format(idx))
+                                    java.io.FileOutputStream(f).use {
+                                        snapshot.compress(Bitmap.CompressFormat.PNG, 100, it)
+                                    }
+                                }
+                                snapshot.recycle()
+                            }
+                        }
+                    } else if (shown !== bitmap) {
+                        shown.recycle()
                     }
-                    if (shown !== bitmap) shown.recycle()
                 }
             }
             mpImage = BitmapImageBuilder(bitmap).build()

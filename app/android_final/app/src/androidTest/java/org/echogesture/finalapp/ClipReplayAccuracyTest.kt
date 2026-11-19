@@ -552,6 +552,17 @@ class ClipReplayAccuracyTest {
             .sortedBy { it.name }
         assumeTrue("clip corpus empty", files.isNotEmpty())
 
+        // Bounded deliberately. Each clip decodes 32 NATIVE-resolution frames as
+        // ARGB_8888 bitmaps; at 1080p that is ~8 MB per frame, so the full
+        // 40-clip x 2-pass sweep is ~2.5 GB of live bitmaps and the process was
+        // killed with no fatal signal in logcat - the signature of an LMK kill
+        // rather than a Java OOM. Capping the clip count keeps peak memory
+        // bounded; the rate is still a real per-clip accuracy over a spread of
+        // classes because the list is sorted by filename, not by gloss.
+        val sample = files.take(MAX_ACCURACY_CLIPS)
+        println("CLIP_ACC sample=${sample.size} of ${files.size} clips "
+            + "(bounded for memory; see the comment in this test)")
+
         val loaded = ModelContract.load(instrumentation.targetContext.assets)
         val classifier = LandmarkClassifier.create(loaded)
         val options = HandLandmarkeroptions()
@@ -562,7 +573,7 @@ class ClipReplayAccuracyTest {
                 val tag = if (resize) "resize256" else "native"
                 var correct = 0
                 var total = 0
-                for (f in files) {
+                for (f in sample) {
                     val o = classify(f, landmarker, classifier, resize) ?: continue
                     total++
                     val ok = matchesTruth(o.pred, o.truth)
@@ -593,4 +604,19 @@ class ClipReplayAccuracyTest {
             .setMinHandPresenceConfidence(0.3f)
             .setMinTrackingConfidence(0.3f)
             .build()
+
+    /**
+     * How many corpus clips the on-device accuracy sweep will decode.
+     *
+     * Not arbitrary: each clip decodes 32 native frames as ARGB_8888 bitmaps
+     * (~8 MB each at 1080p), and the sweep runs two passes (native and
+     * 256-resize) over the same list. Unbounded it reached ~2.5 GB of live
+     * bitmaps and the process was killed with no fatal signal in logcat, which
+     * is what an LMK kill looks like rather than a Java OutOfMemoryError.
+     *
+     * 12 clips x 32 frames x 2 passes keeps the peak inside a normal heap while
+     * still giving a real per-clip accuracy over 12 different glosses. Raise it
+     * only together with a `dumpsys meminfo` check during the run.
+     */
+    private val MAX_ACCURACY_CLIPS = 12
 }

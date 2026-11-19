@@ -55,6 +55,15 @@ class DiagnosticsLog(context: Context) {
             append(" score=").append(score)
             append(" top5=").append(top5)
             append(" margin=").append(result?.margin?.let { String.format("%.4f", it) } ?: "")
+            // Member agreement, logged but NOT enforced. Measured on the full
+            // test split, requiring >=8/9 would cut confident-wrong readings by
+            // 54% at the cost of ~17 points of coverage; that is a product
+            // decision, so the number is recorded first and enforced later if
+            // the owner wants it. See docs/AGREEMENT_GATE_2026-11-19.md.
+            append(" agree=").append(
+                result?.takeIf { it.memberCount > 0 }
+                    ?.let { "${it.agreement}/${it.memberCount}" } ?: ""
+            )
             append(" infer_ms=").append(result?.inferenceMillis ?: -1)
             append(" total_ms=").append(totalMs)
         }

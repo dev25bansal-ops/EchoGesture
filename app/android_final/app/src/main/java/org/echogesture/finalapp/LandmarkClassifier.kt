@@ -155,7 +155,17 @@ class LandmarkClassifier(
         /** Per-member invocation time, in meta order. */
         val memberMillis: Map<String, Long> = emptyMap(),
         /** Averaged logits, exposed for parity/debugging. */
-        val averagedLogits: FloatArray? = null
+        val averagedLogits: FloatArray? = null,
+        /**
+         * How many of the ensemble's members put [prediction] first, out of
+         * [memberCount]. A ranking-agreement count, not a probability.
+         *
+         * Defaults to 0 with [memberCount] 0 for results built before this
+         * field existed (tests, fixtures); callers must treat
+         * `memberCount == 0` as "unknown", not as "no agreement".
+         */
+        val agreement: Int = 0,
+        val memberCount: Int = 0
     ) {
         // FloatArray needs explicit equals/hashCode in a data class.
         override fun equals(other: Any?): Boolean {
@@ -231,6 +241,26 @@ class LandmarkClassifier(
         val probs = EnsembleAggregation.softmax(averaged)
         val order = EnsembleAggregation.topK(probs, 5)
         val top5 = order.map { labels[it] }
+        // How many of the nine members put THIS class first.
+        //
+        // Measured on 2026-11-19 over the full 1,255-clip test split: requiring
+        // at least 8 of 9 to agree, on top of the existing margin gate, cuts
+        // confident-wrong readings from 78.7 to 35.9 per 1,000 accepted
+        // captures (accuracy 92.13% -> 96.41%) at the cost of coverage falling
+        // 86.1% -> 68.8%. The direction was chosen on VAL and confirmed on test
+        // (val: 12 wrong -> 5 at 88.4% -> 76.0% coverage), so it is not fitted
+        // to the split it is reported on.
+        //
+        // Free at runtime: the nine logit vectors are already in memory, so this
+        // is nine argmaxes over 100 floats. No extra inference.
+        //
+        // NOT applied inside predict(). The acceptance decision belongs to
+        // ResultPolicy, and changing what the model reports would make the
+        // classifier less useful for analysis. See docs/AGREEMENT_GATE_2026-11-19.md.
+        val agreement = memberLogits.count { logits ->
+            val m = logits.indices.maxByOrNull { logits[it] }
+            m != null && m == order[0]
+        }
         return Result(
             prediction = top5[0],
             top5 = top5,
@@ -238,7 +268,9 @@ class LandmarkClassifier(
             margin = probs[order[0]] - probs[order[1]],
             inferenceMillis = inferenceMillis,
             memberMillis = memberMillis,
-            averagedLogits = averaged
+            averagedLogits = averaged,
+            agreement = agreement,
+            memberCount = memberLogits.size
         )
     }
 

@@ -1016,6 +1016,18 @@ class CameraScreen(
                     return
                 }
                 val elapsed = now - recordingStartedAtMs
+                // Show the FRAME COUNT while recording, not just the clock.
+                //
+                // The capture that produced a wrong answer on this device held
+                // 4 frames over 1540 ms, and nothing on screen said so — the
+                // signer saw a tidy "1.5s" and a confident wrong gloss. A count
+                // is the one number that predicts whether the reading will be
+                // any good, and it is available for free from the recorder.
+                //
+                // Below MIN_FRAMES the count is shown in the warning colour, so
+                // a thin capture announces itself while there is still time to
+                // redo it rather than after it has been refused.
+                val liveFrames = t?.recordingSnapshot()?.size ?: 0
                 // Auto-finish: when the motion says the sign is over, finish
                 // without waiting for the second tap. The tap is a measured
                 // source of error — a capture that ran 1540 ms held 4 frames
@@ -1037,9 +1049,13 @@ class CameraScreen(
                         AutoFinishDetector.Verdict.CONTINUE -> Unit
                     }
                 }
+                val elapsedText = String.format(java.util.Locale.US, "%.1fs", elapsed / 1000f)
+                val thin = elapsed > 700L && liveFrames < SignRecorder.MIN_FRAMES
                 liveStatus.text = activity.getString(
-                    R.string.record_recording,
-                    String.format(java.util.Locale.US, "%.1fs", elapsed / 1000f)
+                    if (thin) R.string.record_recording_thin
+                    else R.string.record_recording_detail,
+                    elapsedText,
+                    liveFrames
                 )
                 // Most signs finish well inside ~5 s (p90 of 72 measured clips
                 // is 4.3 s). Past that, say so rather than let the signer keep
@@ -1050,7 +1066,15 @@ class CameraScreen(
                     statusTitle.setText(R.string.record_prompt)
                     statusDetail.setText(R.string.record_too_long_hint)
                 }
-                liveStatus.setTextColor(ContextCompat.getColor(activity, R.color.danger))
+                // Red means "this capture is too thin to read", not merely
+                // "recording". The old line was unconditionally red, so a
+                // healthy capture and a doomed one looked identical.
+                liveStatus.setTextColor(
+                    ContextCompat.getColor(
+                        activity,
+                        if (thin) R.color.danger else R.color.text_secondary
+                    )
+                )
                 captureButton.text = activity.getString(R.string.record_finish)
                 handler.postDelayed(this, 100L)
             }

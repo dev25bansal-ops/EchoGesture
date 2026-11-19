@@ -26,6 +26,8 @@
     <string name="record_finish">Finish sign</string>
     <string name="record_cancel">Cancel</string>
     <string name="record_recording">Recording %1$s</string>
+    <string name="record_recording_detail">Recording %1$s · %2$d frames</string>
+    <string name="record_recording_thin">Slow capture · %1$s · %2$d frames</string>
     <string name="record_prompt">Perform one sign, then tap Finish</string>
     <!-- Duration guidance from measured clips: median 2.5 s, p90 4.3 s,
          max 8.7 s across 72 authorised ASL Citizen clips. -->

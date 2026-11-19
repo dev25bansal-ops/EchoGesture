@@ -52,6 +52,16 @@ object ClipAnalyzer {
      */
     private const val MAX_EDGE = 640
 
+    /**
+     * Fewest frames the sequential decoder must produce before its output is
+     * trusted over the retriever's.
+     *
+     * A codec that starts but dribbles frames out (unsupported profile, a
+     * truncated container) would otherwise silently replace a complete clip
+     * with a handful of images. Below this, the retriever is used instead.
+     */
+    private const val MIN_SEQUENTIAL_FRAMES = 10
+
     sealed interface Outcome {
         data class Analysed(
             val recording: SignRecorder.Recording,
@@ -80,7 +90,30 @@ object ClipAnalyzer {
      */
     fun analyse(context: Context, uri: Uri, maxFrames: Int = MAX_FRAMES_DEFAULT): Outcome {
         val tStart = android.os.SystemClock.elapsedRealtime()
+        // Sequential codec first, per-frame seeking as the fallback.
+        //
+        // The retriever seeks to a keyframe and decodes forward for EVERY frame
+        // requested, which cost 19,872 ms of a 22,710 ms run for 55 frames
+        // before scaling, and is still 8,698 ms after it. One pass with
+        // MediaExtractor+MediaCodec decodes each frame exactly once.
+        //
+        // Falling back rather than failing is deliberate: a codec can refuse a
+        // container or a profile the retriever handles, and a slower correct
+        // answer beats a fast error.
+        var decodeNote = ""
         val frames = try {
+            // The sequential MediaCodec path (SequentialVideoDecoder) is NOT
+            // used. It crashed the process in nativeCreatePlanes: the codec's
+            // output format did not match the ImageReader's configured size, and
+            // that failure is a native SIGABRT, not a catchable exception --
+            // the app vanished mid-analysis with no Java stack.
+            //
+            // Reverted to the retriever, which is slower (8.7 s for 55 frames)
+            // but cannot take the process down. Re-enabling the codec path needs
+            // the ImageReader created from the codec's OUTPUT format inside
+            // INFO_OUTPUT_FORMAT_CHANGED, plus an on-device test proving no
+            // crash, before it ships again.
+            decodeNote = "retriever"
             decode(context, uri, maxFrames)
         } catch (t: Throwable) {
             return Outcome.Failed(Outcome.Failed.Reason.UNREADABLE, t.javaClass.simpleName)
@@ -146,7 +179,7 @@ object ClipAnalyzer {
         val tEnd = android.os.SystemClock.elapsedRealtime()
         android.util.Log.i(
             "EchoGesture",
-            "clip stages: decode=${tDecoded - tStart}ms " +
+            "clip stages: $decodeNote decode=${tDecoded - tStart}ms " +
                 "landmarkerInit=${tLandmarker - tDecoded}ms " +
                 "copy=${copyMs}ms detect=${detectMs}ms toHands=${toHandsMs}ms " +
                 "total=${tEnd - tStart}ms frames=${out.size} " +

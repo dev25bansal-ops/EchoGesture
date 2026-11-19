@@ -41,6 +41,7 @@ class SettingsScreen(
     private val switchSpeech: SwitchMaterial = root.findViewById(R.id.switchSpeech)
     private val switchSaveHistory: SwitchMaterial = root.findViewById(R.id.switchSaveHistory)
     private val switchDiagnostics: SwitchMaterial = root.findViewById(R.id.switchDiagnostics)
+    private val switchAutoFinish: SwitchMaterial = root.findViewById(R.id.switchAutoFinish)
     private val captionGroup: RadioGroup = root.findViewById(R.id.captionSizeGroup)
     private val captionSmall: RadioButton = root.findViewById(R.id.captionSmall)
     private val captionMedium: RadioButton = root.findViewById(R.id.captionMedium)
@@ -116,6 +117,9 @@ class SettingsScreen(
             history.onPersistenceChanged(checked)
             callbacks.onHistoryChanged()
         }
+        switchAutoFinish.setOnCheckedChangeListener { _, checked ->
+            prefs.autoFinish = checked
+        }
         switchDiagnostics.setOnCheckedChangeListener { _, checked ->
             prefs.diagnostics = checked
             // Turning it off deletes what was recorded: the point of the switch
@@ -163,6 +167,7 @@ class SettingsScreen(
         switchSpeech.isChecked = prefs.speech
         switchSaveHistory.isChecked = prefs.saveHistory
         switchDiagnostics.isChecked = prefs.diagnostics
+        switchAutoFinish.isChecked = prefs.autoFinish
         when (prefs.captionSize) {
             AppPreferences.CaptionSize.SMALL -> captionSmall.isChecked = true
             AppPreferences.CaptionSize.MEDIUM -> captionMedium.isChecked = true

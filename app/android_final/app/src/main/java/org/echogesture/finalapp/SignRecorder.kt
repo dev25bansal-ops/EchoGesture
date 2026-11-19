@@ -61,6 +61,21 @@ class SignRecorder(
     }
 
     private val frames = ArrayList<HandTracker.Frame>(256)
+
+    /**
+     * A snapshot of what has been recorded so far, for the auto-finish detector.
+     * Empty when not recording.
+     *
+     * NOT internally synchronised: every call site runs under [HandTracker]'s
+     * lock, which is the monitor that already guards [frames]. Adding a second
+     * monitor here would lock a different object and give the appearance of
+     * safety without providing any — the caller's lock is what serialises this.
+     *
+     * Copies rather than exposing [frames], so a later [offer] cannot mutate
+     * the list while the caller iterates it.
+     */
+    fun snapshot(): List<HandTracker.Frame> =
+        if (!isRecording) emptyList() else ArrayList(frames)
     private var startedAtMs = Long.MIN_VALUE
     private var truncated = false
 

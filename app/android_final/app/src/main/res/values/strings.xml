@@ -37,6 +37,8 @@
     <string name="record_stalled">The camera stopped during that sign. Hold still for a moment, then record again.</string>
     <string name="record_low_coverage">Hands were visible for too little of that recording. Keep both hands in the guide while you sign.</string>
     <string name="record_discarded">Recording discarded. Nothing was recognised.</string>
+    <string name="settings_auto_finish">Finish the sign automatically</string>
+    <string name="settings_auto_finish_detail">Stop recording as soon as your hand stops moving, instead of waiting for a second tap. Turn this off if a pause mid-sign keeps ending it early.</string>
     <!-- Clip upload: classify an existing video file instead of the live camera. -->
     <string name="clip_action">Pick a video clip</string>
     <string name="clip_model_not_ready">The model is still loading. Try again in a moment.</string>

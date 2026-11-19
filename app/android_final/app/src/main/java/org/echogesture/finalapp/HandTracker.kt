@@ -490,6 +490,12 @@ class HandTracker private constructor(
         }
 
     /**
+     * The frames recorded so far, for the auto-finish detector. Taken under the
+     * tracker's own [lock], which is the monitor that guards the recorder.
+     */
+    fun recordingSnapshot(): List<Frame> = synchronized(lock) { recorder.snapshot() }
+
+    /**
      * Classifies the sign that just happened.
      *
      * The signer performs, THEN taps, so the frames describing the sign are

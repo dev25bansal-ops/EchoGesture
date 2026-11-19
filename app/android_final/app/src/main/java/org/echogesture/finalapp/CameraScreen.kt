@@ -161,6 +161,12 @@ class CameraScreen(
     /** True while the explicit record-mode timer is posted. */
     private var recordingTicker: Runnable? = null
 
+    /** Decides when the sign has settled and the recording should end. */
+    private var autoDetector = AutoFinishDetector()
+
+    /** Read per tick so the Settings switch takes effect without a rebuild. */
+    private val autoFinish: Boolean get() = prefs.autoFinish
+
     /**
      * How long the recording has been running, as the UI shows it. Kept in
      * elapsed real time from the same clock the frames are stamped with, so
@@ -929,6 +935,10 @@ class CameraScreen(
         }
         resultCard.visibility = View.GONE
         recordingStartedAtMs = SystemClock.elapsedRealtime()
+        // Fresh detector per recording: peak motion and the quiet run are
+        // properties of THIS sign, and carrying them over would let a loud
+        // previous sign raise the bar for a quiet one.
+        autoDetector = AutoFinishDetector()
         // With diagnostics ON, arm a one-shot frame dump for this recording.
         // Diagnostics is already the switch that means "I am investigating",
         // and it is already the switch that deletes its own record when turned
@@ -1006,6 +1016,27 @@ class CameraScreen(
                     return
                 }
                 val elapsed = now - recordingStartedAtMs
+                // Auto-finish: when the motion says the sign is over, finish
+                // without waiting for the second tap. The tap is a measured
+                // source of error — a capture that ran 1540 ms held 4 frames
+                // because the press landed at the wrong moment relative to an
+                // analyser the signer cannot see.
+                if (autoFinish && t != null) {                    val frames = t.recordingSnapshot()
+                    val d = SignSegmenter.displacement(frames)
+                    // The newest displacement describes the frame just added.
+                    val latest = if (d.isNotEmpty()) d[d.size - 1] else 0f
+                    when (autoDetector.onFrame(latest, now, elapsed)) {
+                        AutoFinishDetector.Verdict.FINISHED -> {
+                            finishRecording()
+                            return
+                        }
+                        AutoFinishDetector.Verdict.TIMED_OUT -> {
+                            finishRecording()
+                            return
+                        }
+                        AutoFinishDetector.Verdict.CONTINUE -> Unit
+                    }
+                }
                 liveStatus.text = activity.getString(
                     R.string.record_recording,
                     String.format(java.util.Locale.US, "%.1fs", elapsed / 1000f)

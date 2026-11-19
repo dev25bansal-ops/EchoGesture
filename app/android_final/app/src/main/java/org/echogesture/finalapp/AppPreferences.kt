@@ -56,6 +56,24 @@ class AppPreferences(context: Context) {
         get() = enumValue(KEY_CAPTION_SIZE, CaptionSize.MEDIUM)
         set(v) = prefs.edit().putString(KEY_CAPTION_SIZE, v.name).apply()
 
+    /**
+     * Finish a recording automatically when the sign stops moving, instead of
+     * waiting for a second tap.
+     *
+     * Default ON because the tap is a measured source of error: on the Vivo
+     * V2404 a capture ran 1540 ms and held 4 frames, and another held the hand
+     * for only 11 of 32 frames, because the press landed at the wrong moment.
+     * The signer cannot see the analyser's real rate, so they cannot time a
+     * press to it. The motion signal can.
+     *
+     * Off is offered because auto-finish has a cost a manual press does not:
+     * a signer who pauses mid-sign is cut short. Anyone who prefers explicit
+     * control can turn it off and keep the old behaviour exactly.
+     */
+    var autoFinish: Boolean
+        get() = prefs.getBoolean(KEY_AUTO_FINISH, true)
+        set(v) = prefs.edit().putBoolean(KEY_AUTO_FINISH, v).apply()
+
     fun captionSp(): Float = when (captionSize) {
         CaptionSize.SMALL -> 28f
         CaptionSize.MEDIUM -> 36f
@@ -77,6 +95,7 @@ class AppPreferences(context: Context) {
         const val KEY_SPEECH = "speech"
         const val KEY_SAVE_HISTORY = "save_history"
         const val KEY_DIAGNOSTICS = "diagnostics"
+        const val KEY_AUTO_FINISH = "auto_finish"
         const val KEY_CAPTION_SIZE = "caption_size"
     }
 }

@@ -101,9 +101,14 @@ PINNED_ENSEMBLE_SHA256 = \
     "995cc8d0b6f6ac25abb9f7ddca01c3ce71edf8bc2d34e34f4813a2b99dd3b4bb"
 PINNED_DETECTOR_SHA256 = \
     "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1"
-PINNED_LABELS_SHA256 = ""
-# ~ (set by _load_pinned_labels; empty means "do not pin", used only for the
-#    alternative s3d backend which ships its own vocabulary)
+# Content pin for the shipped vocabulary. Shape checks are not enough: the
+# repository carries a second 100-entry vocabulary (label100.json) with a
+# completely different class list, so a file of the right SIZE and right INDEX
+# RANGE can still name every class wrongly. That file was silently accepted
+# before this pin existed - reproduced by copying it over landmark_labels.json,
+# after which index 0 read "BOOK" instead of "DOG1" with no warning.
+PINNED_LABELS_SHA256 = \
+    "e78f5028e97e2eaf86aff65af403af65061eebef010f0fbd41012293e8019a4a"
 
 # Set ECHOGESTURE_ALLOW_UNPINNED_MODELS=1 to run a model set that is not the
 # release bundle (e.g. a candidate under evaluation). Off by default: an
@@ -373,6 +378,19 @@ def _init_model():
         for asset in ("hand_landmarker.task", "landmark_model_meta.json"):
             if not (model_path.parent / asset).is_file():
                 raise FileNotFoundError(f"Missing landmark runtime asset: {model_path.parent / asset}")
+
+    # Verify the vocabulary's CONTENT before parsing it. The s3d backend ships
+    # its own list, so only the landmark backend is pinned.
+    if backend == "landmark" and PINNED_LABELS_SHA256 and _pinning_required():
+        got = hashlib.sha256(label_path.read_bytes()).hexdigest()
+        if got != PINNED_LABELS_SHA256:
+            raise ValueError(
+                f"Vocabulary {label_path.name!r} hash mismatch: {got[:12]}… != "
+                f"{PINNED_LABELS_SHA256[:12]}…. The class ORDER defines what every "
+                "model index means; a different file of the same length silently "
+                "renames every prediction. Set ECHOGESTURE_ALLOW_UNPINNED_MODELS=1 "
+                "to run a deliberately different vocabulary."
+            )
 
     with open(label_path, "r", encoding="utf-8") as f:
         labels_map = json.load(f)

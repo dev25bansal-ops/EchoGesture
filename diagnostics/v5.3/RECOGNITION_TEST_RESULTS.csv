@@ -1,0 +1,34 @@
+# Paths A (Python) and B (Android device) on the same 30 labelled clips.
+# Paths C (screen recapture) and D (real person on phone) were NOT RUN:
+# no physical device was attached. They are absent, not passed.
+source,expected_gloss,predicted_gloss,accepted,correct,score,margin,hand_frames,total_frames,failure_reason,python_pred
+Android,WHAT FOR,WHATFOR1,true,yes,0.9860,0.9827,11,31,,WHATFOR1
+Android,WHAT FOR,WHATFOR1,true,yes,0.5088,0.2525,11,31,,WHATFOR1
+Android,NOON,NOON1,false,no,0.4384,0.1428,11,32,declined_by_policy,BEE1
+Android,SQUEEZE,SQUEEZE,false,no,0.2031,0.1172,17,31,declined_by_policy,SQUEEZE
+Android,ANYONE,ANYONE,true,yes,0.9175,0.9010,12,31,,ANYONE
+Android,8 HOUR,8HOUR,false,no,0.2299,0.0538,16,31,declined_by_policy,8HOUR
+Android,TEACH,TEACH1,true,yes,0.5461,0.2783,15,31,,TEACH1
+Android,CHEW 2,CHEW1,true,yes,0.5133,0.4518,22,31,,CHEW1
+Android,PONDER,PONDER,true,yes,0.6246,0.5815,15,31,,PONDER
+Android,SOCCER 2,SOCCER2,true,yes,0.5291,0.4203,17,31,,SOCCER2
+Android,MYSELF,PATIENT2,false,no,0.4580,0.0454,12,31,declined_by_policy,PATIENT2
+Android,EASY,EASY,true,yes,0.9370,0.9261,17,31,,EASY
+Android,WHAT FOR,WHATFOR1,true,yes,0.9264,0.9072,16,31,,WHATFOR1
+Android,SHAVE,PARTY1,false,no,0.0621,0.0019,18,31,declined_by_policy,RAZOR2
+Android,BABY 2,BABY2,true,yes,0.9746,0.9714,15,31,,BABY2
+Android,UNDERWEAR,UNDERWEAR1,true,yes,0.8711,0.8111,18,31,,UNDERWEAR1
+Android,WHAT FOR,WHATFOR1,true,yes,0.9626,0.9571,7,32,,WHATFOR1
+Android,SHAVE,SHAVE1,true,yes,0.7895,0.7343,20,32,,SHAVE1
+Android,COMB,COMB2,true,yes,0.8984,0.8639,13,31,,COMB2
+Android,BEE,BEE1,true,yes,0.7268,0.6764,5,31,,BEE1
+Android,MECHANIC,MECHANIC1,true,yes,0.9293,0.9152,16,31,,MECHANIC1
+Android,MAPLE,MAPLE,false,no,0.1178,0.0242,14,31,declined_by_policy,8HOUR
+Android,CEMETERY,CEMETERY,true,yes,0.9827,0.9812,15,31,,CEMETERY
+Android,TICKLE,TICKLE,true,yes,0.9472,0.9342,11,31,,TICKLE
+Android,CHEEK,COMB2,false,no,0.1410,0.0438,11,31,declined_by_policy,ANYONE
+Android,PENNY,PENNY,true,yes,0.8796,0.8421,15,31,,PENNY
+Android,AXE,AXE1,true,yes,0.3073,0.1751,8,31,,AXE1
+Android,FLIP,FLIP,true,yes,0.6754,0.6049,24,31,,FLIP
+Android,BASKETBALL,BASKETBALL1,true,yes,0.8566,0.8436,16,31,,BASKETBALL1
+Android,BACKPACK,CHEER,true,no,0.6125,0.5363,11,32,misclassified,CHEER

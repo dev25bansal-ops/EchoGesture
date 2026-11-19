@@ -907,6 +907,16 @@ class CameraScreen(
         }
         resultCard.visibility = View.GONE
         recordingStartedAtMs = SystemClock.elapsedRealtime()
+        // With diagnostics ON, arm a one-shot frame dump for this recording.
+        // Diagnostics is already the switch that means "I am investigating",
+        // and it is already the switch that deletes its own record when turned
+        // off, so camera frames get the same lifetime: one sign, then gone.
+        // With diagnostics OFF this is a no-op and no image ever touches disk.
+        if (prefs.diagnostics) {
+            runCatching {
+                t.armFrameDump(java.io.File(activity.filesDir, "framedump"))
+            }
+        }
         // The recorder uses the same clock instant as the timer below, so the
         // reported duration and the captured interval are the same interval.
         t.startRecording(recordingStartedAtMs)

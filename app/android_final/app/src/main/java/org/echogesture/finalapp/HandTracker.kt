@@ -1,6 +1,8 @@
 package org.echogesture.finalapp
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.os.SystemClock
 import android.util.Log
 import androidx.camera.core.ImageProxy
@@ -55,6 +57,37 @@ class HandTracker private constructor(
      * the sign just classified, so it is refused rather than answered again.
      */
     private var lastCapturedAtMs = Long.MIN_VALUE
+
+    /**
+     * One-shot camera-frame dump, OFF by default.
+     *
+     * Set [frameDumpDir] and the next recording writes its frames there as
+     * PNGs, then clears the field. This exists because "the clip works but the
+     * camera does not" could not be resolved from the phone's own numbers: the
+     * diagnostics record the PREDICTION, not the pixels, so there was no way to
+     * tell whether MediaPipe produced different landmarks from the same scene
+     * or the classifier misread the same landmarks.
+     *
+     * Deliberately narrow: one sign, explicitly armed, only while recording,
+     * and it disarms itself. It never accumulates images across sessions and
+     * never runs unless the caller sets the directory. An accessibility tool
+     * must not silently keep camera frames on disk.
+     */
+    @Volatile
+    var frameDumpDir: java.io.File? = null
+    private val dumpedFrames = AtomicInteger(0)
+
+    /** Arms a single-capture frame dump into [dir]; the next recording fills it. */
+    fun armFrameDump(dir: java.io.File) {
+        dir.mkdirs()
+        dumpedFrames.set(0)
+        frameDumpDir = dir
+    }
+
+    /** Disarms without writing anything further. */
+    fun disarmFrameDump() {
+        frameDumpDir = null
+    }
 
     /** Consecutive failed frames; reset to 0 on any successful analysis. */
     private val consecutiveFailures = AtomicInteger(0)
@@ -333,6 +366,25 @@ class HandTracker private constructor(
             val convertStart = SystemClock.elapsedRealtime()
             val bitmap = imageProxy.toBitmap()
             convertMs = SystemClock.elapsedRealtime() - convertStart
+            // Frame dump, if armed. Written BEFORE detection so the file is what
+            // the detector is about to see. Rotation is applied here because
+            // MediaPipe receives it via ImageProcessingOptions and NOT in the
+            // bitmap itself -- dumping the unrotated copy would hand the offline
+            // pipeline an upside-down frame and make the comparison meaningless.
+            frameDumpDir?.let { dir ->
+                runCatching {
+                    val rot = imageProxy.imageInfo.rotationDegrees
+                    val m = android.graphics.Matrix()
+                    if (rot != 0) m.postRotate(rot.toFloat())
+                    val shown = if (rot == 0) bitmap
+                    else Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, m, true)
+                    val f = java.io.File(dir, "frame_%03d.png".format(dumpedFrames.getAndIncrement()))
+                    java.io.FileOutputStream(f).use {
+                        shown.compress(Bitmap.CompressFormat.PNG, 100, it)
+                    }
+                    if (shown !== bitmap) shown.recycle()
+                }
+            }
             mpImage = BitmapImageBuilder(bitmap).build()
             // detectForVideo() is synchronous: by the time it returns MediaPipe
             // has copied the pixels into its packet, so closing mpImage (which
@@ -430,7 +482,12 @@ class HandTracker private constructor(
 
     /** Ends the recording at [nowMs] and reports whether it is usable. */
     fun stopRecording(nowMs: Long): SignRecorder.Result =
-        synchronized(lock) { recorder.stop(nowMs) }
+        synchronized(lock) {
+            // One sign per arm: a dump that kept writing would grow without
+            // bound across a session.
+            frameDumpDir = null
+            recorder.stop(nowMs)
+        }
 
     /**
      * Classifies the sign that just happened.

@@ -83,7 +83,21 @@ class ReplayModeParityTest {
         var eosIn = false
         var eosOut = false
         try {
+            // Bounded loop: see the same guard in DirectClipParityTest. A null
+            // surface makes getOutputImage() return null for every frame, so the
+            // targets are never satisfied and the loop never terminates.
+            var spins = 0
+            val maxSpins = 200_000
             while (!eosOut && picked.size < target) {
+                if (++spins > maxSpins) {
+                    throw AssertionError(
+                        "decoder produced no frames after $spins iterations: " +
+                            "decoded=$decoded picked=${picked.size} " +
+                            "eosIn=$eosIn eosOut=$eosOut. " +
+                            "codec.getOutputImage() returns null unless the codec " +
+                            "is configured with a surface or a KEY_COLOR_FORMAT."
+                    )
+                }
                 if (!eosIn) {
                     val inIndex = codec.dequeueInputBuffer(10_000L)
                     if (inIndex >= 0) {
@@ -162,7 +176,17 @@ class ReplayModeParityTest {
     /** Detect hands on every decoded frame and build production Frames. */
     private fun landmarksOf(frames: List<Decoded>): List<HandTracker.Frame> {
         val options = HandLandmarker.HandLandmarkerOptions.builder()
-            .setBaseOptions(BaseOptions.builder().setModelAssetPath(ModelContract.DETECTOR_ASSET).build())
+            // Delegate.CPU required: GPU + RunningMode.IMAGE inside an
+            // instrumentation process hangs at 0% CPU on this device (and has
+            // been observed to SIGSEGV). The shipped app is unaffected, it uses
+            // VIDEO mode on its own GL context. Parity is about the model, so
+            // CPU is also the cleaner variable.
+            .setBaseOptions(
+                BaseOptions.builder()
+                    .setModelAssetPath(ModelContract.DETECTOR_ASSET)
+                    .setDelegate(com.google.mediapipe.tasks.core.Delegate.CPU)
+                    .build()
+            )
             .setRunningMode(RunningMode.IMAGE)
             .setNumHands(2)
             .setMinHandDetectionConfidence(0.3f)

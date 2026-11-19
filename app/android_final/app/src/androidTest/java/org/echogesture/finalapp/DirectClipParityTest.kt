@@ -115,7 +115,23 @@ class DirectClipParityTest {
         var sawOutputEos = false
 
         try {
+            // Bounded loop. A codec configured with a null surface returns null
+            // from getOutputImage() for EVERY frame, so `picked` never fills and
+            // sawOutputEos may never be set -- an unkillable spin that held this
+            // class at 0% CPU for >10 minutes with 55 idle runner threads.
+            // Failing loudly is the only behaviour that can be acted on.
+            var spins = 0
+            val maxSpins = 200_000
             while (!sawOutputEos && picked.size < target) {
+                if (++spins > maxSpins) {
+                    throw AssertionError(
+                        "decoder produced no frames after $spins iterations: " +
+                            "decoded=$decoded picked=${picked.size} " +
+                            "sawInputEos=$sawInputEos sawOutputEos=$sawOutputEos. " +
+                            "codec.getOutputImage() returns null unless the codec " +
+                            "is configured with a surface or a KEY_COLOR_FORMAT."
+                    )
+                }
                 if (!sawInputEos) {
                     val inIndex = codec.dequeueInputBuffer(10_000L)
                     if (inIndex >= 0) {
@@ -251,9 +267,24 @@ class DirectClipParityTest {
             return mapOf("decoded" to decoded, "frames" to 0, "hands" to 0)
         }
 
+        // Delegate.CPU is REQUIRED here, not a preference.
+        //
+        // With no delegate set, MediaPipe picks GPU, and GPU + RunningMode.IMAGE
+        // inside an instrumentation process has no valid GL context. Measured on
+        // the Vivo V2404 (2026-11-20): this exact configuration hung the test at
+        // 0% CPU indefinitely (55 idle runner threads, no progress after the
+        // tflite delegate message); an earlier probe of the same combination
+        // took a hard SIGSEGV in Graph.nativeMovePacketToInputStream. The shipped
+        // app is unaffected -- it uses RunningMode.VIDEO on its own GL context.
+        //
+        // Parity is about the MODEL, not the delegate, so CPU is also the more
+        // meaningful choice: it removes the delegate as a variable.
         val options = HandLandmarker.HandLandmarkerOptions.builder()
             .setBaseOptions(
-                BaseOptions.builder().setModelAssetPath(ModelContract.DETECTOR_ASSET).build()
+                BaseOptions.builder()
+                    .setModelAssetPath(ModelContract.DETECTOR_ASSET)
+                    .setDelegate(com.google.mediapipe.tasks.core.Delegate.CPU)
+                    .build()
             )
             .setRunningMode(RunningMode.IMAGE)
             .setNumHands(2)

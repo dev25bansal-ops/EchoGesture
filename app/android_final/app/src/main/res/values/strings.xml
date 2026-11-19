@@ -36,6 +36,14 @@
     <string name="record_stalled">The camera stopped during that sign. Hold still for a moment, then record again.</string>
     <string name="record_low_coverage">Hands were visible for too little of that recording. Keep both hands in the guide while you sign.</string>
     <string name="record_discarded">Recording discarded. Nothing was recognised.</string>
+    <!-- Clip upload: classify an existing video file instead of the live camera. -->
+    <string name="clip_action">Pick a video clip</string>
+    <string name="clip_model_not_ready">The model is still loading. Try again in a moment.</string>
+    <string name="clip_no_picker">No file picker is available on this device.</string>
+    <string name="clip_unreadable">That file could not be read as a video.</string>
+    <string name="clip_no_frames">That video contained no readable frames.</string>
+    <string name="clip_detector_unavailable">The hand detector could not start. Try again, or restart the app.</string>
+    <string name="clip_analysing">Reading the clip…</string>
     <string name="capture_action_processing">Reading…</string>
     <string name="flip_camera">Switch camera</string>
     <string name="flip_camera_desc">Switch between front and back camera</string>

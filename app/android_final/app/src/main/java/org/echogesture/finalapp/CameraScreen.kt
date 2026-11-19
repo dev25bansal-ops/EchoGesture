@@ -131,6 +131,7 @@ class CameraScreen(
     private val permissionButton: Button = root.findViewById(R.id.permissionButton)
     private val modelIdentity: TextView = root.findViewById(R.id.modelIdentity)
     private val helpButton: Button = root.findViewById(R.id.helpButton)
+    private val clipButton: Button = root.findViewById(R.id.clipButton)
     private val flipButton: ImageButton = root.findViewById(R.id.flipButton)
     private val torchButton: ImageButton = root.findViewById(R.id.torchButton)
 
@@ -185,6 +186,28 @@ class CameraScreen(
         } else {
             render(UiState.WAITING, permissionBlocked = true)
         }
+    }
+
+    /**
+     * Clip upload. Opens the system document picker, decodes the chosen video,
+     * and hands the resulting frame sequence to the SAME [runInference] the
+     * camera uses — so an uploaded clip is classified by the shipped feature
+     * transform, the shipped nine interpreters and the shipped acceptance gate,
+     * with nothing special-cased and nothing to keep in sync.
+     *
+     * This exists because a live capture and a clip genuinely disagree: on
+     * 2026-11-19 the NOON clip scored NOON1 at 0.9731 in Python and through
+     * this app's own classifier, while a live camera capture returned
+     * FOREIGNER1 with NOON1 ranked second. Frame rate was ruled out (7.5 and
+     * 15 fps both still scored NOON1 at 0.955-0.963), so the difference is the
+     * camera scene, not the model. A file removes that variable, which makes
+     * this both a feature and the only deterministic self-test the phone has.
+     */
+    private val clipPickerLauncher = activity.registerForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri: android.net.Uri? ->
+        if (uri == null) return@registerForActivityResult
+        classifyClip(uri)
     }
 
     // ---- lifecycle ----------------------------------------------------------
@@ -292,6 +315,22 @@ class CameraScreen(
             }
         }
         helpButton.setOnClickListener { showHelp() }
+        clipButton.setOnClickListener {
+            if (!modelReady) {
+                Toast.makeText(
+                    activity, R.string.clip_model_not_ready, Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+            if (processing) return@setOnClickListener
+            haptic(HapticFeedbackConstants.KEYBOARD_TAP)
+            runCatching { clipPickerLauncher.launch(arrayOf("video/*")) }
+                .onFailure {
+                    Toast.makeText(
+                        activity, R.string.clip_no_picker, Toast.LENGTH_SHORT
+                    ).show()
+                }
+        }
         retryButton.setOnClickListener {
             haptic(HapticFeedbackConstants.KEYBOARD_TAP)
             // In the camera-failed state there is nothing to arm: the provider
@@ -1017,8 +1056,62 @@ class CameraScreen(
         }
     }
 
-    private fun logRecordingUnusable(outcome: SignRecorder.Result.Unusable) {
-        // Diagnostics record the interval and the reason, never pixels. A
+    /**
+     * Decode + analyse + classify one user-chosen video file.
+     *
+     * Runs entirely off the main thread. The UI shows the ordinary PROCESSING
+     * state and the ordinary result card, because the last two thirds of this
+     * function ARE the ordinary path: [ClipAnalyzer] produces a
+     * [SignRecorder.Recording] built from real landmarks and [runInference]
+     * cannot tell it apart from a camera recording.
+     */
+    private fun classifyClip(uri: android.net.Uri) {
+        val c = classifier ?: return
+        if (processing) return
+        processing = true
+        render(UiState.PROCESSING)
+        val started = System.nanoTime()
+        inferExecutor.execute {
+            val outcome = try {
+                ClipAnalyzer.analyse(activity, uri)
+            } catch (t: Throwable) {
+                ClipAnalyzer.Outcome.Failed(
+                    ClipAnalyzer.Outcome.Failed.Reason.UNREADABLE,
+                    t.javaClass.simpleName
+                )
+            }
+            val elapsedMs = (System.nanoTime() - started) / 1_000_000L
+            activity.runOnUiThread {
+                when (outcome) {
+                    is ClipAnalyzer.Outcome.Analysed -> {
+                        Log.i(
+                            "EchoGesture",
+                            "clip analysed frames=${outcome.frameCount} " +
+                                "hands=${outcome.handFrames} " +
+                                "truncated=${outcome.truncated} in ${elapsedMs}ms"
+                        )
+                        // runInference resets `processing` itself on every exit
+                        // path, so it must not be cleared here first.
+                        runInference(outcome.recording, c)
+                    }
+                    is ClipAnalyzer.Outcome.Failed -> {
+                        processing = false
+                        val msg = when (outcome.reason) {
+                            ClipAnalyzer.Outcome.Failed.Reason.UNREADABLE ->
+                                R.string.clip_unreadable
+                            ClipAnalyzer.Outcome.Failed.Reason.NO_FRAMES ->
+                                R.string.clip_no_frames
+                            ClipAnalyzer.Outcome.Failed.Reason.DETECTOR_UNAVAILABLE ->
+                                R.string.clip_detector_unavailable
+                        }
+                        render(UiState.ERROR, detail = activity.getString(msg))
+                    }
+                }
+            }
+        }
+    }
+
+    private fun logRecordingUnusable(outcome: SignRecorder.Result.Unusable) {        // Diagnostics record the interval and the reason, never pixels. A
         // rejected recording is logged as a capture with no prediction so the
         // rejection rate is measurable alongside accepted captures.
         val r = outcome.recording

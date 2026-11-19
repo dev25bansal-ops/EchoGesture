@@ -210,6 +210,15 @@
             android:enabled="false"
             android:text="@string/capture_action" />
 
+        <!-- Classify an existing video file instead of the live camera. -->
+        <Button
+            android:id="@+id/clipButton"
+            style="@style/Widget.Button.Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_2"
+            android:text="@string/clip_action" />
+
         <!-- Permission state =-->
         <LinearLayout
             android:id="@+id/permissionCard"

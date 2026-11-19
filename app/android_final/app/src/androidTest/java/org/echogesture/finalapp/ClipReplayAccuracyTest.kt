@@ -238,12 +238,23 @@ class ClipReplayAccuracyTest {
         val present = FloatArray(n * 2)
         var hands = 0
         try {
-            // Real presentation timestamps, monotonically increasing, exactly as
-            // the analyser supplies them. Never a synthetic 33 ms counter.
+            // Real presentation timestamps, made strictly increasing before they
+            // reach MediaPipe. The comment here used to claim the sampled PTS are
+            // "monotonically increasing, exactly as the analyser supplies them";
+            // that is false. Sampling picks the frame nearest each target time,
+            // so two targets can resolve to the SAME frame and yield an equal
+            // PTS, and VIDEO mode rejects any timestamp that fails to advance
+            // ("The received packets having a smaller timestamp than the
+            // processed timestamp"). Measured on the Vivo V2404 on 2026-11-19:
+            // this threw and aborted the run. Clamping preserves the real
+            // spacing wherever it is valid and only nudges the degenerate ties.
             val base = frames.first().ptsMs
+            var lastTs = Long.MIN_VALUE / 2
             for ((fi, df) in frames.withIndex()) {
                 val img = BitmapImageBuilder(df.bitmap).build()
-                val result = landmarker.detectForVideo(img, df.ptsMs - base)
+                val ts = maxOf(df.ptsMs - base, lastTs + 1L)
+                lastTs = ts
+                val result = landmarker.detectForVideo(img, ts)
                 img.close()
                 df.bitmap.recycle()
                 for (k in result.landmarks().indices) {
@@ -413,6 +424,7 @@ class ClipReplayAccuracyTest {
             val present = FloatArray(n * 2)
             var hands = 0
             val base = frames.first().ptsMs
+            var lastRealTs = Long.MIN_VALUE / 2  // reset per landmarker
             try {
                 for ((fi, df) in frames.withIndex()) {
                     // A fresh copy per call: MediaPipe keeps a reference to the
@@ -420,7 +432,24 @@ class ClipReplayAccuracyTest {
                     // AndroidBitmap_lockPixels fail inside native code.
                     val copy = df.bitmap.copy(Bitmap.Config.ARGB_8888, false)
                     val img = BitmapImageBuilder(copy).build()
-                    val ts = if (run == 0) fi * 33L else df.ptsMs - base
+                    // MediaPipe VIDEO mode rejects any timestamp that does not
+                    // strictly advance ("The received packets having a smaller
+                    // timestamp than the processed timestamp"). Real container
+                    // PTS are NOT guaranteed monotonic across sampled frames:
+                    // two targets can resolve to the same frame, or the
+                    // extractor can repeat a PTS. The app never hits this
+                    // because its clock is fi*33; this run uses raw PTS and so
+                    // must enforce the same invariant itself. Measured
+                    // 2026-11-19 on the Vivo V2404: without this clamp the test
+                    // threw on the first repeated PTS and the run aborted,
+                    // which is a defect in the TEST, not in the app.
+                    val ts = if (run == 0) {
+                        fi * 33L
+                    } else {
+                        // clamp to at least one ms more than the previous frame
+                        maxOf(df.ptsMs - base, lastRealTs + 1L)
+                    }
+                    if (run == 1) lastRealTs = ts
                     val result = landmarker.detectForVideo(img, ts)
                     img.close()
                     copy.recycle()

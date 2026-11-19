@@ -79,6 +79,7 @@ object ClipAnalyzer {
      * use (~1-2 min on the slowest measured device, tens of ms once warm).
      */
     fun analyse(context: Context, uri: Uri, maxFrames: Int = MAX_FRAMES_DEFAULT): Outcome {
+        val tStart = android.os.SystemClock.elapsedRealtime()
         val frames = try {
             decode(context, uri, maxFrames)
         } catch (t: Throwable) {
@@ -87,6 +88,7 @@ object ClipAnalyzer {
         if (frames.isEmpty()) {
             return Outcome.Failed(Outcome.Failed.Reason.NO_FRAMES)
         }
+        val tDecoded = android.os.SystemClock.elapsedRealtime()
 
         val landmarker = try {
             createLandmarker(context)
@@ -97,22 +99,33 @@ object ClipAnalyzer {
                 t.javaClass.simpleName
             )
         }
+        val tLandmarker = android.os.SystemClock.elapsedRealtime()
 
         val out = ArrayList<HandTracker.Frame>(frames.size)
         var handFrames = 0
+        var copyMs = 0L
+        var detectMs = 0L
+        var toHandsMs = 0L
         // VIDEO mode requires strictly increasing timestamps. Container PTS is
         // not guaranteed monotonic after scaling (two targets can resolve to
         // the same millisecond) and MediaPipe faults on a repeat, so clamp.
         var lastTs = Long.MIN_VALUE / 2
         try {
             for (f in frames) {
+                val c0 = android.os.SystemClock.elapsedRealtime()
                 val copy = f.bitmap.copy(Bitmap.Config.ARGB_8888, false)
                 val img = BitmapImageBuilder(copy).build()
+                val c1 = android.os.SystemClock.elapsedRealtime()
                 val ts = maxOf(f.ptsMs, lastTs + 1L)
                 lastTs = ts
                 val result = landmarker.detectForVideo(img, ts)
+                val c2 = android.os.SystemClock.elapsedRealtime()
                 img.close()
                 val hands = toHands(result)
+                val c3 = android.os.SystemClock.elapsedRealtime()
+                copyMs += c1 - c0
+                detectMs += c2 - c1
+                toHandsMs += c3 - c2
                 if (hands.isNotEmpty()) handFrames++
                 out.add(HandTracker.Frame(hands, f.ptsMs))
             }
@@ -126,6 +139,19 @@ object ClipAnalyzer {
         if (out.size < 2) {
             return Outcome.Failed(Outcome.Failed.Reason.NO_FRAMES)
         }
+        // Per-stage breakdown. A single total tells you the clip path is slow
+        // but not which half to fix, and the two halves have opposite fixes:
+        // slow DECODE means MediaMetadataRetriever, slow DETECT means the
+        // delegate is not being used.
+        val tEnd = android.os.SystemClock.elapsedRealtime()
+        android.util.Log.i(
+            "EchoGesture",
+            "clip stages: decode=${tDecoded - tStart}ms " +
+                "landmarkerInit=${tLandmarker - tDecoded}ms " +
+                "copy=${copyMs}ms detect=${detectMs}ms toHands=${toHandsMs}ms " +
+                "total=${tEnd - tStart}ms frames=${out.size} " +
+                "perFrame=${(detectMs / out.size.coerceAtLeast(1))}ms"
+        )
         val startedAt = out.first().capturedAtMs
         val stoppedAt = out.last().capturedAtMs
         return Outcome.Analysed(
@@ -163,8 +189,40 @@ object ClipAnalyzer {
             val out = ArrayList<Decoded>()
             var tUs = 0L
             var lastPts = -1L
+            // Decode-time downscale. getScaledFrameAtTime() asks the codec for a
+            // frame already at the target size, so the full-resolution bitmap is
+            // never allocated and never thrown away. Measured on the Vivo V2404
+            // (2026-11-20): decoding 55 frames at source size cost 19,872 ms of
+            // a 22,710 ms run -- 87% of the wall time, and every one of those
+            // pixels except ~4% was discarded by scaleAndRotate afterwards.
+            //
+            // The scaling happens inside the decoder, so it is close to free
+            // compared with decoding full size and resampling on the CPU.
+            val targetW = if (rotation == 90 || rotation == 270) MAX_EDGE * 3 / 4 else MAX_EDGE
+            val targetH = if (rotation == 90 || rotation == 270) MAX_EDGE else MAX_EDGE * 3 / 4
             while (tUs < totalUs && out.size < maxFrames) {
-                val bmp = retriever.getFrameAtTime(tUs, MediaMetadataRetriever.OPTION_CLOSEST)
+                // OPTION_CLOSEST, not OPTION_CLOSEST_SYNC.
+                //
+                // CLOSEST_SYNC is ~2.3x faster but returns only KEYFRAMES, so a
+                // 55-frame request yielded 54 near-duplicate images with no
+                // detectable hand and the app reported "No hands in view" for a
+                // clip it had just classified correctly. Measured on device:
+                // decode 19,872ms -> 8,698ms, and the answer went from NOON1 to
+                // nothing. A fast wrong answer is worse than a slow right one.
+                //
+                // The scaling below is the safe speedup: it cuts decode work
+                // without changing WHICH frame is returned.
+                val bmp = runCatching {
+                    retriever.getScaledFrameAtTime(
+                        tUs,
+                        MediaMetadataRetriever.OPTION_CLOSEST,
+                        targetW,
+                        targetH
+                    )
+                }.getOrNull()
+                    ?: runCatching {
+                        retriever.getFrameAtTime(tUs, MediaMetadataRetriever.OPTION_CLOSEST)
+                    }.getOrNull()
                     ?: break
                 val scaled = scaleAndRotate(bmp, rotation)
                 if (scaled !== bmp) runCatching { bmp.recycle() }

@@ -7,6 +7,7 @@ import androidx.camera.core.ImageProxy
 import com.google.mediapipe.framework.image.BitmapImageBuilder
 import com.google.mediapipe.framework.image.MPImage
 import com.google.mediapipe.tasks.core.BaseOptions
+import com.google.mediapipe.tasks.core.Delegate
 import com.google.mediapipe.tasks.vision.core.ImageProcessingOptions
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarker
@@ -259,9 +260,43 @@ class HandTracker private constructor(
         const val FAILURE_THRESHOLD = 30
 
         fun create(context: Context, modelAssetPath: String): HandTracker {
+            // The detector is the dominant inference cost on-device: measured
+            // detect_p50 80-109 ms / p95 159-187 ms on the Vivo V2404, against
+            // the organizer's 50 ms latency budget. That measurement was taken
+            // with NO delegate set, i.e. the default CPU path. MediaPipe 0.10.14
+            // exposes Delegate.CPU and Delegate.GPU (verified with javap against
+            // tasks-core-0.10.14.aar; there is no NNAPI value in this version),
+            // and the organizer's own runtime column example is "GPU delegate".
+            //
+            // GPU is attempted first and CPU is the fallback, because a GPU
+            // delegate that fails to initialise must not cost us the demo: GPU
+            // support varies by driver and a hard bind would turn a slower app
+            // into a broken one. Which delegate actually took effect is
+            // recorded so the on-device latency figure can state its runtime.
+            val gpu = try {
+                buildLandmarker(context, modelAssetPath, Delegate.GPU).also {
+                    Log.i(TAG, "HandLandmarker delegate=GPU")
+                }
+            } catch (t: Throwable) {
+                Log.w(TAG, "GPU delegate unavailable, falling back to CPU", t)
+                buildLandmarker(context, modelAssetPath, Delegate.CPU).also {
+                    Log.i(TAG, "HandLandmarker delegate=CPU")
+                }
+            }
+            return HandTracker(gpu)
+        }
+
+        private fun buildLandmarker(
+            context: Context,
+            modelAssetPath: String,
+            delegate: Delegate,
+        ): HandLandmarker {
             val options = HandLandmarker.HandLandmarkerOptions.builder()
                 .setBaseOptions(
-                    BaseOptions.builder().setModelAssetPath(modelAssetPath).build()
+                    BaseOptions.builder()
+                        .setModelAssetPath(modelAssetPath)
+                        .setDelegate(delegate)
+                        .build()
                 )
                 .setRunningMode(RunningMode.VIDEO)
                 .setNumHands(2)
@@ -269,7 +304,7 @@ class HandTracker private constructor(
                 .setMinHandPresenceConfidence(0.3f)
                 .setMinTrackingConfidence(0.3f)
                 .build()
-            return HandTracker(HandLandmarker.createFromOptions(context, options))
+            return HandLandmarker.createFromOptions(context, options)
         }
     }
 

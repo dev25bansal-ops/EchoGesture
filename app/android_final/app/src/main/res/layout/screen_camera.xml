@@ -266,6 +266,7 @@
             android:visibility="gone">
 
             <TextView
+                android:id="@+id/resultHeaderLabel"
                 style="@style/Text.Section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

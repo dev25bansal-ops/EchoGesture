@@ -1,12 +1,12 @@
 # EchoGesture APK
 
-Built 2026-11-20 from `submission/final` at commit `d66d86e`.
+Built 2026-11-20 from `submission/final` at commit `ebadd26`.
 
 | | |
 |---|---|
 | File | `EchoGesture-2026-11-20.apk` |
-| Size | 82,755,290 bytes (82.8 MB) |
-| SHA-256 | `b730f7bb59fc1402b45cb8c6eaeec9b2b6029836baac5c93035dff24a7127361` |
+| Size | 83,128,337 bytes (83.1 MB) |
+| SHA-256 | `bb682468bb065233d8baa5e322907730eb03a8200a7ffad0a541389041fdac17` |
 | Package | `org.echogesture.finalapp` |
 | Min SDK | 24 (Android 7.0) |
 | Target SDK | 34 |
@@ -58,12 +58,11 @@ adb install -r EchoGesture-2026-11-20.apk
 - **The acceptance gate declines rather than guesses** when the top-2 margin is
   under 0.15, and a held hand that is not signing still gets a named gloss about
   43% of the time. Both are documented in `docs/`.
-- **A declined reading now looks different from an accepted one.** The live pill
-  reads "Uncertain reading" in amber instead of "Recognised sign" in green, so a
-  glance at the screen cannot turn a refused reading into a confirmation. The
-  accepted path was confirmed on device; the declined path is covered by unit
-  tests (`ResultPolicyTest`) but was not observed on a handset before the build
-  was cut.
+- **A declined reading now looks different from an accepted one, everywhere.**
+  The live pill, the card header and the score badge all follow the gate: an
+  accepted reading reads "Recognised sign" in green with a check, a declined one
+  reads "Uncertain reading" in amber with a warning triangle. Verified on device
+  in both directions — EAT1 at 22.2% declined, MECHANIC1 at 89.3% accepted.
 
 ## Rights — read this before redistributing
 

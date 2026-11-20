@@ -61,6 +61,12 @@ class RecordModePredictionTest {
         val loaded = ModelContract.load(ctx.assets)
         val classifier = LandmarkClassifier.create(loaded)
         val checked = ArrayList<String>()
+        // ONE detector for every clip. Creating a second HandLandmarker after
+        // closing the first hangs on this device (DetectorReuseProbeTest proved
+        // it: round 2 never returns). The shipped app never recreates one -- it
+        // builds a single landmarker per HandTracker for the process's life --
+        // so this is test-only discipline, not a product constraint.
+        val detector = SequentialDecoderSmokeTest.Companion.Detector.open(ctx)
         try {
             // Only the four measured clips. Iterating all 13 decoded the whole
             // corpus over wireless ADB and the device went offline mid-run --
@@ -79,7 +85,7 @@ class RecordModePredictionTest {
                 }
 
                 // Detect on those pixels, exactly as the camera path would.
-                val s = SequentialDecoderSmokeTest.detectFrames(ctx, dec.bitmaps)
+                val s = detector.detect(dec.bitmaps)
                 dec.bitmaps.forEach { runCatching { it.recycle() } }
                 report("$key frames=${s.frames.size} hands=${s.handFrames}")
 
@@ -110,6 +116,7 @@ class RecordModePredictionTest {
                 checked.add(key)
             }
         } finally {
+            runCatching { detector.close() }
             classifier.close()
         }
 

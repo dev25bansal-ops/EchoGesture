@@ -151,7 +151,20 @@ class HandTracker private constructor(
         val frames: List<Frame>,
         val durationMs: Long,
         val fps: Float,
-        val handFrames: Int
+        val handFrames: Int,
+        /**
+         * Real frames the camera produced across this same interval, before
+         * [fps] was limited by how many the analyser got through.
+         *
+         * [frames] is resampled to RING_CAPACITY, so its count says nothing
+         * about throughput -- a 3.7 s capture always reports 32. This is the
+         * number that says whether the analyser kept up: when it is much larger
+         * than [fps] the window is being sampled more coarsely than training
+         * was, and because features.py differences consecutive sampled frames
+         * the model sees less motion than the signer actually made. -1 when the
+         * caller did not supply it.
+         */
+        val analyserFrames: Int = -1
     ) {
         val frameCount: Int get() = frames.size
     }
@@ -359,7 +372,7 @@ class HandTracker private constructor(
             val duration = if (raw.size >= 2) last - first else 0L
             val fps = if (duration > 0) (raw.size - 1) * 1000f / duration else 0f
             val sampled = evenlySpacedFrames(raw, RING_CAPACITY)
-            return Capture(sampled, duration, fps, sampled.count { it.hands.isNotEmpty() })
+            return Capture(sampled, duration, fps, sampled.count { it.hands.isNotEmpty() }, raw.size)
         }
 
         private fun evenlySpacedFrames(raw: List<Frame>, target: Int): List<Frame> {

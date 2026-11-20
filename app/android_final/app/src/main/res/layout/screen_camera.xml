@@ -323,6 +323,12 @@
                 android:layout_marginTop="@dimen/space_3" />
 
             <TextView
+                android:id="@+id/profilerDetailText"
+                style="@style/Text.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
                 style="@style/Text.Caption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

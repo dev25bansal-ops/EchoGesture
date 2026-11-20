@@ -108,6 +108,7 @@ class CameraScreen(
     private val captureButton: Button = root.findViewById(R.id.captureButton)
 
     private val resultCard: View = root.findViewById(R.id.resultCard)
+    private val resultHeaderLabel: TextView = root.findViewById(R.id.resultHeaderLabel)
     private val captionText: TextView = root.findViewById(R.id.captionText)
     private val confidenceBadge: TextView = root.findViewById(R.id.confidenceBadge)
     private val alternativesText: TextView = root.findViewById(R.id.alternativesText)
@@ -513,13 +514,16 @@ class CameraScreen(
                 }
                 UiState.RESULT -> {
                     hideStatus()
-                    // The pill must agree with the card. A declined reading gets
-                    // a different WORD and a warning colour, not just a quieter
-                    // sentence underneath a green "Recognised sign".
+                    // The pill AND the card header must both agree with the
+                    // caption. A declined reading gets a different WORD and a
+                    // warning colour in both places, not a quieter sentence
+                    // underneath a header that still reads "Recognised sign".
                     if (lastResultAccepted) {
                         setLiveStatus(R.string.result_label, R.color.success)
+                        resultHeaderLabel.setText(R.string.result_label)
                     } else {
                         setLiveStatus(R.string.result_uncertain_label, R.color.warning)
+                        resultHeaderLabel.setText(R.string.result_uncertain_label)
                     }
                     resultCard.visibility = View.VISIBLE
                     revealResult()
@@ -1373,6 +1377,20 @@ class CameraScreen(
                 else -> R.drawable.bg_card_danger_soft
             }
         )
+        // The check mark is an assertion of confidence, so it must not survive a
+        // reading the gate declined. A green tick beside 22.2% tells a user the
+        // opposite of the amber header directly above it.
+        run {
+            val badgeIcon = if (certain) R.drawable.ic_check else R.drawable.ic_warning
+            confidenceBadge.setCompoundDrawablesRelativeWithIntrinsicBounds(badgeIcon, 0, 0, 0)
+            val iconTint = ContextCompat.getColorStateList(activity, tone)
+            if (badgeIcon == R.drawable.ic_warning) {
+                confidenceBadge.compoundDrawableTintList = iconTint
+            } else {
+                confidenceBadge.compoundDrawableTintList =
+                    ContextCompat.getColorStateList(activity, R.color.success)
+            }
+        }
 
         render(UiState.RESULT)
         haptic(HapticFeedbackConstants.LONG_PRESS)

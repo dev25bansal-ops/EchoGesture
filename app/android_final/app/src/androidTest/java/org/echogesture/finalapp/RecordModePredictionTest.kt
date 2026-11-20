@@ -62,6 +62,9 @@ class RecordModePredictionTest {
         val classifier = LandmarkClassifier.create(loaded)
         val checked = ArrayList<String>()
         try {
+            // Only the four measured clips. Iterating all 13 decoded the whole
+            // corpus over wireless ADB and the device went offline mid-run --
+            // the test should measure behaviour, not the link.
             for (clip in clips) {
                 val key = expected.keys.firstOrNull { clip.name.contains(it, true) }
                     ?: continue

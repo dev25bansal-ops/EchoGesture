@@ -174,6 +174,17 @@ class CameraScreen(
      * interval — not two clock domains that happen to look similar.
      */
     private var recordingStartedAtMs = 0L
+
+    /**
+     * Whether the result currently on screen passed ResultPolicy.
+     *
+     * The RESULT state used to paint the live pill "Recognised sign" in SUCCESS
+     * green for EVERY reading, including ones ResultPolicy had just declined.
+     * For a Deaf user glancing at the phone that pill is the loudest signal on
+     * the screen, so a declined guess read as a confirmation. The small caption
+     * said "Uncertain", which contradicts the green above it.
+     */
+    private var lastResultAccepted = true
     private var lastFrames = 0
     private var lastHandFrames = 0
     private var bound = false
@@ -502,7 +513,14 @@ class CameraScreen(
                 }
                 UiState.RESULT -> {
                     hideStatus()
-                    setLiveStatus(R.string.result_label, R.color.success)
+                    // The pill must agree with the card. A declined reading gets
+                    // a different WORD and a warning colour, not just a quieter
+                    // sentence underneath a green "Recognised sign".
+                    if (lastResultAccepted) {
+                        setLiveStatus(R.string.result_label, R.color.success)
+                    } else {
+                        setLiveStatus(R.string.result_uncertain_label, R.color.warning)
+                    }
                     resultCard.visibility = View.VISIBLE
                     revealResult()
                 }
@@ -1312,6 +1330,7 @@ class CameraScreen(
         // accepts 86.1% of captures at 96.0% accuracy, and the 13.9% it declines
         // are only 35.4% accurate. See ResultPolicy for the measurements.
         val certain = ResultPolicy.isAccepted(result.margin, percent)
+        lastResultAccepted = certain
 
         captionText.text = result.prediction
         confidenceBadge.text = activity.getString(

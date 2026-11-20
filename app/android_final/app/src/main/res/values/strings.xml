@@ -77,6 +77,7 @@
 
     <!-- Result card -->
     <string name="result_label">Recognised sign</string>
+    <string name="result_uncertain_label">Uncertain reading</string>
     <string name="result_score">%1$s%% model score</string>
     <string name="result_alternatives_label">Alternatives</string>
     <string name="result_confidence_accepted">Best match — still confirm before relying on it</string>

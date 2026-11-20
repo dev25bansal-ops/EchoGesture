@@ -27,6 +27,74 @@ import java.io.File
  */
 class SequentialDecoderSmokeTest {
 
+    /** A detected frame sequence, with how many frames carried a hand. */
+    class Detected(val frames: List<HandTracker.Frame>, val handFrames: Int)
+
+    companion object {
+
+    /**
+     * Runs the shipped detector over already-decoded bitmaps.
+     *
+     * Shared so the smoke test and the record-mode test cannot disagree about
+     * how a frame becomes landmarks: same options, same handedness mapping, same
+     * strictly-increasing timestamps.
+     */
+    fun detectFrames(
+        ctx: android.content.Context,
+        bitmaps: List<android.graphics.Bitmap>
+    ): Detected {
+        val opts = com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarker
+            .HandLandmarkerOptions.builder()
+            .setBaseOptions(
+                com.google.mediapipe.tasks.core.BaseOptions.builder()
+                    .setModelAssetPath(ModelContract.DETECTOR_ASSET)
+                    // CPU: GPU + IMAGE in an instrumentation process is the
+                    // combination that hangs or aborts on this device.
+                    .setDelegate(com.google.mediapipe.tasks.core.Delegate.CPU)
+                    .build()
+            )
+            .setRunningMode(com.google.mediapipe.tasks.vision.core.RunningMode.VIDEO)
+            .setNumHands(2)
+            .setMinHandDetectionConfidence(0.3f)
+            .setMinHandPresenceConfidence(0.3f)
+            .setMinTrackingConfidence(0.3f)
+            .build()
+        val lm = com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarker
+            .createFromOptions(ctx, opts)
+        val out = ArrayList<HandTracker.Frame>(bitmaps.size)
+        var hands = 0
+        var ts = 0L
+        try {
+            for ((i, bmp) in bitmaps.withIndex()) {
+                val img = com.google.mediapipe.framework.image.BitmapImageBuilder(bmp).build()
+                val r = lm.detectForVideo(img, ts)
+                ts += 33
+                img.close()
+                val hs = ArrayList<HandTracker.Hand>(r.landmarks().size)
+                for (k in r.landmarks().indices) {
+                    val cat = if (k < r.handedness().size && r.handedness()[k].isNotEmpty())
+                        r.handedness()[k][0].categoryName() else "Right"
+                    val slot = if (cat.equals("Left", ignoreCase = true)) 0 else 1
+                    val arr = FloatArray(21 * 3)
+                    for (j in 0 until 21) {
+                        arr[j * 3] = r.landmarks()[k][j].x()
+                        arr[j * 3 + 1] = r.landmarks()[k][j].y()
+                        arr[j * 3 + 2] = r.landmarks()[k][j].z()
+                    }
+                    hs.add(HandTracker.Hand(slot, arr))
+                }
+                if (hs.isNotEmpty()) hands++
+                // 33 ms per frame: a nominal 30 fps timeline, which is what the
+                // recorder and segmenter both assume.
+                out.add(HandTracker.Frame(hs, i * 33L))
+            }
+        } finally {
+            lm.close()
+        }
+        return Detected(out, hands)
+    }
+    }
+
     private fun report(line: String) {
         println(line)
         val ctx = InstrumentationRegistry.getInstrumentation().targetContext

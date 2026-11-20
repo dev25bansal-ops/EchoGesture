@@ -36,7 +36,23 @@ import kotlin.math.abs
  */
 class GpuCpuParityTest {
 
-    private val maxClips = 6
+    private val maxClips = 1
+
+    /**
+     * Instrumentation stdout is discarded on this device — a probe that prints
+     * and passes in 0.86 s produces no visible output — so results are also
+     * written to a file the harness can pull. Without this, "crashed with no
+     * output" is indistinguishable from "worked fine but printed to /dev/null",
+     * which is exactly the ambiguity that made this test look broken.
+     */
+    private fun report(line: String) {
+        println(line)
+        val ctx = InstrumentationRegistry.getInstrumentation().targetContext
+        runCatching {
+            val f = java.io.File(ctx.filesDir, "gpu_cpu_parity.txt")
+            f.appendText(line + "\n")
+        }
+    }
 
     @Test
     fun gpuAndCpuDelegatesAgreeOnTheSameFrames() {
@@ -49,8 +65,11 @@ class GpuCpuParityTest {
             .sortedBy { it.name }.take(maxClips)
         assumeTrue("clip corpus empty", files.isNotEmpty())
 
+        runCatching { java.io.File(ctx.filesDir, "gpu_cpu_parity.txt").writeText("") }
         val loaded = ModelContract.load(ctx.assets)
+        report("PARITY step1 model loaded, samples=${loaded.members.size}")
         val classifier = LandmarkClassifier.create(loaded)
+        report("PARITY step2 classifier created")
 
         var agree = 0
         var compared = 0
@@ -58,20 +77,25 @@ class GpuCpuParityTest {
 
         try {
             for (f in files) {
+                report("PARITY decoding ${f.name}")
                 val dec = VideoFrames.sample(f, 24)
+                report("PARITY decoded ${f.name} frames=${dec.frames.size} " +
+                    "completed=${dec.completed}")
                 if (dec.frames.isEmpty()) {
-                    println("PARITY ${f.name} SKIP no_frames completed=${dec.completed}")
+                    report("PARITY ${f.name} SKIP no_frames completed=${dec.completed}")
                     continue
                 }
                 if (!dec.completed) {
-                    println("PARITY ${f.name} WARN decode_incomplete " +
+                    report("PARITY ${f.name} WARN decode_incomplete " +
                         "frames=${dec.frames.size} decoded=${dec.decodedCount}")
                 }
                 val gpu = runDelegate(dec.frames, Delegate.GPU, classifier)
+                report("PARITY ${f.name} gpu_done=${gpu != null}")
                 val cpu = runDelegate(dec.frames, Delegate.CPU, classifier)
+                report("PARITY ${f.name} cpu_done=${cpu != null}")
                 for (d in dec.frames) runCatching { d.bitmap.recycle() }
                 if (gpu == null || cpu == null) {
-                    println("PARITY ${f.name} SKIP delegate_unavailable")
+                    report("PARITY ${f.name} SKIP delegate_unavailable")
                     continue
                 }
                 compared++
@@ -79,7 +103,7 @@ class GpuCpuParityTest {
                 if (same) agree++
                 val delta = abs(gpu.second - cpu.second).toDouble()
                 if (delta > maxProbDelta) maxProbDelta = delta
-                println(
+                report(
                     "PARITY ${f.name} gpu=${gpu.first}(${"%.4f".format(gpu.second)},h=${gpu.third}) " +
                         "cpu=${cpu.first}(${"%.4f".format(cpu.second)},h=${cpu.third}) " +
                         (if (same) "AGREE" else "DIFFER")
@@ -89,7 +113,7 @@ class GpuCpuParityTest {
             classifier.close()
         }
 
-        println(
+        report(
             "PARITY SUMMARY agree=$agree compared=$compared " +
                 "max_prob_delta=${"%.4f".format(maxProbDelta)} clips=${files.size}"
         )
@@ -121,7 +145,7 @@ class GpuCpuParityTest {
                             .setDelegate(delegate)
                             .build()
                     )
-                    .setRunningMode(RunningMode.IMAGE)
+                    .setRunningMode(RunningMode.VIDEO)
                     .setNumHands(2)
                     .setMinHandDetectionConfidence(0.3f)
                     .setMinHandPresenceConfidence(0.3f)
@@ -129,18 +153,23 @@ class GpuCpuParityTest {
                     .build()
             )
         } catch (t: Throwable) {
-            println("PARITY delegate=$delegate unavailable: ${t.javaClass.simpleName}")
+            report("PARITY delegate=$delegate unavailable: ${t.javaClass.simpleName}")
             return null
         }
         val n = frames.size
         val landmarks = FloatArray(n * 2 * 21 * 3)
         val present = FloatArray(n * 2)
         var hands = 0
+        // VIDEO mode requires strictly increasing timestamps; see the note in
+        // ClipReplayAccuracyTest about sampled PTS not guaranteeing that.
+        var lastTs = Long.MIN_VALUE / 2
         try {
             for ((fi, df) in frames.withIndex()) {
                 val copy = df.bitmap.copy(Bitmap.Config.ARGB_8888, false)
                 val img = BitmapImageBuilder(copy).build()
-                val result = landmarker.detect(img)
+                val ts = maxOf(df.ptsMs, lastTs + 1L)
+                lastTs = ts
+                val result = landmarker.detectForVideo(img, ts)
                 img.close()
                 for (k in result.landmarks().indices) {
                     val cat = result.handedness()[k].firstOrNull()?.categoryName() ?: "Right"

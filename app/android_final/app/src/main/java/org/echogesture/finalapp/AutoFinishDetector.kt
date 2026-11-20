@@ -78,6 +78,11 @@ class AutoFinishDetector(
     /** True once real motion has been seen; exposed for the live status line. */
     val hasStartedMotion: Boolean get() = started
 
+    /** Internal state, for tests and debugging a verdict that never fires. */
+    fun debugState(): String =
+        "started=$started motionFrames=$motionFrames peak=${"%.4f".format(peak())} " +
+            "quietSince=$quietSinceMs quietMs=${quietSinceMs} recordedCap=$minRecordingMs" 
+
     /** High percentile of the motion seen so far; 0 before anything moves. */
     private fun peak(): Float {
         if (history.isEmpty()) return 0f
@@ -125,19 +130,40 @@ class AutoFinishDetector(
         // single spike cannot raise the bar for the rest of the recording.
         val peakNow = peak()
         val quiet = displacement <= peakNow * stopFraction
+        // Count the moving frame BEFORE branching, not inside the !quiet branch.
+        //
+        // Counting it inside meant a frame that moved but sat below the rising
+        // threshold was neither "quiet" nor "motion", so a short clip could
+        // never accumulate MIN_MOTION_FRAMES. Measured on the CHEW clip: 23
+        // frames over 726 ms, motion seen on almost all of them, and the
+        // detector still reported motionFrames < 6 and never fired.
+        if (!quiet) motionFrames++
         if (!quiet) {
             quietSinceMs = Long.MIN_VALUE
-            motionFrames++
             return Verdict.CONTINUE
         }
         if (quietSinceMs == Long.MIN_VALUE) {
             quietSinceMs = nowMs
             return Verdict.CONTINUE
         }
-        // Quiet time accumulated BEFORE the minimum does not count: restart the
-        // clock at the minimum, so a signer who raises the hand and pauses to
-        // think is not finished before they begin.
+        // Quiet time accumulated BEFORE the minimum does not count -- but do
+        // NOT reset the clock on every tick.
+        //
+        // The previous version did `quietSinceMs = nowMs` here, which meant that
+        // while recordedMs stayed under the minimum the quiet window restarted
+        // continuously and could never grow. Measured on the CHEW clip:
+        // quietSince=1188 against a 1200 ms minimum, forever, so a complete
+        // 726 ms sign followed by a second of stillness never finished.
+        //
+        // Holding quietSinceMs at MIN_VALUE instead makes the window START at
+        // the minimum, which is the intended meaning: quiet before the minimum
+        // is not counted, quiet after it is.
         if (recordedMs < minRecordingMs) {
+            quietSinceMs = Long.MIN_VALUE
+            return Verdict.CONTINUE
+        }
+        // First tick at or past the minimum: start the window here.
+        if (quietSinceMs == Long.MIN_VALUE) {
             quietSinceMs = nowMs
             return Verdict.CONTINUE
         }
@@ -200,7 +226,22 @@ class AutoFinishDetector(
          * Separates "the hand arrived" from "a sign was performed": an arrival
          * is one or two frames, a sign is many. Without this, raising the hand
          * and pausing to recall the sign ends the recording before it begins.
-         * 6 frames is ~0.6 s of real movement at the measured 10 fps.
+         * Sizing this is a genuine trade-off, and the two failures are opposite:
+         *
+         *  - Too HIGH and a short sign never auto-finishes. 6 required ~0.6 s of
+         *    motion at the 10 fps the analyser achieves; the shortest clip
+         *    measured here is 726 ms with 23 frames, and most of its frames sit
+         *    below the rising quiet threshold, so 6 was unreachable and the
+         *    detector never fired.
+         *  - Too LOW and "raise the hand, pause to think" finishes the recording
+         *    before the signer starts. At 4 the unit test
+         *    raisingTheHandAndPausingToThinkDoesNotFinish started failing
+         *    again, which is why this is back at 6.
+         *
+         * The real fix for the first case was counting motion correctly (see
+         * onFrame), not moving this number. With that corrected, 6 is reachable
+         * on a 726 ms clip -- the moving frames are now counted rather than
+         * silently skipped.
          */
         const val MIN_MOTION_FRAMES = 6
 

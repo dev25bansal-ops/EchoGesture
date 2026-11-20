@@ -134,22 +134,58 @@ class RecordModePredictionTest {
 
         // Feed the detector exactly as the live ticker does: one displacement
         // per frame, with a wall clock and a recorded duration.
+        //
+        // TRAILING STILLNESS IS APPENDED, and that is not a fudge. A corpus clip
+        // is cut tight around the sign -- its last frame is still moving, so it
+        // contains nothing for a "the hand has settled" detector to detect. A
+        // real recording is bracketed by the signer's own button presses and
+        // always ends with the hand coming to rest.
+        //
+        // The first version of this test asserted on the raw clip and failed
+        // with verdict=CONTINUE. That was the TEST being wrong, not the product:
+        // asserting "auto-finish fires" on data with no trailing stillness
+        // asserts something no detector could satisfy. Recording why, so the
+        // next person does not "fix" the detector to chase it.
         val det = AutoFinishDetector()
         val d = SignSegmenter.displacement(s.frames)
+        // Must outlast the minimum PLUS the quiet window: the window cannot
+        // start until recordedMs reaches MIN_RECORDING_MS (1200), then needs
+        // QUIET_MS (900) more. So the feed has to reach ~2100 ms from the start
+        // of the recording. 90 frames at 33 ms after signEnd(726) reaches
+        // 726 + 2970 = 3696 ms, comfortably past that. The first version of this
+        // test fed only 30 frames and failed for arithmetic, not behaviour.
+        val stillFrames = 90
+        val signEndMs = s.frames.last().capturedAtMs - s.frames.first().capturedAtMs
         var verdict = AutoFinishDetector.Verdict.CONTINUE
         var now = 0L
+        var firedAtMs = -1L
         for (i in s.frames.indices) {
             now = s.frames[i].capturedAtMs - s.frames.first().capturedAtMs
             verdict = det.onFrame(d[i], now, now)
-            if (verdict != AutoFinishDetector.Verdict.CONTINUE) break
+            if (verdict != AutoFinishDetector.Verdict.CONTINUE) { firedAtMs = now; break }
         }
-        report("autoFinish clip=${clip.name} verdict=$verdict after ${now}ms")
-        // A whole signed clip must reach FINISHED (or TIMED_OUT for a very long
-        // one) -- never sit at CONTINUE forever, which is what "the app never
-        // finishes on its own" would look like.
+        // Then the settle: zero displacement, real elapsed time.
+        if (verdict == AutoFinishDetector.Verdict.CONTINUE) {
+            for (k in 1..stillFrames) {
+                now = signEndMs + k * 33L
+                // A still hand is not perfectly zero (sensor jitter), but well
+                // under the 15% stop threshold. 0 is the conservative case.
+                verdict = det.onFrame(0f, now, now)
+                if (verdict != AutoFinishDetector.Verdict.CONTINUE) { firedAtMs = now; break }
+            }
+        }
+        report(
+            "autoFinish clip=${clip.name} signEndMs=$signEndMs " +
+                "firedAtMs=$firedAtMs verdict=$verdict state=${det.debugState()}"
+        )
         assertTrue(
-            "auto-finish never fired on a complete clip; verdict=$verdict",
+            "auto-finish never fired even with trailing stillness; verdict=$verdict",
             verdict != AutoFinishDetector.Verdict.CONTINUE
+        )
+        // And it must not fire DURING the sign.
+        assertTrue(
+            "auto-finish fired at ${firedAtMs}ms, before the sign ended at ${signEndMs}ms",
+            firedAtMs < 0 || firedAtMs >= signEndMs
         )
     }
 }

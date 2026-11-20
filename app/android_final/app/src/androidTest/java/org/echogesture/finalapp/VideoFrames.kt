@@ -36,7 +36,7 @@ object VideoFrames {
     )
 
     /** Generous but finite: ~2 s of wall-clock at 10 ms per dequeue attempt. */
-    private const val DEFAULT_MAX_ITERATIONS = 200_000
+    private const val DEFAULT_MAX_ITERATIONS = 20_000
 
     fun sample(
         file: File,
@@ -81,7 +81,7 @@ object VideoFrames {
             while (!sawOutputEos && picked.size < target && iterations < maxIterations) {
                 iterations++
                 if (!sawInputEos) {
-                    val inIndex = codec.dequeueInputBuffer(10_000L)
+                    val inIndex = codec.dequeueInputBuffer(2_000L)
                     if (inIndex >= 0) {
                         val buffer = codec.getInputBuffer(inIndex)!!
                         val size = extractor.readSampleData(buffer, 0)
@@ -94,7 +94,7 @@ object VideoFrames {
                         }
                     }
                 }
-                when (val outIndex = codec.dequeueOutputBuffer(info, 10_000L)) {
+                when (val outIndex = codec.dequeueOutputBuffer(info, 2_000L)) {
                     MediaCodec.INFO_TRY_AGAIN_LATER, MediaCodec.INFO_OUTPUT_FORMAT_CHANGED -> Unit
                     else -> if (outIndex >= 0) {
                         val image: Image? = codec.getOutputImage(outIndex)

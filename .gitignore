@@ -139,3 +139,11 @@ dist/
 *.aab
 *.jpeg
 *.jpg
+
+# --- Released APK: tracked deliberately, see submission/apk/README.md ------
+# The blanket *.apk rule above keeps debug builds out. This exception is the
+# one submission artifact that a reader is meant to install, so it is tracked
+# with its SHA-256 beside it. It carries the same unresolved weight rights as
+# models/ and is marked BLOCKED for publication in ARTIFACT_RIGHTS.md.
+!submission/apk/*.apk
+!submission/apk/*.sha256

@@ -54,11 +54,38 @@ class AutoFinishDetector(
     }
 
     private var started = false
-    private var peak = 0f
     private var quietSinceMs = Long.MIN_VALUE
+
+    /** Moving frames seen so far, i.e. how much actual motion this holds. */
+    private var motionFrames = 0
+
+    /**
+     * Every displacement seen so far this recording.
+     *
+     * A running maximum was the first implementation and it is WRONG for the
+     * same reason SignSegmenter.robustPeak exists: one glitch frame permanently
+     * raises the bar. Measured failure — a one-frame handedness flip makes
+     * SignSegmenter.displacement pair the wrong hands and spikes to ~0.28 while
+     * the real sign moves at ~0.03, so the quiet threshold became 0.042 and
+     * every genuine sign frame counted as "quiet": the sign was auto-finished
+     * about 1 s in, half-performed.
+     *
+     * Keeping the history lets the peak be a high percentile instead, which a
+     * handful of outliers cannot move.
+     */
+    private val history = ArrayList<Float>(256)
 
     /** True once real motion has been seen; exposed for the live status line. */
     val hasStartedMotion: Boolean get() = started
+
+    /** High percentile of the motion seen so far; 0 before anything moves. */
+    private fun peak(): Float {
+        if (history.isEmpty()) return 0f
+        val moved = history.filter { it > 0f }.sorted()
+        if (moved.isEmpty()) return 0f
+        val idx = ((moved.size - 1) * PEAK_PERCENTILE / 100).coerceIn(0, moved.size - 1)
+        return moved[idx]
+    }
 
     /**
      * Feeds one frame's [displacement] (as computed by
@@ -69,31 +96,64 @@ class AutoFinishDetector(
     fun onFrame(displacement: Float, nowMs: Long, recordedMs: Long): Verdict {
         if (recordedMs >= maxRecordingMs) return Verdict.TIMED_OUT
 
-        if (displacement > 0f && displacement > peak) peak = displacement
+        // The peak is computed BEFORE this frame joins the history, so the
+        // phase-1 gate compares against the motion already seen rather than
+        // against itself. With the old ordering, `displacement >= peak *
+        // startFraction` reduced to `displacement >= 0.4 * displacement` — a
+        // test that is true for ANY positive value. START_FRACTION could never
+        // reject, so merely raising the hand started the sign.
+        val priorPeak = peak()
+        history.add(displacement)
+        if (history.size > HISTORY_CAP) history.removeAt(0)
 
-        // Phase 1: wait for the sign to begin. Until the peak is meaningful,
-        // "quiet" is indistinguishable from "not started yet".
+        // Phase 1: wait for the sign to begin.
         if (!started) {
-            if (peak > 0f && displacement >= peak * startFraction) {
+            // Two pieces of evidence: this frame moves meaningfully on its own
+            // (an absolute floor, so sensor noise cannot start a sign), AND it
+            // is comparable to the motion already seen (relative, so a slow
+            // signer and a fast one behave alike).
+            val aboveFloor = displacement >= NOISE_FLOOR
+            val abovePrior = priorPeak <= 0f || displacement >= priorPeak * startFraction
+            if (aboveFloor && abovePrior) {
                 started = true
                 quietSinceMs = Long.MIN_VALUE
             }
             return Verdict.CONTINUE
         }
 
-        // Phase 2: has it settled?
-        val quiet = displacement <= peak * stopFraction
+        // Phase 2: has it settled? Judged against the percentile peak, so a
+        // single spike cannot raise the bar for the rest of the recording.
+        val peakNow = peak()
+        val quiet = displacement <= peakNow * stopFraction
         if (!quiet) {
             quietSinceMs = Long.MIN_VALUE
+            motionFrames++
             return Verdict.CONTINUE
         }
         if (quietSinceMs == Long.MIN_VALUE) {
             quietSinceMs = nowMs
             return Verdict.CONTINUE
         }
-        // The minimum guards the pause-to-think case: motion started, the
-        // signer paused, but the recording is still young.
-        if (recordedMs < minRecordingMs) return Verdict.CONTINUE
+        // Quiet time accumulated BEFORE the minimum does not count: restart the
+        // clock at the minimum, so a signer who raises the hand and pauses to
+        // think is not finished before they begin.
+        if (recordedMs < minRecordingMs) {
+            quietSinceMs = nowMs
+            return Verdict.CONTINUE
+        }
+        // A sign needs SUSTAINED motion, not just the hand arriving.
+        //
+        // This is the second half of the "raise the hand, pause to recall the
+        // sign" bug. The hand's arrival clears the noise floor and legitimately
+        // starts the detector, so magnitude alone cannot tell arrival from
+        // signing. What separates them is that arrival is one or two frames and
+        // a sign is many: measured p25 of real clip motion is 0.15 per frame
+        // sustained across the clip. Requiring several moving frames means an
+        // arrival-plus-pause records nothing, and the user simply keeps going.
+        if (motionFrames < MIN_MOTION_FRAMES) {
+            quietSinceMs = nowMs
+            return Verdict.CONTINUE
+        }
         return if (nowMs - quietSinceMs >= quietMs) Verdict.FINISHED else Verdict.CONTINUE
     }
 
@@ -120,6 +180,35 @@ class AutoFinishDetector(
 
         /** Fraction of peak motion that counts as "the sign has begun". */
         const val START_FRACTION = 0.40f
+
+        /**
+         * Smallest per-frame motion that can start a sign, in the units
+         * SignSegmenter.displacement returns (mean absolute normalised landmark
+         * movement between consecutive frames).
+         *
+         * Without an absolute floor the start gate is satisfiable by sensor
+         * noise: a still hand still jitters, and that jitter would begin a sign
+         * and then immediately look settled. 0.01 is below the smallest genuine
+         * motion measured on the corpus (p25 of real clips is 0.15) and above
+         * the jitter of a held hand.
+         */
+        const val NOISE_FLOOR = 0.01f
+
+        /**
+         * Moving frames a recording must accumulate before it can auto-finish.
+         *
+         * Separates "the hand arrived" from "a sign was performed": an arrival
+         * is one or two frames, a sign is many. Without this, raising the hand
+         * and pausing to recall the sign ends the recording before it begins.
+         * 6 frames is ~0.6 s of real movement at the measured 10 fps.
+         */
+        const val MIN_MOTION_FRAMES = 6
+
+        /** Percentile of displacements used as the motion reference. */
+        const val PEAK_PERCENTILE = 95
+
+        /** Displacements retained for the percentile; ~8 s at 30 fps. */
+        const val HISTORY_CAP = 256
 
         /**
          * Fraction of peak motion below which the hand counts as still.

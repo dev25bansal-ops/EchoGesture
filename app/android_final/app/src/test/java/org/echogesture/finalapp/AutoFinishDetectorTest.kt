@@ -106,10 +106,13 @@ class AutoFinishDetectorTest {
 
     @Test
     fun aQuietSignStillStarts() {
-        // Relative thresholds: a signer with small movements must still be
-        // detected. The absolute values are deliberately tiny here.
+        // A signer who moves less than average must still be detected. The
+        // values here are small but above the sensor-noise floor: 0.002, which
+        // an earlier version of this test used, is BELOW NOISE_FLOOR and is
+        // correctly rejected as jitter now. Corpus p25 of real per-frame motion
+        // is 0.15, so 0.03 is already a very quiet sign.
         val d = AutoFinishDetector()
-        val profile = List(10) { 0.002f } + List(20) { 0.0f }
+        val profile = List(10) { 0.03f } + List(20) { 0.0f }
         assertEquals(
             AutoFinishDetector.Verdict.FINISHED,
             drive(d, profile)
@@ -128,5 +131,49 @@ class AutoFinishDetectorTest {
             AutoFinishDetector.Verdict.FINISHED,
             drive(d, profile)
         )
+    }
+
+    @Test
+    fun aSingleGlitchFrameDoesNotRaiseTheQuietThreshold() {
+        // THE BUG THIS REPLACES: peak was a raw running max, so one spike frame
+        // (a handedness flip makes SignSegmenter.displacement pair the wrong
+        // hands, ~0.28 while the sign moves at ~0.03) permanently set the quiet
+        // threshold to 0.042 and every real sign frame counted as quiet. The
+        // sign was finished about 1 s in, half-performed.
+        val d = AutoFinishDetector()
+        val profile = List(6) { 0.30f } +           // genuine sign motion
+            listOf(0.90f) +                          // one glitch spike
+            List(12) { 0.30f } +                     // sign continues
+            List(20) { 0.0f }                        // then actually stops
+        val v = drive(d, profile)
+        assertEquals(
+            "a single spike must not make the ongoing sign look quiet",
+            AutoFinishDetector.Verdict.FINISHED, v
+        )
+    }
+
+    @Test
+    fun raisingTheHandAndPausingToThinkDoesNotFinish() {
+        // THE BUG THIS REPLACES: the start gate could never reject (peak was
+        // updated from the current frame before being tested against), so the
+        // hand's arrival started the sign; a pause to recall the sign then
+        // looked like the end of one.
+        val d = AutoFinishDetector()
+        // 0.5 s of hand-raise motion, then a long still pause BEFORE any sign.
+        val profile = List(5) { 0.10f } + List(40) { 0.0f }
+        val v = drive(d, profile)
+        assertEquals(
+            "a ready-position pause is not a finished sign",
+            AutoFinishDetector.Verdict.CONTINUE, v
+        )
+    }
+
+    @Test
+    fun noiseAloneNeverStartsASign() {
+        // Sub-floor jitter must not satisfy the start gate.
+        val d = AutoFinishDetector()
+        val profile = List(40) { 0.002f }
+        assertEquals(AutoFinishDetector.Verdict.CONTINUE, drive(d, profile))
+        assertFalse("sensor noise must not count as a sign starting", d.hasStartedMotion)
     }
 }

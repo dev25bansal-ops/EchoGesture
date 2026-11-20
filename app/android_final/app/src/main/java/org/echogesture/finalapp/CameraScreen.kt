@@ -965,16 +965,20 @@ class CameraScreen(
                 prevSlots = slots
             }
         }
-        val maskSteps = frames.count { it.hands.isNotEmpty() }
-            .let { if (frames.isEmpty()) 0 else Math.round(it * 24f / frames.size) }
+        // maskSteps is left unset here on purpose: the real number is only
+        // known once the 24-step mask is built for inference. runInference()
+        // fills it in with withMaskFrom(). Raw coverage is reported separately
+        // so the two are never confused.
+        val coverage = if (frames.isEmpty()) 0f
+            else frames.count { it.hands.isNotEmpty() }.toFloat() / frames.size
         return DiagnosticsLog.Attempt(
             endReason = outcome.reason.name,
             startedAtMs = outcome.startedAtMs,
             endedAtMs = outcome.endedAtMs,
-            maskSteps = maskSteps.coerceIn(0, 24),
             bothHandsFrames = both,
             longestDropoutFrames = longest,
-            slotFlips = flips
+            slotFlips = flips,
+            rawHandCoverage = coverage
         )
     }
 
@@ -1141,14 +1145,14 @@ class CameraScreen(
             }
             if (handFrames == 0) {
                 processing = false
-                if (prefs.diagnostics) logDiagnostic(capture, null, 0L)
+                if (prefs.diagnostics) logDiagnostic(capture, null, 0L, attempt)
                 render(UiState.NO_HANDS)
                 return
             }
             val coverage = handFrames.toFloat() / sampled.size.coerceAtLeast(1)
             if (coverage < MIN_HAND_FRACTION) {
                 processing = false
-                if (prefs.diagnostics) logDiagnostic(capture, null, 0L)
+                if (prefs.diagnostics) logDiagnostic(capture, null, 0L, attempt)
                 render(UiState.LOW_FRAMES)
                 return
             }
@@ -1157,7 +1161,12 @@ class CameraScreen(
             val result = c.predict(tensors.featuresXY, tensors.mask, tensors.featuresXYZ)
             val totalMs = (System.nanoTime() - started) / 1_000_000L
             processing = false
-            if (prefs.diagnostics) logDiagnostic(capture, result, totalMs)
+            // The mask that was actually fed to the nine members, not an estimate
+            // derived from hand-bearing frame counts. These differ: the mask is
+            // built after resampling to 24 steps, so the model can be given a
+            // step marked present whose source frames were interpolated.
+            val withMask = attempt?.withMaskFrom(tensors.mask)
+            if (prefs.diagnostics) logDiagnostic(capture, result, totalMs, withMask)
             activity.runOnUiThread {
                 // Drop a result the user can no longer see: they cleared the
                 // card, left the tab, or started another attempt while this

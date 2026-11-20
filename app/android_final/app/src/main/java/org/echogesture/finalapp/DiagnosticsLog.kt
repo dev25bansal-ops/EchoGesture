@@ -47,15 +47,30 @@ class DiagnosticsLog(context: Context) {
         val endReason: String = "",
         val startedAtMs: Long = 0L,
         val endedAtMs: Long = 0L,
-        /** Model steps with a hand present, of 24. */
-        val maskSteps: Int = 0,
+        /**
+         * Steps present in the 24-step mask ACTUALLY fed to the ensemble, or -1
+         * when the attempt never reached inference.
+         *
+         * Deliberately not derived from hand-bearing frame counts. The mask is
+         * built after resampling, so a step can be marked present from
+         * interpolated frames; an estimate from raw coverage would report a
+         * different number and hide that. -1 is used rather than 0 so a rejected
+         * attempt is not mistaken for "the mask was empty".
+         */
+        val maskSteps: Int = -1,
         /** Frames where both slots were occupied. */
         val bothHandsFrames: Int = 0,
         /** Longest run of consecutive hand-less frames. */
         val longestDropoutFrames: Int = 0,
         /** Times the left/right slot assignment flipped between adjacent frames. */
-        val slotFlips: Int = 0
-    )
+        val slotFlips: Int = 0,
+        /** Raw hand-bearing coverage of the sampled window, 0..1. */
+        val rawHandCoverage: Float = 0f
+    ) {
+        /** This attempt with mask coverage taken from the real model input. */
+        fun withMaskFrom(mask: FloatArray): Attempt =
+            copy(maskSteps = mask.count { it > 0.5f })
+    }
 
     fun record(
         capture: HandTracker.Capture,
@@ -81,12 +96,18 @@ class DiagnosticsLog(context: Context) {
             append(" infer_ms=").append(result?.inferenceMillis ?: -1)
             append(" total_ms=").append(totalMs)
             if (attempt != null) {
+                // end_reason is the segmenter's own verdict. A rejection that
+                // happened BEFORE inference shows mask_steps=n/a, so "no usable
+                // tracking record" is never read as "the model classified this
+                // and got it wrong" - two different failures with different fixes.
                 append(" end_reason=").append(attempt.endReason)
                 append(" onset_ms=").append(attempt.startedAtMs)
                 append(" end_ms=").append(attempt.endedAtMs)
                 append(" seg_ms=")
                     .append((attempt.endedAtMs - attempt.startedAtMs).coerceAtLeast(0))
-                append(" mask_steps=").append(attempt.maskSteps).append("/24")
+                append(" mask_steps=")
+                    .append(if (attempt.maskSteps < 0) "n/a" else "${attempt.maskSteps}/24")
+                append(" raw_coverage=").append(String.format("%.2f", attempt.rawHandCoverage))
                 append(" both_hands=").append(attempt.bothHandsFrames)
                 append(" longest_dropout=").append(attempt.longestDropoutFrames)
                 append(" slot_flips=").append(attempt.slotFlips)

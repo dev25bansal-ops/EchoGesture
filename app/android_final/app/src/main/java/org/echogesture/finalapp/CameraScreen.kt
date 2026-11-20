@@ -374,7 +374,32 @@ class CameraScreen(
             }
         }
         permissionButton.setOnClickListener {
-            permissionLauncher.launch(Manifest.permission.CAMERA)
+            // After a PERMANENT denial Android returns false immediately and
+            // shows no dialog, so relaunching the request does nothing and the
+            // card's only button is inert. Detect that case and route to the
+            // system settings page where the grant actually lives.
+            val permanently = !activity.shouldShowRequestPermissionRationale(
+                Manifest.permission.CAMERA
+            ) && !hasCameraPermission()
+            if (permanently) {
+                runCatching {
+                    activity.startActivity(
+                        android.content.Intent(
+                            android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                            android.net.Uri.fromParts(
+                                "package", activity.packageName, null
+                            )
+                        )
+                    )
+                }.onFailure {
+                    Toast.makeText(
+                        activity, R.string.permission_open_settings_failed,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            } else {
+                permissionLauncher.launch(Manifest.permission.CAMERA)
+            }
         }
         flipButton.setOnClickListener {
             haptic(HapticFeedbackConstants.KEYBOARD_TAP)
@@ -1003,7 +1028,7 @@ class CameraScreen(
         SignRecorder.Rejection.NOT_STARTED -> R.string.record_no_frames
         SignRecorder.Rejection.CAMERA_STALLED -> R.string.record_stalled
         SignRecorder.Rejection.LOW_COVERAGE -> R.string.record_low_coverage
-        SignRecorder.Rejection.TOO_LONG -> R.string.record_too_short
+        SignRecorder.Rejection.TOO_LONG -> R.string.record_too_long
     }
 
     /**

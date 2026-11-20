@@ -41,8 +41,24 @@ import com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarker
  */
 object ClipAnalyzer {
 
-    /** Hard cap on decoded frames; bounds memory at ~2 min of 30 fps. */
-    private const val MAX_FRAMES_DEFAULT = 3600
+    /**
+     * Hard cap on decoded frames.
+     *
+     * This is a MEMORY bound, and the previous value was not one: 3600 frames of
+     * 640x480 ARGB_8888 is 3600 * 1.17 MiB = ~4.2 GiB, which no phone holds. The
+     * comment claimed it "bounds memory at ~2 min of 30 fps" while counting
+     * frames and not bytes. Every frame is decoded before any is detected, so a
+     * 60 s gallery clip would have reached ~2.1 GiB and been OOM-killed
+     * mid-analysis with no result card.
+     *
+     * 120 is chosen from the work the classifier actually needs: the training
+     * path samples 32 frames across a clip, and the longest real clip measured
+     * in this project is 74 frames. 120 keeps a 60% margin over that while
+     * bounding peak decode memory to 120 * 1.17 MiB = ~140 MiB, which is a size
+     * a phone can actually hold. Longer clips are truncated, and `truncated` is
+     * reported so the caller can tell the user.
+     */
+    private const val MAX_FRAMES_DEFAULT = 120
 
     /**
      * Longest edge fed to MediaPipe. The camera path delivers ~640x480, and
@@ -231,8 +247,15 @@ object ClipAnalyzer {
             //
             // The scaling happens inside the decoder, so it is close to free
             // compared with decoding full size and resampling on the CPU.
-            val targetW = if (rotation == 90 || rotation == 270) MAX_EDGE * 3 / 4 else MAX_EDGE
-            val targetH = if (rotation == 90 || rotation == 270) MAX_EDGE else MAX_EDGE * 3 / 4
+            // A square request is correct for BOTH orientations: the retriever
+            // returns the frame already rotated upright, and getScaledFrameAtTime
+            // preserves aspect ratio (it scales by a single uniform factor), so
+            // asking for 640x640 yields 640x480 landscape or 480x640 portrait
+            // without stretching either. The old orientation-dependent dims
+            // existed only to compensate for the double-rotation that is now
+            // removed.
+            val targetW = MAX_EDGE
+            val targetH = MAX_EDGE
             while (tUs < totalUs && out.size < maxFrames) {
                 // OPTION_CLOSEST, not OPTION_CLOSEST_SYNC.
                 //
@@ -279,15 +302,30 @@ object ClipAnalyzer {
     }
 
     /** Fit the longest edge to [MAX_EDGE] and bake in the container rotation. */
+    /**
+     * Fit the longest edge to [MAX_EDGE]. Rotation is NOT applied here.
+     *
+     * `MediaMetadataRetriever` already rotates: its JNI allocates the output
+     * bitmap with width and height swapped for 90/270 and copies pixels through
+     * rotate90()/rotate270() using the container's rotation metadata. That has
+     * been true from android-4.4_r1 through main, covering minSdk 24. Applying
+     * `postRotate(rotationDegrees)` on top would rotate a portrait clip a SECOND
+     * time and hand the detector a sideways frame.
+     *
+     * Every clip used in this project's measurements is 640x480 with rotation 0,
+     * so this was a no-op on all of them and no result in the repo changes.
+     * It would only have appeared on a portrait phone recording. That case has
+     * no test clip yet, which is why the rotation is removed (strictly safer
+     * than applying it twice) rather than replaced with new logic.
+     */
     private fun scaleAndRotate(src: Bitmap, rotationDegrees: Int): Bitmap {
         val w = src.width
         val h = src.height
         val longest = maxOf(w, h)
         val scale = if (longest > MAX_EDGE) MAX_EDGE.toFloat() / longest else 1f
+        if (scale == 1f) return src
         val matrix = android.graphics.Matrix()
-        if (scale != 1f) matrix.postScale(scale, scale)
-        if (rotationDegrees != 0) matrix.postRotate(rotationDegrees.toFloat())
-        if (matrix.isIdentity) return src
+        matrix.postScale(scale, scale)
         val out = Bitmap.createBitmap(src, 0, 0, w, h, matrix, true)
         return if (out === src) src else out
     }

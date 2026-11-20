@@ -34,6 +34,8 @@
     <string name="record_too_long_hint">This recording is longer than most signs. Tap Finish as soon as the sign ends — extra time is trimmed, but a long wait makes the reading less reliable.</string>
     <string name="record_cancel_hint">Signing now. Cancel discards this recording without recognising anything.</string>
     <string name="record_too_short">That recording was too short to read. Start, perform the whole sign, then finish.</string>
+    <string name="record_too_long">That recording ran past the maximum length and was cut off. Start, perform the sign promptly, then finish.</string>
+    <string name="permission_open_settings_failed">Could not open Settings. Enable Camera for EchoGesture in your phone\'s app settings.</string>
     <string name="record_too_few_frames">The camera delivered too few frames to read that sign. Hold the phone steady, keep your hand in the guide, and record again.</string>
     <string name="record_no_frames">The camera did not send any frames during that recording. Try again.</string>
     <string name="record_stalled">The camera stopped during that sign. Hold still for a moment, then record again.</string>

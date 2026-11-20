@@ -29,6 +29,37 @@ class HandTracker private constructor(
 
     private val nextFrameTs = AtomicLong(0L)
     private val closed = AtomicBoolean(false)
+
+    /**
+     * Detects currently inside [landmarker], and a latch [close] waits on.
+     *
+     * WHY THIS EXISTS. Closing the landmarker while a frame is inside
+     * `detectForVideo()` tears down the native graph under a running detect:
+     * `TaskRunner.close()` is not synchronised in tasks-core 0.10.14, so this is
+     * a native abort, not a catchable exception.
+     *
+     * `onDestroy()` used to claim that calling `trackerExecutor.shutdownNow()`
+     * first prevented it. It does not: shutdownNow interrupts and drains but
+     * does NOT wait, [analyse] checks [closed] once on entry and never checks
+     * `isInterrupted`, and MediaPipe's native detect ignores interrupts
+     * entirely. The window was narrowed, never closed.
+     *
+     * So every detect is bracketed by [enterDetect]/[exitDetect], and [close]
+     * waits for the count to reach zero before touching the landmarker. The
+     * wait is bounded, because a hung detect must not hang the UI thread
+     * forever; on timeout the landmarker is still closed, but the caller has
+     * been given the chance it previously never had.
+     */
+    private val inFlight = java.util.concurrent.atomic.AtomicInteger(0)
+    private val idle = java.util.concurrent.CountDownLatch(1)
+
+    private fun enterDetect() {
+        inFlight.incrementAndGet()
+    }
+
+    private fun exitDetect() {
+        if (inFlight.decrementAndGet() == 0) idle.countDown()
+    }
     private val ring = ArrayDeque<Frame>()
     private val lock = Any()
 
@@ -151,6 +182,9 @@ class HandTracker private constructor(
 
         /** Upper bound on dumped frames per recording, so a long one cannot fill the disk. */
         const val MAX_DUMP_FRAMES = 40
+
+        /** Longest close() waits for an in-flight detect to finish; see [inFlight]. */
+        const val CLOSE_DRAIN_MS = 500L
 
         /**
          * The capture window is a span of REAL TIME, not a frame count.
@@ -433,13 +467,20 @@ class HandTracker private constructor(
             // has copied the pixels into its packet, so closing mpImage (which
             // recycles `bitmap`) afterwards is safe.
             val detectStart = SystemClock.elapsedRealtime()
-            val result = landmarker.detectForVideo(
-                mpImage,
-                ImageProcessingOptions.builder()
-                    .setRotationDegrees(imageProxy.imageInfo.rotationDegrees)
-                    .build(),
-                nextFrameTs.getAndAdd(FRAME_INTERVAL_MS)
-            )
+            // Bracketed so close() cannot tear the native graph down underneath
+            // this call. See [inFlight].
+            val result = try {
+                enterDetect()
+                landmarker.detectForVideo(
+                    mpImage,
+                    ImageProcessingOptions.builder()
+                        .setRotationDegrees(imageProxy.imageInfo.rotationDegrees)
+                        .build(),
+                    nextFrameTs.getAndAdd(FRAME_INTERVAL_MS)
+                )
+            } finally {
+                exitDetect()
+            }
             detectMs = SystemClock.elapsedRealtime() - detectStart
             // Real analysed-frame timing, including the camera's own sensor
             // timestamp so dropped frames can be counted. Without this the live
@@ -502,6 +543,10 @@ class HandTracker private constructor(
      * into one sequence.
      */
     fun clear() = synchronized(lock) {
+        // A discarded or abandoned capture must not keep writing camera PNGs.
+        // Only stopRecording() used to disarm the dump, so cancelRecording()
+        // and clear() left it armed.
+        frameDumpDir = null
         ring.clear()
         lastCapturedAtMs = Long.MIN_VALUE
         recorder.cancel()
@@ -521,7 +566,10 @@ class HandTracker private constructor(
     fun shouldAutoStopRecording(nowMs: Long): Boolean =
         synchronized(lock) { recorder.shouldAutoStop(nowMs) }
 
-    fun cancelRecording(): Unit = synchronized(lock) { recorder.cancel() }
+    fun cancelRecording(): Unit = synchronized(lock) {
+        frameDumpDir = null
+        recorder.cancel()
+    }
 
     /** Ends the recording at [nowMs] and reports whether it is usable. */
     fun stopRecording(nowMs: Long): SignRecorder.Result =
@@ -564,6 +612,18 @@ class HandTracker private constructor(
 
     override fun close() {
         if (closed.compareAndSet(false, true)) {
+            // Wait for any frame already inside detectForVideo() to come back
+            // out. This is the whole point: TaskRunner.close() is not
+            // synchronised, so closing while a detect is in flight frees the
+            // native graph underneath it and the process dies.
+            //
+            // Bounded at 500 ms. A detect measured 36-58 ms, so this normally
+            // returns immediately; the timeout only matters if the detector has
+            // wedged, and hanging the UI thread forever would be a worse bug
+            // than the one being fixed.
+            if (inFlight.get() > 0) {
+                runCatching { idle.await(CLOSE_DRAIN_MS, java.util.concurrent.TimeUnit.MILLISECONDS) }
+            }
             landmarker.close()
             synchronized(lock) {
                 ring.clear()

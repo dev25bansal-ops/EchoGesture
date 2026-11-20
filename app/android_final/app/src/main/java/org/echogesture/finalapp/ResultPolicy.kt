@@ -24,6 +24,27 @@ package org.echogesture.finalapp
  * Measured coverage on that population: a 0.15 margin keeps 61% of captures at
  * 94% accuracy. This is a real trade — 39% of attempts are declined rather than
  * guessed, which is the correct direction for an accessibility tool.
+ *
+ * WHY THIS IS NOT RAISED FURTHER. A 0.40 cut looks better on the tests
+ * (97.4% accuracy at 70% coverage, 23 wrong readings accepted instead of 85)
+ * and it was tried and reverted. The stated reason at the time -- "the user's
+ * own correctly-signed ELEVATOR clip scores 49.9% top-1 with a 0.216 margin"
+ * -- WAS WRONG and has been removed. Re-measured on 2026-11-19 through the
+ * shipped pipeline, that clip is not a correct answer at all: it predicts
+ * FLIP at 30.5% with ELEVATOR1 ranked 83rd at 0.15%, and 8 of 9 ensemble
+ * members say FLIP. The original replay ran at 2x speed and scored a window
+ * that never existed.
+ *
+ * The revert still stands, but for a different and weaker reason: raising the
+ * gate buys accuracy by refusing, and this app's whole claim is that it says
+ * "not sure" instead of guessing. Going 0.15 -> 0.40 cuts coverage from 86% to
+ * 70% and correct answers are refused 3x more often than wrong ones are
+ * caught. That is a product decision for the owner, not something to change
+ * unilaterally the day before submission.
+ *
+ * Full measurements, including the per-class-threshold experiment that was
+ * tried and lost at every coverage: docs/ACCEPTANCE_GATE_2026-11-19.md and
+ * docs/PER_CLASS_THRESHOLDS_2026-11-19.md.
  */
 object ResultPolicy {
 

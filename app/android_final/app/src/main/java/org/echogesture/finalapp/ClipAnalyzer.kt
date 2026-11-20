@@ -118,19 +118,44 @@ object ClipAnalyzer {
         // answer beats a fast error.
         var decodeNote = ""
         val frames = try {
-            // The sequential MediaCodec path (SequentialVideoDecoder) is NOT
-            // used. It crashed the process in nativeCreatePlanes: the codec's
-            // output format did not match the ImageReader's configured size, and
-            // that failure is a native SIGABRT, not a catchable exception --
-            // the app vanished mid-analysis with no Java stack.
+            // Sequential codec FIRST, retriever as fallback.
             //
-            // Reverted to the retriever, which is slower (8.7 s for 55 frames)
-            // but cannot take the process down. Re-enabling the codec path needs
-            // the ImageReader created from the codec's OUTPUT format inside
-            // INFO_OUTPUT_FORMAT_CHANGED, plus an on-device test proving no
-            // crash, before it ships again.
-            decodeNote = "retriever"
-            decode(context, uri, maxFrames)
+            // The retriever seeks to a keyframe and decodes forward for EVERY
+            // requested frame: measured 8,700-21,200 ms for a 55-frame clip.
+            // MediaExtractor + MediaCodec decodes the stream once.
+            //
+            // This path is only used because it was proven on this device
+            // first: SequentialDecoderSmokeTest decodes a real clip in ~870 ms
+            // for 23 frames (a 10-24x speedup), with a luma-spread assertion
+            // proving the YUV conversion produces a real image rather than a
+            // blank bitmap. An earlier surface-based attempt aborted natively in
+            // ImageReader$SurfaceImage.nativeCreatePlanes and killed the app, so
+            // the smoke test exists specifically to catch that class of failure
+            // before users do.
+            //
+            // Output is in decoder order, which for these containers is
+            // presentation order; ClipAnalyzer resamples by index downstream, so
+            // order only has to be temporal, which it is.
+            val seq = runCatching {
+                SequentialVideoDecoder.decode(
+                    context, uri, targetFps = 30, maxEdge = MAX_EDGE, maxFrames = maxFrames
+                )
+            }.getOrNull()
+            if (seq != null && seq.bitmaps.size >= MIN_SEQUENTIAL_FRAMES) {
+                decodeNote = "sequential codec=${seq.codecName} decode=${seq.decodeMs}ms"
+                seq.bitmaps.mapIndexed { i, b ->
+                    Decoded(b, seq.ptsMs.getOrElse(i) { 0L })
+                }
+            } else {
+                decodeNote = "retriever" + (seq?.let {
+                    " (sequential gave ${it.bitmaps.size} frames)"
+                } ?: " (codec unavailable)")
+                // The sequential path may have produced a few frames before
+                // giving up; release them before falling back so the retriever's
+                // copies are not competing with them for memory.
+                seq?.bitmaps?.forEach { runCatching { it.recycle() } }
+                decode(context, uri, maxFrames)
+            }
         } catch (t: Throwable) {
             return Outcome.Failed(Outcome.Failed.Reason.UNREADABLE, t.javaClass.simpleName)
         }

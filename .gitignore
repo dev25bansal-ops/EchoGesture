@@ -129,3 +129,13 @@ evaluation/device/demo_final/*.png
 # Claude Code session infrastructure: worktrees, transcripts and session state.
 # Not project source; a fresh clone must never carry another machine's session.
 .claude/
+
+# --- Submission branch housekeeping -------------------------------------
+# Build outputs and local artifacts: an APK embeds the restricted weights and is
+# BLOCKED for publication (see NOTICE / ARTIFACT_RIGHTS.md). Never commit it.
+artifacts/
+dist/
+*.apk
+*.aab
+*.jpeg
+*.jpg

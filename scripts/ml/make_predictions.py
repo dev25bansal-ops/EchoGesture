@@ -107,6 +107,15 @@ def main():
             "top5": [idx_to_label[int(i)] for i in order],
             "confidence": round(float(probs[order[0]]), 4),
             "latency_ms": round(latencies[-1], 3),
+            # This script reads CACHED landmarks, so its latency_ms covers the
+            # nine interpreters ONLY - it cannot time video decode or MediaPipe,
+            # because neither runs here. Measured end-to-end on real video the
+            # same pipeline costs ~600 ms on desktop and ~45 ms of detect on the
+            # phone, so a bare 3 ms in this field reads as an understatement to
+            # anyone who re-measures (which the deck says the organizers will).
+            # Recording the scope makes the number honest without pretending to
+            # a measurement this path cannot make.
+            "latency_scope": "classifier_only",
         })
 
         # Accuracy is the reason these summaries exist; the earlier version of

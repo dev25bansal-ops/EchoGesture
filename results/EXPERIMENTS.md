@@ -511,7 +511,7 @@ From `docs/hackathon/README.md`:
 | --- | --: | --- | --- |
 | Held-out top-1 | 35% | ≥70% | **77.02%** — cleared with margin |
 | Edge latency | 20% | ≤50 ms p95 | 6.6 ms classifier |
-| Quantization | 20% | <20 MB | 8.51 MB across nine |
+| Quantization | 20% | <20 MB | 16.33 MB total (9 members 8.51 + detector 7.82) |
 | **Robustness + HUD** | **25%** | ≤5 pt degradation | **was FAILING** |
 | Power / thermal | — | ≤500 mW, ≤20% drift | not yet measured |
 

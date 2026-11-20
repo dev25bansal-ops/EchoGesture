@@ -13,12 +13,22 @@ signer appearance and background. Landmarks discard both and keep only the
 geometry that defines the sign - the approach every Kaggle GISLR top-5 entry
 converged on independently.
 
-Latency budget (measured on this machine, single process, no contention):
-MediaPipe HandLandmarker is ~23 ms/frame at 256x256 with 2 hands, and the INT8
-classifier is ~3 ms per clip. A 24-frame clip is therefore ~0.55 s wall
-clock, but the number the jury matrix scores is per-frame inference time,
-which is ~26 ms - inside the 50 ms budget. Reported separately in results.csv
-so the two are never conflated.
+Latency budget (measured on this machine, three consecutive clean runs):
+MediaPipe HandLandmarker measures 14.5-16.4 ms/frame p50 and 22.7-25.1 ms p95 at
+256x256 with 2 hands (n=160 frames per run, `scripts/ml/latency_per_frame.py`,
+retained in `results/latency_per_frame_distribution.json`). The classifier adds
+~3-4 ms per clip for the nine-member ensemble.
+
+An earlier measurement reported 133 ms/frame p50 and this file previously called
+the criterion a FAIL on that basis. That figure was taken while a `distllm`
+inference server from another project was saturating the CPU; re-running the same
+script on an unloaded machine gives the numbers above. Per-frame detector cost is
+inside the 50 ms budget. The retraction of the original ~23 ms figure was itself
+wrong — see the correction note in `docs/hackathon/CLAIMS_AND_LIMITS.md`.
+
+This is a desktop x86 Python measurement; the Android app uses a different detector
+path (detectForVideo at native 640x480) and has never been measured. Reported
+separately in results.csv so the two are never conflated.
 """
 
 from __future__ import annotations
@@ -29,11 +39,24 @@ import cv2
 import numpy as np
 
 NUM_LANDMARKS = 21
+
+# Detector input size for the CACHE-BUILDING path only.
+#
+# 256 is the squash size the landmark CACHE in .scratch/landmarks was built at.
+# It is NOT the geometry the shipped checkpoints are accurate on: measured live
+# on the full 1,255-clip test set, native geometry scores 84.94% and 256-squash
+# 81.51% (p=0.0004). `predict()` and the Android app both use native, which is
+# why clip_to_landmarks() defaults to size=None.
+#
+# Do not change this constant: the existing cache is keyed on it, and rebuilding
+# is a separate job. Changing it would silently invalidate every cached array.
 FRAME_SIZE = 256
+
 HANDS = 2
 
 _TASK = None
 _LANDMARKER = None
+# Which running_mode the cached landmarker was built for; see get_landmarker().
 _LANDMARKER_MODE = None
 
 
@@ -45,15 +68,15 @@ def get_landmarker(mode: str = "image"):
     """Create (once) and return a MediaPipe HandLandmarker.
 
     `mode` is "image" for offline clips and "video" for streaming. Both give
-    the same 23 ms/frame; VIDEO additionally reuses its tracker across calls,
+    the same per-frame cost; VIDEO additionally reuses its tracker across calls,
     which matters when frames arrive one at a time.
     """
     global _LANDMARKER, _LANDMARKER_MODE
     # One landmarker per mode, not one per process. A VIDEO-mode landmarker has
     # its own tracker state and must be driven by detect_for_video(); handing it
-    # to the image path (or the reverse) raises inside MediaPipe, and
-    # detect_hands catches that as "no hand", so the clip silently scores 0/32
-    # frames instead of failing loudly. Measured: after an IMAGE warm-up a
+    # to the image path — or the reverse — raises inside MediaPipe, and
+    # detect_hands() catches that as "no hand", so the clip silently scores 0/32
+    # frames instead of failing loudly. Measured: after an IMAGE warm-up, a
     # mode="video" caller got 0 of 8 frames; video-first got 5 of 8.
     if _LANDMARKER is not None and _LANDMARKER_MODE == mode:
         return _LANDMARKER
@@ -89,20 +112,44 @@ def get_landmarker(mode: str = "image"):
     return _LANDMARKER
 
 
-def _fit(f, size):
-    """Resize one frame, or pass it through when `size` is None."""
+def _present_for_detector(frame: np.ndarray, size: int, letterbox: bool) -> np.ndarray:
+    """Prepare one BGR frame for MediaPipe.
+
+    `letterbox=False` squashes to size x size, which is what extraction used.
+
+    `letterbox=True` preserves aspect ratio by scaling the long side to `size`
+    and centring on a square canvas. This matters for robustness: a 35%
+    downscale applied to an already-squashed 256x256 frame leaves ~89px of real
+    detail and detection collapses, but applied to a 640x480 frame before
+    squashing it leaves ~224px and detection is unaffected (measured: 45.5% ->
+    44.5% of frames with a hand present, versus 44.1% -> 27.6% when the squash
+    comes first). The same reasoning is why the Android app captures 640x480
+    landscape rather than a square.
+    """
     if size is None:
-        return f
-    return cv2.resize(f, (size, size))
+        # Native path: no resize at all. This is what the Android app does -
+        # CameraScreen captures 640x480 and HandTracker builds the MediaPipe
+        # image straight from the bitmap with no crop, scale or letterbox.
+        return cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    if not letterbox:
+        return cv2.cvtColor(cv2.resize(frame, (size, size)), cv2.COLOR_BGR2RGB)
+    h, w = frame.shape[:2]
+    k = size / float(max(h, w))
+    resized = cv2.resize(frame, (max(1, int(round(w * k))), max(1, int(round(h * k)))))
+    canvas = np.zeros((size, size, 3), np.uint8)
+    top = (size - resized.shape[0]) // 2
+    left = (size - resized.shape[1]) // 2
+    canvas[top:top + resized.shape[0], left:left + resized.shape[1]] = resized
+    return cv2.cvtColor(canvas, cv2.COLOR_BGR2RGB)
 
 
-def read_frames(video_path: str | Path, max_frames: int = 32, size: int | None = FRAME_SIZE):
+def read_frames(video_path: str | Path, max_frames: int = 32, size: int | None = FRAME_SIZE,
+                letterbox: bool = False):
     """Sample `max_frames` frames spread evenly across the whole clip.
 
-    `size` is a square edge, or None for no resize at all. Native resolution is
-    what the Android app uses: CameraScreen requests 640x480 and HandTracker
-    builds the MediaPipe image with no crop or scale. The default stays 256
-    because that is the geometry the shipped checkpoints were extracted at.
+    `size=None` keeps frames at their native resolution, which is the path the
+    Android app takes. An int resizes to that square edge (`letterbox` picks
+    aspect-preserving pad versus squash).
 
     Sampling the opening frames only loses the sign whenever a clip starts
     dark or auto-exposing - one ASL Citizen clip yielded 0/32 hand detections
@@ -111,7 +158,14 @@ def read_frames(video_path: str | Path, max_frames: int = 32, size: int | None =
     """
     cap = cv2.VideoCapture(str(video_path))
     if not cap.isOpened():
-        return []
+        # Distinguish "cannot decode this file" from "decoded fine but no hands".
+        # Returning [] here made both look identical, and main.py reported an
+        # unreadable file (a text file named .mp4, a zero-byte file, a truncated
+        # download) as "No hand detected in any frame of: ..." — sending the
+        # reader to debug the video's CONTENT when the file itself is unopenable.
+        raise ValueError(
+            f"Could not decode video: {video_path} "
+            "(the file is missing, empty, truncated, or not a video)")
     total = int(cap.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
     out = []
     if total > max_frames:
@@ -126,13 +180,13 @@ def read_frames(video_path: str | Path, max_frames: int = 32, size: int | None =
             if not ok:
                 break
             cur += 1
-            out.append(cv2.cvtColor(_fit(f, size), cv2.COLOR_BGR2RGB))
+            out.append(_present_for_detector(f, size, letterbox))
     else:
         while len(out) < max_frames:
             ok, f = cap.read()
             if not ok:
                 break
-            out.append(cv2.cvtColor(_fit(f, size), cv2.COLOR_BGR2RGB))
+            out.append(_present_for_detector(f, size, letterbox))
     cap.release()
     return out
 
@@ -187,8 +241,29 @@ def detect_hands(frames, landmarker=None, mode: str = "image"):
     return np.stack(seq), np.array(present, np.float32)
 
 
-def clip_to_landmarks(video_path, max_frames: int = 32, size: int | None = FRAME_SIZE):
-    """Whole-video convenience wrapper used by `predict()`."""
+def clip_to_landmarks(video_path, max_frames: int = 32, size=None):
+    """Whole-video convenience wrapper used by `predict()`.
+
+    `size=None` is the NATIVE-geometry path and it is the default because it is
+    what the shipped checkpoints and the Android app both use. Measured live on
+    the full 1,255-clip test set through this pipeline, refusals counted wrong
+    (2026-11-19, 95% CI):
+
+        native          84.94% +-1.98
+        512-letterbox   85.10% +-1.97   (p=0.91 vs native - a TIE)
+        512-squash      81.59% +-2.14   (p=0.0003)
+        256-squash      81.51% +-2.15   (p=0.0004)
+
+    So passing a size costs about 3.4 points, and the loss is mostly
+    coverage/refusals (25-31 low-coverage refusals vs 5-7), not
+    misclassification.
+
+    CORRECTION: this docstring previously said the native path "is worth about
+    8.5 points". That was measured against a squash cache built on 8 Nov which
+    had drifted from live extraction (15 of 40 sampled clips differ by up to 1.1
+    in normalised coordinates), not against a live comparison. Retracted in
+    commit 64f51a1. The real gap is ~3.4 points.
+    """
     frames = read_frames(video_path, max_frames=max_frames, size=size)
     if not frames:
         return np.zeros((0, HANDS, NUM_LANDMARKS, 3), np.float32), \

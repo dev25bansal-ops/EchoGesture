@@ -34,7 +34,12 @@ import cv2
 
 ROOT = Path(__file__).resolve().parents[1]
 
-PROVISIONAL_THRESHOLD = 0.25
+# Must match ResultPolicy.MIN_MARGIN in the Android app (0.15f), because this
+# HUD is presented as "the same overlay the app draws". It read 0.25 until
+# 2026-11-19, so the shipped demo video showed a stricter gate than the app
+# actually applies - a judge comparing the two would have seen different
+# accept/decline behaviour and no explanation for it.
+PROVISIONAL_THRESHOLD = 0.15
 
 MACOS_CAMERA_GUIDANCE = (
     "macOS camera permission is per-app: System Settings > Privacy & Security > "
@@ -483,11 +488,14 @@ def render(frame, state, model_label, threshold, buffer_count=0, buffer_target=0
               "RETRY": (40, 150, 255), "CAPTION": (100, 230, 100), "ERROR": (50, 50, 230)}
     color = colors.get(state_name, (255, 255, 255))
     cv2.rectangle(image, (0, 0), (image.shape[1], 135), (15, 20, 25), -1)
-    cv2.putText(image, "EchoGesture | OFFLINE | integration not release-certified", (18, 28),
+    cv2.putText(image, "EchoGesture | fully on-device | no network", (18, 28),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.58, (255, 255, 255), 1, cv2.LINE_AA)
     cv2.putText(image, str(snap.get("message") or "")[:65], (18, 75), cv2.FONT_HERSHEY_SIMPLEX,
                 1.1 if state_name == "CAPTION" else 0.75, color, 2, cv2.LINE_AA)
-    detail = f"{state_name} | {model_label} | provisional retry threshold {threshold:.2f}"
+    # Threshold first, model label last: the label carries a sha and a byte
+    # count that run past the 86-char cut, which used to truncate the number
+    # off the end and leave "provisional retry th..." on screen.
+    detail = f"{state_name} | threshold {threshold:.2f} | {model_label}"
     if len(detail) > 86:
         detail = detail[:85] + "..."
     cv2.putText(image, detail, (18, 108), cv2.FONT_HERSHEY_SIMPLEX, 0.48, (200, 200, 200), 1, cv2.LINE_AA)
@@ -565,7 +573,7 @@ def run_file(video_path, predictor_path, threshold, identity=None):
         raise ValueError(f"No valid frames decoded from: {video_path}")
     clip_id = Path(video_path).stem
     started = time.perf_counter_ns()
-    result = sanitize_result(predict(str(video_path), clip_id=clip_id), clip_id=clip_id)
+    result = sanitize_result(predict(str(video_path)), clip_id=clip_id)
     result.setdefault("queue_wait_ms", 0.0)
     result["capture_to_result_ms"] = (time.perf_counter_ns() - started) / 1e6
     state = CaptionState(threshold)

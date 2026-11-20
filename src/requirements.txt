@@ -1,7 +1,21 @@
-numpy>=1.24.0
-# headless, not opencv-python: the GUI build links against libxcb/libGL, which a
-# python:3.11-slim container does not ship, and predict() only ever decodes
-# video. The desktop build of the same version stays installed locally.
-opencv-python-headless>=4.8.0
-ai-edge-litert>=2.3.0
-mediapipe>=1.2.2
+# Runtime dependencies for predict() — the contract the organizer's evaluator calls.
+#
+# PINNED to the exact versions the published numbers were measured with. These
+# are `==` and not `>=` on purpose: with loose bounds this file resolved to
+# mediapipe 1.2.3 and opencv-python 5.1.0.95 on Python 3.11, i.e. a different
+# MediaPipe than the 1.2.2 that produced the 85.45% figure — and the hand
+# detector is the whole frontend, so a different version is a different system.
+#
+# Verified installable and runnable on Python 3.11 (the version p.12 requires):
+#   py -3.11 -m pip install -r src/requirements.txt
+#
+# numpy note: 2.4.6 is the newest release that satisfies every other pin on both
+# Linux and Windows. 2.5.4 is a Windows-only build with no Linux wheel, so
+# pinning it would break the Docker image and any Linux evaluator.
+
+numpy==2.4.6
+mediapipe==1.2.2
+opencv-python==4.13.0.92
+ai-edge-litert==2.3.0
+imageio-ffmpeg==0.6.0
+av==16.1.0

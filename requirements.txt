@@ -1,0 +1,17 @@
+# Runtime dependencies for predict() — the contract the organizer's evaluator calls.
+#
+# Pinned to the versions the published numbers were measured with, except numpy:
+# 2.5.4 is the Windows build on the development machine and has no Linux wheel.
+# 2.4.6 is the newest Linux numpy that satisfies every other pin, and it is what
+# the Docker image installs. Verified resolvable with:
+#   docker run --rm python:3.11-slim-bookworm pip install --dry-run -r requirements.txt
+#
+# mediapipe pulls opencv-contrib-python in addition to the opencv-python pin
+# below; both are present in the image and that is expected.
+
+numpy==2.4.6
+mediapipe==1.2.2
+opencv-python==4.13.0.92
+ai-edge-litert==2.3.0
+imageio-ffmpeg==0.6.0
+av==16.1.0

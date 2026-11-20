@@ -1,51 +1,52 @@
-# Root evaluator image.
+# EchoGesture — reproducible runtime for predict(video_path).
 #
-# The organizer's package layout (deck p.12) expects a Docker setup at the
-# repository root; scripts/release/build_bundle.py hard-fails when this file is
-# absent or empty. Python 3.11 as required on p.12.
+# This image exists because the submission rules (organizer deck p.25) list
+# "Docker files & other requirements" alongside the README. It packages the
+# exact runtime the submitted accuracy was measured on: the nine FP16 .tflite
+# members in models/ plus MediaPipe's hand_landmarker.task, run through
+# src/main.py's predict().
+#
+#   docker build -t echogesture .
+#   docker run --rm echogesture                       # smoke test on a synthetic clip
+#   docker run --rm -v "$PWD/clips:/clips" echogesture /clips/sign.mp4
+#
+# What this image does NOT contain: the ASL Citizen corpus. It is Microsoft
+# Research non-commercial data and is not redistributable, so full-split
+# evaluation is not reproducible from this image alone — see docs/release/
+# ARTIFACT_RIGHTS.md. The smoke test below uses a synthesised frame sequence,
+# which exercises every stage of the pipeline but proves plumbing, not accuracy.
 
-FROM python:3.11-slim
+FROM python:3.11-slim-bookworm
 
-# opencv-python and mediapipe link against X11/GL shared objects that
-# python:3.11-slim does not ship. Without these the container built fine but
-# every invocation died importing cv2 with
-#   ImportError: libxcb.so.1: cannot open shared object file
-# so `--help` never printed the contract. libEGL/libGLESv2 are loaded lazily by
-# mediapipe's C++ bindings, so they only surface during a real predict() call.
-# Set established by running --help AND a real prediction in the slim image.
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
+# opencv-python links against libGL and the X stack at import time even when
+# only imdecode/video decoding is used; without these `import cv2` raises
+# ImportError: libGL.so.1 and the container reports a misleading "no model".
+RUN apt-get update && apt-get install -y --no-install-recommends \
         libgl1 \
         libglib2.0-0 \
-        libxcb1 \
         libegl1 \
         libgles2 \
+        ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PIP_NO_CACHE_DIR=1
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-COPY src/requirements.txt /app/src/requirements.txt
-RUN pip install --no-cache-dir -r /app/src/requirements.txt
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY src/ /app/src/
-COPY scripts/ml/ /app/scripts/ml/
-COPY results/ /app/results/
+# Only the runtime surface: the two src modules predict() imports, its local
+# deps, and the shipped models. The repo's research scripts are not copied —
+# they need the corpus and would only add attack surface here.
+COPY src/main.py src/features.py src/landmark_frontend.py ./src/
+COPY models/ ./models/
+COPY app/smoke_test.py ./smoke_test.py
 
-# Model weights are not redistributable and are not baked into the public
-# image. Mount them at runtime:
-#   docker run --rm -v /authorized/models:/app/models \
-#              -v /authorized/clips:/clips echogesture /clips/sample.mp4
-# predict() resolves weights as <repo>/models, i.e. /app/models inside the
-# image; there is no env override, and ECHOGESTURE_MODELS was previously set
-# here without any reader, which implied an override that did not exist.
-#
-# Two modes, both explicit:
-#   no args / --help  -> prints the predict() contract and exits
-#   <video> [clip_id] -> prints the organizer prediction object for that clip
-# There is no subcommand CLI; the evaluator contract is predict(video_path).
-ENTRYPOINT ["python", "-m", "src.main"]
-CMD ["--help"]
+# Fail the build, not the run, if the ensemble or label file is missing. A
+# container that starts and then reports "No model found" wastes a judge's
+# time; this turns that into an immediate build error.
+RUN python -c "import sys; sys.path.insert(0,'src'); import main; main._init_model(); print('model init OK:', len(main._INTERPRETERS), 'members')"
+
+ENTRYPOINT ["python", "smoke_test.py"]

@@ -1,12 +1,13 @@
 # EchoGesture APK
 
-Built 2026-11-20 from `release/merged-local` at commit `e4fcdd6`.
+Built 2026-11-20 from `submission/final` at commit `d66d86e`.
 
 | | |
 |---|---|
 | File | `EchoGesture-2026-11-20.apk` |
-| Size | 83,125,166 bytes (83.1 MB) |
-| SHA-256 | `9c950bc3027f0e34ce4751d9ab0c756868c71e5f93e9e750626d14de71f98526` |
+| Size | 82,755,290 bytes (82.8 MB) |
+| SHA-256 | `b730f7bb59fc1402b45cb8c6eaeec9b2b6029836baac5c93035dff24a7127361` |
+| Package | `org.echogesture.finalapp` |
 | Min SDK | 24 (Android 7.0) |
 | Target SDK | 34 |
 | Arch | arm64-v8a |
@@ -47,14 +48,22 @@ adb install -r EchoGesture-2026-11-20.apk
   live-camera accuracy is **not** measured and the few data points are worse.
 - **The weakest signs are genuinely weak:** CHEESEGRATER 40%, SINK and SCARF2
   50%. Do not demo those.
-- **Clip analysis takes 1-15 s** depending on phone temperature — decode, not
-  the model (decode is ~1.2 s, MediaPipe landmarking dominates).
+- **Clip analysis takes about 1 s**, not the 10–20 s it used to. The fix was
+  replacing per-frame seeking with a sequential `MediaExtractor` + `MediaCodec`
+  decode (`SequentialVideoDecoder.kt`), measured at 8,700–21,200 ms before and
+  ~870 ms after.
 - **Two demo clips are training clips.** NOON and VOICE were seen during
   training; DARK and MECHANIC are held out. Only the held-out pair says anything
   about generalisation.
-- The acceptance gate declines rather than guesses when confidence is thin, and
-  a held hand that is not signing still gets a named gloss about 43% of the
-  time. Both are known and documented in `docs/`.
+- **The acceptance gate declines rather than guesses** when the top-2 margin is
+  under 0.15, and a held hand that is not signing still gets a named gloss about
+  43% of the time. Both are documented in `docs/`.
+- **A declined reading now looks different from an accepted one.** The live pill
+  reads "Uncertain reading" in amber instead of "Recognised sign" in green, so a
+  glance at the screen cannot turn a refused reading into a confirmation. The
+  accepted path was confirmed on device; the declined path is covered by unit
+  tests (`ResultPolicyTest`) but was not observed on a handset before the build
+  was cut.
 
 ## Rights — read this before redistributing
 

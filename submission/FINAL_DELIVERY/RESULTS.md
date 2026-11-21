@@ -3,7 +3,7 @@
 **This is the one file to read for current numbers.** Every other results
 document is either historical or a detail sheet behind this one.
 
-Date 2026-11-21 (latest revision). Deadline 2026-11-18 23:59 IST.
+Date 2026-11-21 (latest revision). Deadline **2026-11-22 23:59 IST** — per the organizer's V3-2 deck, slide 24 (the 18 Nov date the repo carried is superseded).
 
 ---
 

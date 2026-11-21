@@ -2,7 +2,7 @@
   "release": "Samsung XR Hackathon 2026 — Track 02 (V4.5)",
   "generated": "2026-11-16",
   "internal_target": "2026-11-17",
-  "deadline": "2026-11-18T23:59:00+05:30",
+  "deadline": "2026-11-22T23:59:00+05:30",
   "source": {
     "branch": "release/samsung-track2-geometry-review",
     "base_branch": "hackathon/abhijeet-integration",
@@ -68,14 +68,14 @@
     },
     "presentation": {
       "path": "submission/presentation/EchoGesture_Track02.pptx",
-      "sha256": "4df49d66a125e5fa9101dc37cc02ef7b4dcec161dd67d19df1fe4530c689558f",
-      "bytes": 416230,
+      "sha256": "75d256e2543c367c7ac52a59abaec00cf73fdfcc2a1774f10a8d00b8fe5ec31a",
+      "bytes": 416265,
       "slides": 8,
       "font": "Arial (pinned so arrows and multiplication signs have real glyph coverage)",
       "pdf": {
         "path": "submission/presentation/EchoGesture_Track02.pdf",
-        "sha256": "7e7d3601eea9b9bd9123445db489525a263b6d40c02a055279e713502d11843f",
-        "bytes": 240836,
+        "sha256": "849233293f2aa57cb997e9eaa94756035315031917d69f93f597531dfb9b14a4",
+        "bytes": 240941,
         "pages": 8,
         "note": "Native Microsoft PowerPoint export (SaveAs format 32): text is selectable and fonts are embedded. Verified as 8 pages with every figure re-extracted from the PDF itself."
       },

@@ -1,6 +1,6 @@
 # Final delivery checklist
 
-Date 2026-11-21 (latest revision). Deadline 2026-11-18 23:59 IST.
+Date 2026-11-21 (latest revision). Deadline **2026-11-22 23:59 IST** — per the organizer's V3-2 deck, slide 24 (the 18 Nov date the repo carried is superseded).
 
 Two states per line: **DONE** means it is finished and verified here. **HUMAN**
 means it cannot be finished by me — it needs a person, a device, or an

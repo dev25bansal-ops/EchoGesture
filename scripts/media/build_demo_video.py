@@ -357,16 +357,19 @@ def main():
         # The desktop predicts at 0.6-3.5 s depending entirely on machine load,
         # and in a submission video that number would read as the system's
         # latency when it is really this laptop's. The figure a judge should
-        # see is the one measured ON THE PHONE with the GPU delegate:
-        # detect p50 34-45 / p95 46-54 ms (docs/GPU_DELEGATE_2026-11-19.md).
-        # Substituted explicitly and labelled, not silently rewritten, so the
-        # HUD stays honest about what it is showing.
+        # see is the one measured ON THE SHIPPING RELEASE APK via its own HUD
+        # line (result_profiler_p95): detect p95 spans 50-59 ms across five
+        # file-pick classifications (results/results.csv, latency_p95 notes;
+        # docs/evidence/README.md). The earlier 46 ms came from a debug build
+        # and is superseded. Substituted explicitly and labelled as a range,
+        # not silently rewritten, so the HUD stays honest about what it is
+        # showing -- and the 86-char cut in render() keeps the range on screen.
         res = dict(res)
-        res["latency_ms"] = 46.0
-        res["capture_to_result_ms"] = 46.0
+        res["latency_ms"] = 50.0
+        res["capture_to_result_ms"] = 50.0
         res.pop("queue_wait_ms", None)
         st.update(res)
-        hud = OD.render(mid, st, "on-device GPU: detect p95 46 ms",
+        hud = OD.render(mid, st, "release: detect p95 50-59 ms (file-pick)",
                         OD.PROVISIONAL_THRESHOLD)
         hud = cv2.resize(hud, (W, H), interpolation=cv2.INTER_LINEAR)
         demo_frames.append(hud)
@@ -424,7 +427,7 @@ def main():
     # concatenate
     lst = WORK / "concat.txt"
     lst.write_text("".join(f"file '{p.as_posix()}'\n" for p in parts), encoding="utf-8")
-    final = OUT / "EchoGesture_demo_2026-11-19.mp4"
+    final = OUT / "EchoGesture_demo_2026-11-22.mp4"
     ok = False
     exe = ffmpeg_exe()
     if exe:

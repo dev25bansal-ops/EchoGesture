@@ -99,14 +99,38 @@ class OneTapCaptureTest {
         }
     }
 
+    private fun armAndKeepSigning(tracker: HandTracker): Long {
+        tracker.armAuto(0L)
+        var now = 0L
+        for (i in 0 until 30) {
+            now += 40
+            val move = if (i < 12 || i % 2 == 0) 2f else 6f
+            tracker.offerForTest(frame(now, move))
+        }
+        assertEquals(AutoSegmenter.State.SIGNING, tracker.autoState())
+        return now
+    }
+
+    @Test
+    fun heldPoseCompletesWithoutRemovingTheHand() {
+        val tracker = tracker()
+        try {
+            tracker.armAuto(0L)
+            for (i in 1..30) tracker.offerForTest(frame(i * 40L, 4f))
+            val outcome = tracker.takeAutoOutcome()
+            assertEquals(AutoSegmenter.EndReason.QUIET, outcome?.reason)
+            assertTrue(outcome?.isUsable == true)
+        } finally {
+            tracker.close()
+        }
+    }
+
     /** A new attempt must not inherit frames from the previous sign. */
     @Test
     fun reArmingDiscardsThePreviousSignsFrames() {
         val t = tracker()
         try {
-            t.armAuto(0L)
-            var now = 0L
-            for (i in 0 until 30) { now += 40; t.offerForTest(frame(now, 4f)) }
+            val now = armAndKeepSigning(t)
             val duringFirst = t.autoFrameCount()
             assertTrue("first attempt should have buffered frames", duringFirst > 0)
 
@@ -122,9 +146,7 @@ class OneTapCaptureTest {
     fun disarmProducesNoOutcome() {
         val t = tracker()
         try {
-            t.armAuto(0L)
-            var now = 0L
-            for (i in 0 until 30) { now += 40; t.offerForTest(frame(now, 4f)) }
+            armAndKeepSigning(t)
             t.disarmAuto()
             assertNull("a disarmed attempt must not classify", t.takeAutoOutcome())
             assertEquals(AutoSegmenter.State.IDLE, t.autoState())
@@ -166,9 +188,7 @@ class OneTapCaptureTest {
     fun cameraSwitchDiscardsTheAttemptRatherThanSplicing() {
         val t = tracker()
         try {
-            t.armAuto(0L)
-            var now = 0L
-            for (i in 0 until 30) { now += 40; t.offerForTest(frame(now, 4f)) }
+            armAndKeepSigning(t)
             assertTrue(t.autoFrameCount() > 0)
 
             t.clear()

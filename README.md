@@ -5,6 +5,40 @@ Organized by **Samsung R&D Institute India, Bangalore** (XR Perception Group & P
 
 ---
 
+## The four submission items, and where they are
+
+Track 2 asks for four things (organizer deck V3-2, slide 11). Every one is in
+this repository:
+
+| # | What the organizers asked for | Where it is |
+| --: | --- | --- |
+| 1 | `predict()` implementation, one JSON object per test clip | [`src/main.py`](src/main.py) — `predict(video_path, clip_id=None)`. Predictions: [`results/predictions.jsonl`](results/predictions.jsonl), 1,251 lines |
+| 2 | Results sheet: one row per metric, measured vs target, pass/fail | [`results/results.csv`](results/results.csv) — six scored rows plus supporting measurements, each with its device and reproduction command |
+| 3 | Repository with a README showing how to run it, a quantized model, and the conversion script | This file (run instructions below) · nine FP16 `.tflite` members in [`models/`](models/) · [`scripts/ml/export_ensemble.py`](scripts/ml/export_ensemble.py) |
+| 4 | Demo video (2–3 min) or deployed app URL | **Pending** — the recording script is [`submission/DEMO_SCRIPT.md`](submission/DEMO_SCRIPT.md); the link goes in the submission form and on slide 7 of the deck |
+
+Also required by the naming rule: the deck must be named
+`CollegeName_TeamName`. It is
+[`submission/presentation/CollegeName_TeamName.pptx`](submission/presentation/CollegeName_TeamName.pptx)
+with the matching PDF beside it, built inside the organizer's own 9-slide
+template. The team+college string and the demo link are the two placeholders
+still to be filled.
+
+**The APK to install** is the signed release build, published as a release asset
+(80.8 MB is too large for a reliable git push):
+[release `v2026-11-22-submission`](https://github.com/dev25bansal-ops/EchoGesture/releases/tag/v2026-11-22-submission).
+Its digest is pinned by
+[`submission/apk/EchoGesture-2026-11-22-release.apk.sha256`](submission/apk/EchoGesture-2026-11-22-release.apk.sha256).
+
+**Current numbers, in one line:** 85.45% top-1 / 96.64% top-5 on 1,251
+signer-disjoint clips; 16.33 MB total; on-device GPU p95 46–54 ms with an empty
+frame and 68–70 ms with a hand, on a debug build. Three of the six scored rows
+pass and three fail — the table in
+[`submission/FINAL_DELIVERY/RESULTS.md`](submission/FINAL_DELIVERY/RESULTS.md)
+states which, in its own words.
+
+---
+
 ## Reproducing the submitted system
 
 ### Docker (what the submission rules ask for)

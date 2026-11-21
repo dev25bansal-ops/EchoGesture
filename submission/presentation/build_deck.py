@@ -284,7 +284,7 @@ def demo(prs):
     for i, t in enumerate([
         "CAMERA is the only permission granted.",
         "INTERNET is explicitly removed in the manifest and absent from the built APK.",
-        "No raw camera frame is written to disk or sent anywhere.",
+        "No image leaves the phone. Diagnostics OFF writes nothing; ON can dump up to 40 frames to app-private storage.",
         "Footer shows the live ensemble SHA-256.",
     ]):
         text(s, 9.85, 2.42 + i * 1.05, 2.6, 1.0, "·  " + t, size=11.5, color=NAVY, line=1.2)

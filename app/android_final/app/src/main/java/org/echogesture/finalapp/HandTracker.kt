@@ -441,7 +441,10 @@ class HandTracker private constructor(
      */
     fun armAuto(nowMs: Long): Unit = synchronized(lock) {
         autoOutcome = null
-        autoSegmenter.arm(nowMs)
+        val last = ring.lastOrNull()
+        val handAlreadyPresent = last != null && last.hands.isNotEmpty() &&
+            nowMs - last.capturedAtMs in 0L..500L
+        autoSegmenter.arm(nowMs, handAlreadyPresent)
     }
 
     /** Disarms without classifying. Used when the user leaves the tab. */
@@ -455,6 +458,12 @@ class HandTracker private constructor(
         val completed = autoOutcome
         autoOutcome = null
         completed ?: if (autoSegmenter.isActive) autoSegmenter.finishManually(nowMs) else null
+    }
+
+    fun expireAuto(nowMs: Long): AutoSegmenter.Outcome? = synchronized(lock) {
+        val completed = autoOutcome
+        autoOutcome = null
+        completed ?: if (autoSegmenter.isActive) autoSegmenter.expire(nowMs) else null
     }
 
     /**

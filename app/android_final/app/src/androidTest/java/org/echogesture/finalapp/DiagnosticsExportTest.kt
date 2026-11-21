@@ -32,6 +32,24 @@ class DiagnosticsExportTest {
         assertNull("an empty record must not produce a file", d.exportCopy("test"))
     }
 
+    @Test
+    fun disablingAndClearingRemovesBothFilesAndBlocksLateWrites() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        var enabled = true
+        val log = DiagnosticsLog(context) { enabled }
+        val capture = HandTracker.Capture(emptyList(), 1L, 1f, 0)
+        log.clear()
+        log.record(capture, null, 0L, fromClip = true)
+        val exported = checkNotNull(log.exportCopy("test"))
+        assertTrue(exported.readText().contains("source=clip"))
+        enabled = false
+        log.clear()
+        log.record(capture, null, 0L)
+        assertNull(log.exportCopy("test"))
+        assertTrue(!exported.exists())
+        assertTrue(!java.io.File(log.path()).exists())
+    }
+
     /** A real record exports, and the copy carries the privacy header. */
     @Test
     fun recordExportsWithPrivacyHeader() {

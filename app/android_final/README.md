@@ -1,8 +1,8 @@
 # EchoGesture Final — Offline Android caption app
 
-## Current build · V5.5
+## Current build · V5.6
 
-V5.5 recognizes one isolated sign at a time. Use **Start recognition** for the
+V5.6 recognizes one isolated sign at a time. Use **Start recognition** for the
 camera or **Analyze a video clip** to choose a local video with one sign.
 The app uses the nine masked FP16 members in `models/landmark_model_meta.json`.
 

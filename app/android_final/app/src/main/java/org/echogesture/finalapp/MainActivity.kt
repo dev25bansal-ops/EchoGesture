@@ -8,7 +8,9 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -49,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         prefs = AppPreferences(this)
         history = RecognitionHistory(this)
         speaker = Speaker(this)
-        diagnostics = DiagnosticsLog(this)
+        diagnostics = DiagnosticsLog(this) { prefs.diagnostics }
 
         cameraScreen = CameraScreen(this, prefs, history, speaker, diagnostics)
         glossaryScreen = GlossaryScreen(this, history, speaker)
@@ -82,7 +84,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        lifecycleScope.launch(Dispatchers.IO) { initModels() }
+        lifecycleScope.launch { initModels() }
     }
 
     override fun onResume() {
@@ -107,20 +109,33 @@ class MainActivity : AppCompatActivity() {
 
     // ---- model loading ------------------------------------------------------
 
-    private suspend fun initModels() = withContext(Dispatchers.IO) {
+    private suspend fun initModels() {
+        var tracker: HandTracker? = null
+        var classifier: LandmarkClassifier? = null
+        var adopted = false
         try {
-            val verified = ModelContract.load(assets)
-            val tracker = HandTracker.create(this@MainActivity, ModelContract.DETECTOR_ASSET)
-            val classifier = LandmarkClassifier.create(verified)
-            withContext(Dispatchers.Main) {
-                loaded = verified
-                cameraScreen.onModelLoaded(verified, tracker, classifier)
-                glossaryScreen.submitLabels(verified.labels)
-                settingsScreen.onBind(verified, settingsCallbacks)
+            val verified = withContext(Dispatchers.IO) {
+                val model = ModelContract.load(assets)
+                tracker = HandTracker.create(applicationContext, ModelContract.DETECTOR_ASSET)
+                classifier = LandmarkClassifier.create(model)
+                model
             }
-        } catch (t: Throwable) {
-            withContext(Dispatchers.Main) {
-                cameraScreen.onModelFailed(t.message ?: t.javaClass.simpleName)
+            loaded = verified
+            cameraScreen.onModelLoaded(verified, checkNotNull(tracker), checkNotNull(classifier))
+            adopted = true
+            glossaryScreen.submitLabels(verified.labels)
+            settingsScreen.onBind(verified, settingsCallbacks)
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (t: Exception) {
+            cameraScreen.onModelFailed(t.message ?: t.javaClass.simpleName)
+        } finally {
+            if (!adopted) withContext(NonCancellable + Dispatchers.IO) {
+                try {
+                    tracker?.close()
+                } finally {
+                    classifier?.close()
+                }
             }
         }
     }

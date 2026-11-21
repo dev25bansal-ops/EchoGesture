@@ -119,6 +119,10 @@ class AutoSegmenter(
         QUIET,
         /** Ran to [Config.maxSignMs] without going quiet. */
         TIMEOUT,
+        /** No sign began before the app stopped waiting. */
+        NO_SIGN,
+        /** The app reached its deadline without a completed camera segment. */
+        CAMERA_STALLED,
         /** Hand left the frame for longer than the grace period. */
         HAND_LOST,
         /** Segment was shorter than [Config.minSignMs]. */
@@ -136,7 +140,8 @@ class AutoSegmenter(
         val durationMs: Long get() = endedAtMs - startedAtMs
         val frameCount: Int get() = frames.size
         /** True when the segment is worth classifying. */
-        val isUsable: Boolean get() = reason != EndReason.TOO_SHORT && frames.isNotEmpty()
+        val isUsable: Boolean get() = frames.isNotEmpty() &&
+            (reason == EndReason.QUIET || reason == EndReason.HAND_LOST || reason == EndReason.MANUAL)
     }
 
     var state: State = State.IDLE
@@ -160,6 +165,7 @@ class AutoSegmenter(
 
     private var armedAtMs = 0L
     private var handSeenSinceMs = 0L
+    private var waitForHandRelease = false
     private var signingStartedAtMs = 0L
     private var lastMotionAtMs = 0L
     private var lastHandAtMs = 0L
@@ -186,7 +192,7 @@ class AutoSegmenter(
     fun frameCount(): Int = buffer.size
 
     /** Arms the segmenter. Any previous sign is discarded. */
-    fun arm(nowMs: Long) {
+    fun arm(nowMs: Long, handAlreadyPresent: Boolean = false) {
         reset()
         armedAtMs = nowMs
         handSeenSinceMs = nowMs
@@ -195,6 +201,7 @@ class AutoSegmenter(
         // compares against it, and a zero would make the first moving frame
         // look arbitrarily old.
         lastMotionAtMs = nowMs
+        waitForHandRelease = handAlreadyPresent
         state = State.ARMED
     }    /**
      * The user pressed Finish. Freezes whatever has been captured and reports
@@ -202,6 +209,15 @@ class AutoSegmenter(
      * fallback when auto-completion does not fire.
      */
     fun finishManually(nowMs: Long): Outcome = endSign(nowMs, EndReason.MANUAL)
+
+    fun expire(nowMs: Long): Outcome {
+        if (state == State.ARMED) {
+            val outcome = Outcome(preRollFrames.toList(), EndReason.NO_SIGN, armedAtMs, nowMs)
+            reset()
+            return outcome
+        }
+        return endSign(nowMs, EndReason.CAMERA_STALLED)
+    }
 
     /** Abandons the current attempt without producing a segment. */
     fun cancel() {
@@ -217,6 +233,7 @@ class AutoSegmenter(
         signingStartedAtMs = 0L
         lastMotionAtMs = 0L
         lastHandAtMs = 0L
+        waitForHandRelease = false
         lastFrameAtMs = 0L
         frozenFloor = 0f
         state = State.IDLE
@@ -275,6 +292,7 @@ class AutoSegmenter(
             // The hand left before a sign started; restart the acquisition
             // clock so re-entry gets a full settle period.
             handSeenSinceMs = now
+            waitForHandRelease = false
             return null
         }
         if (now - handSeenSinceMs < config.acquireMs) return null
@@ -287,7 +305,7 @@ class AutoSegmenter(
 
         // Static signs: a hand held stable for a while is also a start. The bar
         // is lower because a held handshape legitimately has almost no motion.
-        val heldStill = !moving && heldForMs >= config.poseHoldMs
+        val heldStill = !waitForHandRelease && !moving && heldForMs >= config.poseHoldMs
 
         // Motion-based onset needs to be sustained, not a single noisy frame.
         val sustained = moving && now - lastMotionAtMs <= config.onsetConfirmMs

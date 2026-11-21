@@ -1,6 +1,7 @@
 package org.echogesture.finalapp
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -52,6 +53,33 @@ class AutoSegmenterTest {
     }
 
     // ---- onset -------------------------------------------------------------
+
+    @Test
+    fun `an already held hand cannot start static capture until it leaves and returns`() {
+        val seg = AutoSegmenter(cfg)
+        seg.arm(0, handAlreadyPresent = true)
+        assertNull(run(seg, 33, 50, 30f) { floatArrayOf(0.5f, 0.5f) })
+        assertEquals(AutoSegmenter.State.ARMED, seg.state)
+        seg.offer(frame(1800))
+        run(seg, 1850, 23, 30f) { floatArrayOf(0.5f, 0.5f) }
+        assertEquals(AutoSegmenter.State.SIGNING, seg.state)
+    }
+
+    @Test
+    fun `waiting and stalled captures expire without classifying`() {
+        val seg = AutoSegmenter(cfg)
+        seg.arm(0)
+        val waiting = seg.expire(8000)
+        assertEquals(AutoSegmenter.EndReason.NO_SIGN, waiting.reason)
+        assertFalse(waiting.isUsable)
+        seg.arm(9000)
+        run(seg, 9050, 26, 30f) { floatArrayOf(0.5f, 0.5f) }
+        assertEquals(AutoSegmenter.State.SIGNING, seg.state)
+        val stalled = seg.expire(22000)
+        assertEquals(AutoSegmenter.EndReason.CAMERA_STALLED, stalled.reason)
+        assertFalse(stalled.isUsable)
+        assertEquals(AutoSegmenter.State.IDLE, seg.state)
+    }
 
     @Test
     fun `does not arm a sign from frames before the tap`() {

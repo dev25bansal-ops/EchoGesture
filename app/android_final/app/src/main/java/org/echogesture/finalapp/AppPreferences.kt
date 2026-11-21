@@ -22,6 +22,10 @@ class AppPreferences(context: Context) {
         get() = enumValue(KEY_CAMERA, CameraChoice.AUTO)
         set(v) = prefs.edit().putString(KEY_CAMERA, v.name).apply()
 
+    var requestedCameraPermission: Boolean
+        get() = prefs.getBoolean("requested_camera_permission", false)
+        set(v) = prefs.edit().putBoolean("requested_camera_permission", v).apply()
+
     var showGuidance: Boolean
         get() = prefs.getBoolean(KEY_GUIDANCE, true)
         set(v) = prefs.edit().putBoolean(KEY_GUIDANCE, v).apply()

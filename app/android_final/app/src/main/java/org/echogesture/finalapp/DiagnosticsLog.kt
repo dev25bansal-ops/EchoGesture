@@ -1,7 +1,9 @@
 package org.echogesture.finalapp
 
 import android.content.Context
+import android.util.AtomicFile
 import java.io.File
+import java.util.Locale
 
 /**
  * Opt-in, on-device record of what each capture actually contained.
@@ -26,9 +28,11 @@ import java.io.File
  * Off by default. A consenting test session turns it on explicitly, and
  * [clear] removes the file.
  */
-class DiagnosticsLog(context: Context) {
+class DiagnosticsLog(context: Context, private val enabled: () -> Boolean = { true }) {
 
     private val file = File(context.filesDir, FILE_NAME)
+    private val storage = AtomicFile(file)
+    private val export = File(context.filesDir, "export/echogesture-diagnostics.txt")
     private val lock = Any()
 
     /**
@@ -76,25 +80,32 @@ class DiagnosticsLog(context: Context) {
         capture: HandTracker.Capture,
         result: LandmarkClassifier.Result?,
         totalMs: Long,
-        attempt: Attempt? = null
+        attempt: Attempt? = null,
+        fromClip: Boolean = false
     ) = synchronized(lock) {
         val present = capture.frames.joinToString("") { f ->
-            if (f.hands.isEmpty()) "0" else f.hands.joinToString("") { it.slot.toString() }
+            when (f.hands.map { it.slot }.toSet()) {
+                setOf(0) -> "L"
+                setOf(1) -> "R"
+                setOf(0, 1) -> "B"
+                else -> "-"
+            }
         }
         val top5 = result?.top5?.joinToString("|") ?: ""
-        val score = result?.confidence?.let { String.format("%.4f", it) } ?: ""
+        val score = result?.confidence?.let { String.format(Locale.US, "%.4f", it) } ?: ""
         val line = buildString {
             append("frames=").append(capture.frameCount)
             append(" dur_ms=").append(capture.durationMs)
-            append(" fps=").append(String.format("%.1f", capture.fps))
+            append(" fps=").append(String.format(Locale.US, "%.1f", capture.fps))
             append(" hand_frames=").append(capture.handFrames)
             append(" presence=").append(present)
             append(" pred=").append(result?.prediction ?: "")
             append(" score=").append(score)
             append(" top5=").append(top5)
-            append(" margin=").append(result?.margin?.let { String.format("%.4f", it) } ?: "")
+            append(" margin=").append(result?.margin?.let { String.format(Locale.US, "%.4f", it) } ?: "")
             append(" infer_ms=").append(result?.inferenceMillis ?: -1)
             append(" total_ms=").append(totalMs)
+            append(" source=").append(if (fromClip) "clip" else "camera")
             if (attempt != null) {
                 // end_reason is the segmenter's own verdict. A rejection that
                 // happened BEFORE inference shows mask_steps=n/a, so "no usable
@@ -107,22 +118,14 @@ class DiagnosticsLog(context: Context) {
                     .append((attempt.endedAtMs - attempt.startedAtMs).coerceAtLeast(0))
                 append(" mask_steps=")
                     .append(if (attempt.maskSteps < 0) "n/a" else "${attempt.maskSteps}/24")
-                append(" raw_coverage=").append(String.format("%.2f", attempt.rawHandCoverage))
+                append(" raw_coverage=").append(String.format(Locale.US, "%.2f", attempt.rawHandCoverage))
                 append(" both_hands=").append(attempt.bothHandsFrames)
                 append(" longest_dropout=").append(attempt.longestDropoutFrames)
                 append(" slot_flips=").append(attempt.slotFlips)
             }
         }
 
-        // Drop the header as well as blank lines: every write re-emits the
-        // header, so keeping the previous one would stack a copy per record.
-        val existing = runCatching {
-            if (file.isFile) file.readLines() else emptyList()
-        }.getOrDefault(emptyList()).filter { it.isNotBlank() && !it.startsWith("#") }
-
-        val kept = (existing + line).takeLast(MAX_RECORDS)
-        file.writeText(HEADER + "\n" + kept.joinToString("\n") + "\n")
-        Unit
+        appendLine(line)
     }
 
     /**
@@ -134,20 +137,11 @@ class DiagnosticsLog(context: Context) {
      * tracker was gone by the time the capture was logged.
      */
     fun recordNote(note: String) = synchronized(lock) {
-        val line = "note $note"
-        // Drop the header as well as blank lines: every write re-emits the
-        // header, so keeping the previous one would stack a copy per record.
-        val existing = runCatching {
-            if (file.isFile) file.readLines() else emptyList()
-        }.getOrDefault(emptyList()).filter { it.isNotBlank() && !it.startsWith("#") }
-
-        val kept = (existing + line).takeLast(MAX_RECORDS)
-        file.writeText(HEADER + "\n" + kept.joinToString("\n") + "\n")
-        Unit
+        appendLine("note $note")
     }
 
     fun read(): String = synchronized(lock) {
-        runCatching { if (file.isFile) file.readText() else "" }.getOrDefault("")
+        readRecord()
     }
 
     /**
@@ -168,7 +162,7 @@ class DiagnosticsLog(context: Context) {
      */
     fun recordProfiler(snapshot: AnalysisProfiler.Snapshot) = synchronized(lock) {
         val line = buildString {
-            append("profile fps=").append(String.format("%.1f", snapshot.effectiveFps))
+            append("profile fps=").append(String.format(Locale.US, "%.1f", snapshot.effectiveFps))
             append(" interval_p50=").append(snapshot.intervalP50)
             append(" interval_p95=").append(snapshot.intervalP95)
             append(" analyse_p50=").append(snapshot.analysisP50)
@@ -180,23 +174,34 @@ class DiagnosticsLog(context: Context) {
             append(" limit=").append(snapshot.limit)
         }
 
-        // Drop the header as well as blank lines: every write re-emits the
-        // header, so keeping the previous one would stack a copy per record.
-        val existing = runCatching {
-            if (file.isFile) file.readLines() else emptyList()
-        }.getOrDefault(emptyList()).filter { it.isNotBlank() && !it.startsWith("#") }
+        appendLine(line)
+    }
 
-        val kept = (existing + line).takeLast(MAX_RECORDS)
-        file.writeText(HEADER + "\n" + kept.joinToString("\n") + "\n")
-        Unit
+    private fun readRecord(): String = if (enabled()) {
+        runCatching { storage.readFully().toString(Charsets.UTF_8) }.getOrDefault("")
+    } else ""
+
+    private fun appendLine(line: String) {
+        if (!enabled()) return
+        val existing = readRecord().lineSequence().filter { it.isNotBlank() && !it.startsWith("#") }
+        val kept = (existing.toList() + line).takeLast(MAX_RECORDS)
+        val stream = storage.startWrite()
+        try {
+            stream.write((HEADER + "\n" + kept.joinToString("\n") + "\n").toByteArray(Charsets.UTF_8))
+            storage.finishWrite(stream)
+        } catch (exception: Exception) {
+            storage.failWrite(stream)
+            throw exception
+        }
     }
 
     fun clear() = synchronized(lock) {
-        runCatching { file.delete() }
+        storage.delete()
+        export.delete()
         Unit
     }
 
-    fun exists(): Boolean = file.isFile
+    fun exists(): Boolean = synchronized(lock) { enabled() && file.isFile }
 
     /**
      * Copies the record into a shareable file and returns it, or null when
@@ -210,20 +215,18 @@ class DiagnosticsLog(context: Context) {
      * Called only from an explicit user tap.
      */
     fun exportCopy(generatedAt: String): java.io.File? = synchronized(lock) {
-        if (!file.isFile) return null
-        val body = runCatching { file.readText() }.getOrDefault("")
-        if (body.isBlank()) return null
+        val body = readRecord()
+        if (body.lineSequence().none { it.startsWith("frames=") }) return null
         runCatching {
-            val dir = java.io.File(file.parentFile, "export").apply { mkdirs() }
-            val out = java.io.File(dir, "echogesture-diagnostics.txt")
-            out.writeText(
+            export.parentFile?.mkdirs()
+            export.writeText(
                 "# Exported from EchoGesture settings on $generatedAt.\n" +
                     "# Capture statistics only: frame counts, timings, presence\n" +
                     "# flags and predicted glosses. No images, no landmarks, no\n" +
                     "# identifiers. Shared only because the user chose to.\n" +
                     body
             )
-            out
+            export
         }.getOrNull()
     }
 

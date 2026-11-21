@@ -71,17 +71,20 @@
     <string name="result_uncertain_headline">Sign not recognised reliably</string>
     <string name="result_label_diagnostic">Best guess, for reference only</string>
     <!-- One-tap flow -->
-    <string name="auto_ready">Ready — perform one sign</string>
+    <string name="auto_ready">Ready — lower your hands, then sign</string>
     <string name="auto_signing_status">Recognising your movement…</string>
     <string name="start_recognition">Start Recognition</string>
     <string name="auto_cancel">Stop waiting</string>
     <string name="auto_finish_now">Finish now</string>
     <string name="auto_discarded">Attempt cancelled. Nothing was recognised.</string>
     <string name="auto_too_short">That sign was too short to read. Perform the whole sign once the app says it is ready.</string>
+    <string name="auto_no_sign">No sign started. Tap Start Recognition and perform one sign.</string>
+    <string name="auto_camera_stalled">The camera stopped delivering frames. Try the sign again.</string>
+    <string name="auto_too_long">Capture reached its time limit. Try one shorter sign.</string>
     <string name="auto_unusable">That attempt could not be read. Try again with the whole sign inside the guide.</string>
     <string name="result_alternatives_label_diagnostic">Other possibilities</string>
     <string name="result_capture_detail">%1$d samples over %2$d ms · %3$d samples/s</string>
-    <string name="result_latency_detail">Classifier took %1$d ms on this device</string>
+    <string name="result_latency_detail">Analysis %1$d ms · classifier %2$d ms</string>
     <string name="result_responsibility">A model score ranks the 100 known signs; it is not a calibrated probability that the reading is correct. Recognises one isolated sign at a time.</string>
     <string name="action_copy">Copy</string>
     <string name="action_copied">Copied</string>
@@ -189,4 +192,5 @@
     <string name="action_done">Done</string>
     <string name="clip_pick">Analyze a video clip</string>
     <string name="clip_unreadable">Could not read this video. Choose a different clip.</string>
+    <string name="clip_picker_unavailable">Android’s file picker is unavailable on this device.</string>
 </resources>

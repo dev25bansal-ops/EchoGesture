@@ -84,6 +84,7 @@
     <string name="result_confidence_uncertain">Uncertain — this is the model\'s best guess, not a confirmed reading</string>
     <string name="result_capture_detail">Captured %1$d frames over %2$d ms at %3$d fps</string>
     <string name="result_latency_detail">Classifier took %1$d ms on this device</string>
+    <string name="result_profiler_detail">Camera delivered at %1$d fps (%2$d frames); analyser took %3$d ms per frame</string>
     <string name="result_responsibility">A model score ranks the 100 known signs; it is not a calibrated probability that the reading is correct. Recognises one isolated sign at a time.</string>
     <string name="action_copy">Copy</string>
     <string name="action_copied">Copied</string>

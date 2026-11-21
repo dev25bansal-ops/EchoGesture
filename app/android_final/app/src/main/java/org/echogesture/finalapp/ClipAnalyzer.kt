@@ -195,7 +195,7 @@ object ClipAnalyzer {
                 val result = landmarker.detectForVideo(img, ts)
                 val c2 = android.os.SystemClock.elapsedRealtime()
                 img.close()
-                val hands = toHands(result)
+                val hands = toHands(result, copy.width, copy.height)
                 val c3 = android.os.SystemClock.elapsedRealtime()
                 copyMs += c1 - c0
                 detectMs += c2 - c1
@@ -381,8 +381,11 @@ object ClipAnalyzer {
     }
 
     /** Identical handedness mapping to [HandTracker]: Left=0, Right=1, no mirroring. */
-    private fun toHands(result: com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarkerResult):
-        List<HandTracker.Hand> {
+    private fun toHands(
+        result: com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarkerResult,
+        width: Int,
+        height: Int,
+    ): List<HandTracker.Hand> {
         val out = ArrayList<HandTracker.Hand>(result.landmarks().size)
         var i = 0
         for (pts in result.landmarks()) {
@@ -396,6 +399,14 @@ object ClipAnalyzer {
                 arr[j * 3 + 1] = pts[j].y()
                 arr[j * 3 + 2] = pts[j].z()
             }
+            // A decoded clip carries its own size, which need not be the 4:3
+            // the checkpoints were trained on. This is the DECODED FRAME's
+            // size -- the same "buffer" the detector was handed -- because
+            // MediaPipe reports coordinates in the frame of the image it was
+            // given, never in a rotated display frame. The camera path passes
+            // the identical dimensions for the identical reason, so a sign
+            // classifies the same way whichever route it arrives by.
+            HandTracker.mapToCorpusAspect(arr, width, height)
             out.add(HandTracker.Hand(slot, arr))
             i++
         }

@@ -114,6 +114,7 @@ class CameraScreen(
     private val alternativesText: TextView = root.findViewById(R.id.alternativesText)
     private val latencyText: TextView = root.findViewById(R.id.latencyText)
     private val captureDetailText: TextView = root.findViewById(R.id.captureDetailText)
+    private val profilerDetailText: TextView = root.findViewById(R.id.profilerDetailText)
 
     private var captureCountdown: Runnable = Runnable { }
     private val confidenceLabel: TextView = root.findViewById(R.id.confidenceLabel)
@@ -1167,7 +1168,10 @@ class CameraScreen(
                 sampled,
                 keptMs,
                 if (keptMs > 0) (sampled.size - 1) * 1000f / keptMs else 0f,
-                handFrames
+                handFrames,
+                // The interval actually kept, so the card can report the real
+                // analysis rate rather than the fixed RING_CAPACITY count.
+                segment.endIndex - segment.startIndex
             )
             if (segment.reason == SignSegmenter.Reason.TRIMMED) {
                 Log.i("EchoGesture", "segment trimmed to ${segment.endIndex - segment.startIndex}" +
@@ -1359,6 +1363,22 @@ class CameraScreen(
             capture.durationMs,
             capture.fps.roundToInt()
         )
+        // The line above is the MODEL's view. This one is the CAMERA's, and it
+        // is the only place the two can be compared on a phone: the model
+        // always receives RING_CAPACITY points, so without the raw count a
+        // capture that was really starved of frames looks identical to a full
+        // one. When they are far apart the analyser, not the camera, is the
+        // limit -- and a sparse window means the features carry less motion
+        // than the signer made, because velocity is a plain per-frame
+        // difference with no dt.
+        profilerDetailText.text = tracker?.profiler?.snapshot()?.let { p ->
+            activity.getString(
+                R.string.result_profiler_detail,
+                p.effectiveFps.roundToInt(),
+                p.delivered,
+                p.analysisP50
+            )
+        } ?: ""
         latencyText.text = activity.getString(
             R.string.result_latency_detail,
             result.inferenceMillis

@@ -151,7 +151,20 @@ class HandTracker private constructor(
         val frames: List<Frame>,
         val durationMs: Long,
         val fps: Float,
-        val handFrames: Int
+        val handFrames: Int,
+        /**
+         * Real frames the camera produced across this same interval, before
+         * [fps] was limited by how many the analyser got through.
+         *
+         * [frames] is resampled to RING_CAPACITY, so its count says nothing
+         * about throughput -- a 3.7 s capture always reports 32. This is the
+         * number that says whether the analyser kept up: when it is much larger
+         * than [fps] the window is being sampled more coarsely than training
+         * was, and because features.py differences consecutive sampled frames
+         * the model sees less motion than the signer actually made. -1 when the
+         * caller did not supply it.
+         */
+        val analyserFrames: Int = -1
     ) {
         val frameCount: Int get() = frames.size
     }
@@ -174,6 +187,61 @@ class HandTracker private constructor(
     }
 
     companion object {
+        /**
+         * Maps one hand's landmarks into the geometry the checkpoints were
+         * TRAINED on. In place; z is untouched.
+         *
+         * MediaPipe returns x and y normalised by the dimensions of the image
+         * it was HANDED -- the raw buffer -- one normalised unit of x being
+         * `width` pixels and one of y being `height`. The corpus is 640x480, so
+         * expressing a landmark in corpus normalisation means
+         *
+         *     x_corpus = x_norm * width  / 640
+         *     y_corpus = y_norm * height / 480
+         *
+         * which is the identity on a 640x480 buffer and corrects the hand's
+         * ASPECT on any other. A uniform overall scale is deliberately left
+         * alone: `FeatureTransform` root-centres on the wrist and divides by
+         * wrist->middle-MCP, so only the RATIO of the two factors reaches the
+         * model.
+         *
+         * PASS THE BUFFER DIMENSIONS, NOT THE DISPLAY DIMENSIONS. Measured on
+         * this MediaPipe build (0.10.14, both IMAGE and VIDEO mode): setting
+         * `rotationDegrees` changes where the detector LOOKS but not the frame
+         * its coordinates are reported in. Feeding a 90-degree-rotated buffer
+         * with rotationDegrees=270 returned landmarks identical to
+         * rotationDegrees=0 (mean per-landmark difference 0.0031), and 0.2232
+         * away from the upright frame. So a portrait phone's coordinates are
+         * already in the raw landscape buffer's frame, and normalising them by
+         * the portrait dimensions would stretch a correctly-shaped hand by
+         * 1.78x -- the exact defect this function exists to prevent.
+         *
+         * Inflicting that 1.78x stretch on the 1,251-clip test set costs
+         * 85.08% -> 82.66% top-1. A zero-sized frame -- possible before the
+         * analyser has been configured -- is left alone rather than producing
+         * NaN, which features.py would refuse and the capture would be lost.
+         */
+        fun mapToCorpusAspect(xyz: FloatArray, width: Int, height: Int): FloatArray {
+            if (width <= 0 || height <= 0) return xyz
+            val xScale = width.toFloat() / CORPUS_WIDTH_PX
+            val yScale = height.toFloat() / CORPUS_HEIGHT_PX
+            if (xScale == 1f && yScale == 1f) return xyz
+            val n = xyz.size / 3
+            for (j in 0 until n) {
+                xyz[j * 3] *= xScale
+                // y is anchored at the frame's top edge, which is MediaPipe's
+                // origin for this axis. The anchor is immaterial to the model
+                // (the wrist is subtracted in the feature transform); it is
+                // chosen so the expression stays a plain scale.
+                xyz[j * 3 + 1] *= yScale
+            }
+            return xyz
+        }
+
+        /** Landscape corpus geometry the checkpoints were trained on. */
+        private const val CORPUS_WIDTH_PX = 640f
+        private const val CORPUS_HEIGHT_PX = 480f
+
         private const val TAG = "HandTracker"
         private const val FRAME_INTERVAL_MS = 33L // ~30 fps, monotonic VIDEO timestamps
 
@@ -300,7 +368,7 @@ class HandTracker private constructor(
             val duration = if (raw.size >= 2) last - first else 0L
             val fps = if (duration > 0) (raw.size - 1) * 1000f / duration else 0f
             val sampled = evenlySpacedFrames(raw, RING_CAPACITY)
-            return Capture(sampled, duration, fps, sampled.count { it.hands.isNotEmpty() })
+            return Capture(sampled, duration, fps, sampled.count { it.hands.isNotEmpty() }, raw.size)
         }
 
         private fun evenlySpacedFrames(raw: List<Frame>, target: Int): List<Frame> {
@@ -361,9 +429,7 @@ class HandTracker private constructor(
                 }
             } catch (t: Throwable) {
                 Log.w(TAG, "GPU delegate unavailable, falling back to CPU", t)
-                buildLandmarker(context, modelAssetPath, Delegate.CPU).also {
-                    Log.i(TAG, "HandLandmarker delegate=CPU")
-                }
+                buildLandmarker(context, modelAssetPath, Delegate.CPU)
             }
             return HandTracker(gpu)
         }
@@ -492,7 +558,10 @@ class HandTracker private constructor(
                 detectDurationMs = detectMs,
                 sensorTimestampNs = imageProxy.imageInfo.timestamp
             )
-            val frame = Frame(toHands(result), frameAtMs)
+            val frame = Frame(
+                toHands(result, mpImage.getWidth(), mpImage.getHeight()),
+                frameAtMs
+            )
             // The ring is a rolling buffer of the recent past. It is never
             // gated on a capture state: the sign happens BEFORE the tap, so the
             // frames that describe it are already behind us when the user
@@ -632,7 +701,7 @@ class HandTracker private constructor(
         }
     }
 
-    private fun toHands(result: HandLandmarkerResult): List<Hand> {
+    private fun toHands(result: HandLandmarkerResult, width: Int, height: Int): List<Hand> {
         val out = ArrayList<Hand>(result.landmarks().size)
         // handedness() rows align 1:1 with landmarks() rows; take category 0's name.
         var i = 0
@@ -649,9 +718,11 @@ class HandTracker private constructor(
                 arr[j * 3 + 1] = pts[j].y()
                 arr[j * 3 + 2] = pts[j].z()
             }
+            mapToCorpusAspect(arr, width, height)
             out.add(Hand(slot, arr))
             i++
         }
         return out
     }
+
 }

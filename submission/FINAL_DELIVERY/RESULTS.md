@@ -122,10 +122,11 @@ all trace to three gitignored artifacts (see `TEST_TRIAGE.md`).
 
 | Artifact | SHA-256 |
 | --- | --- |
-| APK `EchoGesture-2026-11-21.apk` | `96f00458f54de715c7a6f489f9ae92425bc73a089043a91ccbe0ae6d4f060035` |
+| APK `EchoGesture-2026-11-22-release.apk` (**ship this**) | `a56ba20f3b8a88c9e0be49c196a0ca29e66f0e69ad4e80d9bd4803dfa7e8ada7` |
+| APK `EchoGesture-2026-11-21.apk` (debuggable; source of every latency/power figure) | `96f00458f54de715c7a6f489f9ae92425bc73a089043a91ccbe0ae6d4f060035` |
 | ZIP `EchoGesture_Submission.zip` | `7691190b8ce045684a6117ab6a2b97b7b79327563147e9699f69cec939646cca` |
-| Deck `CollegeName_TeamName.pptx` | `1f3227d9d695034d67931f8f0cca6bd614b7c1d0628228925647dbfa78f380a4` |
-| Deck `CollegeName_TeamName.pdf` | `f995aa979bcbb68dae971f2611a8fcfd2b0ece2ee4f2e5a141f05cf8cf0f8550` |
+| Deck `CollegeName_TeamName.pptx` | `e8361b55008deac511cbfa6b3fd705900a9e8032eef386b8288fa6d6e6abb395` |
+| Deck `CollegeName_TeamName.pdf` | `cec8b236f8ba44cc89efce9528f0f241a5e0d5905c19f3ab9cbbead7f1904a52` |
 
 ---
 

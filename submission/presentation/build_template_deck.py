@@ -366,12 +366,12 @@ def s5_output(slide):
     block(slide, 5.10, TOP + 1.68, 4.40, 0.25, "WHAT THE NUMBERS DO NOT SAY", size=9, colour=GREY)
     block(slide, 5.10, TOP + 1.94, 4.40, 2.0, [
         ("85.45% is a corpus figure at native 640×480 — the geometry the app feeds. Not phone accuracy.",
-         {"size": 9.5, "space": 6}),
-        ("The 5.76 pt robustness drop is a real failure, not a measurement artefact; the gate recovers it to 2.39 at 86%/80% coverage.",
-         {"size": 9.5, "space": 6}),
-        ("Latency and power were measured on a DEBUGGABLE build (upper bound). A release build strips instrumentation but was not measured.",
-         {"size": 9.5, "space": 6}),
-        ("The old 77.02% was these same weights on a cache with a wrong presence mask on 29% of clips.",
+         {"size": 9, "space": 5}),
+        ("The 5.76 pt robustness drop is real; the app's gate recovers it to 2.39 at 86%/80% coverage.",
+         {"size": 9, "space": 5}),
+        ("Latency and power came from a DEBUGGABLE build. The shipped APK is now the signed release build, so those figures are upper bounds.",
+         {"size": 9, "space": 5}),
+        ("The old 77.02% was these weights on a cache with a wrong presence mask on 29% of clips.",
          {"size": 9, "colour": CYAN}),
     ], colour=GREY)
 

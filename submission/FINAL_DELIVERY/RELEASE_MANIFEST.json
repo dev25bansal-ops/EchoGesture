@@ -57,15 +57,15 @@
     },
     "presentation": {
       "path": "submission/presentation/CollegeName_TeamName.pptx",
-      "sha256": "1f3227d9d695034d67931f8f0cca6bd614b7c1d0628228925647dbfa78f380a4",
-      "bytes": 413481,
+      "sha256": "e8361b55008deac511cbfa6b3fd705900a9e8032eef386b8288fa6d6e6abb395",
+      "bytes": 413468,
       "slides": 9,
       "template": "Built inside the organizer's own template (C:/Users/dev25/Downloads/Submission_Final_forGithub.pptx): the original 9 slides are filled in place, so master, layout and header geometry are the template's, not a reconstruction.",
       "font": "Arial Black (display) and Calibri (body), inherited from the template",
       "pdf": {
         "path": "submission/presentation/CollegeName_TeamName.pdf",
-        "sha256": "f995aa979bcbb68dae971f2611a8fcfd2b0ece2ee4f2e5a141f05cf8cf0f8550",
-        "bytes": 376310,
+        "sha256": "cec8b236f8ba44cc89efce9528f0f241a5e0d5905c19f3ab9cbbead7f1904a52",
+        "bytes": 376340,
         "pages": 9,
         "note": "Native Microsoft PowerPoint export (SaveAs format 32): text is selectable and fonts are embedded. Verified as 9 pages with the figure set re-extracted from the PDF text layer."
       },
@@ -75,6 +75,22 @@
         "Slide 7 carries 'DEMO VIDEO: <paste the 2-3 min YouTube or Drive link here>' in red until the recording is uploaded."
       ],
       "supersedes": "EchoGesture_Track02.pptx / .pdf (8 slides, sections not matching the template, removed from the tree)."
+    },
+    "apk_release_2026_11_22": {
+      "path": "submission/apk/EchoGesture-2026-11-22-release.apk",
+      "sha256": "a56ba20f3b8a88c9e0be49c196a0ca29e66f0e69ad4e80d9bd4803dfa7e8ada7",
+      "bytes": 80815032,
+      "debuggable": false,
+      "signed": "CN=measurement — local key supplied via environment; no key material in the repo",
+      "unit_tests": "150 / 150 pass on the release variant",
+      "ensemble_test_top1_in_apk": 0.8545,
+      "note": "SIGNED RELEASE build — this is the artifact to install. Every latency, power and thermal figure in results.csv was measured on the older DEBUGGABLE build, so those are upper bounds on this one. Same 10 model assets as debug (9 FP16 tflite + hand_landmarker.task).",
+      "supersedes": {
+        "path": "submission/apk/EchoGesture-2026-11-21.apk",
+        "sha256": "96f00458f54de715c7a6f489f9ae92425bc73a089043a91ccbe0ae6d4f060035",
+        "bytes": 82894510,
+        "why": "debuggable build; kept for the instrumented measurements"
+      }
     }
   },
   "evidence": {

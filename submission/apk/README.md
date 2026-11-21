@@ -1,23 +1,39 @@
 # EchoGesture APK
 
-Built 2026-11-21 from `submission/final` at commit `29c48b6`.
+**Ship this one: `EchoGesture-2026-11-22-release.apk`.** It is a signed,
+non-debuggable **release** build. Every latency, power and thermal figure in
+this repo was measured on the older DEBUGGABLE build, whose instrumentation is
+overhead the release build does not carry — so those numbers are upper bounds
+on the artifact you are actually installing.
+
+| | Release (ship) | Debug (historical) |
+|---|---|---|
+| File | `EchoGesture-2026-11-22-release.apk` | `EchoGesture-2026-11-21.apk` |
+| Size | 80,815,032 bytes (80.8 MB) | 82,894,510 bytes (82.9 MB) |
+| SHA-256 | `a56ba20f3b8a88c9e0be49c196a0ca29e66f0e69ad4e80d9bd4803dfa7e8ada7` | `96f00458f54de715c7a6f489f9ae92425bc73a089043a91ccbe0ae6d4f060035` |
+| `android:debuggable` | **absent (not debuggable)** | `true` |
+| Signature | `CN=measurement` | debug key |
+| Unit tests | **150 / 150 pass** on the release variant | 150 / 150 |
 
 | | |
 |---|---|
-| File | `EchoGesture-2026-11-21.apk` |
-| Size | 82,894,510 bytes (82.9 MB) |
-| SHA-256 | `96f00458f54de715c7a6f489f9ae92425bc73a089043a91ccbe0ae6d4f060035` |
 | Package | `org.echogesture.finalapp` |
 | Min SDK | 24 (Android 7.0) |
 | Target SDK | 34 |
 | Arch | arm64-v8a |
+| Model assets | 9 FP16 `.tflite` + `hand_landmarker.task` (10 files, identical to debug) |
+| `ensemble_test_top1` in the APK's own sidecar | **0.8545** — matches the deck |
 
-The `.sha256` file beside it is the same digest in `sha256sum` format. Verify
-before installing:
+Both `.sha256` files are the digest in `sha256sum` format. Verify before
+installing:
 
 ```
-sha256sum -c EchoGesture-2026-11-21.apk.sha256
+sha256sum -c EchoGesture-2026-11-22-release.apk.sha256
 ```
+
+The release build is signed from an opt-in environment config, so no key
+material or password is in the repository. With `ECHOGESTURE_KEYSTORE` unset,
+`assembleRelease` produces an unsigned APK exactly as before.
 
 ## What it does
 
@@ -35,11 +51,11 @@ Two ways to use it:
 
 ## Install
 
-Debug-signed, so Android will warn about an unknown source. Enable "Install
-unknown apps" for your file manager, or:
+Signed with a local key, not a Play Store certificate, so Android will warn
+about an unknown source. Enable "Install unknown apps" for your file manager, or:
 
 ```
-adb install -r EchoGesture-2026-11-21.apk
+adb install -r EchoGesture-2026-11-22-release.apk
 ```
 
 ## Known limits, stated rather than buried

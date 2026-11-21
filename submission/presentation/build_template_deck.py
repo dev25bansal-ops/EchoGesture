@@ -379,16 +379,19 @@ def s5_output(slide):
 def s6_differentiation(slide):
     retitle(slide, "DIFFERENTIATION")
     items = [
+        ("A HUD that says when it is unsure",
+         "The score chip is colour-coded and the caption is gated: a margin rule calibrated "
+         "on 345 unseen-signer clips accepts 86.1% of captures at 96.0% accuracy and declines "
+         "the 13.9% that score 35.4%. Capture facts and inference time are separate lines, "
+         "so a slow analyser cannot be misread as a slow model."),
         ("Attention masking",
          "The model was always trained with a hand-presence mask — and every export omitted it. "
          "Supplying it made the shipped artifact match the trained one: +4.24 points."),
-        ("Mixed feature widths",
-         "Four members take x,y (255 wide); five take x,y,z (381 wide). Width is read per member "
-         "from the sidecar, never guessed from a filename."),
         ("Record the interval, not a photo",
          "The user marks Start and Finish. The app classifies that interval and trims idle motion, "
          "instead of sliding a window over whatever the camera last saw."),
         ("Parity you can check",
+         "Nine members at two widths (255 x,y / 381 x,y,z, read per member from the sidecar). "
          "Android and Python agree to 0.000000 on features and 5e-6 on logits across nine clips, "
          "both widths, five signers — including one clip both get wrong."),
     ]

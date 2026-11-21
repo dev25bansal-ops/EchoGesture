@@ -68,3 +68,19 @@ Next action and owner:
   robustness logs, demo and deck, and final form requirements.
 - Both agree which commit and artifact SHAs the submitted numbers describe.
   Abhijeet submits the package and keeps the receipt.
+
+## Android V5.9 automatic camera response
+
+Abhijeet built the installable debug APK from `48e02c28f60faa9e7b60a7b74869fa5f25b86186` on `codex/android-capture-fixes`. The app uses the pinned nine-member FP16 ensemble (`995cc8d0b6f6ac25abb9f7ddca01c3ce71edf8bc2d34e34f4813a2b99dd3b4bb`), MediaPipe 0.10.14 and TensorFlow Lite 2.16.1 with four XNNPACK threads. The upgrade from V5.8 was verified on an offline Android 14 ARM64 emulator with both virtual cameras. The APK SHA-256 is `2842d2be9cfe816f35a8bdf5635c42112ec48ba02ad39e422a6e19a1d1e81b27`.
+
+On 120 labeled portrait replays, V5.9 ranked the correct sign first on 106 clips and confirmed 54 correct captions. V5.8 ranked 98 correctly and confirmed 52 correct captions. Neither version confirmed an incorrect caption on this set. Across the 115 clips that yielded a label in both versions, V5.9 triggered inference a median 467 ms earlier. All 118 V5.9 endpoints in this replay followed hand disappearance. The one-tap UI test exercised the transition from Start to a visible result. A physical rear-camera check by the original signer remains open.
+
+Build in `app/android_final` with `./gradlew :app:assembleDebug :app:assembleDebugAndroidTest :app:testDebugUnitTest`. The local Desktop delivery folder `EchoGesture-V5.9` contains the APK, checksum, per-clip results, the 120 exact clip IDs and labels, and staging instructions. After staging the named clips and manifest, run the benchmark with:
+
+```sh
+adb shell am instrument -w -r -e requireResponse true \
+  -e class org.echogesture.finalapp.PortraitRecognitionTest#automaticResponseOnLabeledPortraitClips \
+  org.echogesture.finalapp.test/androidx.test.runner.AndroidJUnitRunner
+```
+
+All 152 JVM tests passed. Across the full instrumentation run and the corrected one-tap test rerun, all 51 distinct Android tests passed with fixtures present. Two earlier cancellation tests had used a stationary hand for 1.2 seconds, by which time V5.9 had completed recognition. Test commit `621c688` supplies sustained motion for cancellation and checks held-pose completion separately. The final APK's median feature and inference time was 24 ms (p95 30 ms) on scored clips. The older CameraX 1.3.4 initialization-recovery call still raises a RestrictedApi error in Android lint.

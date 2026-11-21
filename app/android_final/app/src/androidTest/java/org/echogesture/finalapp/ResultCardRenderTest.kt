@@ -186,8 +186,8 @@ class ResultCardRenderTest {
             val captureDetail = activity.findViewById<TextView>(R.id.captureDetailText)
             assertTrue(
                 "card must state capture facts separately from latency, was '${captureDetail.text}'",
-                captureDetail.text.toString().contains("32 frames") &&
-                    captureDetail.text.toString().contains("1023 ms")
+                captureDetail.text.toString() ==
+                    activity.getString(R.string.result_capture_detail, 32, 1023, 30)
             )
             assertTrue(
                 "latency must be its own classifier measurement, was '${latency.text}'",

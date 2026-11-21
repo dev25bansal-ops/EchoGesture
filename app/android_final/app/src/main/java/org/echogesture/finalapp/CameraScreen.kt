@@ -115,6 +115,7 @@ class CameraScreen(
     private val guidanceText: TextView = root.findViewById(R.id.guidanceText)
     private val liveStatus: TextView = root.findViewById(R.id.liveStatus)
     private val captureButton: Button = root.findViewById(R.id.captureButton)
+    private val clipButton: Button = root.findViewById(R.id.clipButton)
 
     private val resultCard: View = root.findViewById(R.id.resultCard)
     private val captionText: TextView = root.findViewById(R.id.captionText)
@@ -152,6 +153,9 @@ class CameraScreen(
     private val handler = android.os.Handler(android.os.Looper.getMainLooper())
 
     private var cameraProvider: ProcessCameraProvider? = null
+    private var cameraStartPending = false
+    private var cameraInitFailed = false
+    private var cameraBindingGeneration = 0
     private var camera: Camera? = null
     private var imageAnalysis: ImageAnalysis? = null
     private var preview: Preview? = null
@@ -179,6 +183,7 @@ class CameraScreen(
     private var lastFrames = 0
     private var lastHandFrames = 0
     private var bound = false
+    private var controlsWired = false
 
     /**
      * Bumped whenever a result must no longer be painted.
@@ -187,11 +192,12 @@ class CameraScreen(
      * the user cleared the card, left the tab, or started a new attempt is
      * discarded instead of overwriting what is now on screen.
      */
-    private var resultGeneration = 0
+    @Volatile private var resultGeneration = 0
 
     private val permissionLauncher = activity.registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
+        if (!bound) return@registerForActivityResult
         if (granted) {
             // Cleared here rather than relying on render(), which is only
             // reached if the bind succeeds. A grant that lands after a failed
@@ -205,16 +211,24 @@ class CameraScreen(
         }
     }
 
+    private val clipAnalyzer = ClipAnalyzer(activity.applicationContext)
+    private val clipPicker = activity.registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (bound && uri != null) analyzeClip(uri)
+    }
+
     // ---- lifecycle ----------------------------------------------------------
 
     fun onBind() {
         if (bound) return
         bound = true
-        wireControls()
+        if (!controlsWired) {
+            wireControls()
+            controlsWired = true
+        }
         frameGuide.attachTo(previewView)
         applyPreferences()
-        modelIdentity.text = activity.getString(R.string.camera_state_preparing)
-        render(UiState.INIT)
+        if (!modelReady) modelIdentity.text = activity.getString(R.string.camera_state_preparing)
+        render(if (modelReady) UiState.WAITING else UiState.INIT)
         speaker.initialise()
 
         if (hasCameraPermission()) startCamera(prefs.cameraChoice)
@@ -234,7 +248,7 @@ class CameraScreen(
      */
     fun onResume() {
         if (!bound) return
-        if (cameraProvider != null) return
+        if (camera != null) return
         if (!hasCameraPermission()) return
         permissionCard.visibility = View.GONE
         render(UiState.WAITING)
@@ -244,16 +258,33 @@ class CameraScreen(
     fun onUnbind() {
         if (!bound) return
         bound = false
-        // Drop an armed or in-progress one-tap attempt: leaving the tab must
-        // not leave the segmenter buffering frames nobody will classify.
-        runCatching { tracker?.disarmAuto() }
-        // In-flight inference cannot be cancelled, but its result must not be
-        // painted onto a screen the user has left.
-        resultGeneration++
+        cameraBindingGeneration++
+        cameraStartPending = false
+        resetCapture()
         runCatching { cameraProvider?.unbindAll() }
         camera = null
         imageAnalysis = null
         preview = null
+    }
+
+    fun onPause() {
+        if (bound && (isAutoCapturing() || currentState == UiState.RECORDING ||
+                currentState == UiState.PROCESSING)) {
+            resetCapture()
+            render(UiState.WAITING)
+        }
+    }
+
+    private fun isAutoCapturing(): Boolean =
+        currentState == UiState.AUTO_ARMED || currentState == UiState.AUTO_SIGNING
+
+    private fun resetCapture() {
+        resultGeneration++
+        stopRecordingTicker()
+        tracker?.clear()
+        processing = false
+        lastFrames = 0
+        lastHandFrames = 0
     }
 
     /** Called by the Activity once the assets are verified and interpreters exist. */
@@ -270,7 +301,9 @@ class CameraScreen(
         ) + " · " + activity.getString(
             R.string.settings_model_precision
         ) + " · SHA-256 " + loaded.identity.shortSha + "…"
-        if (currentState == UiState.INIT) render(UiState.WAITING)
+        if (currentState == UiState.INIT || currentState == UiState.WAITING) {
+            render(UiState.WAITING, permissionBlocked = !hasCameraPermission())
+        }
         // The analyser may be bound before the models finish loading.
         rebindAnalyserIfNeeded()
     }
@@ -287,7 +320,8 @@ class CameraScreen(
         tracker = null
         classifier = null
         trackerExecutor.shutdownNow()
-        inferExecutor.shutdownNow()
+        inferExecutor.execute { clipAnalyzer.close() }
+        inferExecutor.shutdown()
     }
 
     fun currentCaption(): String? =
@@ -296,6 +330,7 @@ class CameraScreen(
     // ---- wiring -------------------------------------------------------------
 
     private fun wireControls() {
+        clipButton.setOnClickListener { clipPicker.launch(arrayOf("video/*")) }
         captureButton.setOnClickListener {
             when (currentState) {
                 UiState.RECORDING -> finishRecording()
@@ -383,11 +418,14 @@ class CameraScreen(
     ) {
         activity.runOnUiThread {
             currentState = state
-            permissionCard.visibility = if (permissionBlocked) View.VISIBLE else View.GONE
+            permissionCard.visibility = if (permissionBlocked ||
+                (!hasCameraPermission() && state != UiState.PROCESSING)) View.VISIBLE else View.GONE
 
             val cameraLive = hasCameraPermission() && camera != null
             captureButton.isEnabled =
                 modelReady && cameraLive && state != UiState.PROCESSING
+            clipButton.isEnabled = modelReady && state != UiState.PROCESSING &&
+                state != UiState.RECORDING && state != UiState.AUTO_ARMED && state != UiState.AUTO_SIGNING
 
             captureButton.text = activity.getString(
                 when (state) {
@@ -449,7 +487,11 @@ class CameraScreen(
                 }
                 UiState.RESULT -> {
                     hideStatus()
-                    setLiveStatus(R.string.result_label, R.color.success)
+                    val accepted = resultLabel.text == activity.getString(R.string.result_label)
+                    setLiveStatus(
+                        if (accepted) R.string.result_label else R.string.result_uncertain_headline,
+                        if (accepted) R.color.success else R.color.warning
+                    )
                     resultCard.visibility = View.VISIBLE
                     revealResult()
                 }
@@ -604,21 +646,35 @@ class CameraScreen(
     }
 
     private fun startCamera(choice: AppPreferences.CameraChoice) {
+        if (!bound || !hasCameraPermission() || cameraStartPending) return
+        cameraProvider?.let {
+            bindUseCases(selectorFor(choice))
+            return
+        }
         // CameraX caches its initialisation Future, including a FAILED one, so
         // a first attempt that loses a race with another camera user makes every
         // later getInstance() replay that same exception for the life of the
         // process. Observed: "No available camera can be found", then
         // "reaching the maximum number of retries", with "Try again" unable to
         // recover until the process was killed.
-        if (cameraProvider == null) forgetCachedCameraProvider()
+        if (cameraInitFailed) forgetCachedCameraProvider()
+        cameraStartPending = true
+        val generation = ++cameraBindingGeneration
         val future = ProcessCameraProvider.getInstance(activity)
         future.addListener({
+            if (!bound || generation != cameraBindingGeneration) return@addListener
+            cameraStartPending = false
+            if (!hasCameraPermission()) return@addListener
             try {
                 val provider = future.get()
+                cameraInitFailed = false
                 cameraProvider = provider
                 bindUseCases(selectorFor(choice))
             } catch (t: Throwable) {
-                render(UiState.ERROR, detail = activity.getString(R.string.error_camera_start))
+                cameraInitFailed = true
+                if (!processing && currentState != UiState.RESULT) {
+                    render(UiState.ERROR, detail = activity.getString(R.string.error_camera_start))
+                }
             }
         }, ContextCompat.getMainExecutor(activity))
     }
@@ -658,6 +714,7 @@ class CameraScreen(
 
     private fun analyserCallback(imageProxy: androidx.camera.core.ImageProxy) {
         val t = tracker
+        val generation = resultGeneration
         if (t == null) {
             imageProxy.close()
             return
@@ -668,16 +725,13 @@ class CameraScreen(
             lastFrames = frames
             lastHandFrames = handFrames
 
-            // The segmenter may have just completed a sign on this very frame.
-            // Consumed here, exactly once, so a sign is never classified twice.
-            val completed = t.takeAutoOutcome()
-            val autoState = t.autoState()
-
             activity.runOnUiThread {
+                if (!bound || generation != resultGeneration || tracker !== t) return@runOnUiThread
+                val completed = if (isAutoCapturing()) t.takeAutoOutcome() else null
                 if (completed != null) {
                     onAutoSignComplete(completed)
                 } else {
-                    when (autoState) {
+                    when (t.autoState()) {
                         AutoSegmenter.State.ARMED ->
                             if (currentState == UiState.AUTO_ARMED) {
                                 setLiveStatus(R.string.auto_ready, R.color.text_on_dark)
@@ -700,7 +754,11 @@ class CameraScreen(
                 }
             }
         } else if (t.consecutiveFailures() >= HandTracker.FAILURE_THRESHOLD) {
-            reportPersistentTrackerFailure()
+            activity.runOnUiThread {
+                if (bound && generation == resultGeneration && tracker === t) {
+                    reportPersistentTrackerFailure()
+                }
+            }
         }
     }
 
@@ -732,9 +790,15 @@ class CameraScreen(
             camera = provider.bindToLifecycle(activity, selector, newPreview, analysis)
             boundSelector = selector
             updateTorchVisibility()
-            render(if (modelReady) UiState.WAITING else UiState.INIT)
+            if (!processing && currentState != UiState.RESULT) {
+                render(if (modelReady) UiState.WAITING else UiState.INIT)
+            } else if (currentState == UiState.RESULT) {
+                captureButton.isEnabled = modelReady
+            }
         } catch (t: Throwable) {
-            render(UiState.ERROR, detail = activity.getString(R.string.error_camera_start))
+            if (!processing && currentState != UiState.RESULT) {
+                render(UiState.ERROR, detail = activity.getString(R.string.error_camera_start))
+            }
         }
     }
 
@@ -766,7 +830,7 @@ class CameraScreen(
         }
         // A camera rebind changes sensor orientation; start from a clean ring so
         // no frame from the previous camera reaches the model.
-        tracker?.clear()
+        resetCapture()
         render(UiState.WAITING)
         bindUseCases(next)
     }
@@ -788,6 +852,7 @@ class CameraScreen(
     private fun reportPersistentTrackerFailure() {
         if (trackerFailureReported) return
         trackerFailureReported = true
+        resetCapture()
         render(UiState.ERROR, detail = activity.getString(R.string.error_camera_start))
     }
 
@@ -961,9 +1026,9 @@ class CameraScreen(
                 // A flip is a frame where a slot that was present vanishes while
                 // the other appears: the classic handedness swap signature.
                 val p = prevSlots
-                if (p != null && p.isNotEmpty() && slots.isNotEmpty() && p != slots) flips++
-                prevSlots = slots
+                if (p?.size == 1 && slots.size == 1 && p != slots) flips++
             }
+            prevSlots = slots
         }
         // maskSteps is left unset here on purpose: the real number is only
         // known once the 24-step mask is built for inference. runInference()
@@ -989,6 +1054,7 @@ class CameraScreen(
     }
 
     private fun cancelAutoCapture() {
+        resultGeneration++
         tracker?.disarmAuto()
         render(UiState.WAITING)
     }
@@ -1002,8 +1068,14 @@ class CameraScreen(
      * the idle before and after it.
      */
     private fun onAutoSignComplete(outcome: AutoSegmenter.Outcome) {
+        if (!isAutoCapturing()) return
         val c = classifier ?: return
+        val attempt = attemptOf(outcome)
         if (!outcome.isUsable) {
+            if (prefs.diagnostics) {
+                val capture = captureOf(outcome.frames)
+                inferExecutor.execute { logDiagnostic(capture, null, 0L, attempt) }
+            }
             // Say why, rather than classifying a fragment. An unusable segment
             // is an input-quality failure and must not become a guess.
             render(UiState.NO_HANDS, detail = activity.getString(R.string.auto_too_short))
@@ -1011,11 +1083,19 @@ class CameraScreen(
             return
         }
         val generation = ++resultGeneration
+        processing = true
         render(UiState.PROCESSING)
         val recording = SignRecorder.Recording(outcome.frames, outcome.startedAtMs, outcome.endedAtMs)
         inferExecutor.execute {
-            runInference(recording, c, generation, attemptOf(outcome))
+            runInference(recording, c, generation, attempt)
         }
+    }
+
+    private fun captureOf(frames: List<HandTracker.Frame>): HandTracker.Capture {
+        val durationMs = if (frames.size >= 2)
+            frames.last().capturedAtMs - frames.first().capturedAtMs else 0L
+        val fps = if (durationMs > 0) (frames.size - 1) * 1000f / durationMs else 0f
+        return HandTracker.Capture(frames, durationMs, fps, frames.count { it.hands.isNotEmpty() })
     }
 
     private fun finishRecording() {
@@ -1112,70 +1192,91 @@ class CameraScreen(
         recording: SignRecorder.Recording,
         c: LandmarkClassifier,
         generation: Int = resultGeneration,
-        attempt: DiagnosticsLog.Attempt? = null
+        attempt: DiagnosticsLog.Attempt? = null,
+        fromClip: Boolean = false
     ) {
+        var diagnosticCapture = captureOf(emptyList())
+        var diagnosticAttempt = attempt
         try {
             if (recording.frameCount == 0) {
-                processing = false
-                render(UiState.NO_HANDS, detail = activity.getString(R.string.record_no_frames))
+                if (prefs.diagnostics) logDiagnostic(diagnosticCapture, null, 0L, attempt)
+                finishInference(generation) {
+                    render(UiState.NO_HANDS, detail = activity.getString(R.string.record_no_frames))
+                }
                 return
             }
-            val segment = RecordingFeatures.segment(recording)
+            val segment = if (fromClip) null else RecordingFeatures.segment(recording)
             // Same sampler on both paths. Measured on 30 labelled clips through
             // this code: the motion trim scores 0.867, sampling the interval as
             // given scores 0.833. The trim EARNS its place even on an
             // already-selected interval, because SignSegmenter's threshold is
             // relative to the recording's own peak motion and therefore adapts.
-            val sampled = RecordingFeatures.sample(recording)
-            val keptMs = if (sampled.size >= 2)
-                sampled.last().capturedAtMs - sampled.first().capturedAtMs else 0L
-            val handFrames = sampled.count { it.hands.isNotEmpty() }
+            val sampled = if (fromClip) recording.frames else RecordingFeatures.sample(recording)
             // The card and diagnostics describe the interval actually
             // classified, which is the trimmed one when idle was removed. The
             // recording's full duration is reported separately.
-            val capture = HandTracker.Capture(
-                sampled,
-                keptMs,
-                if (keptMs > 0) (sampled.size - 1) * 1000f / keptMs else 0f,
-                handFrames
-            )
-            if (segment.reason == SignSegmenter.Reason.TRIMMED) {
+            val capture = captureOf(sampled)
+            diagnosticCapture = capture
+            val handFrames = capture.handFrames
+            if (segment?.reason == SignSegmenter.Reason.TRIMMED) {
                 Log.i("EchoGesture", "segment trimmed to ${segment.endIndex - segment.startIndex}" +
-                    "/${recording.frameCount} frames, kept ${keptMs}ms of ${recording.durationMs}ms")
+                    "/${recording.frameCount} frames, kept ${capture.durationMs}ms of ${recording.durationMs}ms")
             }
             if (handFrames == 0) {
-                processing = false
                 if (prefs.diagnostics) logDiagnostic(capture, null, 0L, attempt)
-                render(UiState.NO_HANDS)
+                finishInference(generation) { render(UiState.NO_HANDS) }
                 return
             }
             val coverage = handFrames.toFloat() / sampled.size.coerceAtLeast(1)
             if (coverage < MIN_HAND_FRACTION) {
-                processing = false
                 if (prefs.diagnostics) logDiagnostic(capture, null, 0L, attempt)
-                render(UiState.LOW_FRAMES)
+                finishInference(generation) { render(UiState.LOW_FRAMES) }
                 return
             }
             val started = System.nanoTime()
-            val tensors = RecordingFeatures.buildBoth(recording)
+            val tensors = RecordingFeatures.buildBoth(sampled)
+            diagnosticAttempt = attempt?.withMaskFrom(tensors.mask)
             val result = c.predict(tensors.featuresXY, tensors.mask, tensors.featuresXYZ)
             val totalMs = (System.nanoTime() - started) / 1_000_000L
-            processing = false
             // The mask that was actually fed to the nine members, not an estimate
             // derived from hand-bearing frame counts. These differ: the mask is
             // built after resampling to 24 steps, so the model can be given a
             // step marked present whose source frames were interpolated.
-            val withMask = attempt?.withMaskFrom(tensors.mask)
-            if (prefs.diagnostics) logDiagnostic(capture, result, totalMs, withMask)
-            activity.runOnUiThread {
-                // Drop a result the user can no longer see: they cleared the
-                // card, left the tab, or started another attempt while this
-                // inference was running.
-                if (generation == resultGeneration) renderResult(result, totalMs, capture)
-            }
+            if (prefs.diagnostics) logDiagnostic(capture, result, totalMs, diagnosticAttempt)
+            finishInference(generation) { renderResult(result, totalMs, capture) }
         } catch (t: Throwable) {
+            if (prefs.diagnostics) logDiagnostic(diagnosticCapture, null, 0L, diagnosticAttempt)
+            finishInference(generation) {
+                render(UiState.ERROR, detail = activity.getString(R.string.error_inference))
+            }
+        }
+    }
+
+    private fun finishInference(generation: Int, showResult: () -> Unit) {
+        activity.runOnUiThread {
+            if (!bound || generation != resultGeneration) return@runOnUiThread
             processing = false
-            render(UiState.ERROR, detail = activity.getString(R.string.error_inference))
+            showResult()
+        }
+    }
+
+    private fun analyzeClip(uri: android.net.Uri) {
+        val model = classifier ?: return
+        if (processing || isAutoCapturing() || currentState == UiState.RECORDING) return
+        val generation = ++resultGeneration
+        processing = true
+        resultCard.visibility = View.GONE
+        render(UiState.PROCESSING)
+        inferExecutor.execute {
+            val recording = runCatching { clipAnalyzer.analyze(uri) }.getOrElse {
+                Log.w("CameraScreen", "Clip analysis failed (${it.javaClass.simpleName})")
+                finishInference(generation) {
+                    render(UiState.ERROR, detail = activity.getString(R.string.clip_unreadable))
+                }
+                return@execute
+            }
+            if (generation != resultGeneration) return@execute
+            runInference(recording, model, generation, fromClip = true)
         }
     }
 
@@ -1268,6 +1369,8 @@ class CameraScreen(
             captionText.text = activity.getString(R.string.result_uncertain_headline)
             resultLabel.setText(R.string.result_label_diagnostic)
         }
+        copyButton.isEnabled = certain
+        speakButton.isEnabled = certain
         confidenceBadge.text = activity.getString(
             R.string.result_score,
             "%.1f".format(percent)

@@ -1,25 +1,16 @@
-# Fill one row per attempt. Do not skip failures - they are the useful rows.
-# After each attempt the screen shows either a gloss or
-# "Sign not recognised reliably".
-#
-# expected_gloss     - the sign you MEANT, from the in-app glossary
-# shown_result       - exactly what the screen displayed
-# confidence_percent - the % figure on the result card (blank if it showed none)
-# accepted           - yes if it presented a gloss, no if it declined
-# auto_stopped       - yes if it stopped without you pressing Finish
 attempt,expected_gloss,shown_result,confidence_percent,accepted,auto_stopped,notes
-1,,,,,
-2,,,,,
-3,,,,,
-4,,,,,
-5,,,,,
-6,,,,,
-7,,,,,
-8,,,,,
-9,,,,,
-10,,,,,
-11,,,,,
-12,,,,,
-13,,,,,
-14,,,,,
-15,,,,,
+1,,,,,,
+2,,,,,,
+3,,,,,,
+4,,,,,,
+5,,,,,,
+6,,,,,,
+7,,,,,,
+8,,,,,,
+9,,,,,,
+10,,,,,,
+11,,,,,,
+12,,,,,,
+13,,,,,,
+14,,,,,,
+15,,,,,,

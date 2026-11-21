@@ -1,5 +1,40 @@
 # EchoGesture Final — Offline Android caption app
 
+## Current build · V5.5
+
+V5.5 recognizes one isolated sign at a time. Use **Start recognition** for the
+camera or **Analyze a video clip** to choose a local video with one sign.
+The app uses the nine masked FP16 members in `models/landmark_model_meta.json`.
+
+From the repository root, prepare the required assets from your local model
+files. Use the members listed in the metadata so all nine are copied in the
+same layout expected by the Android build:
+
+```sh
+python3.11 - <<'PY'
+import json
+import shutil
+from pathlib import Path
+
+models = Path("models")
+assets = Path("app/android_final/app/src/main/assets")
+assets.mkdir(parents=True, exist_ok=True)
+meta = json.loads((models / "landmark_model_meta.json").read_text())
+for name in (*meta["members"], "hand_landmarker.task",
+             "landmark_labels.json", "landmark_model_meta.json"):
+    shutil.copy2(models / name, assets / name)
+PY
+
+cd app/android_final
+./gradlew :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest
+```
+
+Use JDK 17 and Android SDK 34. Gradle checks the labels, metadata, classifier
+weights and detector before packaging. The locally installable APK is
+`app/build/outputs/apk/debug/app-debug.apk`.
+
+## Historical four-model build notes
+
 This is a buildable Android project for the frozen EchoGesture landmark
 ENSEMBLE (4 members). It contains no model binaries and makes no APK, device,
 power, thermal, or camera-permission verification claims on this host.

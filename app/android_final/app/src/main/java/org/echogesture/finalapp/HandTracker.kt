@@ -30,6 +30,7 @@ class HandTracker private constructor(
     private val closed = AtomicBoolean(false)
     private val ring = ArrayDeque<Frame>()
     private val lock = Any()
+    private val detectorLock = Any()
 
     /**
      * Real analysed-frame timing.
@@ -113,7 +114,6 @@ class HandTracker private constructor(
 
     companion object {
         private const val TAG = "HandTracker"
-        private const val FRAME_INTERVAL_MS = 33L // ~30 fps, monotonic VIDEO timestamps
 
         /** Frames resampled across the window into the model's 24-step input. */
         const val RING_CAPACITY = 32
@@ -283,18 +283,35 @@ class HandTracker private constructor(
         fun createForTest(context: Context): HandTracker = HandTracker(landmarker = null)
 
         fun create(context: Context, modelAssetPath: String): HandTracker {
+            return HandTracker(createLandmarker(context, modelAssetPath, RunningMode.VIDEO))
+        }
+
+        internal fun createLandmarker(context: Context, modelAssetPath: String, mode: RunningMode): HandLandmarker {
             val options = HandLandmarker.HandLandmarkerOptions.builder()
                 .setBaseOptions(
                     BaseOptions.builder().setModelAssetPath(modelAssetPath).build()
                 )
-                .setRunningMode(RunningMode.VIDEO)
+                .setRunningMode(mode)
                 .setNumHands(2)
                 .setMinHandDetectionConfidence(0.3f)
                 .setMinHandPresenceConfidence(0.3f)
                 .setMinTrackingConfidence(0.3f)
                 .build()
-            return HandTracker(HandLandmarker.createFromOptions(context, options))
+            return HandLandmarker.createFromOptions(context, options)
         }
+
+        internal fun toHands(result: HandLandmarkerResult): List<Hand> =
+            result.landmarks().mapIndexed { index, points ->
+                val handedness = result.handedness().getOrNull(index)?.firstOrNull()?.categoryName()
+                val slot = if (handedness.equals("Left", ignoreCase = true)) 0 else 1
+                val xyz = FloatArray(21 * 3)
+                for (joint in 0 until 21) {
+                    xyz[joint * 3] = points[joint].x()
+                    xyz[joint * 3 + 1] = points[joint].y()
+                    xyz[joint * 3 + 2] = points[joint].z()
+                }
+                Hand(slot, xyz)
+            }
     }
 
     /**
@@ -329,13 +346,16 @@ class HandTracker private constructor(
             val detectStart = SystemClock.elapsedRealtime()
             val detector = landmarker
                 ?: throw IllegalStateException("no landmarker: test tracker cannot analyse")
-            val result = detector.detectForVideo(
-                mpImage,
-                ImageProcessingOptions.builder()
-                    .setRotationDegrees(imageProxy.imageInfo.rotationDegrees)
-                    .build(),
-                nextFrameTs.getAndAdd(FRAME_INTERVAL_MS)
-            )
+            val result = synchronized(detectorLock) {
+                if (closed.get()) return false
+                detector.detectForVideo(
+                    mpImage,
+                    ImageProcessingOptions.builder()
+                        .setRotationDegrees(imageProxy.imageInfo.rotationDegrees)
+                        .build(),
+                    nextFrameTs.updateAndGet { previous -> maxOf(previous + 1, frameAtMs) }
+                )
+            }
             detectMs = SystemClock.elapsedRealtime() - detectStart
             // Real analysed-frame timing, including the camera's own sensor
             // timestamp so dropped frames can be counted. Without this the live
@@ -408,6 +428,8 @@ class HandTracker private constructor(
         ring.clear()
         lastCapturedAtMs = Long.MIN_VALUE
         recorder.cancel()
+        autoOutcome = null
+        autoSegmenter.cancel()
     }
 
     // ---- one-tap automatic capture -----------------------------------------
@@ -430,9 +452,9 @@ class HandTracker private constructor(
 
     /** Ends the current attempt now, keeping everything captured so far. */
     fun finishAutoManually(nowMs: Long): AutoSegmenter.Outcome? = synchronized(lock) {
-        val o = autoSegmenter.finishManually(nowMs)
-        if (o != null) autoOutcome = o
-        autoOutcome
+        val completed = autoOutcome
+        autoOutcome = null
+        completed ?: if (autoSegmenter.isActive) autoSegmenter.finishManually(nowMs) else null
     }
 
     /**
@@ -514,34 +536,9 @@ class HandTracker private constructor(
 
     override fun close() {
         if (closed.compareAndSet(false, true)) {
-            landmarker?.close()
-            synchronized(lock) {
-                ring.clear()
-                lastCapturedAtMs = Long.MIN_VALUE
-            }
+            synchronized(detectorLock) { landmarker?.close() }
+            clear()
         }
     }
 
-    private fun toHands(result: HandLandmarkerResult): List<Hand> {
-        val out = ArrayList<Hand>(result.landmarks().size)
-        // handedness() rows align 1:1 with landmarks() rows; take category 0's name.
-        var i = 0
-        for (pts in result.landmarks()) {
-            val handedness = if (i < result.handedness().size && result.handedness()[i].isNotEmpty())
-                result.handedness()[i][0].categoryName()
-            else "Right"
-            // MediaPipe camera-POV handedness -> canonical [Left=0, Right=1],
-            // passed straight through (no mirroring; the label is authoritative).
-            val slot = if (handedness.equals("Left", ignoreCase = true)) 0 else 1
-            val arr = FloatArray(21 * 3)
-            for (j in 0 until 21) {
-                arr[j * 3] = pts[j].x()
-                arr[j * 3 + 1] = pts[j].y()
-                arr[j * 3 + 2] = pts[j].z()
-            }
-            out.add(Hand(slot, arr))
-            i++
-        }
-        return out
-    }
 }

@@ -80,7 +80,7 @@
     <string name="auto_too_short">That sign was too short to read. Perform the whole sign once the app says it is ready.</string>
     <string name="auto_unusable">That attempt could not be read. Try again with the whole sign inside the guide.</string>
     <string name="result_alternatives_label_diagnostic">Other possibilities</string>
-    <string name="result_capture_detail">Captured %1$d frames over %2$d ms at %3$d fps</string>
+    <string name="result_capture_detail">%1$d samples over %2$d ms · %3$d samples/s</string>
     <string name="result_latency_detail">Classifier took %1$d ms on this device</string>
     <string name="result_responsibility">A model score ranks the 100 known signs; it is not a calibrated probability that the reading is correct. Recognises one isolated sign at a time.</string>
     <string name="action_copy">Copy</string>
@@ -187,4 +187,6 @@
     <string name="privacy_point_permission">The app has no internet permission and cannot open a network connection.</string>
 
     <string name="action_done">Done</string>
+    <string name="clip_pick">Analyze a video clip</string>
+    <string name="clip_unreadable">Could not read this video. Choose a different clip.</string>
 </resources>

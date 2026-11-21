@@ -234,6 +234,7 @@ class AutoSegmenter(
         if (state != State.ARMED && state != State.SIGNING) return null
 
         val now = frame.capturedAtMs
+        if (now < armedAtMs) return null
         val dtMs = if (lastFrameAtMs == 0L) 0L else (now - lastFrameAtMs).coerceAtLeast(0L)
         lastFrameAtMs = now
 

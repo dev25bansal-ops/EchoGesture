@@ -171,8 +171,7 @@ class OneTapCaptureTest {
             for (i in 0 until 30) { now += 40; t.offerForTest(frame(now, 4f)) }
             assertTrue(t.autoFrameCount() > 0)
 
-            // What onUnbind/rebind does around a camera switch.
-            t.disarmAuto()
+            t.clear()
             assertEquals(AutoSegmenter.State.IDLE, t.autoState())
             assertEquals("no frames may survive the switch", 0, t.autoFrameCount())
             assertNull("the old attempt must not be classified", t.takeAutoOutcome())
@@ -249,6 +248,8 @@ class OneTapCaptureTest {
             val o = t.finishAutoManually(now)
             assertNotNull("Finish must end the attempt", o)
             assertTrue("the captured frames must be kept", (o?.frameCount ?: 0) > 0)
+            assertNull("Finish already consumed the attempt", t.takeAutoOutcome())
+            assertNull("a second Finish must not return another outcome", t.finishAutoManually(now))
         } finally {
             t.close()
         }

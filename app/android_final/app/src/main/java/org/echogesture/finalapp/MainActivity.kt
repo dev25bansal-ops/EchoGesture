@@ -100,6 +100,11 @@ class MainActivity : AppCompatActivity() {
         speaker.shutdown()
     }
 
+    override fun onPause() {
+        cameraScreen.onPause()
+        super.onPause()
+    }
+
     // ---- model loading ------------------------------------------------------
 
     private suspend fun initModels() = withContext(Dispatchers.IO) {
@@ -131,6 +136,7 @@ class MainActivity : AppCompatActivity() {
     // ---- navigation ---------------------------------------------------------
 
     private fun showTab(itemId: Int) {
+        if (currentTab == R.id.nav_camera && itemId != R.id.nav_camera) cameraScreen.onUnbind()
         currentTab = itemId
         contentHost.removeAllViews()
         when (itemId) {

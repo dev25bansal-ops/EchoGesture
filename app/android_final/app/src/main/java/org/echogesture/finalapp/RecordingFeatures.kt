@@ -116,8 +116,10 @@ object RecordingFeatures {
      * them separately would risk the mask drifting from the features it is
      * paired with.
      */
-    fun buildBoth(recording: SignRecorder.Recording): Tensors {
-        val (landmarks, present, n) = tensors(sample(recording))
+    fun buildBoth(recording: SignRecorder.Recording): Tensors = buildBoth(sample(recording))
+
+    internal fun buildBoth(frames: List<HandTracker.Frame>): Tensors {
+        val (landmarks, present, n) = tensors(frames)
         val xy = FeatureTransform.build(landmarks, present, n, MODEL_STEPS, useZ = false)
         val xyz = FeatureTransform.build(landmarks, present, n, MODEL_STEPS, useZ = true)
         return Tensors(xy.features, xyz.features, xy.mask)

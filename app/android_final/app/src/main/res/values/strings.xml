@@ -65,6 +65,7 @@
     <string name="result_score">%1$s%% model score</string>
     <string name="result_alternatives_label">Alternatives</string>
     <string name="result_confidence_accepted">Best match — still confirm before relying on it</string>
+    <string name="result_tracking_brief">Your hands were visible too briefly to confirm this match. Keep them in frame for the whole sign.</string>
     <string name="result_confidence_uncertain">Low confidence. Compare the options below or try the sign on its own.</string>
     <string name="result_label_diagnostic">Possible match</string>
     <!-- One-tap flow -->
@@ -72,7 +73,6 @@
     <string name="auto_signing_status">Recognising your movement…</string>
     <string name="start_recognition">Start Recognition</string>
     <string name="auto_cancel">Stop waiting</string>
-    <string name="auto_finish_now">Finish now</string>
     <string name="auto_discarded">Attempt cancelled. Nothing was recognised.</string>
     <string name="auto_too_short">That sign was too short to read. Perform the whole sign once the app says it is ready.</string>
     <string name="auto_no_sign">No sign started. Tap Start Recognition and perform one sign.</string>
@@ -175,7 +175,7 @@
     <string name="help_title">How to use EchoGesture</string>
     <string name="help_step_1">Point the camera so the signer’s hands are clearly visible.</string>
     <string name="help_step_2">Keep both hands inside the frame guide.</string>
-    <string name="help_step_3">Lower your hands, tap Start Recognition, and perform one supported ASL sign. Wait for the result or tap Finish now after the sign ends.</string>
+    <string name="help_step_3">Lower your hands, tap Start Recognition, and perform one supported ASL sign. Pause briefly at the end or lower your hands. The result appears automatically.</string>
     <string name="help_step_4">Keep both hands in view for the whole sign. If the recording is too short or shows no hands, the app says so instead of guessing.</string>
     <string name="help_step_5">Check the match and tap Scan next sign for each new sign. Use a separate video for each sign when importing clips.</string>
     <string name="help_privacy">Everything runs on this phone. Nothing is uploaded.</string>

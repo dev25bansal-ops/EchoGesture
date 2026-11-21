@@ -61,13 +61,13 @@ class AutoSegmenter(
          * against one noisy detection arming a capture, and gives the signer
          * time to settle into frame.
          */
-        val acquireMs: Long = 300L,
+        val acquireMs: Long = 180L,
         /**
          * A sign also counts as started when the hand holds a stable pose this
          * long, even with little movement. Static signs are common and a
          * motion-only onset would never fire on them.
          */
-        val poseHoldMs: Long = 450L,
+        val poseHoldMs: Long = 280L,
         /**
          * How much motion above the noise floor confirms an intentional sign,
          * measured over the trailing window. Deliberately short: waiting for a
@@ -79,9 +79,9 @@ class AutoSegmenter(
          * Quiet time that ends a sign. Long enough to bridge a pause inside a
          * two-part sign, short enough that the signer is not left waiting.
          */
-        val quietHoldMs: Long = 800L,
+        val quietHoldMs: Long = 650L,
         /** Frames kept before the detected onset so the handshape is not lost. */
-        val preRollMs: Long = 550L,
+        val preRollMs: Long = 800L,
         /** Frames kept after the quiet period, matching a manual stop. */
         val postRollMs: Long = 200L,
         /** Shorter than this and the segment is a fragment, not a sign. */
@@ -91,7 +91,7 @@ class AutoSegmenter(
         /** Hard cap; the segmenter stops a sign that never ends. */
         val maxSignMs: Long = 10_000L,
         /** Hand absent this long while signing ends the sign as interrupted. */
-        val handLossGraceMs: Long = 900L,
+        val handLossGraceMs: Long = 420L,
         /** Motion this far above the floor counts as signing activity. */
         val motionFloorMultiplier: Float = 1.8f,
         /** Assumed motion floor before enough frames exist to measure one. */
@@ -127,7 +127,7 @@ class AutoSegmenter(
         HAND_LOST,
         /** Segment was shorter than [Config.minSignMs]. */
         TOO_SHORT,
-        /** User pressed Finish, which is always available as a fallback. */
+        /** An explicit capture was finished by its caller. */
         MANUAL
     }
 
@@ -203,11 +203,9 @@ class AutoSegmenter(
         lastMotionAtMs = nowMs
         waitForHandRelease = handAlreadyPresent
         state = State.ARMED
-    }    /**
-     * The user pressed Finish. Freezes whatever has been captured and reports
-     * it as a manual end. Manual stop is always available and is the documented
-     * fallback when auto-completion does not fire.
-     */
+    }
+
+    /** Explicit completion for callers that manage their own recording interval. */
     fun finishManually(nowMs: Long): Outcome = endSign(nowMs, EndReason.MANUAL)
 
     fun expire(nowMs: Long): Outcome {

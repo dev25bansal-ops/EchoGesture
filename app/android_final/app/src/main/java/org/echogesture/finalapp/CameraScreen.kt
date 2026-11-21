@@ -350,15 +350,8 @@ class CameraScreen(
         captureButton.setOnClickListener {
             when (currentState) {
                 UiState.RECORDING -> finishRecording()
-                UiState.PROCESSING -> Unit // button is disabled, but be explicit
-                // One tap arms the segmenter; the same button then acts as the
-                // manual fallback the brief requires, finishing the sign early
-                // if the automatic end does not fire.
-                // While armed the button reads "Stop waiting", so it must
-                // actually cancel. Leaving this as Unit trapped the user in a
-                // state with no way out except leaving the tab.
+                UiState.PROCESSING, UiState.AUTO_SIGNING -> Unit
                 UiState.AUTO_ARMED -> cancelAutoCapture()
-                UiState.AUTO_SIGNING -> finishAutoCapture()
                 else -> startAutoCapture()
             }
         }
@@ -441,7 +434,7 @@ class CameraScreen(
 
             val cameraLive = hasCameraPermission() && camera != null
             captureButton.isEnabled =
-                modelReady && cameraLive && state != UiState.PROCESSING
+                modelReady && cameraLive && state != UiState.PROCESSING && state != UiState.AUTO_SIGNING
             clipButton.isEnabled = modelReady && state != UiState.PROCESSING &&
                 state != UiState.RECORDING && state != UiState.AUTO_ARMED && state != UiState.AUTO_SIGNING
 
@@ -450,7 +443,7 @@ class CameraScreen(
                     UiState.PROCESSING -> R.string.capture_action_processing
                     UiState.RECORDING -> R.string.record_finish
                     UiState.AUTO_ARMED -> R.string.auto_cancel
-                    UiState.AUTO_SIGNING -> R.string.auto_finish_now
+                    UiState.AUTO_SIGNING -> R.string.auto_signing_status
                     UiState.RESULT -> R.string.action_recognise_again
                     else -> R.string.start_recognition
                 }
@@ -772,8 +765,15 @@ class CameraScreen(
                 binding == cameraBindingGeneration
             }) {
             trackerFailureReported = false
-            if (!isAutoCapturing() && (currentState != UiState.WAITING ||
-                    t.latestFrameHasHands() == lastFrameHadHands)) return
+            // Only state transitions need a main-thread callback. A completed
+            // segment resets the tracker to IDLE, including between UI updates.
+            val needsUpdate = when (currentState) {
+                UiState.AUTO_ARMED -> t.autoState() != AutoSegmenter.State.ARMED
+                UiState.AUTO_SIGNING -> t.autoState() != AutoSegmenter.State.SIGNING
+                UiState.WAITING -> t.latestFrameHasHands() != lastFrameHadHands
+                else -> false
+            }
+            if (!needsUpdate) return
 
             activity.runOnUiThread {
                 if (!bound || generation != resultGeneration || binding != cameraBindingGeneration ||
@@ -785,9 +785,6 @@ class CameraScreen(
                     when (t.autoState()) {
                         AutoSegmenter.State.SIGNING ->
                             if (currentState == UiState.AUTO_ARMED) {
-                                // The sign has begun; move the whole screen into
-                                // the signing state so the button becomes the
-                                // manual Finish fallback.
                                 render(UiState.AUTO_SIGNING)
                             }
                         else -> if (currentState == UiState.WAITING) {
@@ -1116,12 +1113,6 @@ class CameraScreen(
         )
     }
 
-    private fun finishAutoCapture() {
-        val t = tracker ?: return
-        val outcome = t.finishAutoManually(SystemClock.elapsedRealtime())
-        if (outcome != null) onAutoSignComplete(outcome)
-    }
-
     private fun cancelAutoCapture() {
         resultGeneration++
         clearAutoDeadline()
@@ -1147,7 +1138,7 @@ class CameraScreen(
     }
 
     /**
-     * A one-tap attempt has ended — either automatically or by the user.
+     * The segmenter has completed a one-tap attempt.
      *
      * The segment is classified exactly once, here, on the inference executor.
      * Nothing is classified for frames outside the segment the segmenter chose,
@@ -1183,7 +1174,7 @@ class CameraScreen(
         render(UiState.PROCESSING)
         val recording = SignRecorder.Recording(outcome.frames, outcome.startedAtMs, outcome.endedAtMs)
         inferExecutor.execute {
-            runInference(recording, c, generation, attempt)
+            runInference(recording, c, generation, attempt, autoCapture = true)
         }
     }
 
@@ -1289,6 +1280,7 @@ class CameraScreen(
         attempt: DiagnosticsLog.Attempt? = null,
         fromClip: Boolean = false,
         started: Long = System.nanoTime(),
+        autoCapture: Boolean = false,
     ) {
         var diagnosticCapture = captureOf(emptyList())
         var diagnosticAttempt = attempt
@@ -1300,7 +1292,11 @@ class CameraScreen(
                 }
                 return
             }
-            val segment = if (fromClip) null else RecordingFeatures.segment(recording)
+            val segment = when {
+                fromClip -> null
+                autoCapture -> RecordingFeatures.autoSegment(recording)
+                else -> RecordingFeatures.segment(recording)
+            }
             val sampled = if (segment == null) recording.frames else RecordingFeatures.sample(recording, segment)
             // The card and diagnostics describe the interval actually
             // classified, which is the trimmed one when idle was removed. The
@@ -1332,7 +1328,8 @@ class CameraScreen(
             // built after resampling to 24 steps, so the model can be given a
             // step marked present whose source frames were interpolated.
             if (prefs.diagnostics) logDiagnostic(capture, result, totalMs, diagnosticAttempt, fromClip)
-            finishInference(generation) { renderResult(result, totalMs, capture, fromClip) }
+            val enoughTracking = !autoCapture || ResultPolicy.hasSustainedTracking(sampled)
+            finishInference(generation) { renderResult(result, totalMs, capture, fromClip, enoughTracking) }
         } catch (t: Throwable) {
             if (prefs.diagnostics) logDiagnostic(diagnosticCapture, null, 0L, diagnosticAttempt, fromClip)
             finishInference(generation) {
@@ -1432,11 +1429,12 @@ class CameraScreen(
         result: LandmarkClassifier.Result,
         totalMs: Long,
         capture: HandTracker.Capture,
-        fromClip: Boolean
+        fromClip: Boolean,
+        enoughTracking: Boolean = true
     ) {
         val percent = result.confidence * 100f
 
-        val certain = ResultPolicy.isAccepted(result.margin, percent, fromClip)
+        val certain = enoughTracking && ResultPolicy.isAccepted(result.margin, percent, fromClip)
 
         resultFromClip = fromClip
         retryButton.setText(if (fromClip) R.string.action_analyze_another else R.string.action_recognise_again)
@@ -1458,8 +1456,11 @@ class CameraScreen(
         // The inference figure alone invited "43 ms" to be read as
         // capture-to-caption, which it never was.
         confidenceLabel.text = activity.getString(
-            if (certain) R.string.result_confidence_accepted
-            else R.string.result_confidence_uncertain
+            when {
+                !enoughTracking -> R.string.result_tracking_brief
+                certain -> R.string.result_confidence_accepted
+                else -> R.string.result_confidence_uncertain
+            }
         )
         // Capture facts and classifier latency are different measurements and
         // are shown as such. The old single line ("43 ms") invited inference

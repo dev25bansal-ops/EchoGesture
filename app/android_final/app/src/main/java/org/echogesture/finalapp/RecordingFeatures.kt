@@ -80,6 +80,10 @@ object RecordingFeatures {
     fun segment(recording: SignRecorder.Recording): SignSegmenter.Segment =
         SignSegmenter.choose(recording.frames, fpsOf(recording))
 
+    /** Automatic endpoints already bound a single sign. Keep its initial and final held shapes. */
+    internal fun autoSegment(recording: SignRecorder.Recording): SignSegmenter.Segment =
+        SignSegmenter.choose(recording.frames, fpsOf(recording), padSeconds = 1f)
+
     /** Achieved frame rate of the recording, from its own timestamps. */
     fun fpsOf(recording: SignRecorder.Recording): Float {
         val n = recording.frameCount

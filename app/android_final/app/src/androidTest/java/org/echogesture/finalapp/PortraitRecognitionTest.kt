@@ -38,38 +38,7 @@ class PortraitRecognitionTest {
                 val (clip, expected) = line.split('\t')
                 require(File(clip).name == clip)
                 val file = File(directory, clip)
-                val uri = Uri.fromFile(file)
-                val retriever = MediaMetadataRetriever()
-                val durationMs = try {
-                    retriever.setDataSource(file.path)
-                    checkNotNull(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)).toLong()
-                } finally {
-                    retriever.release()
-                }
-                val rotation = if (index % 2 == 0) 90 else 270
-                val portrait = mutableListOf<HandTracker.Frame>()
-                HandTracker.create(context, ModelContract.DETECTOR_ASSET).use { tracker ->
-                    SequentialClipDecoder.sample(context, uri, durationMs, 32, 640, { true }) { bitmap, ms ->
-                        val tall = Bitmap.createBitmap(480, 640, Bitmap.Config.ARGB_8888)
-                        val h = 480 * bitmap.height / bitmap.width
-                        val top = (640 - h) / 2
-                        try {
-                            Canvas(tall).apply {
-                                drawColor(Color.DKGRAY)
-                                drawBitmap(bitmap, null, Rect(0, top, 480, top + h), null)
-                            }
-                            val sensor = Bitmap.createBitmap(
-                                tall, 0, 0, tall.width, tall.height,
-                                Matrix().apply { postRotate(-rotation.toFloat()) }, false
-                            )
-                            portrait += replay(tracker, sensor, ms, rotation)
-                        } finally {
-                            tall.recycle()
-                            bitmap.recycle()
-                        }
-                    }
-                }
-                assertTrue("Expected enough frames for $clip", portrait.size >= 28)
+                val portrait = track(file, index)
                 // Undo 480x640 aspect correction to replay the same observed
                 // landmarks with V5.7 coordinates and identical timestamps.
                 val legacy = portrait.map { frame ->
@@ -97,6 +66,102 @@ class PortraitRecognitionTest {
         }
     }
 
+    // Freeze the previous release so the comparison remains reproducible as defaults evolve.
+    private val v58 = AutoSegmenter.Config(
+        acquireMs = 300, poseHoldMs = 450, preRollMs = 550, quietHoldMs = 800, handLossGraceMs = 900
+    )
+
+    @Test
+    fun automaticResponseOnLabeledPortraitClips() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val directory = File(context.filesDir, "file-corpus")
+        val manifest = File(directory, "response.tsv")
+        val required = InstrumentationRegistry.getArguments().getString("requireResponse") == "true"
+        if (required) check(manifest.isFile) { "Stage the automatic response replay first" }
+        assumeTrue(manifest.isFile)
+        val clips = manifest.readLines().filter { it.isNotBlank() }
+        if (required) check(clips.size == 120)
+        val rows = mutableListOf("clip,expected,version,label,score,accepted,trigger_ms,reason,compute_ms")
+        LandmarkClassifier.create(ModelContract.load(context.assets)).use { classifier ->
+            for ((index, line) in clips.withIndex()) {
+                val (clip, expected) = line.split('\t')
+                require(File(clip).name == clip)
+                val input = stream(track(File(directory, clip), index))
+                for (baseline in listOf(true, false)) {
+                    val version = if (baseline) "5.8" else "5.9"
+                    val detector = AutoSegmenter(if (baseline) v58 else AutoSegmenter.Config())
+                    detector.arm(0)
+                    var trigger = 0L
+                    val outcome = input.firstNotNullOfOrNull { frame ->
+                        detector.offer(frame)?.also { trigger = frame.capturedAtMs }
+                    }
+                    val start = android.os.SystemClock.elapsedRealtime()
+                    var result = ",0,false"
+                    if (outcome?.isUsable == true) {
+                        val recording = SignRecorder.Recording(outcome.frames, outcome.startedAtMs, outcome.endedAtMs)
+                        val segment = if (baseline) RecordingFeatures.segment(recording) else RecordingFeatures.autoSegment(recording)
+                        val samples = RecordingFeatures.sample(recording, segment)
+                        if (samples.count { it.hands.isNotEmpty() } >= samples.size * .15) {
+                            val inputs = RecordingFeatures.buildBoth(samples)
+                            val p = classifier.predict(inputs.featuresXY, inputs.mask, inputs.featuresXYZ)
+                            val accepted = (baseline || ResultPolicy.hasSustainedTracking(samples)) &&
+                                ResultPolicy.isAccepted(p.margin, p.confidence * 100f)
+                            result = "${p.prediction},${p.confidence},$accepted"
+                        }
+                    }
+                    val compute = android.os.SystemClock.elapsedRealtime() - start
+                    rows += "$clip,$expected,$version,$result,$trigger,${outcome?.reason ?: "NO_SIGN"},$compute"
+                }
+            }
+        }
+        File(directory, "response-results.csv").writeText(rows.joinToString("\n", postfix = "\n"))
+        if (required) {
+            val pairs = rows.drop(1).map { it.split(',') }.chunked(2)
+            assertTrue("Correct first choices must improve", pairs.count { it[1][1] == it[1][3] } >
+                pairs.count { it[0][1] == it[0][3] })
+            val savings = pairs.filter { it.all { row -> row[3].isNotEmpty() } }
+                .map { it[0][6].toLong() - it[1][6].toLong() }.sorted()
+            assertTrue("Median automatic completion should be faster", savings[savings.size / 2] > 0)
+        }
+    }
+
+    private fun track(file: File, index: Int): List<HandTracker.Frame> {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val rotation = if (index % 2 == 0) 90 else 270
+        val uri = Uri.fromFile(file)
+        val retriever = MediaMetadataRetriever()
+        val durationMs = try {
+            retriever.setDataSource(file.path)
+            checkNotNull(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)).toLong()
+        } finally {
+            retriever.release()
+        }
+        val portrait = mutableListOf<HandTracker.Frame>()
+        HandTracker.create(context, ModelContract.DETECTOR_ASSET).use { tracker ->
+            SequentialClipDecoder.sample(context, uri, durationMs, 32, 640, { true }) { bitmap, ms ->
+                val tall = Bitmap.createBitmap(480, 640, Bitmap.Config.ARGB_8888)
+                val h = 480 * bitmap.height / bitmap.width
+                val top = (640 - h) / 2
+                try {
+                    Canvas(tall).apply {
+                        drawColor(Color.DKGRAY)
+                        drawBitmap(bitmap, null, Rect(0, top, 480, top + h), null)
+                    }
+                    val sensor = Bitmap.createBitmap(
+                        tall, 0, 0, tall.width, tall.height,
+                        Matrix().apply { postRotate(-rotation.toFloat()) }, false
+                    )
+                    portrait += replay(tracker, sensor, ms, rotation)
+                } finally {
+                    tall.recycle()
+                    bitmap.recycle()
+                }
+            }
+        }
+        assertTrue("Expected enough frames for ${file.name}", portrait.size >= 28)
+        return portrait
+    }
+
     private fun replay(
         tracker: HandTracker, bitmap: Bitmap, timeMs: Long, rotation: Int
     ): HandTracker.Frame {
@@ -120,15 +185,18 @@ class PortraitRecognitionTest {
     }
 
     private fun auto(classifier: LandmarkClassifier, frames: List<HandTracker.Frame>): String {
-        val s = AutoSegmenter()
+        val s = AutoSegmenter(v58)
         s.arm(0)
+        val result = stream(frames).firstNotNullOfOrNull(s::offer)
+        return if (result?.isUsable == true) classify(classifier, result.frames) else ",0,false"
+    }
+
+    private fun stream(frames: List<HandTracker.Frame>): List<HandTracker.Frame> {
         val lead = 600L
         val inputs = frames.map { it.copy(capturedAtMs = it.capturedAtMs + lead) }
         val tail = inputs.last().capturedAtMs
-        val result = (listOf(150L, 300L, 450L).map { HandTracker.Frame(emptyList(), it) } +
-            inputs + (100L..1200L step 100L).map { HandTracker.Frame(emptyList(), tail + it) })
-            .firstNotNullOfOrNull(s::offer)
-        return if (result?.isUsable == true) classify(classifier, result.frames) else ",0,false"
+        return listOf(150L, 300L, 450L).map { HandTracker.Frame(emptyList(), it) } +
+            inputs + (100L..1200L step 100L).map { HandTracker.Frame(emptyList(), tail + it) }
     }
 
     private fun classify(classifier: LandmarkClassifier, frames: List<HandTracker.Frame>): String {

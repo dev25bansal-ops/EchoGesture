@@ -208,7 +208,7 @@ class AutoSegmenterTest {
                 i < 5 -> frame(t)
                 // part 1: moving
                 i < 15 -> frame(t, handAt(0, 0.2f + (i - 5) * 0.04f, 0.5f))
-                // internal pause, shorter than quietHoldMs (800 ms)
+                // internal pause, shorter than the quiet hold
                 i < 21 -> frame(t, handAt(0, 0.6f, 0.5f))
                 // part 2: moving again
                 i < 31 -> frame(t, handAt(0, 0.6f - (i - 21) * 0.04f, 0.5f))

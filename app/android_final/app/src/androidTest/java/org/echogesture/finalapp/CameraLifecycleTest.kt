@@ -60,6 +60,42 @@ class CameraLifecycleTest {
         }
     }
 
+    @Test
+    fun oneStartTapShowsTheResultAfterHandsLeave() {
+        val runner = InstrumentationRegistry.getInstrumentation()
+        val activity = ActivityLaunch.fresh()
+        try {
+            val capture = activity.findViewById<Button>(R.id.captureButton)
+            val card = activity.findViewById<View>(R.id.resultCard)
+            val screen = MainActivity::class.java.getDeclaredField("cameraScreen")
+                .apply { isAccessible = true }.get(activity)
+            val trackerField = CameraScreen::class.java.getDeclaredField("tracker")
+                .apply { isAccessible = true }
+            waitFor { capture.isEnabled }
+            val tracker = trackerField.get(screen) as HandTracker
+            runner.runOnMainSync { capture.performClick() }
+            val start = SystemClock.elapsedRealtime()
+            // Supply landmarks to the live tracker. The camera analyzer still
+            // drives state changes, inference and delivery of the result card.
+            for (i in 1..36) {
+                val hand = HandTracker.Hand(1, FloatArray(63) { j ->
+                    if (j < 3) 0f else (j % 7 + i % 2) * 0.02f
+                })
+                tracker.offerForTest(HandTracker.Frame(listOf(hand), start + i * 40L))
+            }
+            waitFor { !capture.isEnabled && capture.text == activity.getString(R.string.auto_signing_status) }
+            for (i in 37..62) {
+                tracker.offerForTest(HandTracker.Frame(emptyList(), start + i * 40L))
+            }
+            waitFor {
+                card.visibility == View.VISIBLE && capture.isEnabled &&
+                    capture.text == activity.getString(R.string.action_recognise_again)
+            }
+        } finally {
+            runner.runOnMainSync { activity.finish() }
+        }
+    }
+
     private fun countFrames(tracker: HandTracker): Int {
         val start = SystemClock.elapsedRealtime()
         SystemClock.sleep(2000)

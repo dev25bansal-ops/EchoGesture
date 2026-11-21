@@ -26,8 +26,8 @@
     "attention_mask": "present.max(axis=1) > 0.5 over resampled presence",
     "detector_sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1",
     "vocabulary_size": 100,
-    "frame_geometry_default": "256 squash (square) — unchanged",
-    "frame_geometry_optin": "native via ECHOGESTURE_FRAME_SIZE=native — NOT the shipped default"
+    "frame_geometry_default": "native 640x480 — clip_to_landmarks(..., size=None) at src/main.py:336, matching the Android app",
+    "frame_geometry_note": "The 256-squash default and the ECHOGESTURE_FRAME_SIZE override were removed in 8740f27. Any doc still describing squash as the default is stale. The 82.47% squash figure in RESULTS.md row 3 is historical."
   },
   "artifacts": {
     "apk_v4_3": {

@@ -22,7 +22,7 @@ Everything else is information.
 | Your model commit consumed | `hackathon/dev-model` @ `11bbddf` — **15 commits behind your current tip `73bff0d`**, see §3 |
 | Ensemble SHA-256 | `995cc8d0…b4bb` (nine members, ordered) |
 | Detector SHA-256 | `fbc2a300…cde1` |
-| Preprocessing | **256 squash** is the shipped default. Native 640×480 is opt-in via `ECHOGESTURE_FRAME_SIZE=native`. |
+| Preprocessing | **Native 640×480**, unconditionally — `clip_to_landmarks(..., size=None)` at `src/main.py:336`. The 256-squash default and `ECHOGESTURE_FRAME_SIZE` were removed in `8740f27`; this row previously said the opposite. |
 | APK | `echogesture-p1.apk`, `150ffeeb…cb7a`, 83,350,522 B |
 | Submission ZIP | `EchoGesture_Submission.zip`, `7691190b…6cca`, 13,379,265 B |
 
@@ -36,10 +36,12 @@ exactly as delivered.
 I made three edits to shipped code. Each is small and each needs your read,
 because two of them touch the model boundary you own.
 
-### 2.1 `src/main.py` — explicit frame geometry
+### 2.1 `src/main.py` — native frame geometry (no opt-in any more)
 
-`ECHOGESTURE_FRAME_SIZE` selects `native` (no resize) or an integer edge length.
-Unset behaves exactly as before at 256.
+**Superseded.** `ECHOGESTURE_FRAME_SIZE` was removed in `8740f27`. `predict()`
+now calls `clip_to_landmarks(..., size=None)` unconditionally, matching the
+Android app; there is no geometry env var and no squash default.
+`landmark_frontend` still accepts a `size` argument for tests and tooling.
 
 The reason it exists: the app requests 640×480 from CameraX and does not resize.
 The Python path squashed 4:3 to 1:1. On the 346-clip validation split that
@@ -65,9 +67,16 @@ it is recorded as FAIL everywhere it appears.
 `read_frames` / `clip_to_landmarks` take `size: int | None`. `None` means no
 resize. Default argument is `FRAME_SIZE`, so existing callers are unaffected.
 
-**Verified byte-identical:** default output vs explicit `size=256` compares equal
-on features and presence, tensor-for-tensor, not just by shape. That test is
-`evaluation/device/test_geometry_contract.py`, 9 cases.
+Note this is the FRONTEND API only. `predict()` passes `size=None` explicitly
+and never relies on this default, so the frontend default does not decide what
+the shipped classifier runs.
+
+**Verified byte-identical:** the frontend's default output vs explicit `size=256`
+compares equal on features and presence, tensor-for-tensor, not just by shape.
+The contract test is `evaluation/device/test_geometry_contract.py` — it had 9
+cases asserting a deleted `_frame_size()` and now has 2 passing tests guarding
+the live `size=None` call site plus 4 corpus-dependent frame tests that skip
+when the clips are absent.
 
 ---
 
@@ -167,9 +176,14 @@ force-pushed. Full inventory in `docs/release/V4_5_PARTICIPANT_ID_AUDIT.md`.
 
 ## 6. Three questions
 
-1. **Preprocessing.** Ship at 256 squash (current default, no re-verification
-   needed), or move the default to native and accept a ZIP re-run? My
-   recommendation: **ship at 256**, document native as available.
+1. **Preprocessing — RESOLVED, no decision needed.** The question below was
+   written when 256 squash was still the default. `8740f27` removed both the
+   squash default and the env override, so `predict()` and the Android app now
+   run the same native geometry. Nothing to choose.
+
+   _Original question, kept for the record:_ ~~Ship at 256 squash (current
+   default, no re-verification needed), or move the default to native and accept
+   a ZIP re-run? My recommendation: ship at 256, document native as available.~~
 2. **The 26 Python failures.** Do you agree they are asset-blocked? If not,
    name the ones you think are real.
 3. **Sign-off.** Are you willing to be listed as the model author on a release

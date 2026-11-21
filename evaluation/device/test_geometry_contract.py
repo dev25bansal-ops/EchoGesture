@@ -1,14 +1,25 @@
 """Frame-geometry contract.
 
-The default must stay byte-identical to the historical 256 squash, because every
-published result was measured there. Native resolution is opt-in and must
-actually change the pixels — an earlier version silently resolved to 256 while
-reporting "native", which a shape check alone would not have caught.
+The shipped path is NATIVE geometry, unconditionally. This is not a preference:
+the nine FP16 members were trained on native-geometry landmarks, and the Android
+app feeds native frames, so Python and Android only agree when Python is native
+too (measured: native 84.94%, 512-letterbox 85.10%, 256-squash 81.51% on the full
+test set — `src/main.py`'s comment block carries the numbers and the script).
+
+This file previously tested `_frame_size()` and the `ECHOGESTURE_FRAME_SIZE`
+override. Both were DELETED in 8740f27 when the squash default was removed, so
+those five tests were asserting against a function that no longer exists and the
+whole class failed with AttributeError. They are replaced by a guard on the live
+contract: `_predict_locked` must call `clip_to_landmarks` with `size=None`.
+
+The `read_frames` tests below are genuine API tests and still apply — the
+frontend still accepts a `size` argument even though `predict()` no longer
+passes one.
 """
 
 from __future__ import annotations
 
-import os
+import ast
 import sys
 import unittest
 from pathlib import Path
@@ -21,42 +32,54 @@ import landmark_frontend as LF  # noqa: E402
 CLIPS = Path("/Users/abhijeetmiskin/AppData/EchoGesture/"
              "evaluation/device/v5_accuracy/data/val_30")
 
-
-def _reset_main():
-    """Reimport main so module-level state does not leak between cases."""
-    for name in ("main",):
-        sys.modules.pop(name, None)
-    import main as M  # noqa: F811
-    return M
+MAIN_PY = ROOT / "src" / "main.py"
 
 
-class FrameSizeEnvTest(unittest.TestCase):
-    def tearDown(self):
-        os.environ.pop("ECHOGESTURE_FRAME_SIZE", None)
+def _call_kwarg(func: ast.AST, callee: str, kwarg: str):
+    """Return the literal value of `callee(..., kwarg=<literal>)` in func, or None."""
+    for node in ast.walk(func):
+        if not isinstance(node, ast.Call):
+            continue
+        target = node.func
+        name = target.attr if isinstance(target, ast.Attribute) else getattr(target, "id", None)
+        if name != callee:
+            continue
+        for kw in node.keywords:
+            if kw.arg == kwarg:
+                return kw.value
+    return None
 
-    def test_default_is_256(self):
-        os.environ.pop("ECHOGESTURE_FRAME_SIZE", None)
-        self.assertEqual(_reset_main()._frame_size(), 256)
 
-    def test_native_sentinel_is_none(self):
-        os.environ["ECHOGESTURE_FRAME_SIZE"] = "native"
-        self.assertIsNone(_reset_main()._frame_size())
-        os.environ["ECHOGESTURE_FRAME_SIZE"] = "NATIVE"
-        self.assertIsNone(_reset_main()._frame_size())
+class PredictGeometryContractTest(unittest.TestCase):
+    """The shipped predict() path must run native geometry, not a squash."""
 
-    def test_integer_override(self):
-        os.environ["ECHOGESTURE_FRAME_SIZE"] = "512"
-        self.assertEqual(_reset_main()._frame_size(), 512)
+    @classmethod
+    def setUpClass(cls):
+        cls.tree = ast.parse(MAIN_PY.read_text(encoding="utf-8"))
+        fns = {n.name: n for n in cls.tree.body if isinstance(n, ast.FunctionDef)}
+        if "_predict_locked" not in fns:
+            raise AssertionError("_predict_locked not found in src/main.py — the "
+                                 "contract test needs updating, not deleting")
+        cls.fn = fns["_predict_locked"]
 
-    def test_invalid_raises(self):
-        os.environ["ECHOGESTURE_FRAME_SIZE"] = "bogus"
-        with self.assertRaises(ValueError):
-            _reset_main()._frame_size()
+    def test_predict_passes_size_none(self):
+        value = _call_kwarg(self.fn, "clip_to_landmarks", "size")
+        self.assertIsNotNone(value, "predict() no longer calls clip_to_landmarks "
+                                    "with an explicit size= — the geometry is now "
+                                    "implicit and this contract cannot be checked")
+        self.assertIsInstance(value, ast.Constant)
+        self.assertIsNone(value.value,
+                          "predict() must pass size=None (native). A squash here "
+                          "puts the Python path on different geometry from the "
+                          "Android app and silently costs ~3.4 points.")
 
-    def test_nonpositive_raises(self):
-        os.environ["ECHOGESTURE_FRAME_SIZE"] = "0"
-        with self.assertRaises(ValueError):
-            _reset_main()._frame_size()
+    def test_no_frame_size_env_override_remains(self):
+        """The deleted env var must not creep back in without the docs changing."""
+        src = MAIN_PY.read_text(encoding="utf-8")
+        self.assertNotIn("ECHOGESTURE_FRAME_SIZE", src,
+                         "ECHOGESTURE_FRAME_SIZE was removed in 8740f27; every "
+                         "document now states that predict() is native. If it "
+                         "returns, it needs a test of its own and the docs fixed.")
 
 
 class ReadFramesGeometryTest(unittest.TestCase):

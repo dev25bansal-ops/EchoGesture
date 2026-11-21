@@ -19,15 +19,22 @@ measurement in this project. Chance is 1.00%.
 
 ### Which number belongs to which artifact — read this before quoting one
 
+> **CORRECTED 2026-11-22.** The table below used to say the Python entry point
+> squashes to 256 and therefore scores 82.47%. That stopped being true at
+> `8740f27`, which removed both the squash default and the `ECHOGESTURE_FRAME_SIZE`
+> override. `predict()` now runs **native 640×480** unconditionally, so the
+> Python and Android paths share one geometry and one accuracy figure.
+
 | Artifact | Geometry it actually uses | Its accuracy |
 | --- | --- | ---: |
-| **Android app** (CameraX native frames → MediaPipe) | native 640×480 | **85.45%** is the matching corpus figure |
-| **Submission ZIP** (`src/main.py`, `ECHOGESTURE_FRAME_SIZE` unset) | **256 squash** | **~82.47%** corpus; **76.67%** on 30 clean-extraction clips |
-| Physical phone | — | **NOT TESTED** |
+| **Android app** (CameraX native frames → MediaPipe) | native 640×480 | **85.45%** corpus figure (1,251 clips) |
+| **`src/main.py` `predict()`** | native 640×480 — `clip_to_landmarks(..., size=None)` | **85.45%** — the same path, same geometry |
+| Physical phone | — | **no accuracy measured**; one device run proves the pipeline only |
 
-Do not put **85.45%** in the ZIP manifest as the default entry point's measured
-accuracy. That entry point squashes to 256 and measures ~82.5%. 85.45% describes
-the **Android** path, which is a different preprocessing geometry.
+**85.45% is now the right number for both.** The 82.47% squash figure is
+historical (RESULTS.md row 3) and describes code that no longer exists. Any
+ZIP built before `8740f27` still runs the squash path and would measure ~82.5%;
+no such ZIP is in this tree.
 
 The 256-squash and native geometries differ by about **+3.0 pp** on the same
 weights. The geometry, not the model, carries that difference.

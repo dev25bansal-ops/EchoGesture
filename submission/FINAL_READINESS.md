@@ -156,7 +156,7 @@ before one.
 
 | Item | Change |
 | --- | --- |
-| Evaluator | Frame geometry is now an explicit, validated opt-in (`ECHOGESTURE_FRAME_SIZE`). **Default unchanged at 256.** |
+| Evaluator | Frame geometry is **native 640×480, unconditionally** (`8740f27` removed the 256-squash default and the `ECHOGESTURE_FRAME_SIZE` override). This row previously described the opt-in that was then current. |
 | Evaluator | `latency_ms` no longer includes cold start; MediaPipe graph is built during `_init_model()` |
 | Tests | +9 geometry-contract tests; 433 passed (was 424), same 3 failed / 23 errors / 43 skipped |
 | Docs | `FINAL_EVIDENCE.md` per-frame row corrected from a pass to **RETRACTED / FAIL** |
@@ -170,8 +170,8 @@ measured through our own frozen `predict()` on the **346-clip validation split**
 
 | geometry | top-1 |
 | --- | --: |
-| 256 squash (shipped default) | 82.37% |
-| native 640×480 | **85.84%** |
+| 256 squash (former default, now removed) | 82.37% |
+| native 640×480 (**the shipped path**) | **85.84%** |
 
 Paired n=345: +12 clips, McNemar exact **p = 0.0501** (22 gained, 10 lost).
 4 of 5 signers improve; 16 classes better, 76 unchanged, 8 worse by one clip.

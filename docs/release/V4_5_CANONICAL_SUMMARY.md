@@ -36,6 +36,10 @@ ranked against each other.
 measured result is row 6: **76.67% on 30 clean-extraction clips**. The corpus
 figure behind it is row 2's 77.02%.
 
+> **Stale as of `8740f27`.** Both the squash default and `ECHOGESTURE_FRAME_SIZE`
+> were deleted; `predict()` now runs native geometry unconditionally. Everything
+> in this paragraph describes the older ZIP, not the shipped code.
+
 Rows 3, 4 and 5b are **not** the submission's number. Row 5b is the closest
 thing to a headline for the nine-model release, and it must always be stated as
 *"346-clip validation split, native geometry, opt-in"* — never as a bare

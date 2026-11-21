@@ -247,7 +247,7 @@ def results(prs):
     text(s, 0.95, 4.68, 5.6, 2.6, [
         ("85.45% is a corpus figure at native 640×480 — the geometry the Android app feeds. Not phone accuracy.",
          {"size": 13.5, "space": 7}),
-        ("The Python entry point squashes to 256 and scores 82.47% on the same weights.",
+        ("The Python entry point runs the same native 640×480 geometry as the app, so 85.45% describes both. The 82.47% squash figure is historical.",
          {"size": 13.5, "space": 7}),
         ("The old 77.02% was these same weights on a cache with a wrong presence mask on 29% of clips. The evaluation changed, not the model.",
          {"size": 12, "color": BLUE}),

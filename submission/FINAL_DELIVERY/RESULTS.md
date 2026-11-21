@@ -18,9 +18,9 @@ ranked against each other.
 | 2 | Nine-member ensemble, cached landmarks, 1,249 test | **77.02%** | **HISTORICAL** — old-cache provenance; presence mask wrong on 29% of test clips |
 | 3 | Nine-member ensemble, fresh extraction, 256 squash, 1,249 test | **82.47%** | **Dev-reported**, not re-run here |
 | 4 | Nine-member ensemble, fresh extraction, native 640×480, **1,251** test | **85.45%** | **Re-measured here** — the shipped ensemble; 1,069/1,251 |
-| 5a | Nine-member ensemble, **346-clip validation**, 256 squash | **82.37%** | **Measured here**, default geometry |
-| 5b | Nine-member ensemble, **346-clip validation**, native 640×480 | **85.84%** | **Measured here**, opt-in geometry |
-| 6 | Submission ZIP, clean extraction, 30 clips | **76.67%** | **Measured here** — the packaged artifact, 256 squash |
+| 5a | Nine-member ensemble, **346-clip validation**, 256 squash | **82.37%** | **Measured here**, historical squash geometry |
+| 5b | Nine-member ensemble, **346-clip validation**, native 640×480 | **85.84%** | **Measured here**, opt-in native geometry |
+| 6 | Submission ZIP (`7691190b…`), clean extraction, 30 clips | **76.67%** | **HISTORICAL** — that ZIP predates `8740f27` and runs 256 squash; it is not in the tree and is not what `predict()` does now |
 | 7 | Physical Android phone | — | **Run on one device 2026-11-21**, pipeline verified; **no accuracy measured** |
 
 ### Which number belongs to the submission
@@ -30,9 +30,16 @@ is the geometry the Android app feeds the model, and it is now measured here on
 the full test split rather than taken on report. It is a **corpus** figure under
 MediaPipe CPU in Python — not phone accuracy, and not a GPU-delegate result.
 
-The **Python entry point** keeps 256 squash as its default and scores **82.47%**
-on the same weights (row 3). The **packaged ZIP** runs that path: 76.67% on the
-30-clip clean-extraction gate (row 6).
+The **Python entry point** runs the same **native** geometry as the app —
+`predict()` calls `clip_to_landmarks(..., size=None)` at `src/main.py:336`, with
+no squash default and no environment override (both were removed in `8740f27`).
+So Python and Android agree on geometry, which is why 85.45% describes both.
+
+The 82.47% in row 3 is the historical 256-squash measurement, kept as history.
+Nothing in the shipped tree runs that path any more; it is not a description of
+`predict()`. (An earlier revision of this file said the Python entry point
+"keeps 256 squash as its default" — that was true before `8740f27` and is false
+since.)
 
 Row 2's 77.02% is retained only as history. It was produced by a cache whose
 presence mask was wrong on 29% of clips; the evaluation changed, not the model.

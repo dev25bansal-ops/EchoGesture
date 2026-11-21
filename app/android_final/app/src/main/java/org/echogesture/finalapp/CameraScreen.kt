@@ -315,6 +315,7 @@ class CameraScreen(
     }
 
     fun onDestroy() {
+        onUnbind()
         tracker?.close()
         classifier?.close()
         tracker = null
@@ -351,13 +352,12 @@ class CameraScreen(
             haptic(HapticFeedbackConstants.KEYBOARD_TAP)
             // In the camera-failed state there is nothing to arm: the provider
             // must be restarted. This is the only path that can recover from a
-            // failed first initialisation. In any other state retry means "try
-            // the sign again", which is what startRecording() does.
+            // failed first initialisation. Otherwise arm a new sign attempt.
             if (currentState == UiState.ERROR) {
                 render(UiState.INIT)
                 startCamera(prefs.cameraChoice)
             } else {
-                startRecording()
+                startAutoCapture()
             }
         }
         clearButton.setOnClickListener { clearResult() }
@@ -494,6 +494,14 @@ class CameraScreen(
                     )
                     resultCard.visibility = View.VISIBLE
                     revealResult()
+                    resultCard.post {
+                        if (bound && currentState == UiState.RESULT) {
+                            resultCard.requestRectangleOnScreen(
+                                android.graphics.Rect(0, 0, resultCard.width, resultCard.height),
+                                false
+                            )
+                        }
+                    }
                 }
                 UiState.AUTO_ARMED -> {
                     // One tap already happened; the app is watching. The

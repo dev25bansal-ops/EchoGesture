@@ -86,8 +86,8 @@ first thing to check, before any further engineering.
 
 | Item | Owner | Status | Evidence |
 | --- | --- | --- | --- |
-| Deck built | Abhijeet | **DONE** | `submission/presentation/EchoGesture_Track02.pptx`, 8 slides |
-| Deck content covers PDF p25 list | Abhijeet | **DONE** | theme, title, team, problem, solution, architecture, tools, innovation, results, limits |
+| Deck built | Abhijeet | **DONE** | `submission/presentation/CollegeName_TeamName.pptx`, 9 slides, built inside the organizer's own template |
+| Deck content covers PDF p25 list | Abhijeet | **DONE** | the template's own sections: theme/track, title, team+college, problem, solution, architecture, final output, differentiation, demo+setup, limits/roadmap |
 | Deck renamed to `CollegeName_TeamName` | Abhijeet | **NEEDS HUMAN** | Depends on the registration string |
 | Real screenshots in deck | Abhijeet | **DONE** | 3 captured from the shipped build |
 | Demo script | Abhijeet | **DONE** | `submission/DEMO_SCRIPT.md` |

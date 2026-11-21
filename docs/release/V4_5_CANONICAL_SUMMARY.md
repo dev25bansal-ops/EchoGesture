@@ -1,5 +1,12 @@
 # Canonical release summary — Track 02
 
+> **SUPERSEDED 2026-11-21.** This file is dated 2026-11-16 and carries the 18 Nov
+> deadline, the pre-cache-fix 85.51% row, and the 8-slide deck that has since been
+> replaced. The current canonical summary is
+> **`submission/FINAL_DELIVERY/RESULTS.md`** (2026-11-21: deadline 22 Nov, 85.45%
+> on 1,251 clips at native geometry, 9-slide template deck). Read that one. This
+> file is kept only for its historical claim ledger.
+
 **This is the one file to read for current numbers.** Every other results
 document is either historical or a detail sheet behind this one.
 

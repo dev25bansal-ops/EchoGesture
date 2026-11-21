@@ -56,20 +56,25 @@
       "clean_room_note": "extracted to empty dir; predict() ran from extracted copy only; 30/30 clips, 23 correct"
     },
     "presentation": {
-      "path": "submission/presentation/EchoGesture_Track02.pptx",
-      "sha256": "75d256e2543c367c7ac52a59abaec00cf73fdfcc2a1774f10a8d00b8fe5ec31a",
-      "bytes": 416265,
-      "slides": 8,
-      "font": "Arial (pinned so arrows and multiplication signs have real glyph coverage)",
+      "path": "submission/presentation/CollegeName_TeamName.pptx",
+      "sha256": "e1bccbc5fa28b90276d14b97c441c9dfc290dd0db3034931bb009cef824cc4b2",
+      "bytes": 413247,
+      "slides": 9,
+      "template": "Built inside the organizer's own template (C:/Users/dev25/Downloads/Submission_Final_forGithub.pptx): the original 9 slides are filled in place, so master, layout and header geometry are the template's, not a reconstruction.",
+      "font": "Arial Black (display) and Calibri (body), inherited from the template",
       "pdf": {
-        "path": "submission/presentation/EchoGesture_Track02.pdf",
-        "sha256": "849233293f2aa57cb997e9eaa94756035315031917d69f93f597531dfb9b14a4",
-        "bytes": 240941,
-        "pages": 8,
-        "note": "Native Microsoft PowerPoint export (SaveAs format 32): text is selectable and fonts are embedded. Verified as 8 pages with every figure re-extracted from the PDF itself."
+        "path": "submission/presentation/CollegeName_TeamName.pdf",
+        "sha256": "8e1452359bc5b191cc77eac8efce5770f4928ff6bc62eb1a6a2f8a29c657d030",
+        "bytes": 375715,
+        "pages": 9,
+        "note": "Native Microsoft PowerPoint export (SaveAs format 32): text is selectable and fonts are embedded. Verified as 9 pages with the figure set re-extracted from the PDF text layer."
       },
-      "visual_inspection": "All 8 slides rasterised from the exported PDF and inspected: no clipped text, no colliding boxes, no missing glyphs.",
-      "naming": "must be renamed to CollegeName_TeamName before submission"
+      "visual_inspection": "All 9 slides rasterised from the exported PDF and inspected: no clipped text, no colliding boxes, no missing glyphs. Slide 5's results table carries all six slide-11 rows with honest verdicts.",
+      "open_human_inputs": [
+        "Team+College string on slide 1 is the template placeholder CollegeName_TeamName; the real registered string replaces both the slide text and the file name.",
+        "Slide 7 carries 'DEMO VIDEO: <paste the 2-3 min YouTube or Drive link here>' in red until the recording is uploaded."
+      ],
+      "supersedes": "EchoGesture_Track02.pptx / .pdf (8 slides, sections not matching the template, removed from the tree)."
     }
   },
   "evidence": {

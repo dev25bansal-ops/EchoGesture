@@ -117,8 +117,8 @@ all trace to three gitignored artifacts (see `TEST_TRIAGE.md`).
 | --- | --- |
 | APK `EchoGesture-2026-11-21.apk` | `96f00458f54de715c7a6f489f9ae92425bc73a089043a91ccbe0ae6d4f060035` |
 | ZIP `EchoGesture_Submission.zip` | `7691190b8ce045684a6117ab6a2b97b7b79327563147e9699f69cec939646cca` |
-| Deck `EchoGesture_Track02.pptx` | `4df49d66a125e5fa9101dc37cc02ef7b4dcec161dd67d19df1fe4530c689558f` |
-| Deck `EchoGesture_Track02.pdf` | `7e7d3601eea9b9bd9123445db489525a263b6d40c02a055279e713502d11843f` |
+| Deck `CollegeName_TeamName.pptx` | `e1bccbc5fa28b90276d14b97c441c9dfc290dd0db3034931bb009cef824cc4b2` |
+| Deck `CollegeName_TeamName.pdf` | `8e1452359bc5b191cc77eac8efce5770f4928ff6bc62eb1a6a2f8a29c657d030` |
 
 ---
 

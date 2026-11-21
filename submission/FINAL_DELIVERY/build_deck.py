@@ -338,7 +338,9 @@ def main():
     demo(prs)
     impact(prs)
 
-    out = HERE / "EchoGesture_Track02.pptx"
+    # Superseded by submission/presentation/build_template_deck.py, which fills
+    # the organizer's own template. Kept for the historical record only.
+    out = HERE / "legacy_EchoGesture_Track02.pptx"
     prs.save(out)
     print("wrote", out, "slides:", len(prs.slides))
 

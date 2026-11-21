@@ -14,11 +14,12 @@ authorisation I do not have.
 | --: | --- | --- | --- |
 | 1 | Old APK (superseded) | **HISTORICAL** | `echogesture-p1.apk`, `150ffeeb…cb7a`, 83,350,522 B. Replaced 2026-11-21 by the build below; kept only so old references resolve. |
 | 2 | Submission ZIP | **DONE** | `EchoGesture_Submission.zip`, `7691190b…6cca`, 13,379,265 B. Clean-room extracted; `predict()` ran from the extracted copy only; 30/30 clips, 0 errors. |
-| 3 | PPTX | **DONE** | `EchoGesture_Track02.pptx`, `4df49d66…`, 8 slides, regenerated 2026-11-21 with the corrected claims (85.45% not 77.02%, 150 tests not 110, latency measured on device, physical-phone wording). Arial pinned so arrows and `×` have real glyph coverage. |
-| 4 | PDF | **DONE** | `EchoGesture_Track02.pdf`, `7e7d3601…`, 8 pages. Native Microsoft PowerPoint export, not the PIL rasteriser (which was only ever a layout check): text is selectable and fonts are embedded. Every figure was re-extracted from the PDF itself to confirm it carries the corrected numbers. |
+| 3 | PPTX | **DONE** | `CollegeName_TeamName.pptx`, `e1bccbc5…`, 9 slides, built 2026-11-21 **inside the organizer's own template** (`Submission_Final_forGithub.pptx`), so the section list and header geometry are the template's rather than our own invention. Carries the corrected claims (85.45% not 77.02%, 150 tests not 110, latency measured on device, physical-phone wording). |
+| 4 | PDF | **DONE** | `CollegeName_TeamName.pdf`, `8e145235…`, 9 pages. Native Microsoft PowerPoint export, not the PIL rasteriser (which was only ever a layout check): text is selectable and fonts are embedded. Every figure was re-extracted from the PDF's text layer to confirm it carries the corrected numbers. |
 | 5 | APK | **DONE** | `EchoGesture-2026-11-21.apk`, `96f00458…`, 82,894,510 B, built from `submission/final` at `29c48b6`. Installed and driven on a physical Vivo V2404. Its own `landmark_model_meta.json` reads `ensemble_test_top1: 0.8545`, matching the deck. |
-| 5 | Deck filename | **HUMAN** | Must become `CollegeName_TeamName`. The string is not guessable. |
+| 5 | Deck filename | **HUMAN** | Must become the real `CollegeName_TeamName`. The placeholder of that exact name is now in place on both the file and slide 1, so the only edit left is the string itself. |
 | 6 | Release manifest | **DONE** | `submission/RELEASE_MANIFEST.json`, validated JSON, hashes re-measured 2026-11-21 against the shipped APK, deck and PDF. |
+| 6b | Demo video link | **HUMAN** | Slide 7 reads `DEMO VIDEO: <paste the 2-3 min YouTube or Drive link here>` in red. Not recorded. Script is in `submission/DEMO_SCRIPT.md`. |
 
 ---
 
@@ -31,7 +32,7 @@ authorisation I do not have.
 | 9 | Python suite | **DONE — not green** | 433 / 502 pass, 3 fail, 23 error, 43 skip. All 26 traced to gitignored or retired artifacts; classified individually in `TEST_TRIAGE.md`. Not suppressed. |
 | 10 | Clean-extraction `predict()` | **DONE** | 30 / 30 clips, 0 errors, 76.67% top-1 |
 | 11 | Geometry contract | **DONE** | 9 / 9. Default and explicit 256 compare byte-identical on tensors, not just shape. |
-| 12 | Visual slide inspection | **DONE** | All 8 slides rasterised and looked at. No clipped text, collisions, or missing glyphs. |
+| 12 | Visual slide inspection | **DONE** | All 9 slides rasterised and looked at. No clipped text, collisions, or missing glyphs. Slide 5's six-row results table verified legible row by row. |
 
 The 150 / 150 figure is **JVM only**. It does not cover the app on a phone.
 

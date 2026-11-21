@@ -85,15 +85,15 @@ its device, runtime and how to reproduce it.
 | Accuracy on unseen signers | **pass, 85.45%** | 9-model FP16 ensemble, 1,251 clips, 11 unseen signers, chance 1.00%. Reproduce: `scripts/ml/eval_tflite_cache.py --cache .scratch/landmarks_native` |
 | Top-5 | **pass, 96.64%** | same run |
 | Quantization | **pass** | FP16 loses 0.00 vs FP32 at half the size. INT8 was tried and rejected: −6.37 points |
-| Model size | **pass** | 8.51 MB across nine members, plus 7.8 MB MediaPipe = ~16.3 MB |
+| Model size | **pass** | 8.51 MB across nine members, plus 7.82 MB MediaPipe = 16.33 MB (under the ≤25 MB budget) |
 | Pixel robustness ≤ 5 pt | **pass, +4.48** | full 1,251-clip split, four corruptions all under budget |
-| Landmark robustness ≤ 5 pt | **pass at the shipped gate, +1.24** | `drop_hand_25pct` at the app's own margin ≥ 0.15 acceptance gate (92.13% clean / 90.89% corrupted, 86%/80% coverage). Scored on *every* clip unconditionally it is +5.52 FAIL — both rows are in `results.csv`. See [DROP_HAND_ANALYSIS.md](docs/hackathon/DROP_HAND_ANALYSIS.md) |
+| Landmark robustness ≤ 5 pt | **pass at the shipped gate, +2.39** | `drop_hand_25pct` at the app's own margin ≥ 0.15 acceptance gate (92.13% clean / 89.74% corrupted at 86%/80% coverage). Scored on *every* clip unconditionally it is +5.76 FAIL — both rows are in `results.csv`. See [DROP_HAND_ANALYSIS.md](docs/hackathon/DROP_HAND_ANALYSIS.md) |
 | Classifier latency | **pass (desktop)** | 4.2 ms/clip for nine members, x86. **Not an on-device figure** |
 | Per-frame detector latency | **pass (desktop), p50 20.3 ms / p95 34.1 ms** | inside the 50 ms budget; 160 frames. Reproduce: `scripts/ml/latency_per_frame.py` |
 | End-to-end per clip | **~720 ms (desktop)** | warm `predict()` on a 32-frame clip; the detector is ~600 ms of it, the classifier 4.2 ms. **Not an on-device figure** |
-| On-device latency | **pass at p50, partial at p95** | Vivo V2404, GPU delegate: detect p50 34-45 ms, p95 46-54 ms against a 50 ms target. Three of four runs pass; the fourth is 4 ms over on a thermally throttled phone. `results.csv` row `latency_p95`, verdict `partial` |
-| Power ≤ 500 mW | **not measured** | no measurement hardware |
-| Thermal drift ≤ 20% | **not measured** | no sustained run |
+| On-device latency | **FAIL at p95** | Vivo V2404, GPU delegate, DEBUGGABLE build: detect p50 34–45 ms, p95 46–54 ms (no hand) / 68–70 ms (hand in frame) against a ≤50 ms target. Passes in the empty-frame regime, fails once a hand is present. `results.csv` row `latency_p95`, verdict `FAIL` |
+| Power ≤ 500 mW | **FAIL, 2666–2898 mW** | Batterystats camera-subsystem breakdown on Vivo V2404, DEBUGGABLE build. This is the whole camera path, not the model alone — per-process attribution unavailable. `docs/POWER_THERMAL_2026-11-19.md` |
+| Thermal drift ≤ 20% | **PASS, 19.2%** | SoC 45.8→56.7°C over 10 min, thermal status LIGHT throughout. Only 0.8 pt of headroom. `docs/POWER_THERMAL_2026-11-19.md` |
 
 ## The core empirical finding
 

@@ -129,6 +129,54 @@ A presence-hold workaround was also **tested and rejected** because it scores
 better the more it hides — it reconstructs the missing input rather than
 surviving its absence.
 
+### Gap-filling was tested on 2026-11-22 and also does not help
+
+A third intervention after the retrain and the presence-hold: bridge short
+interior gaps by linear interpolation between real observations on both sides,
+and measure whether the `drop_hand` cost falls. Measured on the shipped
+ensemble over the **full 1,251-clip test split**, `.scratch/gapfill_experiment.py`:
+
+| Condition | corrupted top-1 | drop vs clean | clean top-1 | cost to clean |
+| --- | --: | --: | --: | --: |
+| no fill (shipped) | 79.70% | **+5.76** | 85.45% | — |
+| fill ≤ 8 f, mask off | 80.02% | +5.44 | — | — |
+| fill ≤ 8 f, mask on | 80.42% | **+5.04** | 84.33% | −1.12 |
+| fill 3–8 f only, mask on | 77.38% | +8.07 | 84.49% | −0.96 |
+| fill 5–12 f only, mask on | 76.26% | +9.19 | 82.41% | −3.04 |
+
+The harness reproduces the shipped numbers **exactly** before any intervention
+(85.45% clean, +5.76), which is the gate that makes the deltas trustworthy — it
+is the same experiment, not a neighbouring one.
+
+The best variant reaches **+5.04, still 0.04 over the 5-point line**, and costs
+1.12 points of clean accuracy to get there. Narrowing the window to
+occlusion-length gaps only (3–8 frames) makes it **worse** (+8.07), which says
+the small benefit came from smoothing detector flicker, not from anything
+specific to occlusion. There is no setting that passes, so this does not ship.
+
+The reason is the finding worth keeping: **34 of 59 uncorrupted clips contain
+real interior MediaPipe gaps** (145 frames in that sample). The model has
+learned that an absent hand is meaningful — it is the difference between a
+one-handed and a two-handed moment — so interpolating across it fabricates
+motion the signer did not make.
+
+Absence is signal here, not missing data to be tidied up. That is also why both
+the retrain and the presence-hold lost: each trades clean accuracy for a
+corruption score, because the corruption asks the model to unlearn something
+true. This is a property of the task, not a bug left in it.
+
+The remaining honest lever is aggregation, not the model: `drop_hand` costs
+**5.76 points unconditional** and **2.39 at the shipped acceptance gate at
+86%/80% coverage**. Quoting the second number alone would overstate the result,
+and quoting the first alone understates the artifact's real behaviour. Both
+ship, labelled.
+
+The remaining honest lever is aggregation, not the model: `drop_hand` costs
+**5.76 points unconditional** and **2.39 at the shipped acceptance gate at
+86%/80% coverage**. Quoting the second number alone would overstate the result,
+and quoting the first alone understates the artifact's real behaviour. Both
+ship, labelled.
+
 ---
 
 ## 5. What is *not* claimed

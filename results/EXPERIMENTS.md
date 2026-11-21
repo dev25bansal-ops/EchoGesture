@@ -1,10 +1,36 @@
 # Experiments tried and rejected
 
-Every entry here was measured, not assumed. Each says what was tried, what it
-scored, and why it was not shipped. Kept so nobody repeats the work.
+> **CURRENT STATUS (2026-11-22).** This file is a *log*, written over several
+> weeks, and most of it was measured against an earlier baseline. The shipped
+> artifact is **not** what the body of this file calls "shipped":
+>
+> | | body of this file | what actually ships |
+> | --- | --- | --- |
+> | ensemble | 4 members | **9 members** |
+> | test clips | 1,249 | **1,251** |
+> | test top-1 | 72.78% | **85.45%** |
+> | landmark cache | 256-squash | **native 640×480** |
+>
+> The 12.7-point difference is the geometry fix: the old cache was built at a
+> 256-squash the app never produces, and re-extracting at native geometry moved
+> the same models to 85.45% (see `results.csv` row `top1_accuracy` and §"the
+> geometry fix" below). **Everything in this file measured on the 72.78%
+> baseline was measured at the wrong input geometry**, which is why several
+> rejected experiments (more data, larger ensembles, extra frames) show
+> negative or flat deltas that may not hold at native geometry.
+>
+> What survives and is still trustworthy: the *direction* of each rejection,
+> the correlated-error analysis (182 test clips are wrong for every member),
+> and every measurement made after the geometry fix. The nine-member ensemble
+> and the occlusion result are at line ~565.
+>
+> Nothing here is retracted — it is dated. Where a historical entry and
+> `results/results.csv` disagree, **`results.csv` is current**.
 
-All numbers are signer-disjoint test top-1 on 1,249 clips unless noted. The
-shipped baseline is a 4-model ensemble at **72.78%**.
+Written as a running log. All numbers below are signer-disjoint test top-1 on
+1,249 clips unless noted, against the baseline in use on the date of the entry
+(see the banner above: most predate the geometry fix, when that baseline was a
+4-model ensemble at 72.78%).
 
 ---
 

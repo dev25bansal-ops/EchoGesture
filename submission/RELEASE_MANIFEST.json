@@ -69,15 +69,15 @@
     },
     "presentation": {
       "path": "submission/presentation/CollegeName_TeamName.pptx",
-      "sha256": "e8361b55008deac511cbfa6b3fd705900a9e8032eef386b8288fa6d6e6abb395",
-      "bytes": 413468,
+      "sha256": "697dd71ef5f2ab35bef6a0372560d4d3312e2004e069a498ed54d8b1009373fc",
+      "bytes": 413516,
       "slides": 9,
       "template": "Built inside the organizer's own template (C:/Users/dev25/Downloads/Submission_Final_forGithub.pptx): the original 9 slides are filled in place, so master, layout and header geometry are the template's, not a reconstruction. Section list is the template's: Track No / Team+College / Members, THE PROBLEM, SOLUTION, ARCHITECTURE, Track Final Output, DIFFERENTIATION, DEMO & LOCAL SETUP, Brownie Slides, Thank You.",
       "font": "Arial Black (display) and Calibri (body), inherited from the template",
       "pdf": {
         "path": "submission/presentation/CollegeName_TeamName.pdf",
-        "sha256": "cec8b236f8ba44cc89efce9528f0f241a5e0d5905c19f3ab9cbbead7f1904a52",
-        "bytes": 376340,
+        "sha256": "1e2a1717680b989a35a404e7d393ac37538c6f0b08e213250796eb65209f0559",
+        "bytes": 376539,
         "pages": 9,
         "note": "Native Microsoft PowerPoint export (SaveAs format 32): text is selectable and fonts are embedded. Verified as 9 pages with the figure set re-extracted from the PDF text layer."
       },
@@ -93,6 +93,13 @@
         "Evaluation slide: added the 82.47% 256-squash figure so the Python entry point is not mislabelled with the native-geometry number",
         "Evaluation slide: robustness 5.36 -> 5.76 unconditional (the harness corruption), not the coords-kept diagnostic",
         "Evaluation slide: latency changed from 'FAIL - MediaPipe dominates' to 'NOT CLAIMED - on-device unmeasured', because Dev's two per-frame figures are unreconciled"
+      ],
+      "revisions": [
+        {
+          "date": "2026-11-22",
+          "what": "Slide 5 corrected: avg_power now says 'device constant, not app power' (it was '2.7-2.9 W (camera path)', which presented a PowerProfile constant as an app measurement); latency_p95 now carries the release-build p95 (46-70 ms debug / 51/50 ms release); the 'upper bounds' caveat replaced with the verified power finding.",
+          "replaced_sha256": "e8361b55008deac511cbfa6b3fd705900a9e8032eef386b8288fa6d6e6abb395"
+        }
       ]
     },
     "apk_release_2026_11_22": {

@@ -58,15 +58,15 @@
     },
     "presentation": {
       "path": "submission/presentation/CollegeName_TeamName.pptx",
-      "sha256": "e8361b55008deac511cbfa6b3fd705900a9e8032eef386b8288fa6d6e6abb395",
-      "bytes": 413468,
+      "sha256": "697dd71ef5f2ab35bef6a0372560d4d3312e2004e069a498ed54d8b1009373fc",
+      "bytes": 413516,
       "slides": 9,
       "template": "Built inside the organizer's own template (C:/Users/dev25/Downloads/Submission_Final_forGithub.pptx): the original 9 slides are filled in place, so master, layout and header geometry are the template's, not a reconstruction.",
       "font": "Arial Black (display) and Calibri (body), inherited from the template",
       "pdf": {
         "path": "submission/presentation/CollegeName_TeamName.pdf",
-        "sha256": "cec8b236f8ba44cc89efce9528f0f241a5e0d5905c19f3ab9cbbead7f1904a52",
-        "bytes": 376340,
+        "sha256": "1e2a1717680b989a35a404e7d393ac37538c6f0b08e213250796eb65209f0559",
+        "bytes": 376539,
         "pages": 9,
         "note": "Native Microsoft PowerPoint export (SaveAs format 32): text is selectable and fonts are embedded. Verified as 9 pages with the figure set re-extracted from the PDF text layer."
       },
@@ -75,7 +75,14 @@
         "Team+College string on slide 1 is the template placeholder CollegeName_TeamName; the real registered string replaces both the slide text and the file name.",
         "Slide 7 carries 'DEMO VIDEO: <paste the 2-3 min YouTube or Drive link here>' in red until the recording is uploaded."
       ],
-      "supersedes": "EchoGesture_Track02.pptx / .pdf (8 slides, sections not matching the template, removed from the tree)."
+      "supersedes": "EchoGesture_Track02.pptx / .pdf (8 slides, sections not matching the template, removed from the tree).",
+      "revisions": [
+        {
+          "date": "2026-11-22",
+          "what": "Slide 5 corrected: avg_power now says 'device constant, not app power' (it was '2.7-2.9 W (camera path)', which presented a PowerProfile constant as an app measurement); latency_p95 now carries the release-build p95 (46-70 ms debug / 51/50 ms release); the 'upper bounds' caveat replaced with the verified power finding.",
+          "replaced_sha256": "e8361b55008deac511cbfa6b3fd705900a9e8032eef386b8288fa6d6e6abb395"
+        }
+      ]
     },
     "apk_release_2026_11_22": {
       "path": "submission/apk/EchoGesture-2026-11-22-release.apk",

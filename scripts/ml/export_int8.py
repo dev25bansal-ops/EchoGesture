@@ -1,14 +1,29 @@
-"""Export the trained landmark classifier to INT8 TFLite.
+"""Export the trained landmark classifier to **ONNX QDQ** INT8.
 
-DEV-03. Produces the artifact Abhijeet ships: an integer-only TFLite file whose
-input is the FEATURE_DIM-wide (255) landmark stream from src/features.py.
+    ⚠ THIS SCRIPT DOES NOT PRODUCE A TFLITE FILE. Despite the `.py` name and the
+    `--out` default ending in `.tflite`, it writes ONNX QDQ protobuf bytes to
+    whatever path it is given. Verified 2026-11-22: the output's magic is
+    `\\x08\\x0a\\x12\\ronnx.qua`, and the script's own sanity check loads it back
+    with `onnxruntime.InferenceSession`, not a TFLite interpreter.
 
-The model is 100% Conv1d / BatchNorm / Linear / attention-pool. Attention uses
-a single learned query against the sequence, which lowers to MatMul + Softmax -
-all natively INT8-supported. No Flex delegates.
+    Its default `--out` is `models/landmark_classifier_int8.tflite`, which is
+    the only GENUINE INT8 TFLite in this tree (real `TFL3` FlatBuffer, SHA-256
+    `9d24640a…3700b`). Running this with defaults OVERWRITES that artifact with
+    ONNX bytes and destroys the evidence behind the −6.37 measurement. The
+    script now refuses to write over a file that is not already ONNX; pass a
+    distinct `--out` path.
+
+    For a genuine INT8 TFLite use `scripts/ml/export_tflite_tf.py`, which
+    rebuilds a Keras model from the checkpoint and converts with
+    `TFLITE_BUILTINS_INT8` plus a representative dataset. Neither script accepts
+    a `.tflite` or SavedModel as input — the input is a PyTorch `.pt` checkpoint.
+
+DEV-03. The model is 100% Conv1d / BatchNorm / Linear / attention-pool. Attention
+uses a single learned query against the sequence, which lowers to MatMul + Softmax
+- all natively INT8-supported. No Flex delegates.
 
 Usage:
-    python scripts/ml/export_int8.py --ckpt .scratch/runs/model.pt
+    python scripts/ml/export_int8.py --ckpt .scratch/runs/model.pt --out .scratch/model_int8.onnx
 """
 
 import argparse
@@ -50,6 +65,25 @@ def main():
     ap.add_argument("--out", default="models/landmark_classifier_int8.tflite")
     ap.add_argument("--calib", type=int, default=300)
     args = ap.parse_args()
+
+    # Refuse to overwrite a genuine TFLite (or anything that is not already ONNX)
+    # with ONNX bytes. This script's output is an ONNX QDQ protobuf; its default
+    # path used to be the shipped INT8 TFLite, so a plain run would replace real
+    # evidence with a mislabelled file. See the module docstring.
+    out_path = ROOT / args.out
+    if out_path.exists():
+        head = out_path.read_bytes()[:16]
+        is_tflite = len(head) >= 8 and head[4:8] == b"TFL3"
+        is_onnx = b"onnx" in head
+        if is_tflite or not is_onnx:
+            raise SystemExit(
+                f"refusing to overwrite {out_path}\n"
+                "  that file is "
+                + ("a genuine TFLite FlatBuffer" if is_tflite else "not an ONNX file")
+                + ", and this script writes ONNX QDQ bytes.\n"
+                "  Pass a distinct --out (e.g. .scratch/model_int8.onnx), or use\n"
+                "  scripts/ml/export_tflite_tf.py for a real INT8 TFLite."
+            )
 
     ckpt = torch.load(ROOT / args.ckpt, map_location="cpu", weights_only=True)
     vocab = ckpt["vocab"]

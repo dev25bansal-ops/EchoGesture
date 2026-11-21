@@ -101,30 +101,48 @@ def battery_sample():
 def uid_drain_uah(pkg):
     """Charge consumed by `pkg`'s uid since boot, in uAh, from batterystats.
 
-    `dumpsys batterystats` prints a per-uid summary ending in a line like
-        Uid u0a414: 123.4 ( cpu=..., audio=..., ... )
+    `dumpsys batterystats --charged` prints a per-uid summary line like
+        UID u0a431: 741 fg: 775 (1h 0m 38s) ... camera=622 (51m 39s) cpu=11.7 ...
     where the leading number is mAh-equivalent charge. Taking a delta across a
     known window turns it into an average current: uAh / hours = uA.
 
-    Returns None when the app has no entry, which is the honest answer for a
-    process that has not run since the stats were last reset.
+    Two things this got wrong until 2026-11-22, both proven against a live
+    Android 16 Vivo V2404:
+
+      * The uid was read from `dumpsys package` with `userId=`. That build prints
+        `appId=10431` and no `userId=` at all, so the lookup always returned None
+        and the caller concluded "no per-uid entry exists". It does exist.
+      * The block pattern was `Uid u0?{uid}`. The device prints `UID u0a431`, with
+        a capital UID and an `a` before the app id, so it could never match on any
+        modern Android. The numeric uid is 10000 + appId, rendered `u0a<appid>`
+        (or `u<uid>` for system uids below 10000).
+
+    Returns None only when the app genuinely has no entry, which is the honest
+    answer for a process that has not run since the stats were last reset.
     """
     out = adb("shell", "dumpsys", "batterystats", "--charged", timeout=60)
     if not out:
         return None
-    uid = None
-    # Map package -> uid first; the per-uid block is keyed by number.
+    app_id = None
+    # Map package -> app id. Android 16 prints `appId=`; older builds `userId=`.
     pm = adb("shell", "dumpsys", "package", pkg, timeout=30)
     if pm:
-        m = re.search(r"userId=(\d+)", pm)
+        m = re.search(r"\b(?:appId|userId)=(\d+)", pm)
         if m:
-            uid = m.group(1)
-    if uid is None:
+            app_id = int(m.group(1))
+    if app_id is None:
         return None
-    m = re.search(rf"^\s*Uid u0?{uid}:\s*([0-9.]+)", out, re.MULTILINE)
-    if not m:
-        return None
-    return float(m.group(1)) * 1000.0  # mAh -> uAh
+    # `UID u0a431` is how appId 10431 is rendered: `u` + the 0-a prefix + the
+    # app id MINUS the leading 10 (10431 -> "431"). Verified on-device.
+    uid_forms = []
+    if app_id >= 10000:
+        uid_forms.append(rf"UID u0a{app_id - 10000}")
+    uid_forms.append(rf"UID u{app_id}")
+    for form in uid_forms:
+        m = re.search(rf"^\s*{form}:\s*([0-9.]+)", out, re.MULTILINE)
+        if m:
+            return float(m.group(1)) * 1000.0  # mAh -> uAh
+    return None
 
 
 def component_drain_mah():

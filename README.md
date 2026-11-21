@@ -12,7 +12,7 @@ this repository:
 
 | # | What the organizers asked for | Where it is |
 | --: | --- | --- |
-| 1 | `predict()` implementation, one JSON object per test clip | [`src/main.py`](src/main.py) — `predict(video_path, clip_id=None)`. Predictions: [`results/predictions.jsonl`](results/predictions.jsonl), 1,251 lines |
+| 1 | `predict()` implementation, one JSON object per test clip | [`src/main.py`](src/main.py) — `predict(video_path, clip_id=None)`. Predictions: [`results/predictions.jsonl`](results/predictions.jsonl), 1,251 lines. Each line carries the five fields the deck's example shows (`clip_id`, `prediction`, `top5`, `confidence`, `latency_ms`) **plus one documented extra, `latency_scope: "classifier_only"`** — because this file is produced from cached landmarks, so its `latency_ms` times the nine interpreters only and does not include video decode or MediaPipe. Recording the scope keeps a ~13 ms number from being misread as end-to-end; `predict()` itself returns exactly the five required keys. |
 | 2 | Results sheet: one row per metric, measured vs target, pass/fail | [`results/results.csv`](results/results.csv) — six scored rows plus supporting measurements, each with its device and reproduction command |
 | 3 | Repository with a README showing how to run it, a quantized model, and the conversion script | This file (run instructions below) · nine FP16 `.tflite` members in [`models/`](models/) · [`scripts/ml/export_ensemble.py`](scripts/ml/export_ensemble.py) |
 | 4 | Demo video (2–3 min) or deployed app URL | **Pending** — the recording script is [`submission/DEMO_SCRIPT.md`](submission/DEMO_SCRIPT.md); the link goes in the submission form and on slide 7 of the deck |
@@ -93,14 +93,18 @@ Start with the [two-person sprint plan](docs/hackathon/README.md) and the
 
 ## Status: complete and measured end to end
 
-The landmark pipeline clears the accuracy target by 15 points, and every rubric
-metric now has an on-device measurement from a Vivo V2404 (Android 16,
-arm64-v8a, SM7550). Nothing in the scoring matrix is unmeasured.
+The landmark pipeline clears the accuracy target by 15 points. **Latency, power
+and thermal** each have an on-device measurement from a Vivo V2404 (Android 16,
+arm64-v8a, SM7550). **Accuracy and robustness are laptop measurements** — they
+are corpus evaluations on pre-extracted landmarks, not phone figures, and no
+phone accuracy exists. The `device` column of `results.csv` says which is which
+on every row; read it before quoting a number.
 
 An earlier version of this section said latency, power and thermal were
 unmeasured "because no phone has completed a test session here". That was true
-when written and is no longer: see `results/results.csv`, where each metric
-carries its own device, build and reproduction note.
+when written and is no longer. An even earlier revision of this paragraph then
+overclaimed the other way — that *every* rubric metric was on-device — which the
+`device` column contradicts. Both are fixed here.
 
 **The Android app is in this repository at [`app/android_final/`](app/android_final/)**
 and builds with Gradle. It runs the same nine-member ensemble as `src/main.py`,
@@ -127,7 +131,7 @@ its device, runtime and how to reproduce it.
 | Per-frame detector latency | **pass (desktop), p50 20.3 ms / p95 34.1 ms** | inside the 50 ms budget; 160 frames. Reproduce: `scripts/ml/latency_per_frame.py` |
 | End-to-end per clip | **~720 ms (desktop)** | warm `predict()` on a 32-frame clip; the detector is ~600 ms of it, the classifier 4.2 ms. **Not an on-device figure** |
 | On-device latency | **FAIL at p95** | Vivo V2404, GPU delegate, DEBUGGABLE build: detect p50 34–45 ms, p95 46–54 ms (no hand) / 68–70 ms (hand in frame) against a ≤50 ms target. Passes in the empty-frame regime, fails once a hand is present. `results.csv` row `latency_p95`, verdict `FAIL` |
-| Power ≤ 500 mW | **FAIL, 2666–2898 mW** | Batterystats camera-subsystem breakdown on Vivo V2404, DEBUGGABLE build. This is the whole camera path, not the model alone — per-process attribution unavailable. `docs/POWER_THERMAL_2026-11-19.md` |
+| Power ≤ 500 mW | **FAIL, 2666–2898 mW** | **This is the camera hardware floor, not the model.** batterystats prices "camera on" at a fixed PowerProfile constant of **749.4 mA** — five independent blocks in one on-device dump agree to under 0.2% across screen-on, screen-off and doze states, which no real current can do. At 3.87 V that is ~2.9 W, about **5.8× the budget**, so no live-camera app on this device can pass. 84% of the app's own attributed drain is that same camera line; app compute is ~157 mW. `docs/POWER_THERMAL_2026-11-19.md` |
 | Thermal drift ≤ 20% | **PASS, 19.2%** | SoC 45.8→56.7°C over 10 min, thermal status LIGHT throughout. Only 0.8 pt of headroom. `docs/POWER_THERMAL_2026-11-19.md` |
 
 ## The core empirical finding

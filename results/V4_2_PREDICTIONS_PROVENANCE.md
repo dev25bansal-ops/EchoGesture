@@ -1,5 +1,33 @@
 # results/predictions.jsonl — provenance
 
+> ## CURRENT STATUS (2026-11-22): this file is current and it ships
+>
+> **The warning below was true on 2026-11-14 and is no longer true.** The stored
+> predictions were regenerated with the nine-member ensemble in **`465166f`
+> (2026-11-16)**, and their latency values were rewritten in **`8740f27`
+> (2026-11-20)**. The shipped `results/predictions.jsonl` now holds **1,251**
+> records at **85.45%** top-1 / 96.64% top-5 — figures the old four-member model
+> could not produce.
+>
+> Independent check that does not lean on ground truth: parsing the gloss
+> embedded in each `clip_id` and comparing to `prediction` agrees on
+> **1,069 / 1,251 = 85.45%**, exactly the claimed top-1. Uppercase and
+> in-vocabulary on all 1,251 lines; `top5[0] == prediction` throughout.
+>
+> One field is on this export and not on `predict()`: `latency_scope:
+> "classifier_only"`, because the file is built from **cached landmarks** and its
+> `latency_ms` therefore times the nine interpreters only, excluding video
+> decode and MediaPipe. The field records that so a ~13 ms median is not
+> misread as end-to-end. See
+> [`scripts/ml/make_predictions.py:118`](../scripts/ml/make_predictions.py#L118).
+>
+> Reproduce: `python scripts/ml/eval_tflite_cache.py --cache .scratch/landmarks_native`
+>
+> ---
+>
+> *Everything below is the original 2026-11-14 note, kept verbatim as the record
+> of why the file was rebuilt. It describes a state that has since been fixed.*
+
 **Attribution: OLD four-member model (V4.2). DO NOT package as nine-model output.**
 
 ## Evidence

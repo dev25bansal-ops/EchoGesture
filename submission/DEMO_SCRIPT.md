@@ -170,7 +170,7 @@ Say the label with the number or do not say the number.
 | +5.76 pp | hand-dropout loss, unconditional, full 1,251-clip split — **FAIL** | do not present the gated figure as the robustness result |
 | 2.39 pp | hand-dropout loss **at the app's margin gate, on accepted clips only**, 86% clean / 80% corrupted coverage | NOT proof of unconditional robustness. (An older 1.24 figure used the coords-kept diagnostic and is superseded.) |
 | 34–45 ms p50 / 46–54 ms p95 (empty frame) / 68–70 ms p95 (hand in frame) | MediaPipe detector, on-device, GPU delegate, Vivo V2404, **debug build** | not a PASS; not the classifier; the release build now shipping should be faster but was not re-measured |
-| 2666–2898 mW | camera subsystem (sensor+ISP+encode), on-device, debug build — **FAIL** vs 500 mW | not the model's own power; per-process attribution unavailable on this device |
+| 2666–2898 mW | camera hardware floor: batterystats prices "camera on" at a fixed 749.4 mA PowerProfile constant (~2.9 W), on-device — **FAIL** vs 500 mW | not the model's own power — it is the cost of the camera being on at all, ~5.8× the budget, so no camera app can pass; app compute is ~157 mW |
 | 19.2% drift / 10 min | SoC max over CPU/GPU/NSP, on-device, debug build — **PASS** vs 20% | only 0.8 points of headroom |
 | 99.7% above 0.8 confidence | corpus, 594 of 1,251 clips | not phone accuracy, not a guarantee |
 

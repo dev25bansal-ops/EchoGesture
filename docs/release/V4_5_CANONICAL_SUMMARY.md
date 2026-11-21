@@ -27,6 +27,23 @@ ranked against each other.
 | 4 | Nine-member ensemble, fresh extraction, native 640×480, 1,249 test | **85.51%** | **Dev-reported**, not re-run here |
 | 5a | Nine-member ensemble, **346-clip validation**, 256 squash | **82.37%** | **Measured here**, default geometry |
 | 5b | Nine-member ensemble, **346-clip validation**, native 640×480 | **85.84%** | **Measured here**, opt-in geometry |
+
+> **Two numbers exist for the 346-clip validation split and they are not in
+> conflict.** `results.csv` reports **89.31%** (`top1_accuracy_val`), from
+> `results/eval_summary_val.json` — the nine members scored against
+> **pre-extracted native landmarks** in `.scratch/landmarks_native`, the same
+> cache the test split uses. Row 5b's **85.84%** is the same nine members on the
+> same 346 clips taken through the **full `evaluation/device/geometry_paired.py`
+> path**, which patches `read_frames` and runs real `predict()` — a different
+> decode and normalisation route. Landmark-cache evaluation is higher than
+> video-path evaluation because MediaPipe runs on already-decoded frames rather
+> than on the decoded stream; the gap is 12 clips.
+>
+> Which to quote: **89.31% if describing the corpus landmark evaluation** (that
+> is what `results.csv` and the deck use), **85.84% if describing the end-to-end
+> video path**. Never put the two side by side as if one were wrong. The test
+> split has the same split — 85.45% on the native cache (`results.csv`) versus
+> 85.51% reported on fresh extraction.
 | 6 | Submission ZIP, clean extraction, 30 clips | **76.67%** | **Measured here** — the packaged artifact |
 | 7 | Physical Android phone | — | **NOT TESTED** |
 

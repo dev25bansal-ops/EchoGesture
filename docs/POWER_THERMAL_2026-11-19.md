@@ -42,11 +42,54 @@ classifiers are **3.4–4.8 ms/clip**, and the detector is 34–45 ms/frame on t
 GPU delegate. So the honest framing for the submission is:
 
 > `avg_power` = **NOT MEASURABLE for the model alone on this hardware.** The
-> camera subsystem draws ~2.9 W; no per-process power attribution is available
-> (per-uid batterystats has no entry for the app, and sysfs is denied).
+> camera subsystem draws ~2.9 W; per-process attribution was not obtained.
 
 That is a truthful `NOT_MEASURED` with a measured bound around it, which is
 worth more than a fabricated pass.
+
+## Correction, 2026-11-22: the 2.9 W is a device constant, not a measurement
+
+Re-examined on the live Vivo V2404. Two things in the section above are wrong.
+
+**The `camera` line is a PowerProfile device constant, not a current reading.**
+Five independent blocks in a single `dumpsys batterystats --charged` dump, which
+disagree wildly in duration and in power state, all yield the same rate:
+
+| block | mAh | duration | mA |
+| --- | --: | --- | --: |
+| global | 1318.0 | 1h 45m 24s | 750.26 |
+| on battery, screen on | 582.0 | 46m 36s | 749.44 |
+| screen off / doze | 44.6 | 3m 34s | 749.44 |
+| another window | 681.0 | 54m 27s | 750.31 |
+| a 47-second run | 9.77 | 46.9 s | 750.38 |
+
+Real current cannot be identical to 0.2% across screen-on, screen-off and doze.
+So `2666–2898 mW` is **749.4 mA × camera-on duration × 3.87 V** — the spread
+between the three "independent windows" is host-clock slop, not power
+variation. At today's measured 4122 mV it is nearer 3.1 W than 2.9 W.
+
+Consequence: **no live-camera app on this device can pass 500 mW.** 500 mW is
+129 mA; the camera constant alone is 749 mA, 5.8× the budget. The target is only
+coherent as a model/compute-only budget, which the organizer sheet never defines.
+
+**Per-uid attribution does exist, and the harness could never have found it.**
+The sentence "per-uid batterystats has no entry for the app" was an inference
+from a parser that always returned `None`. Two defects in
+`scripts/measure_power_thermal.py`:
+
+1. It read the uid with `userId=(\d+)` from `dumpsys package`. Android 16 prints
+   `appId=10431` and no `userId=` at all.
+2. It matched `^\s*Uid u0?{uid}:`. The device prints `UID u0a431:` — capital
+   `UID`, and the app id rendered with its leading `10` dropped (10431 → `431`).
+
+Both are fixed; the function now returns a real value
+(`1,109,000 µAh` for `org.echogesture.finalapp`). The live entry is
+`UID u0a431: 1096 … camera=622 (51m 39s) cpu=11.7 (17m 17s)` — **84% of the
+app-attributed drain is the same camera constant**, so per-uid attribution would
+not rescue a PASS either. It does expose the one sub-500 mW figure in the
+dataset: app CPU-attributed `cpu=11.7 mAh / 17m 17s` = 40.6 mA ≈ **157 mW**,
+an upper bound on all app compute. That is the platform's power model over an
+uncontrolled hour, not a rail measurement.
 
 ## Thermal: 19.2% drift, but the phone was COOLING
 

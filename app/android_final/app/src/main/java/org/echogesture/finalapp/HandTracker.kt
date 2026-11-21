@@ -188,45 +188,41 @@ class HandTracker private constructor(
 
     companion object {
         /**
-         * Maps one hand's landmarks from the frame MediaPipe saw into the
-         * geometry the checkpoints were TRAINED on. In place; z is untouched.
+         * Maps one hand's landmarks into the geometry the checkpoints were
+         * TRAINED on. In place; z is untouched.
          *
-         * MediaPipe normalises x by the frame width and y by its height
-         * separately, so on a frame that is not the training aspect one
-         * normalised x unit and one normalised y unit are different physical
-         * lengths and the hand arrives stretched. The corpus is 640x480 (4:3
-         * landscape); an app pinned to portrait hands the detector 480x640,
-         * which stretches x by 4/3 and squashes y by 3/4 — a 1.78x anisotropy,
-         * larger than a margin of error.
+         * MediaPipe returns x and y normalised by the dimensions of the image
+         * it was HANDED -- the raw buffer -- one normalised unit of x being
+         * `width` pixels and one of y being `height`. The corpus is 640x480, so
+         * expressing a landmark in corpus normalisation means
          *
-         * Measured, with the nine shipped members, on the 1,251-clip test set
-         * (`landmarks_native`): the warp costs 85.08% -> 82.66% top-1, so it is
-         * not subtle. On a real 32-frame camera capture, correcting it moved
-         * member agreement from 1/9 to 5/9 and the top-1 margin from 0.061 to
-         * 0.202. Both paths — live camera here and [ClipAnalyzer] for files —
-         * call this, because a clip must classify the same way whether it
-         * arrives from the camera or from the picker.
+         *     x_corpus = x_norm * width  / 640
+         *     y_corpus = y_norm * height / 480
          *
-         * The transform scales x about the origin and y about the MIDPOINT, so
-         * 0 stays 0 and 1 stays 1 on both axes: a landmark can never be pushed
-         * off the frame. Square frames (the 256-squash experiments) and 4:3
-         * frames are identities. A zero-sized frame — possible before the
-         * analyser has been configured — is left alone rather than producing
+         * which is the identity on a 640x480 buffer and corrects the hand's
+         * ASPECT on any other. A uniform overall scale is deliberately left
+         * alone: `FeatureTransform` root-centres on the wrist and divides by
+         * wrist->middle-MCP, so only the RATIO of the two factors reaches the
+         * model.
+         *
+         * PASS THE BUFFER DIMENSIONS, NOT THE DISPLAY DIMENSIONS. Measured on
+         * this MediaPipe build (0.10.14, both IMAGE and VIDEO mode): setting
+         * `rotationDegrees` changes where the detector LOOKS but not the frame
+         * its coordinates are reported in. Feeding a 90-degree-rotated buffer
+         * with rotationDegrees=270 returned landmarks identical to
+         * rotationDegrees=0 (mean per-landmark difference 0.0031), and 0.2232
+         * away from the upright frame. So a portrait phone's coordinates are
+         * already in the raw landscape buffer's frame, and normalising them by
+         * the portrait dimensions would stretch a correctly-shaped hand by
+         * 1.78x -- the exact defect this function exists to prevent.
+         *
+         * Inflicting that 1.78x stretch on the 1,251-clip test set costs
+         * 85.08% -> 82.66% top-1. A zero-sized frame -- possible before the
+         * analyser has been configured -- is left alone rather than producing
          * NaN, which features.py would refuse and the capture would be lost.
          */
         fun mapToCorpusAspect(xyz: FloatArray, width: Int, height: Int): FloatArray {
             if (width <= 0 || height <= 0) return xyz
-            // MediaPipe normalises each axis by its own frame dimension:
-            // x_norm * width and y_norm * height are pixels. Expressing a
-            // landmark in the corpus's normalisation therefore means
-            //     x_corpus = x_norm * width  / 640
-            //     y_corpus = y_norm * height / 480
-            // which is the identity at 640x480 and leaves the hand's ASPECT
-            // correct at any other shape. A uniform overall scale is harmless
-            // because the feature transform divides by wrist->middle-MCP, so
-            // only the RATIO of these two factors reaches the model. A
-            // 480x640 portrait frame gives (0.75, 1.333): the hand arrives
-            // squashed in x and stretched in y, an anisotropy of 1.78x.
             val xScale = width.toFloat() / CORPUS_WIDTH_PX
             val yScale = height.toFloat() / CORPUS_HEIGHT_PX
             if (xScale == 1f && yScale == 1f) return xyz

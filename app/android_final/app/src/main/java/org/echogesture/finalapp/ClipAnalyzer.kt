@@ -400,9 +400,12 @@ object ClipAnalyzer {
                 arr[j * 3 + 2] = pts[j].z()
             }
             // A decoded clip carries its own size, which need not be the 4:3
-            // the checkpoints were trained on. The camera path applies the same
-            // correction, so a sign classifies identically whichever way it
-            // arrives.
+            // the checkpoints were trained on. This is the DECODED FRAME's
+            // size -- the same "buffer" the detector was handed -- because
+            // MediaPipe reports coordinates in the frame of the image it was
+            // given, never in a rotated display frame. The camera path passes
+            // the identical dimensions for the identical reason, so a sign
+            // classifies the same way whichever route it arrives by.
             HandTracker.mapToCorpusAspect(arr, width, height)
             out.add(HandTracker.Hand(slot, arr))
             i++

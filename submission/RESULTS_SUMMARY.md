@@ -99,18 +99,33 @@ interchangeable.**
 **The ≤50 ms criterion is NOT MET on desktop and is UNMEASURED on device.** The
 classifier is 0.15% of end-to-end time; the detector dominates.
 
-**Do not quote a per-frame PASS.** Dev's branch contains two mutually
-incompatible per-frame figures in the same commit (15.34 ms PASS and 135 ms
-FAIL). For a 32-frame clip at 15.34 ms, detection would be ~0.5 s — but the
-measured end-to-end is 4.65 s, which only ~135 ms/frame explains. Until that is
-reconciled by re-running both in one session, the safe statement is:
+**Do not quote a per-frame PASS from the laptop figures.** Dev's branch contains
+two mutually incompatible per-frame figures in the same commit (15.34 ms PASS and
+135 ms FAIL). For a 32-frame clip at 15.34 ms, detection would be ~0.5 s — but the
+measured end-to-end is 4.65 s, which only ~135 ms/frame explains. Those laptop
+numbers were never reconciled against each other.
 
-> "About 4 ms for the classifier, about 4.65 seconds for the full pipeline on a
-> laptop, dominated by MediaPipe. Unmeasured on a phone."
+**They were superseded on 2026-11-21 by a direct on-device measurement**, which
+does not need reconciling because it comes from the app's own profiler:
 
-The earlier 236 ms figure in this document was my own laptop measurement from an
-earlier run and is **superseded** — Dev's `predict()` warm-up fix revealed the
-previous timing had excluded real detector work.
+| Path, Vivo V2404, 640×480 VIDEO | p50 | p95 |
+| --- | --: | --: |
+| CPU delegate | 95 ms | 166 ms |
+| **GPU delegate, no hand in frame** | — | **46–54 ms** |
+| **GPU delegate, hand in frame** | 50–59 ms | **68–70 ms** |
+
+The app had been building its detector with no delegate at all, so it ran on the
+CPU path. With `Delegate.GPU` requested and CPU as fallback, the detector is
+2.3× faster and moves from "clearly over budget" to "at or inside it" in the
+empty-frame regime — and 18–20 ms over once a hand is present.
+
+All of these are DEBUGGABLE builds, so they are upper bounds. The classifier adds
+~40 ms warm on top; it is no longer 0.15% of end-to-end, because the detector
+stopped dominating.
+
+> "About 40 ms for the classifier; the detector takes 46–70 ms p95 on the GPU
+> delegate depending on whether a hand is in frame. Measured on one physical
+> phone, debug build. Desktop-CPU figures were 142–151 ms and are historical."
 
 ---
 
@@ -156,13 +171,14 @@ See `docs/release/ROBUSTNESS_RECONCILIATION.md` for the full derivation.
 
 | Never say | Actually |
 | --- | --- |
-| "77% accurate on a phone" | Corpus/laptop only |
+| "77% accurate on a phone" | Corpus/laptop only; one phone run proves the pipeline, not an accuracy |
 | "184 independent signs tested" | 184 evaluations over **72 unique clips** |
 | "INT8 quantised" | FP16 ships |
-| "Meets the 50 ms target" | 314.9 ms p95 warm |
-| "Robust to occlusion" | Landmark robustness FAILs at 5.36 pp; native pixel unmeasured |
+| "Meets the 50 ms target" unconditionally | GPU p95 46–54 ms empty-frame, 68–70 ms with a hand, debug build |
+| "Robust to occlusion" | Landmark robustness FAILs at 5.76 pp; native pixel unmeasured |
 | "Continuous translation" | 100 isolated signs |
 | "Robustness criterion passed" | **FAIL** under the shipped aggregator |
+| "The live camera works as well as a clip" | Same sign 0.969 from a file, 0.246 live |
 
 ---
 
@@ -170,13 +186,14 @@ See `docs/release/ROBUSTNESS_RECONCILIATION.md` for the full derivation.
 
 | Suite | Result |
 | --- | --- |
-| Android JVM | **110 / 110 pass**, 0 failed, 0 skipped |
-| Python `evaluation/device` | 424 / 493 pass; 3 failed, 23 errors, 43 skipped |
+| Android JVM, `submission/final` @ `29c48b6` | **150 / 150 pass**, 0 failed, 0 skipped |
+| Python `evaluation/device` | 433 / 502 pass; 3 failed, 23 errors, 43 skipped |
 | Official bundle suite | 15 / 15 pass |
 | Clean-extraction `predict()` | 30 / 30 clips, 0 errors |
-| Android instrumentation | 11 / 11 at V4.4; not re-run this cycle |
-| Physical phone | **NOT TESTED** |
+| Android instrumentation | 16 pass, 0 fail, 1 skip (emulator, API 34) |
+| Physical phone | **Run on one Vivo V2404, 2026-11-21**; pipeline verified, no accuracy measured |
 
-The 26 Python failures are identical on the untouched V4.4 tip and all trace to
-three gitignored artifacts (a `summary.json`, `landmark_classifier_fp16.tflite`,
-a `.npy` fixture). They are blocked on assets, not code.
+The 26 Python failures are identical on the untouched frozen baseline and all
+trace to three gitignored artifacts (a `summary.json`,
+`landmark_classifier_fp16.tflite`, a `.npy` fixture). They are blocked on
+assets, not code.

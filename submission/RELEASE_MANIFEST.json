@@ -1,5 +1,5 @@
 {
-  "release": "Samsung XR Hackathon 2026 \u2014 Track 02 (V4.5)",
+  "release": "Samsung XR Hackathon 2026 — Track 02 (V4.5)",
   "generated": "2026-11-16",
   "internal_target": "2026-11-17",
   "deadline": "2026-11-18T23:59:00+05:30",
@@ -26,8 +26,8 @@
     "attention_mask": "present.max(axis=1) > 0.5 over resampled presence",
     "detector_sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1",
     "vocabulary_size": 100,
-    "frame_geometry_default": "256 squash (square) \u2014 unchanged",
-    "frame_geometry_optin": "native via ECHOGESTURE_FRAME_SIZE=native \u2014 NOT the shipped default"
+    "frame_geometry_default": "256 squash (square) — unchanged",
+    "frame_geometry_optin": "native via ECHOGESTURE_FRAME_SIZE=native — NOT the shipped default"
   },
   "artifacts": {
     "apk_v4_3": {
@@ -68,18 +68,18 @@
     },
     "presentation": {
       "path": "submission/presentation/EchoGesture_Track02.pptx",
-      "sha256": "e526f3668b364404a9a9e96eb018755c75c394b6e1b98981722d1f23adc23ed7",
-      "bytes": 412909,
+      "sha256": "4df49d66a125e5fa9101dc37cc02ef7b4dcec161dd67d19df1fe4530c689558f",
+      "bytes": 416230,
       "slides": 8,
       "font": "Arial (pinned so arrows and multiplication signs have real glyph coverage)",
       "pdf": {
         "path": "submission/presentation/EchoGesture_Track02.pdf",
-        "sha256": "f4b6db1419786e2f524ac2452b0196063be3e58458901e712218f481f147f812",
-        "bytes": 622577,
+        "sha256": "7e7d3601eea9b9bd9123445db489525a263b6d40c02a055279e713502d11843f",
+        "bytes": 240836,
         "pages": 8,
-        "note": "Rasterised from submission/presentation/render_slides.py, not a native PowerPoint export. Text is not selectable. Replace with a native export if PowerPoint is available."
+        "note": "Native Microsoft PowerPoint export (SaveAs format 32): text is selectable and fonts are embedded. Verified as 8 pages with every figure re-extracted from the PDF itself."
       },
-      "visual_inspection": "All 8 slides rasterised and inspected: no clipped text, no colliding boxes, no missing glyphs.",
+      "visual_inspection": "All 8 slides rasterised from the exported PDF and inspected: no clipped text, no colliding boxes, no missing glyphs.",
       "naming": "must be renamed to CollegeName_TeamName before submission",
       "figures_corrected_2026_11_17": [
         "Evaluation slide: 77.02/92.79/1,249 -> 85.45/96.64/1,251",
@@ -152,18 +152,18 @@
   },
   "compliance": {
     "python_3_11": "PASS",
-    "predict_contract": "PASS \u2014 five keys, verified from clean extraction",
-    "zip_layout": "PASS \u2014 src/, models/, results/ per PDF p12",
-    "quantization_int8": "FAIL \u2014 FP16 shipped; organizer clarification unsent. Do not claim INT8 compliance.",
-    "latency_50ms": "NOT CLAIMED \u2014 per-frame detector figures in Dev's branch are unreconciled (15.34 ms vs 135 ms in the same commit); full predict() is 4,650 ms on desktop; on-device unmeasured. The official timing boundary is also unverified against the rubric.",
-    "model_size_20mb": "PASS \u2014 16.33 MB including detector",
-    "top1_70pct": "PASS \u2014 85.45% corpus at native 640x480 (Android geometry); 82.47% at 256 squash (the Python entry point). Not phone accuracy.",
-    "demo_video": "BLOCKED \u2014 no physical phone available to record a real prediction",
-    "presentation": "DONE \u2014 8 slides, figures corrected 2026-11-17, all rasterised and inspected; naming pending",
+    "predict_contract": "PASS — five keys, verified from clean extraction",
+    "zip_layout": "PASS — src/, models/, results/ per PDF p12",
+    "quantization_int8": "FAIL — FP16 shipped; organizer clarification unsent. Do not claim INT8 compliance.",
+    "latency_50ms": "NOT CLAIMED — per-frame detector figures in Dev's branch are unreconciled (15.34 ms vs 135 ms in the same commit); full predict() is 4,650 ms on desktop; on-device unmeasured. The official timing boundary is also unverified against the rubric.",
+    "model_size_20mb": "PASS — 16.33 MB including detector",
+    "top1_70pct": "PASS — 85.45% corpus at native 640x480 (Android geometry); 82.47% at 256 squash (the Python entry point). Not phone accuracy.",
+    "demo_video": "BLOCKED — no physical phone available to record a real prediction",
+    "presentation": "DONE — 8 slides, figures corrected 2026-11-17, all rasterised and inspected; naming pending",
     "team_naming": "NEEDS HUMAN",
-    "registration": "UNVERIFIED \u2014 no confirmation record in repo",
-    "rights": "BLOCKED \u2014 weights have no confirmed redistribution permission",
-    "robustness_hand_dropout": "FAIL \u2014 5.76 pp unconditional on the full split (harness corruption). At the app's margin>=0.15 gate it is 1.24 pp on 86%/80% coverage; official applicability of abstention is UNKNOWN."
+    "registration": "UNVERIFIED — no confirmation record in repo",
+    "rights": "BLOCKED — weights have no confirmed redistribution permission",
+    "robustness_hand_dropout": "FAIL — 5.76 pp unconditional on the full split (harness corruption). At the app's margin>=0.15 gate it is 1.24 pp on 86%/80% coverage; official applicability of abstention is UNKNOWN."
   },
   "pending_human": [
     "Confirm registration and the exact CollegeName_TeamName string",

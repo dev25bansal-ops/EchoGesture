@@ -3,8 +3,14 @@
 All findings from real device interaction on `eg34` (Android 14, ARM64,
 API 34). Findings B-01…B-06 were raised against the baseline APK
 `150ffeeb…cb7a`; the rotation case was then retested on a clean cold-booted
-instance against the rebuilt APK `6653160e…d37c`. Nothing here is inferred from
-reading code alone unless it says so.
+instance against the rebuilt APK `6653160e…d37c` (an emulator build that is no
+longer in the repository). Nothing here is inferred from reading code alone
+unless it says so.
+
+> **Superseded for device results, 2026-11-21.** These findings stand as an
+> emulator record. The physical-phone run against the currently shipped
+> `submission/apk/EchoGesture-2026-11-21.apk` (`96f00458…0035`) is in
+> `docs/CAMERA_MISREAD_DIAGNOSIS_2026-11-21.md`, and it is the one to quote.
 
 Statuses: **OPEN** · **FIXED** · **VERIFIED** · **BLOCKED** · **NOT REPRODUCED**
 

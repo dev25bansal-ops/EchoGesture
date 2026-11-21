@@ -3,7 +3,13 @@
 Print this or keep it on screen. One column is what I could verify without a
 phone; the other is what only your phone can answer.
 
-**APK:** `EchoGesture-Test-Ready.apk` · `6653160e…d37c`
+**APK:** `submission/apk/EchoGesture-2026-11-21.apk` · `96f00458…0035`
+
+> Superseded 2026-11-21. This checklist was written against
+> `EchoGesture-Test-Ready.apk` (`6653160e…d37c`), which is **not in the
+> repository**. The phone was subsequently reached and the shipped build above
+> was driven on it; see `docs/CAMERA_MISREAD_DIAGNOSIS_2026-11-21.md`. The
+> checklist's *questions* are still the right ones to ask of any build.
 
 ---
 

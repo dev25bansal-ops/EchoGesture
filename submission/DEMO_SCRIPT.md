@@ -29,7 +29,7 @@ a *label on a shown result*, not an abstention.
 
 | Item | Check |
 | --- | --- |
-| APK | `EchoGesture-Test-Ready.apk`, SHA-256 `6653160e…d37c` |
+| APK | `submission/apk/EchoGesture-2026-11-21.apk`, SHA-256 `96f00458…0035` |
 | Model identity | Camera footer reads **`9-model ensemble · FP16 TFLite · SHA-256 995cc8d0…`** |
 | Network | Airplane mode **ON** for the whole recording |
 | Second camera | A separate phone or camera filming the screen *and* the signer |
@@ -174,7 +174,10 @@ Say the label with the number or do not say the number.
 - A prediction the model did not produce.
 - A success caption over a failed attempt.
 - "INT8" — the shipped build is FP16, and INT8 compliance is **not** claimed.
-- Any on-device latency, power or thermal number. None were measured.
+- Power or thermal numbers. Still unmeasured on the GPU path.
+- **Latency stated as a PASS.** The GPU delegate p95 is 46–54 ms with no hand in
+  frame and 68–70 ms with one, on a debug build. If a judge asks, that is the
+  whole answer; do not round it into "under 50 ms".
 - "Uncertain — sign again" as a system behaviour. It does not exist.
 
 ## 5. The 77% → 85% change, if a judge asks
@@ -191,10 +194,19 @@ happened to be in our favour.
 
 ## 6. Recording with the current APK
 
-The APK to film is `submission/TEST_APP_NOW/EchoGesture-Test-Ready.apk`
-(SHA-256 `6653160e…d37c`). Confirm the footer before you roll.
+The APK to film is `submission/apk/EchoGesture-2026-11-21.apk`
+(SHA-256 `96f00458…0035`), built from `submission/final` at `29c48b6`. Confirm
+the footer reads `9-model ensemble · FP16 TFLite · SHA-256 995cc8d0…` before you
+roll.
 
-If the phone is not available, see §7.
+**Film the clip path, not the live camera.** The same VOICE sign scores 0.969
+through the file picker and 0.246 through the camera in the same session; the
+camera path is a documented limitation, not a demo. Use DARK or MECHANIC — the
+held-out pair — and say so on camera.
+
+If the phone is not available, see §7 — but a phone **was** available on
+2026-11-21 and the shipped build was driven on it, so §7 is a fallback, not the
+expected case.
 
 ## 7. If no phone is available
 

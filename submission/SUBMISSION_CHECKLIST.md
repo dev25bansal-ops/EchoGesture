@@ -4,6 +4,11 @@ Status as of **2026-11-14**. Internal target 17 Nov. Deadline 18 Nov 23:59 IST.
 
 Statuses: **DONE** · **FAILED** · **BLOCKED** · **NOT TESTED** · **NEEDS HUMAN**
 
+> **Superseded 2026-11-21 — kept as a dated record.** The "NOT TESTED — no
+> physical device" rows below are no longer true: the shipped APK was installed
+> and driven on a Vivo V2404 on 2026-11-21. Current status lives in
+> [`FINAL_DELIVERY/CHECKLIST.md`](FINAL_DELIVERY/CHECKLIST.md).
+
 ---
 
 ## Gate 0 — Competition entry

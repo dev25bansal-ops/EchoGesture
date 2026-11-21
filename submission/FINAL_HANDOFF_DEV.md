@@ -5,6 +5,12 @@ Abhijeet → Dev. Date 2026-11-16. Deadline 2026-11-18 23:59 IST.
 This is the sign-off request. Three things need a yes, a no, or a correction.
 Everything else is information.
 
+> **Superseded 2026-11-21 — kept as the original sign-off record.** Two items
+> below have since been resolved: the physical phone was reached and the shipped
+> build driven on it, and the APK metadata now reads `0.8545`, matching the deck.
+> The APK is `EchoGesture-2026-11-21.apk` (`96f00458…0035`). Current numbers:
+> [`FINAL_DELIVERY/RESULTS.md`](FINAL_DELIVERY/RESULTS.md).
+
 ---
 
 ## 1. What is frozen

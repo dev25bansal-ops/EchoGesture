@@ -1,5 +1,5 @@
 {
-  "release": "Samsung XR Hackathon 2026 \u2014 Track 02 (V4.5)",
+  "release": "Samsung XR Hackathon 2026 — Track 02 (V4.5)",
   "generated": "2026-11-16",
   "internal_target": "2026-11-17",
   "deadline": "2026-11-18T23:59:00+05:30",
@@ -26,8 +26,8 @@
     "attention_mask": "present.max(axis=1) > 0.5 over resampled presence",
     "detector_sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1",
     "vocabulary_size": 100,
-    "frame_geometry_default": "256 squash (square) \u2014 unchanged",
-    "frame_geometry_optin": "native via ECHOGESTURE_FRAME_SIZE=native \u2014 NOT the shipped default"
+    "frame_geometry_default": "256 squash (square) — unchanged",
+    "frame_geometry_optin": "native via ECHOGESTURE_FRAME_SIZE=native — NOT the shipped default"
   },
   "artifacts": {
     "apk_v4_3": {
@@ -57,18 +57,18 @@
     },
     "presentation": {
       "path": "submission/presentation/EchoGesture_Track02.pptx",
-      "sha256": "cc88de1ed22199a082c403caee1c8092d8538e1e660683aaa771e2b85a318bef",
-      "bytes": 413002,
+      "sha256": "4df49d66a125e5fa9101dc37cc02ef7b4dcec161dd67d19df1fe4530c689558f",
+      "bytes": 416230,
       "slides": 8,
       "font": "Arial (pinned so arrows and multiplication signs have real glyph coverage)",
       "pdf": {
         "path": "submission/presentation/EchoGesture_Track02.pdf",
-        "sha256": "f670bd3168d311047f57f20151f22dd7c2507b5703efdc79f2e799add26762ab",
-        "bytes": 631350,
+        "sha256": "7e7d3601eea9b9bd9123445db489525a263b6d40c02a055279e713502d11843f",
+        "bytes": 240836,
         "pages": 8,
-        "note": "Rasterised from submission/presentation/render_slides.py, not a native PowerPoint export. Text is not selectable. Replace with a native export if PowerPoint is available."
+        "note": "Native Microsoft PowerPoint export (SaveAs format 32): text is selectable and fonts are embedded. Verified as 8 pages with every figure re-extracted from the PDF itself."
       },
-      "visual_inspection": "All 8 slides rasterised and inspected: no clipped text, no colliding boxes, no missing glyphs.",
+      "visual_inspection": "All 8 slides rasterised from the exported PDF and inspected: no clipped text, no colliding boxes, no missing glyphs.",
       "naming": "must be renamed to CollegeName_TeamName before submission"
     }
   },
@@ -134,17 +134,17 @@
   },
   "compliance": {
     "python_3_11": "PASS",
-    "predict_contract": "PASS \u2014 five keys, verified from clean extraction",
-    "zip_layout": "PASS \u2014 src/, models/, results/ per PDF p12",
-    "quantization_int8": "FAIL \u2014 FP16 shipped; organizer clarification unsent",
-    "latency_50ms": "FAIL \u2014 314.9 ms p95 warm on laptop",
-    "model_size_20mb": "PASS \u2014 16.33 MB including detector",
-    "top1_70pct": "PASS \u2014 77.02% corpus",
-    "demo_video": "BLOCKED \u2014 not recorded",
-    "presentation": "DONE \u2014 content verified, naming pending",
+    "predict_contract": "PASS — five keys, verified from clean extraction",
+    "zip_layout": "PASS — src/, models/, results/ per PDF p12",
+    "quantization_int8": "FAIL — FP16 shipped; organizer clarification unsent",
+    "latency_50ms": "FAIL — 314.9 ms p95 warm on laptop",
+    "model_size_20mb": "PASS — 16.33 MB including detector",
+    "top1_70pct": "PASS — 77.02% corpus",
+    "demo_video": "BLOCKED — not recorded",
+    "presentation": "DONE — content verified, naming pending",
     "team_naming": "NEEDS HUMAN",
-    "registration": "UNVERIFIED \u2014 no confirmation record in repo",
-    "rights": "BLOCKED \u2014 weights have no confirmed redistribution permission"
+    "registration": "UNVERIFIED — no confirmation record in repo",
+    "rights": "BLOCKED — weights have no confirmed redistribution permission"
   },
   "pending_human": [
     "Confirm registration and the exact CollegeName_TeamName string",

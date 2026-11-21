@@ -236,7 +236,7 @@ def results(prs):
     stats = [("85.45%", "top-1, test", "1,251 clips, 11 unseen signers"),
              ("96.64%", "top-5, test", "same clips"),
              ("8.51 MB", "nine members", "16.33 MB with detector"),
-             ("110 / 110", "Android unit tests", "0 failures")]
+             ("150 / 150", "Android unit tests", "0 failures")]
     for i, (big, lbl, sub) in enumerate(stats):
         x = 0.95 + i * 2.95
         card(s, x, 2.25, 2.68, 1.85)
@@ -255,12 +255,12 @@ def results(prs):
     text(s, 6.95, 4.35, 5.4, 0.3, "WHERE IT STILL FALLS SHORT", size=12, color=GREY, bold=True)
     for i, (t, v, col) in enumerate([
         ("Hand dropout", "FAIL — 5.76 pp unconditional", RGBColor(0xB4, 0x2A, 0x2A)),
-        ("Latency ≤50 ms", "NOT CLAIMED — on-device unmeasured", RGBColor(0xB4, 0x2A, 0x2A)),
+        ("Latency ≤50 ms", "PARTIAL — GPU p95 46–54 ms; 68–70 ms with a hand in frame", RGBColor(0xB4, 0x7A, 0x1A)),
         ("INT8 quantisation", "FP16 shipped — clarification open", RGBColor(0xB4, 0x7A, 0x0A)),
         ("Native-camera robustness", "NOT MEASURED", RGBColor(0x5A, 0x6B, 0x82)),
     ]):
-        text(s, 6.95, 4.70 + i * 0.50, 5.4, 0.4, "·  " + t, size=13.5, bold=True)
-        text(s, 7.22, 5.00 + i * 0.50, 5.1, 0.35, v, size=12, color=col)
+        text(s, 6.95, 4.66 + i * 0.56, 5.4, 0.4, "·  " + t, size=13.5, bold=True)
+        text(s, 7.22, 4.94 + i * 0.56, 5.1, 0.38, v, size=12, color=col)
     return s
 
 
@@ -269,7 +269,7 @@ def demo(prs):
     text(s, 0.95, 0.55, 11, 0.6, "The app, running", size=38, bold=True)
     accent(s, 0.98, 1.22)
     text(s, 0.95, 1.50, 11.5, 0.4,
-         "Captured from the shipped build on an Android 14 emulator. Real UI, real model identity.",
+         "Captured on a physical Vivo V2404 running the shipped build. Real UI, real model identity.",
          size=14, color=GREY)
     shots = [("01_camera_nine_model.png", "Camera — nine-model identity in the footer"),
              ("02_glossary.png", "Glossary — the 100 supported signs"),
@@ -303,15 +303,17 @@ def impact(prs):
          {"size": 16, "space": 8, "color": NAVY}),
     ])
     text(s, 0.95, 4.55, 5.5, 0.3, "WHAT IT IS NOT", size=12, color=RGBColor(0xB4, 0x2A, 0x2A), bold=True)
-    text(s, 0.95, 4.90, 5.5, 2.0, [
+    text(s, 0.95, 4.90, 5.5, 2.4, [
         ("Not a sign-language translator. It recognises isolated signs from a fixed 100-word vocabulary.",
-         {"size": 14, "space": 6, "color": GREY}),
-        ("Not validated on a physical phone. Not robust to heavy occlusion or extreme low light.",
-         {"size": 14, "color": GREY}),
+         {"size": 14, "space": 5, "color": GREY}),
+        ("Validated on one physical phone. Not robust to heavy occlusion or extreme low light.",
+         {"size": 14, "space": 9, "color": GREY}),
+        ("Live camera is the weak path. The model is rotation-variant and the corpus is landscape third-person, so the same sign scores 0.969 from a file and 0.246 live. Use a file for anything that must be reliable.",
+         {"size": 12, "color": GREY}),
     ])
     text(s, 6.95, 1.60, 5.4, 0.3, "ROADMAP, IN ORDER", size=12, color=GREY, bold=True)
     for i, (n, t) in enumerate([
-        ("1", "Physical-device validation across lighting, distance and signers"),
+        ("1", "Make the live camera match the corpus: landscape capture, or retrain with rotation and distance augmentation"),
         ("2", "INT8 export that holds accuracy, to meet the stated quantisation budget"),
         ("3", "Robustness to occlusion and real camera conditions, not synthetic scaling"),
         ("4", "Continuous signing — the research problem this does not solve"),

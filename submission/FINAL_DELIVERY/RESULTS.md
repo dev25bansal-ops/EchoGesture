@@ -3,7 +3,7 @@
 **This is the one file to read for current numbers.** Every other results
 document is either historical or a detail sheet behind this one.
 
-Date 2026-11-16. Deadline 2026-11-18 23:59 IST.
+Date 2026-11-21 (latest revision). Deadline 2026-11-18 23:59 IST.
 
 ---
 
@@ -15,24 +15,31 @@ ranked against each other.
 | # | System / population | Top-1 | Status |
 | --: | --- | --: | --- |
 | 1 | Single classifier, 1,249 test clips | **62.61%** | **HISTORICAL** — superseded baseline, not shipped |
-| 2 | Nine-member ensemble, cached landmarks, 1,249 test | **77.02%** | **HISTORICAL** — old-cache provenance; cache presence is wrong on 29% of test clips |
+| 2 | Nine-member ensemble, cached landmarks, 1,249 test | **77.02%** | **HISTORICAL** — old-cache provenance; presence mask wrong on 29% of test clips |
 | 3 | Nine-member ensemble, fresh extraction, 256 squash, 1,249 test | **82.47%** | **Dev-reported**, not re-run here |
-| 4 | Nine-member ensemble, fresh extraction, native 640×480, 1,249 test | **85.51%** | **Dev-reported**, not re-run here |
+| 4 | Nine-member ensemble, fresh extraction, native 640×480, **1,251** test | **85.45%** | **Re-measured here** — the shipped ensemble; 1,069/1,251 |
 | 5a | Nine-member ensemble, **346-clip validation**, 256 squash | **82.37%** | **Measured here**, default geometry |
 | 5b | Nine-member ensemble, **346-clip validation**, native 640×480 | **85.84%** | **Measured here**, opt-in geometry |
-| 6 | Submission ZIP, clean extraction, 30 clips | **76.67%** | **Measured here** — the packaged artifact |
-| 7 | Physical Android phone | — | **NOT TESTED** |
+| 6 | Submission ZIP, clean extraction, 30 clips | **76.67%** | **Measured here** — the packaged artifact, 256 squash |
+| 7 | Physical Android phone | — | **Run on one device 2026-11-21**, pipeline verified; **no accuracy measured** |
 
 ### Which number belongs to the submission
 
-**The submission ZIP runs at 256 squash** (`ECHOGESTURE_FRAME_SIZE` unset). Its
-measured result is row 6: **76.67% on 30 clean-extraction clips**. The corpus
-figure behind it is row 2's 77.02%.
+The deck quotes **85.45% on 1,251 test clips at native 640×480** (row 4). That
+is the geometry the Android app feeds the model, and it is now measured here on
+the full test split rather than taken on report. It is a **corpus** figure under
+MediaPipe CPU in Python — not phone accuracy, and not a GPU-delegate result.
 
-Rows 3, 4 and 5b are **not** the submission's number. Row 5b is the closest
-thing to a headline for the nine-model release, and it must always be stated as
-*"346-clip validation split, native geometry, opt-in"* — never as a bare
-percentage, and never as phone accuracy.
+The **Python entry point** keeps 256 squash as its default and scores **82.47%**
+on the same weights (row 3). The **packaged ZIP** runs that path: 76.67% on the
+30-clip clean-extraction gate (row 6).
+
+Row 2's 77.02% is retained only as history. It was produced by a cache whose
+presence mask was wrong on 29% of clips; the evaluation changed, not the model.
+Any document still quoting 77.02% as current is stale.
+
+Row 5b must always be stated as *"346-clip validation split, native geometry,
+opt-in"* — never as a bare percentage, and never as phone accuracy.
 
 ---
 
@@ -69,17 +76,24 @@ geometry; the app is 640×480 native. Native-camera robustness is unmeasured.
 
 ---
 
-## Latency — one claim retracted
+## Latency — retracted, then re-measured on device
 
 | Claim | Status |
 | --- | --- |
 | 15.7 ms/frame (MediaPipe) | **RETRACTED** — no supporting artifact ever existed |
-| Re-measured per-frame median | **~142–151 ms** — already above the 50 ms budget |
-| Clip end-to-end, warm p50 | 236 ms (256 squash) / 242 ms (native) |
-| Clip p95 warm | 314.9 ms |
+| Desktop x86 per-frame, 256 squash | ~142–151 ms p50 — above the 50 ms budget |
+| On-device **CPU** delegate, 640×480 VIDEO | **95 ms p50 / 166 ms p95** |
+| On-device **GPU** delegate, no hand in frame | **46–54 ms p95**, 19–25 analysed fps |
+| On-device **GPU** delegate, hand in frame | **68–70 ms p95**, 16–18 analysed fps |
 
-**The ≤50 ms criterion is FAIL** on every configuration measured. No phone
-measurement exists.
+**The ≤50 ms criterion is PARTIAL.** On the GPU delegate the detector sits at or
+just inside 50 ms when nothing is in frame, and 18–20 ms over it once a hand is
+present. Both are DEBUGGABLE builds, so they are upper bounds. The gap matters
+because single-member TFLite classification adds ~40 ms warm on top.
+
+Sources: `docs/ON_DEVICE_LATENCY_2026-11-19.md` (CPU),
+`docs/GPU_DELEGATE_2026-11-19.md` (GPU, no hand),
+`docs/CAMERA_MISREAD_DIAGNOSIS_2026-11-21.md` (GPU, with hand).
 
 ---
 
@@ -87,13 +101,13 @@ measurement exists.
 
 | Suite | Result |
 | --- | --- |
-| Android JVM | **110 / 110 pass** |
-| Android instrumentation | **16 pass, 0 fail, 1 skip** |
+| Android JVM, `submission/final` @ `29c48b6` | **150 / 150 pass** |
+| Android instrumentation | **16 pass, 0 fail, 1 skip** (emulator, API 34) |
 | Python `evaluation/device` | 433 pass, 3 fail, 23 error, 43 skip |
 | Clean-extraction `predict()` | 30 / 30 clips, 0 errors |
 
 The 26 Python failures are **identical on the untouched frozen baseline** and
-all trace to three gitignored artifacts (see `V4_5_TEST_TRIAGE.md`).
+all trace to three gitignored artifacts (see `TEST_TRIAGE.md`).
 
 ---
 
@@ -101,9 +115,10 @@ all trace to three gitignored artifacts (see `V4_5_TEST_TRIAGE.md`).
 
 | Artifact | SHA-256 |
 | --- | --- |
-| APK `echogesture-p1.apk` | `150ffeeb0eaaa8914db362e2bcd41de26c93608193ebcee8457433dc5ea5cb7a` |
+| APK `EchoGesture-2026-11-21.apk` | `96f00458f54de715c7a6f489f9ae92425bc73a089043a91ccbe0ae6d4f060035` |
 | ZIP `EchoGesture_Submission.zip` | `7691190b8ce045684a6117ab6a2b97b7b79327563147e9699f69cec939646cca` |
-| Deck `EchoGesture_Track02.pptx` | `951d5177c435c02c4a0cce763c82945e6b4a5a7dfe3c5aad05aa435112350e66` |
+| Deck `EchoGesture_Track02.pptx` | `4df49d66a125e5fa9101dc37cc02ef7b4dcec161dd67d19df1fe4530c689558f` |
+| Deck `EchoGesture_Track02.pdf` | `7e7d3601eea9b9bd9123445db489525a263b6d40c02a055279e713502d11843f` |
 
 ---
 
@@ -111,14 +126,15 @@ all trace to three gitignored artifacts (see `V4_5_TEST_TRIAGE.md`).
 
 | Never say | Because |
 | --- | --- |
-| "77% / 82% / 85% accurate on a phone" | No phone measurement exists |
+| "77% / 82% / 85% accurate on a phone" | No phone accuracy has been measured; one phone run only proves the pipeline works |
 | "85.84% is our submission's accuracy" | That is opt-in native geometry on validation |
 | "184 independent signs" | 184 evaluations over 72 unique clips |
 | "INT8 quantised" | FP16 ships |
-| "Meets the 50 ms target" | 314.9 ms warm p95 |
+| "Meets the 50 ms target unconditionally" | GPU p95 is 46–54 ms empty, 68–70 ms with a hand in frame, on a debug build |
 | "Robustness criteria pass" | Landmark FAILs 5.36; native pixel unmeasured |
 | "Android and Python pipelines are identical" | VIDEO-mode vs IMAGE-mode detect |
 | "15.7 ms per frame" | Retracted |
+| "The live camera is as reliable as a clip" | Same sign: 0.969 from a file, 0.246 live in the same session |
 
 ---
 
@@ -129,34 +145,20 @@ redistribution rights · Google Form approval.
 
 ---
 
-## Known metadata discrepancy — recorded, not resolved
+## Metadata discrepancy — resolved 2026-11-21
 
-`assets/landmark_model_meta.json` ships inside the APK and the ZIP with
-`ensemble_test_top1: 0.7702`. Dev's branch tip
-(`hackathon/dev-model` @ `73bff0d`) has changed that same field to `0.8545`,
-measured on the rebuilt native-geometry cache.
+`assets/landmark_model_meta.json` ships inside the APK with
+`ensemble_test_top1`. It previously read `0.7702`, the cached-landmark figure,
+while the deck quoted 85.45%. **That is no longer true of the shipped APK.**
+
+Verified by extracting the field from `EchoGesture-2026-11-21.apk` itself:
 
 | | value | provenance |
 | --- | --: | --- |
-| Our shipped artifacts | **0.7702** | cached-landmark run; presence mask wrong on 29% of test clips |
-| Dev's current branch | **0.8545** | native-cache rebuild, re-verified at `fd4a13f` |
+| `EchoGesture-2026-11-21.apk` | **0.8545** | native-cache rebuild, matches the deck |
+| Historical `echogesture-p1.apk` | 0.7702 | cached-landmark run; presence mask wrong on 29% of test clips |
 
-**The field is never read or displayed by the app** — it is metadata only;
-`ModelContract.kt` uses the file for member order and widths, not for accuracy.
-So this is not a live display defect.
-
-It is a *claim* discrepancy: an organizer who unzips the APK would read 77.02%
-and could compare it against Dev's repository and find 85.45%. Both numbers are
-internally consistent — ours is the cached-landmark population, Dev's is the
-native-cache population — but a reader without this table cannot tell.
-
-**Not fixed here, deliberately.** Adopting 85.45% would mean shipping a number
-whose run I have not reproduced, and rebuilding the APK two days before the
-deadline to change a field nobody reads. The figure quoted in
-`RESULTS.md`, the deck and `RELEASE_MANIFEST.json` is 77.02%, which matches the
-shipped artifact and is labelled with its population everywhere it appears.
-
-**Action if this matters to the owner:** rebuild the APK from Dev's
-`models/landmark_model_meta.json`, re-run the 30-clip clean-extraction gate, and
-update the three claim sites together. That is a few hours plus a re-verification,
-not a one-line edit.
+The field is metadata only — `ModelContract.kt` reads the file for member order
+and widths, never for accuracy — so nothing on screen changes. It is included
+here because an organizer who unzips the APK reads it, and it should agree with
+the deck. It now does.

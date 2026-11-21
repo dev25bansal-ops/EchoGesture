@@ -118,8 +118,14 @@ only 39% would have been right). Quote the coverage whenever the gated number is
 quoted. Never present +2.39 as unconditional robustness.
 
 The real fix is training-time occlusion augmentation so the checkpoints learn what
-a mid-sign presence drop means. That is a retrain, no checkpoints exist in this
-tree, and a presence-hold workaround was **tested and rejected** because it scores
+a mid-sign presence drop means. **That was tried and measured, and it lost:** a
+harder-hand-dropout retrain (TCN dim 192, 140 epochs, best val 87.3%) scored
+**80.26% clean against the shipped 85.45%**, and moved the occlusion drop only
+5.76 → 5.12 — it gave up 5.2 points of clean accuracy to buy 0.64 of robustness,
+because at 17–24 clips per class harder augmentation trades more than it
+recovers. Both checkpoints and the retrain exist locally, so "we could not
+retrain" would be false; the accurate statement is "we retrained and it lost."
+A presence-hold workaround was also **tested and rejected** because it scores
 better the more it hides — it reconstructs the missing input rather than
 surviving its absence.
 

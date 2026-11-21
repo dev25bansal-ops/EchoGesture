@@ -29,7 +29,7 @@ a *label on a shown result*, not an abstention.
 
 | Item | Check |
 | --- | --- |
-| APK | `submission/apk/EchoGesture-2026-11-21.apk`, SHA-256 `96f00458…0035` |
+| APK | `EchoGesture-2026-11-22-release.apk`, SHA-256 `a56ba20f…8ada7` — signed release build, from [release `v2026-11-22-submission`](https://github.com/dev25bansal-ops/EchoGesture/releases/tag/v2026-11-22-submission). Do **not** film the older `EchoGesture-2026-11-21.apk`; it is the debuggable build whose instrumentation the release removes. |
 | Model identity | Camera footer reads **`9-model ensemble · FP16 TFLite · SHA-256 995cc8d0…`** |
 | Network | Airplane mode **ON** for the whole recording |
 | Second camera | A separate phone or camera filming the screen *and* the signer |
@@ -201,10 +201,16 @@ happened to be in our favour.
 
 ## 6. Recording with the current APK
 
-The APK to film is `submission/apk/EchoGesture-2026-11-21.apk`
-(SHA-256 `96f00458…0035`), built from `submission/final` at `29c48b6`. Confirm
-the footer reads `9-model ensemble · FP16 TFLite · SHA-256 995cc8d0…` before you
-roll.
+The APK to film is the **signed release build**, not tracked in git because 80.8
+MB times out the HTTPS push. Install it from the GitHub release
+[`v2026-11-22-submission`](https://github.com/dev25bansal-ops/EchoGesture/releases/tag/v2026-11-22-submission)
+and check the digest against
+`submission/apk/EchoGesture-2026-11-22-release.apk.sha256` (`a56ba20f…8ada7`).
+Confirm the footer reads `9-model ensemble · FP16 TFLite · SHA-256 995cc8d0…`
+before you roll. The older `EchoGesture-2026-11-21.apk` is the **debuggable**
+build — it is what every latency, power and thermal figure in `results.csv` was
+measured on, so it is the right artifact for a measurement session and the
+wrong one to ship or to film.
 
 **Film the clip path, not the live camera.** The same VOICE sign scores 0.969
 through the file picker and 0.246 through the camera in the same session; the

@@ -9,8 +9,8 @@ on the artifact you are actually installing.
 | | Release (ship) | Debug (historical) |
 |---|---|---|
 | File | `EchoGesture-2026-11-22-release.apk` | `EchoGesture-2026-11-21.apk` |
-| Size | 80,815,032 bytes (80.8 MB) | 82,894,510 bytes (82.9 MB) |
-| SHA-256 | `a56ba20f3b8a88c9e0be49c196a0ca29e66f0e69ad4e80d9bd4803dfa7e8ada7` | `96f00458f54de715c7a6f489f9ae92425bc73a089043a91ccbe0ae6d4f060035` |
+| Size | 80,815,568 bytes (80.8 MB) | 82,894,510 bytes (82.9 MB) |
+| SHA-256 | `03d51354397b7fa8b90bd032323accd156d67deae2bdb9be67b2ca8484ab2f49` | `96f00458f54de715c7a6f489f9ae92425bc73a089043a91ccbe0ae6d4f060035` |
 | `android:debuggable` | **absent (not debuggable)** | `true` |
 | Signature | `CN=measurement` | debug key |
 | Unit tests | **150 / 150 pass** on the release variant | 150 / 150 |
@@ -26,6 +26,12 @@ on the artifact you are actually installing.
 
 Both `.sha256` files are the digest in `sha256sum` format. Verify before
 installing:
+
+Replaces the 00:29 build (`a56ba20f…8ada7`) with a rebuild that adds the
+per-frame p95 line to the result card. App code only: same 10 model assets,
+same signing key, so the certificate is unchanged. Measured on the device
+before publishing — see `submission/RELEASE_MANIFEST.json`
+(`rebuilt_2026_11_22`).
 
 ```
 sha256sum -c EchoGesture-2026-11-22-release.apk.sha256

@@ -6,7 +6,7 @@ Date 2026-11-14. Deadline 2026-11-18 23:59 IST. Internal target 2026-11-17.
 
 > **Superseded 2026-11-21 — kept as a dated record.** Three things in this file
 > have since changed: a physical phone *was* reached and the shipped build driven
-> on it; the APK to ship is `EchoGesture-2026-11-22-release.apk` (`a56ba20f…8ada7`),
+> on it; the APK to ship is `EchoGesture-2026-11-22-release.apk` (`03d51354…ab2f49`),
 > with the debuggable `EchoGesture-2026-11-21.apk` (`96f00458…0035`) behind every
 > latency, power and thermal number; and the deck quotes 85.45%. For current numbers read
 > [`FINAL_DELIVERY/RESULTS.md`](FINAL_DELIVERY/RESULTS.md) and

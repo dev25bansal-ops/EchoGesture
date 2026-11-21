@@ -57,7 +57,7 @@ behaviour matches its confidence closely enough to say so out loud.
 
 | Item | Why not |
 | --- | --- |
-| ~~**On-device latency**~~ | **RETRACTED — it was measured.** This row previously said on-device latency was "much slower than the desktop figure" and quoted CPU-delegate numbers (analyse_p50 84-112 ms, detect_p95 159-187 ms, 8.7-11.6 fps). Those were real but they were the DEFAULT CPU delegate, because `HandTracker.create()` set no delegate at all. Enabling the GPU delegate changed it: **detect p50 34-45 ms, p95 46-54 ms, 19.2-25.0 fps** on the same Vivo V2404. See `results.csv` rows `latency_p95` and `latency_on_device_p50`. Honest reading: p50 passes in every run, p95 passes in 3 of 4 and is 4 ms over in the hottest run, so the scored row is `partial`, not `pass`. |
+| ~~**On-device latency**~~ | **RETRACTED — it was measured.** This row previously said on-device latency was "much slower than the desktop figure" and quoted CPU-delegate numbers (analyse_p50 84-112 ms, detect_p95 159-187 ms, 8.7-11.6 fps). Those were real but they were the DEFAULT CPU delegate, because `HandTracker.create()` set no delegate at all. Enabling the GPU delegate changed it: **detect p50 34-45 ms, p95 46-54 ms, 19.2-25.0 fps** on the same Vivo V2404. See `results.csv` rows `latency_p95` and `latency_on_device_p50`. **Update 2026-11-22:** the shipped release build now prints a per-frame p95 in its HUD, and two picked clips read **detect p95 51 ms and 50 ms** (convert 3-4 ms) — at the 50 ms target, on the artifact a judge installs. That is the file-pick path, not the live camera with a hand in frame, so `results.csv` still marks `latency_p95` **FAIL**; the with-hand p95 of 68-70 ms additionally carries a diagnostic bitmap copy the release build does not have. Honest statement: p50 passes everywhere, p95 passes on empty-frame debug runs and on the release build's clip path, and is unmeasured for the one configuration that matters most. |
 | ~~**Power ≤ 500 mW**~~ | **RETRACTED — and then the measurement itself was retracted.** `results.csv` row `avg_power` carries 2666-2898 mW and verdict **FAIL** (it was `NOT_APPLICABLE` before 2026-11-21). But that number is not an inference measurement: the batterystats `camera` line is a **PowerProfile device constant (749.4 mA)**, proven on the live device by five blocks agreeing to under 0.2% across screen-on, screen-off and doze. 500 mW is 129 mA, so the camera constant alone is **5.8× the budget** and no camera app on this device can pass. 84% of the app's own attributed drain is that same line; app compute is ~157 mW. `docs/POWER_THERMAL_2026-11-19.md` |
 | ~~**Thermal drift ≤ 20%**~~ | **RETRACTED — a measurement exists.** `results.csv` row `thermal_drift_10min` records 19.2% (SoC 45.8→56.7 °C) over a 615 s run, against a ≤20% target. It passes with 0.8 points of headroom, with the caveat that the trace COOLS from its t=0 peak, so it is an initial transient rather than a runaway. |
 
@@ -102,7 +102,8 @@ because the earlier number was measured against input the app never produces.
 
 **85.45% top-1 on unseen signers, 16.33 MB total (9 members 8.51 MB + detector
 7.82 MB), per-frame detector p50 34-45 ms on the phone (GPU delegate; p95 46-54
-ms, passing in 3 of 4 runs), classifier 4 ms — both inside the 50 ms budget —
-with pixel robustness passing at +4.48, landmark occlusion failing at +5.76
-ungated and passing at +2.39 with the app's acceptance gate, and a 615 s thermal
-run at 19.2% drift.**
+ms on empty-frame debug runs and **51 / 50 ms on the shipped release build's
+clip path**, 68-70 ms with a hand in frame on the diagnostic build), classifier
+4 ms — with pixel robustness passing at +4.48, landmark occlusion failing at
++5.76 ungated and passing at +2.39 with the app's acceptance gate, and a 615 s
+thermal run at 19.2% drift.**

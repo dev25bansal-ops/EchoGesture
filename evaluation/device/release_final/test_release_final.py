@@ -63,9 +63,7 @@ CLIP = REPO / "evaluation/device/v5_accuracy/data/val_30/0283886564670357-WHAT F
 @_weightless
 class ClosureAssemblyTest(unittest.TestCase):
     def test_closure_is_complete_and_honest(self):
-        # The closure must contain every file predict() needs. The four ensemble
-        # members are declared by models/landmark_model_meta.json; the runtime
-        # refuses to start if one is missing, so they are part of the closure.
+        metadata = json.loads((REPO / "models/landmark_model_meta.json").read_text())
         self.assertEqual(rb.CLOSURE, (
             "src/main.py",
             "src/requirements.txt",
@@ -74,10 +72,7 @@ class ClosureAssemblyTest(unittest.TestCase):
             "src/landmark_frontend.py",
             "src/parallel_tracker.py",
             "models/landmark_classifier_fp16.tflite",
-            "models/landmark_ens_tcn21_fp16.tflite",
-            "models/landmark_ens_tcnm61_fp16.tflite",
-            "models/landmark_ens_tcnm62_fp16.tflite",
-            "models/landmark_ens_rob71_fp16.tflite",
+            *(f"models/{name}" for name in metadata["members"]),
             "models/landmark_labels.json",
             "models/landmark_model_meta.json",
             "models/hand_landmarker.task",

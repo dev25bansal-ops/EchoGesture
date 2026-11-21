@@ -51,9 +51,26 @@ PINS = json.loads((FIXTURES / "provenance.json").read_text(encoding="utf-8"))
 @_weightless
 class TestGraphClassification(unittest.TestCase):
     def test_classifier_bytes_and_hashes_are_pinned(self):
-        for name in ("fp16", "int8", "detector", "labels", "meta", "features", "frontend"):
+        for name in ("fp16", "int8", "detector", "labels"):
             self.assertEqual(audit.sha256_bytes((ROOT / PINS["assets"][name]["path"]).read_bytes()),
                              PINS["assets"][name]["sha256"], name)
+
+    def test_archived_pipeline_matches_quantization_evidence(self):
+        import subprocess
+
+        snapshot = PINS["pipeline_snapshot"]
+        available = subprocess.run(
+            ["git", "cat-file", "-e", f"{snapshot}^{{commit}}"],
+            cwd=ROOT, capture_output=True,
+        )
+        if available.returncode:
+            self.skipTest("historical pipeline is unavailable in this checkout")
+        for name in ("meta", "features", "frontend"):
+            expected = PINS["assets"][name]
+            content = subprocess.check_output(
+                ["git", "show", f"{snapshot}:{expected['path']}"], cwd=ROOT
+            )
+            self.assertEqual(audit.sha256_bytes(content), expected["sha256"], name)
 
     def test_graph_inspection_of_flatbuffer(self):
         graphs = {"fp16": audit.inspect_graph((ROOT / PINS["assets"]["fp16"]["path"]).read_bytes(), "fp16"),

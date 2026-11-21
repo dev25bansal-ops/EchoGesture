@@ -339,8 +339,8 @@ def main(argv=None):
     parser.add_argument("manifest", type=Path)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--predictor", type=Path, default=root / "src/main.py")
-    parser.add_argument("--labels", type=Path, default=root / "models/label100.json")
-    parser.add_argument("--model", type=Path, default=root / "models/s3d_conv1d_qat_int8.tflite")
+    parser.add_argument("--labels", type=Path)
+    parser.add_argument("--model", type=Path, help="Expected model artifact, or artifact used by a custom predictor")
     parser.add_argument("--feature-config", type=Path)
     parser.add_argument("--profile", action="store_true")
     parser.add_argument("--input-root", action="append", default=[],
@@ -351,14 +351,55 @@ def main(argv=None):
     args = parser.parse_args(argv)
     try:
         items = read_manifest(args.manifest.resolve(), allowed_roots=(args.input_root or None))
-        labels = load_labels(args.labels)
+        predict = load_predictor(args.predictor)
+        artifacts = {"predictor": args.predictor}
+        ensemble_paths = []
+        if args.predictor.resolve() == root / "src/main.py":
+            module = sys.modules[predict.__module__]
+            backend, model_path, labels_path = module._model_paths()
+            model_anchor = model_path
+            if backend == "landmark":
+                meta_path = model_path.parent / "landmark_model_meta.json"
+                members, _, _ = module._landmark_config(
+                    model_path.parent, module._FRAMES, module._FEATURE_DIM
+                )
+                ensemble_paths = [model_path.parent / name for name in members]
+                artifacts.update({"feature_config": meta_path, "detector": model_path.parent / "hand_landmarker.task"})
+                model_path = ensemble_paths[0]
+            if args.model is not None and args.model.resolve() not in {
+                model_path.resolve(), model_anchor.resolve(),
+            }:
+                raise EvaluationError(f"--model does not identify the selected runtime: {model_path.name}")
+            if args.labels is not None and args.labels.resolve() != labels_path.resolve():
+                raise EvaluationError(f"--labels does not identify the selected vocabulary: {labels_path.name}")
+        else:
+            model_path = args.model or root / "models/s3d_conv1d_qat_int8.tflite"
+            labels_path = args.labels or root / "models/label100.json"
+        artifacts.update({"labels": labels_path, "model": model_path})
+        if args.feature_config is not None:
+            current = artifacts.get("feature_config")
+            if current is not None and args.feature_config.resolve() != current.resolve():
+                raise EvaluationError("--feature-config differs from the selected runtime metadata")
+            artifacts["feature_config"] = args.feature_config
+        for artifact in (*artifacts.values(), *ensemble_paths):
+            if not artifact.is_file():
+                raise EvaluationError(f"Artifact not found: {artifact}")
+        labels = load_labels(labels_path)
         unknown = sorted({truth for _, _, truth, *_ in items if truth} - labels)
         if unknown:
             raise EvaluationError(f"Ground truth outside vocabulary: {unknown}")
-        for artifact in (args.predictor, args.labels, args.model):
-            if not artifact.is_file():
-                raise EvaluationError(f"Artifact not found: {artifact}")
-        predict = load_predictor(args.predictor)
+        evidence = {
+            name: {"path": _sanitized_relative(str(path), root), "sha256": sha256(path), "bytes": path.stat().st_size}
+            for name, path in artifacts.items()
+        }
+        if ensemble_paths:
+            evidence["model"] = {
+                "path": _sanitized_relative(str(artifacts["feature_config"]), root),
+                "sha256": module._sha256_ordered(ensemble_paths),
+                "bytes": sum(path.stat().st_size for path in ensemble_paths),
+                "members": [{"path": _sanitized_relative(str(path), root), "sha256": sha256(path)}
+                            for path in ensemble_paths],
+            }
         args.output_dir.mkdir(parents=True, exist_ok=True)
         evaluator = evaluate_profiled if args.profile else evaluate
         if args.profile:
@@ -366,12 +407,6 @@ def main(argv=None):
         else:
             predictions, wall_times, accuracy = evaluator(items, predict, labels)
             details = {"failures": [], "profiles": []}
-        artifact_paths = [("predictor", args.predictor), ("labels", args.labels), ("model", args.model)]
-        if args.feature_config:
-            artifact_paths.append(("feature_config", args.feature_config))
-        for _, artifact in artifact_paths:
-            if not artifact.is_file():
-                raise EvaluationError(f"Artifact not found: {artifact}")
         status = "passed_schema" if not details["failures"] else "completed_with_failures"
         representative = args.fixture_type == "real" and not details["failures"] and len(items) >= 20
         summary = {
@@ -395,10 +430,7 @@ def main(argv=None):
                 "excluded_failures": len(details["failures"]),
             },
             "stage_profiles": details["profiles"],
-            "artifacts": {
-                name: {"path": _sanitized_relative(str(path), root), "sha256": sha256(path), "bytes": path.stat().st_size}
-                for name, path in artifact_paths
-            },
+            "artifacts": evidence,
             "manifest": {"path": _sanitized_relative(str(args.manifest), root), "sha256": sha256(args.manifest),
                          "dataset": args.dataset, "split": args.split},
             "code_commit": git_sha(root),
@@ -416,7 +448,7 @@ def main(argv=None):
             "scope": "Runtime/interface measurement only unless complete ground_truth is supplied; not target-device evidence",
         }
         write_pair_atomically(args.output_dir, predictions, summary)
-    except (EvaluationError, OSError) as exc:
+    except (EvaluationError, OSError, ValueError) as exc:
         parser.exit(2, f"ERROR: {exc}\n")
     print(json.dumps(summary, indent=2))
 

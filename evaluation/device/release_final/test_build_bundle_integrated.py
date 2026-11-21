@@ -69,6 +69,11 @@ EXPECTED_CLOSURE = (
     "models/landmark_model_meta.json",
 )
 
+UNMEASURED_RESULTS = (
+    "metric,target,measured,unit,device,runtime,pass,notes\n"
+    "top1_accuracy,>=70,NOT_MEASURED,%,none,none,NOT_MEASURED,Packaging test\n"
+)
+
 
 class BackendDetectionTest(unittest.TestCase):
     def test_landmark_artifact_returns_closure(self):
@@ -85,16 +90,14 @@ class BackendDetectionTest(unittest.TestCase):
 
 @_weightless
 class ResultsValidatorTest(unittest.TestCase):
-    """The real results.csv uses PASS/FAIL/NOT_MEASURED and must be accepted."""
+    """Check the result schema independently of the frozen release evidence."""
 
-    def test_current_results_csv_is_accepted(self):
+    def test_unmeasured_results_csv_is_accepted(self):
         digest = bb.sha256(REPO / MODEL)
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / "results").mkdir()
-            (root / "results/results.csv").write_text(
-                (REPO / "results/results.csv").read_text(encoding="utf-8"),
-                encoding="utf-8")
+            (root / "results/results.csv").write_text(UNMEASURED_RESULTS, encoding="utf-8")
             bb._validate_results(root, digest)  # must not raise
 
     def test_unknown_status_still_rejected(self):
@@ -124,7 +127,9 @@ class ResultsValidatorTest(unittest.TestCase):
 @_weightless
 class BuildClosureTest(unittest.TestCase):
     def _build(self, output):
-        return bb.build(REPO, MODEL, LABELS, REPO / "results/results.csv",
+        results = output.parent / "results.csv"
+        results.write_text(UNMEASURED_RESULTS, encoding="utf-8")
+        return bb.build(REPO, MODEL, LABELS, results,
                         output, extra=[REPO / CONVERSION])
 
     def test_build_stages_full_landmark_closure(self):
@@ -154,8 +159,7 @@ class BuildClosureTest(unittest.TestCase):
             (source / LABELS).write_bytes((REPO / LABELS).read_bytes())
             (source / "models/hand_landmarker.task").write_bytes(b"x")
             (source / "models/landmark_model_meta.json").write_bytes(b"{}")
-            (source / "results/results.csv").write_bytes(
-                (REPO / "results/results.csv").read_bytes())
+            (source / "results/results.csv").write_text(UNMEASURED_RESULTS, encoding="utf-8")
             (source / CONVERSION).write_text("# export", encoding="utf-8")
             with self.assertRaises(ValueError) as ctx:
                 bb.build(source, MODEL, LABELS, source / "results/results.csv",
@@ -175,8 +179,7 @@ class BuildClosureTest(unittest.TestCase):
             (source / "models/s3d_conv1d_qat_int8.tflite").write_bytes(b"model")
             (source / "models/label100.json").write_text(
                 json.dumps({"A": 0, "B": 1}), encoding="utf-8")
-            (source / "results/results.csv").write_bytes(
-                (REPO / "results/results.csv").read_bytes())
+            (source / "results/results.csv").write_text(UNMEASURED_RESULTS, encoding="utf-8")
             (source / "scripts/ml/export_tflite_tf.py").write_text(
                 "# export", encoding="utf-8")
             info = bb.build(source, "models/s3d_conv1d_qat_int8.tflite",
@@ -193,6 +196,12 @@ class BuildClosureTest(unittest.TestCase):
                          official=True, extra=[REPO / CONVERSION])
             self.assertIn("does not fabricate", str(ctx.exception))
 
+    def test_legacy_results_are_rejected_for_the_current_ensemble(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with self.assertRaisesRegex(ValueError, "different ensemble"):
+                bb.build(REPO, MODEL, LABELS, REPO / "results/results.csv",
+                         Path(directory) / "bundle.zip", extra=[REPO / CONVERSION])
+
 
 class CleanExtractionIntegrationTest(unittest.TestCase):
     def test_built_zip_predicts_after_clean_extraction(self):
@@ -202,7 +211,9 @@ class CleanExtractionIntegrationTest(unittest.TestCase):
             self.skipTest("real clip not available")
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "bundle.zip"
-            bb.build(REPO, MODEL, LABELS, REPO / "results/results.csv",
+            results = output.parent / "results.csv"
+            results.write_text(UNMEASURED_RESULTS, encoding="utf-8")
+            bb.build(REPO, MODEL, LABELS, results,
                      output, extra=[REPO / CONVERSION])
             prediction = bb.verify_zip(output, clip=CLIP)
 

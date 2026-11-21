@@ -1,5 +1,6 @@
 {
   "repo_head": "f81dd30c3e6dc1fc035244c5ca9791e7a84da0c4",
+  "pipeline_snapshot": "66e613b0a68bc656c2a73468818e1b1b9481cfdc",
   "assets": {
     "fp16": {
       "path": "models/landmark_classifier_fp16.tflite",

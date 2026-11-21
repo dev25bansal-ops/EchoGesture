@@ -45,6 +45,8 @@ _LANDMARK_RUNTIME_CLOSURE = (
     "models/landmark_model_meta.json",
 )
 _SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
+_EVIDENCE_MODEL_RE = re.compile(r"\bmodel_sha256=([0-9a-f]{64})\b")
+_LEGACY_ENSEMBLE_RE = re.compile(r"model=landmark-ensemble\((\d+)x [^)]+\) sha256=([0-9a-f]{64})\b")
 _DRIVE_RE = re.compile(r"^[A-Za-z]:")
 _ABS_LEAK_RE = re.compile(r"(/Users/|/home/|/private/|/tmp/|[A-Za-z]:\\)")
 
@@ -63,10 +65,15 @@ def _landmark_runtime_files(model, labels):
 
 
 def sha256(path):
+    return sha256_ordered((path,))
+
+
+def sha256_ordered(paths):
     digest = hashlib.sha256()
-    with Path(path).open("rb") as stream:
-        for block in iter(lambda: stream.read(1024 * 1024), b""):
-            digest.update(block)
+    for path in paths:
+        with Path(path).open("rb") as stream:
+            for block in iter(lambda: stream.read(1024 * 1024), b""):
+                digest.update(block)
     return digest.hexdigest()
 
 
@@ -231,7 +238,7 @@ def _load_manifest_ids(root):
     return ids
 
 
-def _validate_results(root, digest):
+def _validate_results(root, digest, members=(), official=False):
     results_path = Path(root) / "results/results.csv"
     with results_path.open(encoding="utf-8", newline="") as stream:
         reader = csv.DictReader(stream)
@@ -249,8 +256,18 @@ def _validate_results(root, digest):
             if column == "pass":
                 if not isinstance(value, str) or value.upper() not in _ALLOWED_RESULT_STATUS:
                     raise ValueError(f"Invalid result status: {value}")
-        if "model_sha256" in row and row["model_sha256"] not in ("", digest):
-            raise ValueError("Result evidence belongs to another model")
+        notes = row.get("notes") or ""
+        asserted = {row["model_sha256"]} if row.get("model_sha256") else set()
+        asserted.update(_EVIDENCE_MODEL_RE.findall(notes))
+        if asserted - {digest}:
+            raise ValueError(f"Result evidence belongs to another model: {row['metric']}")
+        legacy = _LEGACY_ENSEMBLE_RE.search(notes)
+        if legacy:
+            count, member_sha = legacy.groups()
+            if int(count) != len(members) or member_sha not in {m["sha256"] for m in members}:
+                raise ValueError(f"Legacy results describe a different ensemble: {row['metric']}")
+        if official and row["pass"].upper() in {"PASS", "FAIL"} and not asserted:
+            raise ValueError(f"Official result requires model_sha256 evidence: {row['metric']}")
 
 
 def _validate_predictions_file(path, labels_path):
@@ -398,6 +415,7 @@ def verify_directory(root, clip=None, model_sha=None, official=False):
                 for m, name in zip(declared_member_hashes, meta_members)):
             raise ValueError("release.json members do not match the metadata members list")
     verified_members = []
+    member_paths = []
     for entry in declared_member_hashes:
         if not isinstance(entry, dict):
             raise ValueError("release.json member entries must be objects")
@@ -412,19 +430,23 @@ def verify_directory(root, clip=None, model_sha=None, official=False):
         if sha256(member_path) != member_sha:
             raise ValueError(f"Ensemble member hash mismatch: {name}")
         verified_members.append({"name": name, "sha256": member_sha})
+        member_paths.append(member_path)
     models_dir = root / "models"
     if not models_dir.is_dir():
         raise ValueError("Bundle is missing models/ directory for total-size accounting")
     total_model_bytes = sum(p.stat().st_size for p in models_dir.rglob("*") if p.is_file())
     if total_model_bytes >= 20e6:
         raise ValueError(f"Total shipped model assets exceed 20 MB: {total_model_bytes} bytes")
+    runtime_sha = sha256_ordered(member_paths) if member_paths else digest
+    if "ensemble_sha256" in manifest and manifest["ensemble_sha256"] != runtime_sha:
+        raise ValueError("release.json ensemble hash does not match the ordered runtime members")
     if model_sha:
         if not _SHA256_RE.match(model_sha):
             raise ValueError("--model-sha must be a 64-char lowercase hex SHA-256")
-        if digest != model_sha:
+        if model_sha not in (digest, runtime_sha):
             raise ValueError("Bundle model does not match requested model SHA")
 
-    _validate_results(root, digest)
+    _validate_results(root, runtime_sha, verified_members, official=official)
     _validate_predictions(root, allowed_labels, official, digest)
 
     if clip:
@@ -679,6 +701,7 @@ def build(source, model, labels, results, output, official=False, extra=(), meta
         # its exact previous shape.
         if staged_members:
             manifest["members"] = staged_members
+            manifest["ensemble_sha256"] = sha256_ordered(out_model.parent / m["name"] for m in staged_members)
         if (staging / meta_rel).is_file():
             manifest["model_metadata"] = meta_rel
         (staging / "release.json").write_text(

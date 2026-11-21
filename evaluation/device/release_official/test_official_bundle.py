@@ -85,9 +85,12 @@ class OfficialBuildTest(unittest.TestCase):
             shutil.copy2(REPO / "models" / name, self.source / "models" / name)
         shutil.copy2(REPO / CONVERSION, self.source / CONVERSION)
         shutil.copy2(REPO / "Dockerfile", self.source / "Dockerfile")
+        members = json.loads((self.source / "models/landmark_model_meta.json").read_text())["members"]
+        ensemble_sha = bb.sha256_ordered(self.source / "models" / name for name in members)
         (self.source / "results" / "results.csv").write_text(
             "metric,target,measured,unit,device,runtime,pass,notes\n"
-            "top1_accuracy,>=70,72.78,%,dev,rt,PASS,note\n", encoding="utf-8")
+            f"top1_accuracy,>=70,72.78,%,dev,rt,PASS,model_sha256={ensemble_sha}\n",
+            encoding="utf-8")
 
         self.labels = sorted(json.loads(
             (REPO / LABELS).read_text(encoding="utf-8")), key=lambda k: json.loads(

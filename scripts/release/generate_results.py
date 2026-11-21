@@ -147,7 +147,7 @@ def generate(benchmark_path, robustness_paths, output_path, model_sha,
         f"{i['name']}={i['bytes']}B sha256={ (i['sha256'] or 'missing')[:12]}"
         for i in breakdown["items"])
     rows.append(row("model_size", "<20", size_value, "MB", device, runtime,
-                    size_pass, size_note + f"; artifacts: {item_list}"))
+                    size_pass, f"model_sha256={model_sha}; {size_note}; artifacts: {item_list}"))
 
     # --- Explicit confidence semantics (logits -> softmax, uncalibrated) ---
     semantics = output_semantics or describe_output_semantics()

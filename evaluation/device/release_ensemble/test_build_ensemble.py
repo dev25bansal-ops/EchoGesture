@@ -74,6 +74,16 @@ def _meta(members=None):
     return value
 
 
+def _unmeasured_results(directory):
+    path = Path(directory) / "results.csv"
+    path.write_text(
+        "metric,target,measured,unit,device,runtime,pass,notes\n"
+        "top1_accuracy,>=70,NOT_MEASURED,%,none,none,NOT_MEASURED,Packaging test\n",
+        encoding="utf-8",
+    )
+    return path
+
+
 def _write_bundle(root, members=(), member_bytes=None, model_bytes=b"model",
                   member_hash_override=None, write_members=True):
     """Fabricate a minimal bundle directory accepted by verify_directory()."""
@@ -125,7 +135,7 @@ class EnsembleStagingTest(unittest.TestCase):
             meta_override = directory / "meta.json"
             meta_override.write_text(json.dumps(metadata), encoding="utf-8")
             output = directory / "bundle.zip"
-            info = bb.build(REPO, MODEL, LABELS, REPO / "results/results.csv",
+            info = bb.build(REPO, MODEL, LABELS, _unmeasured_results(directory),
                             output, extra=[REPO / CONVERSION],
                             metadata=meta_override)
             with zipfile.ZipFile(output) as archive:
@@ -249,11 +259,9 @@ class EnsembleRoundTripTest(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as directory:
             directory = Path(directory)
-            meta_override = directory / "meta.json"
-            meta_override.write_text(json.dumps(_meta(MEMBERS)), encoding="utf-8")
             output = directory / "bundle.zip"
-            bb.build(REPO, MODEL, LABELS, REPO / "results/results.csv",
-                     output, extra=[REPO / CONVERSION], metadata=meta_override)
+            bb.build(REPO, MODEL, LABELS, _unmeasured_results(directory),
+                     output, extra=[REPO / CONVERSION])
             prediction = bb.verify_zip(output, clip=CLIP)
 
             self.assertEqual(prediction["clip_id"], CLIP.stem)

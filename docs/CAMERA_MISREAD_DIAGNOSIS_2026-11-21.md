@@ -67,15 +67,62 @@ numbers (effective fps, delivered frames, per-frame analysis time). The existing
 "Captured 32 frames" line could never show this: the model always receives 32
 points, so a starved capture and a full one read identically.
 
+## On-device verification — 2026-11-21, Vivo V2404 (Android 16)
+
+Device reconnected; the fixed build was installed (`lastUpdateTime 09:05:58`)
+and driven with `adb shell input` + `uiautomator dump`.
+
+**Clip path — all correct, held-out clips included:**
+
+| clip | result | score | gate | infer |
+|---|---|---|---|---|
+| DARK | DARK1 | 73.4% | accepted | 65 ms |
+| MECHANIC | MECHANIC1 | 89.3% | accepted | 32 ms |
+| VOICE | VOICE | 96.9% | accepted | 19 ms |
+
+**Camera path — three consecutive real recordings, one held fist:**
+
+| capture | fps (kept) | model fps | hand frames | result | score | margin | agree |
+|---|---|---|---|---|---|---|---|
+| 1 | 5.1 | — | 32/32 | RAZOR2 | 0.506 | 0.249 | 6/9 |
+| 2 | 4.6 | — | 30/32 | RAZOR2 | 0.794 | 0.733 | 9/9 |
+| 3 | 8.1 | — | 27/32 | RAZOR2 | 0.802 | 0.728 | 9/9 |
+
+Before the fix the same setup produced 1/9 member agreement at a 0.061 margin.
+The camera path now reaches 9/9 at 0.73. The sign was a fist, not a lexicon
+sign, and the model answered RAZOR2 confidently — the known "a held hand that is
+not signing still gets a named gloss" limitation, not a regression.
+
+**Throughput — the analyser, not the camera, is the limit.** The profiler
+measures the real rate directly rather than inferring it from frame counts:
+
+```
+profile fps=16.1 interval_p50=62 analyse_p50=59 convert_p50=1
+        detect_p50=58 detect_p95=70 delivered=7302 dropped=4379 limit=ANALYSER
+profile fps=17.5 interval_p50=57 analyse_p50=51 convert_p50=1
+        detect_p50=50 detect_p95=68 delivered=7522 dropped=4425 limit=ANALYSER
+```
+
+The detector takes 50–70 ms per frame on the GPU delegate and the camera delivers
+every ~62 ms, so `limit=ANALYSER`: the camera produces frames faster than the
+detector consumes them, and 4,379–4,425 of them are discarded by
+`STRATEGY_KEEP_ONLY_LATEST`. `convert_p50=1 ms` rules out the YUV→Bitmap copy.
+
+Why 5 fps kept against 16 fps analysed: `SignSegmenter` trims the recording to
+the motion, and the kept interval is shorter than the span the frames were
+spread over. The 16 fps figure is the analyser's own rate; the 5 fps figure is
+the kept window after trimming.
+
+The open lever is therefore the detector cadence, not resolution or the copy. At
+~16 fps analysed the window already samples close to the corpus's ~8.7 fps, so
+raising it further buys little; **lowering** `detect` cost would.
+
 ## What is NOT yet verified
 
-- **No post-fix device run.** Wireless debugging was unreachable for the whole
-  session (`adb devices` empty through repeated server restarts and mDNS scans).
-  The aspect fix is verified offline end-to-end through the shipped members and
-  by 150 unit tests; it has not been run on the phone.
-- Analyser throughput has not been raised. The card now measures it; the fix
-  (lower analysis resolution, or `STRATEGY_KEEP_ONLY_LATEST` plus fewer frames
-  analysed) is a separate change that needs that measurement first.
+- ~~No post-fix device run.~~ Verified on device 2026-11-21; see above.
+- Analyser throughput has not been raised. The measurement above says the
+  detector cadence is the limit (`limit=ANALYSER`, 4,400 frames dropped per
+  capture), not resolution and not the YUV copy.
 - Live framing is still selfie-portrait with the face filling much of the frame.
   The corpus is landscape, third-person, full signing space. No code change
   addresses this; it needs either a landscape capture mode or demo guidance.

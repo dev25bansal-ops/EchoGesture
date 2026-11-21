@@ -244,8 +244,8 @@ android {
         applicationId = "org.echogesture.finalapp"
         minSdk = 24
         targetSdk = 34
-        versionCode = 4
-        versionName = "5.7"
+        versionCode = 5
+        versionName = "5.8"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

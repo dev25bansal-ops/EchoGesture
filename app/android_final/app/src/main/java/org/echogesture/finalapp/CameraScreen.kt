@@ -106,6 +106,7 @@ class CameraScreen(
         private const val LONG_RECORDING_HINT_MS = 5_000L
         private const val WAIT_FOR_SIGN_MS = 8_000L
         private const val CAMERA_CAPTURE_DEADLINE_MS = 12_000L
+        private const val IDLE_ANALYSIS_INTERVAL_MS = 125L
     }
 
     val root: View = LayoutInflater.from(activity).inflate(R.layout.screen_camera, null, false)
@@ -160,7 +161,7 @@ class CameraScreen(
     private var cameraProvider: ProcessCameraProvider? = null
     private var cameraStartPending = false
     private var cameraInitFailed = false
-    private var cameraBindingGeneration = 0
+    @Volatile private var cameraBindingGeneration = 0
     private var camera: Camera? = null
     private var imageAnalysis: ImageAnalysis? = null
     private var preview: Preview? = null
@@ -173,7 +174,7 @@ class CameraScreen(
     @Volatile private var trackerFailureReported = false
     @Volatile private var boundSelector: CameraSelector? = null
 
-    private var currentState = UiState.INIT
+    @Volatile private var currentState = UiState.INIT
 
     /** True while the explicit record-mode timer is posted. */
     private var recordingTicker: Runnable? = null
@@ -186,8 +187,7 @@ class CameraScreen(
      * interval — not two clock domains that happen to look similar.
      */
     private var recordingStartedAtMs = 0L
-    private var lastFrames = 0
-    private var lastHandFrames = 0
+    @Volatile private var lastFrameHadHands = false
     private var bound = false
     private var controlsWired = false
 
@@ -292,8 +292,7 @@ class CameraScreen(
         stopRecordingTicker()
         tracker?.clear()
         processing = false
-        lastFrames = 0
-        lastHandFrames = 0
+        lastFrameHadHands = false
     }
 
     /** Called by the Activity once the assets are verified and interpreters exist. */
@@ -474,10 +473,10 @@ class CameraScreen(
                         hideStatus()
                         setLiveStatus(R.string.permission_title, R.color.warning)
                     } else {
-                        val handsSeen = lastHandFrames.coerceAtLeast(0)
+                        lastFrameHadHands = tracker?.latestFrameHasHands() == true
                         hideStatus()
                         setLiveStatus(
-                            if (handsSeen > 0) R.string.camera_state_detected
+                            if (lastFrameHadHands) R.string.camera_state_detected
                             else R.string.camera_state_searching,
                             R.color.text_on_dark
                         )
@@ -758,30 +757,32 @@ class CameraScreen(
         }
     }
 
-    private fun analyserCallback(imageProxy: androidx.camera.core.ImageProxy) {
+    private fun analyserCallback(
+        imageProxy: androidx.camera.core.ImageProxy,
+        binding: Int,
+        captureActive: Boolean
+    ) {
         val t = tracker
         val generation = resultGeneration
-        if (t == null) {
+        if (t == null || binding != cameraBindingGeneration) {
             imageProxy.close()
             return
         }
-        if (t.analyse(imageProxy)) {
+        if (t.analyse(imageProxy, profileFrame = captureActive) {
+                binding == cameraBindingGeneration
+            }) {
             trackerFailureReported = false
-            val (frames, handFrames) = t.status()
-            lastFrames = frames
-            lastHandFrames = handFrames
+            if (!isAutoCapturing() && (currentState != UiState.WAITING ||
+                    t.latestFrameHasHands() == lastFrameHadHands)) return
 
             activity.runOnUiThread {
-                if (!bound || generation != resultGeneration || tracker !== t) return@runOnUiThread
+                if (!bound || generation != resultGeneration || binding != cameraBindingGeneration ||
+                    tracker !== t) return@runOnUiThread
                 val completed = if (isAutoCapturing()) t.takeAutoOutcome() else null
                 if (completed != null) {
                     onAutoSignComplete(completed)
                 } else {
                     when (t.autoState()) {
-                        AutoSegmenter.State.ARMED ->
-                            if (currentState == UiState.AUTO_ARMED) {
-                                setLiveStatus(R.string.auto_ready, R.color.text_on_dark)
-                            }
                         AutoSegmenter.State.SIGNING ->
                             if (currentState == UiState.AUTO_ARMED) {
                                 // The sign has begun; move the whole screen into
@@ -790,8 +791,9 @@ class CameraScreen(
                                 render(UiState.AUTO_SIGNING)
                             }
                         else -> if (currentState == UiState.WAITING) {
+                            lastFrameHadHands = t.latestFrameHasHands()
                             setLiveStatus(
-                                if (handFrames > 0) R.string.camera_state_detected
+                                if (lastFrameHadHands) R.string.camera_state_detected
                                 else R.string.camera_state_searching,
                                 R.color.text_on_dark
                             )
@@ -801,7 +803,8 @@ class CameraScreen(
             }
         } else if (t.consecutiveFailures() >= HandTracker.FAILURE_THRESHOLD) {
             activity.runOnUiThread {
-                if (bound && generation == resultGeneration && tracker === t) {
+                if (bound && generation == resultGeneration && binding == cameraBindingGeneration &&
+                    tracker === t) {
                     reportPersistentTrackerFailure()
                 }
             }
@@ -810,6 +813,10 @@ class CameraScreen(
 
     private fun bindUseCases(selector: CameraSelector) {
         val provider = cameraProvider ?: return
+        val binding = ++cameraBindingGeneration
+        camera = null
+        boundSelector = null
+        var nextIdleFrameAt = 0L
         try {
             provider.unbindAll()
 
@@ -825,7 +832,18 @@ class CameraScreen(
                 // HandTracker preserves the detector's own letterboxing.
                 .setTargetResolution(android.util.Size(640, 480))
                 .build()
-                .also { a -> a.setAnalyzer(trackerExecutor) { analyserCallback(it) } }
+                .also { analysis ->
+                    analysis.setAnalyzer(trackerExecutor) { image ->
+                        val now = SystemClock.elapsedRealtime()
+                        val captureActive = isAutoCapturing() || currentState == UiState.RECORDING
+                        if (!captureActive && now < nextIdleFrameAt) {
+                            image.close()
+                        } else {
+                            if (!captureActive) nextIdleFrameAt = now + IDLE_ANALYSIS_INTERVAL_MS
+                            analyserCallback(image, binding, captureActive)
+                        }
+                    }
+                }
             imageAnalysis = analysis
 
             val newPreview = Preview.Builder().build().also {
@@ -842,6 +860,7 @@ class CameraScreen(
                 captureButton.isEnabled = modelReady
             }
         } catch (t: Throwable) {
+            updateTorchVisibility()
             if (!processing && currentState != UiState.RESULT) {
                 render(UiState.ERROR, detail = activity.getString(R.string.error_camera_start))
             }
@@ -867,18 +886,21 @@ class CameraScreen(
         } else {
             CameraSelector.DEFAULT_BACK_CAMERA
         }
-        // Persist the explicit choice so the next launch matches what the user
-        // just picked instead of silently reverting to AUTO.
-        prefs.cameraChoice = if (next == CameraSelector.DEFAULT_BACK_CAMERA) {
-            AppPreferences.CameraChoice.REAR
-        } else {
-            AppPreferences.CameraChoice.FRONT
-        }
+        if (cameraProvider?.let { runCatching { it.hasCamera(next) }.getOrDefault(false) } != true) return
         // A camera rebind changes sensor orientation; start from a clean ring so
         // no frame from the previous camera reaches the model.
+        cameraBindingGeneration++
         resetCapture()
-        render(UiState.WAITING)
+        render(UiState.INIT)
         bindUseCases(next)
+        // Persist the explicit choice after a successful bind.
+        if (boundSelector == next) {
+            prefs.cameraChoice = if (next == CameraSelector.DEFAULT_BACK_CAMERA) {
+                AppPreferences.CameraChoice.REAR
+            } else {
+                AppPreferences.CameraChoice.FRONT
+            }
+        }
     }
 
     private fun updateTorchVisibility() {
@@ -1136,7 +1158,7 @@ class CameraScreen(
         if (!isAutoCapturing()) return
         clearAutoDeadline()
         val c = classifier ?: return
-        val attempt = attemptOf(outcome)
+        val attempt = if (prefs.diagnostics) attemptOf(outcome) else null
         if (!outcome.isUsable) {
             if (prefs.diagnostics) {
                 val capture = captureOf(outcome.frames)
@@ -1258,9 +1280,7 @@ class CameraScreen(
     }
 
     /**
-     * The one inference path. Both modes end here: same FeatureTransform, same
-     * four pinned interpreters, same mean-logit → single-softmax aggregation.
-     * Record mode differs only in which frames it hands over.
+     * Camera and video inference share the feature transform and pinned ensemble.
      */
     private fun runInference(
         recording: SignRecorder.Recording,
@@ -1281,12 +1301,7 @@ class CameraScreen(
                 return
             }
             val segment = if (fromClip) null else RecordingFeatures.segment(recording)
-            // Same sampler on both paths. Measured on 30 labelled clips through
-            // this code: the motion trim scores 0.867, sampling the interval as
-            // given scores 0.833. The trim EARNS its place even on an
-            // already-selected interval, because SignSegmenter's threshold is
-            // relative to the recording's own peak motion and therefore adapts.
-            val sampled = if (fromClip) recording.frames else RecordingFeatures.sample(recording)
+            val sampled = if (segment == null) recording.frames else RecordingFeatures.sample(recording, segment)
             // The card and diagnostics describe the interval actually
             // classified, which is the trimmed one when idle was removed. The
             // recording's full duration is reported separately.

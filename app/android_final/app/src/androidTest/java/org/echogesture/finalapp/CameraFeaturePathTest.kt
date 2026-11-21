@@ -1,8 +1,12 @@
 package org.echogesture.finalapp
 
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
+import androidx.camera.core.ImmutableImageInfo
+import androidx.camera.core.impl.TagBundle
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -10,9 +14,11 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.lang.reflect.Proxy
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -41,6 +47,32 @@ class CameraFeaturePathTest {
 
     private val instrumentation
         get() = InstrumentationRegistry.getInstrumentation()
+
+    @Test
+    fun frameAlreadyInFlightIsDiscardedWhenTrackingIsCleared() {
+        val bitmap = Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888)
+        val info = ImmutableImageInfo.create(TagBundle.emptyBundle(), 0, 0, Matrix())
+        var closed = 0
+        try {
+            HandTracker.create(instrumentation.targetContext, ModelContract.DETECTOR_ASSET).use { tracker ->
+                val frame = Proxy.newProxyInstance(
+                    ImageProxy::class.java.classLoader, arrayOf(ImageProxy::class.java)
+                ) { _, method, _ ->
+                    when (method.name) {
+                        "toBitmap" -> bitmap.also { tracker.clear() }
+                        "getImageInfo" -> info
+                        "close" -> { closed++; null }
+                        else -> error("Unexpected ImageProxy access: ${method.name}")
+                    }
+                } as ImageProxy
+                assertFalse(tracker.analyse(frame))
+                assertTrue(tracker.snapshot().isEmpty())
+                assertEquals(1, closed)
+            }
+        } finally {
+            if (!bitmap.isRecycled) bitmap.recycle()
+        }
+    }
 
     /** Minimal lifecycle so CameraX can bind outside an Activity. */
     private class TestOwner : LifecycleOwner {

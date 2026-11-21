@@ -37,9 +37,13 @@ object RecordingFeatures {
     fun sample(recording: SignRecorder.Recording): List<HandTracker.Frame> =
         sample(recording, fpsOf(recording))
 
-    fun sample(recording: SignRecorder.Recording, fps: Float): List<HandTracker.Frame> {
-        val seg = SignSegmenter.choose(recording.frames, fps)
-        val frames = recording.frames.subList(seg.startIndex, seg.endIndex)
+    fun sample(recording: SignRecorder.Recording, fps: Float): List<HandTracker.Frame> =
+        sample(recording, SignSegmenter.choose(recording.frames, fps))
+
+    internal fun sample(
+        recording: SignRecorder.Recording, segment: SignSegmenter.Segment
+    ): List<HandTracker.Frame> {
+        val frames = recording.frames.subList(segment.startIndex, segment.endIndex)
         if (frames.size <= SAMPLED) return frames
         val idx = HandTracker.evenlySpacedIndices(
             LongArray(frames.size) { frames[it].capturedAtMs },

@@ -31,6 +31,7 @@ class HandTracker private constructor(
     private val closed = AtomicBoolean(false)
     private val ring = ArrayDeque<Frame>()
     private val lock = Any()
+    private var captureGeneration = 0
     private val detectorLock = Any()
 
     /**
@@ -301,14 +302,14 @@ class HandTracker private constructor(
             return HandLandmarker.createFromOptions(context, options)
         }
 
-        internal fun toHands(result: HandLandmarkerResult): List<Hand> =
+        internal fun toHands(result: HandLandmarkerResult, verticalScale: Float = 1f): List<Hand> =
             result.landmarks().mapIndexed { index, points ->
                 val handedness = result.handedness().getOrNull(index)?.firstOrNull()?.categoryName()
                 val slot = if (handedness.equals("Left", ignoreCase = true)) 0 else 1
                 val xyz = FloatArray(21 * 3)
                 for (joint in 0 until 21) {
                     xyz[joint * 3] = points[joint].x()
-                    xyz[joint * 3 + 1] = points[joint].y()
+                    xyz[joint * 3 + 1] = points[joint].y() * verticalScale
                     xyz[joint * 3 + 2] = points[joint].z()
                 }
                 Hand(slot, xyz)
@@ -320,8 +321,13 @@ class HandTracker private constructor(
      * otherwise. [ImageProxy.close] is guaranteed exactly once on every path,
      * including a closed tracker. Safe to call from the ImageAnalysis executor.
      */
-    fun analyse(imageProxy: ImageProxy): Boolean {
-        if (closed.get()) {
+    fun analyse(
+        imageProxy: ImageProxy,
+        profileFrame: Boolean = true,
+        isCurrentStream: () -> Boolean = { true }
+    ): Boolean {
+        val generation = synchronized(lock) { captureGeneration }
+        if (closed.get() || !isCurrentStream()) {
             imageProxy.close()
             return false
         }
@@ -369,17 +375,11 @@ class HandTracker private constructor(
                 )
             }
             detectMs = SystemClock.elapsedRealtime() - detectStart
-            // Real analysed-frame timing, including the camera's own sensor
-            // timestamp so dropped frames can be counted. Without this the live
-            // analysis rate is unknowable and every "it feels slow on my phone"
-            // report stays a guess.
-            profiler.record(
-                arrivalMs = frameAtMs,
-                convertDurationMs = convertMs,
-                detectDurationMs = detectMs,
-                sensorTimestampNs = imageProxy.imageInfo.timestamp
-            )
-            val frame = Frame(toHands(result), frameAtMs)
+            // MediaPipe makes x and depth relative to image width and y relative
+            // to height. Express y in the model's 4:3 reference geometry, keeping
+            // all three axes in proportion after portrait or widescreen capture.
+            val verticalScale = (bitmap.height.toFloat() / bitmap.width) * (4f / 3f)
+            val frame = Frame(toHands(result, verticalScale), frameAtMs)
             // The ring is a rolling buffer of the recent past. It is never
             // gated on a capture state: the sign happens BEFORE the tap, so the
             // frames that describe it are already behind us when the user
@@ -387,6 +387,10 @@ class HandTracker private constructor(
             // version did) left the window holding only the seconds AFTER the
             // sign — usually an empty room.
             synchronized(lock) {
+                if (generation != captureGeneration || !isCurrentStream()) return false
+                if (profileFrame) {
+                    profiler.record(frameAtMs, convertMs, detectMs, imageProxy.imageInfo.timestamp)
+                }
                 ring.addLast(frame)
                 while (ring.size > MAX_CAPTURE_FRAMES) ring.removeFirst()
                 // Offer the SAME frame to an in-progress recording. One
@@ -400,16 +404,20 @@ class HandTracker private constructor(
                 // never classified twice because the outcome is consumed here.
                 val done = autoSegmenter.offer(frame)
                 if (done != null) autoOutcome = done
+                consecutiveFailures.set(0)
             }
-            consecutiveFailures.set(0)
             true
         } catch (t: Throwable) {
             // A single bad frame must not stop the preview, but a run of them
             // means the detector is broken. Count consecutive failures so the
             // UI can surface a real error instead of a silently empty preview.
             // Only the exception type is logged — never frame or image data.
-            consecutiveFailures.incrementAndGet()
-            Log.w(TAG, "Hand analysis failed (${t.javaClass.simpleName})")
+            synchronized(lock) {
+                if (generation == captureGeneration && isCurrentStream()) {
+                    consecutiveFailures.incrementAndGet()
+                    Log.w(TAG, "Hand analysis failed (${t.javaClass.simpleName})")
+                }
+            }
             false
         } finally {
             mpImage?.close()
@@ -428,6 +436,10 @@ class HandTracker private constructor(
         ring.size to ring.count { it.hands.isNotEmpty() }
     }
 
+    fun latestFrameHasHands(): Boolean = synchronized(lock) {
+        ring.lastOrNull()?.hands?.isNotEmpty() == true
+    }
+
     /**
      * Drops buffered frames. Also forgets the repeat guard: a camera switch or
      * lifecycle reset is a new context, not a rapid re-tap.
@@ -437,6 +449,8 @@ class HandTracker private constructor(
      * into one sequence.
      */
     fun clear() = synchronized(lock) {
+        captureGeneration++
+        consecutiveFailures.set(0)
         ring.clear()
         lastCapturedAtMs = Long.MIN_VALUE
         recorder.cancel()
@@ -453,6 +467,7 @@ class HandTracker private constructor(
      */
     fun armAuto(nowMs: Long): Unit = synchronized(lock) {
         autoOutcome = null
+        profiler.reset()
         val last = ring.lastOrNull()
         val handAlreadyPresent = last != null && last.hands.isNotEmpty() &&
             nowMs - last.capturedAtMs in 0L..500L
@@ -514,7 +529,10 @@ class HandTracker private constructor(
     // ---- explicit recording mode -------------------------------------------
 
     /** Starts a fresh recording at [nowMs]. Discards any in-progress one. */
-    fun startRecording(nowMs: Long): Unit = synchronized(lock) { recorder.start(nowMs) }
+    fun startRecording(nowMs: Long): Unit = synchronized(lock) {
+        profiler.reset()
+        recorder.start(nowMs)
+    }
 
     fun isRecording(): Boolean = synchronized(lock) { recorder.isRecording }
 

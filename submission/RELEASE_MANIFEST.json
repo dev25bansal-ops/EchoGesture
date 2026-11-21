@@ -68,15 +68,15 @@
     },
     "presentation": {
       "path": "submission/presentation/CollegeName_TeamName.pptx",
-      "sha256": "e1bccbc5fa28b90276d14b97c441c9dfc290dd0db3034931bb009cef824cc4b2",
-      "bytes": 413247,
+      "sha256": "9c7558b155d7ed1bdd3c06baf5504f6d1465d144930f1c3600df8ce7293666de",
+      "bytes": 413328,
       "slides": 9,
       "template": "Built inside the organizer's own template (C:/Users/dev25/Downloads/Submission_Final_forGithub.pptx): the original 9 slides are filled in place, so master, layout and header geometry are the template's, not a reconstruction. Section list is the template's: Track No / Team+College / Members, THE PROBLEM, SOLUTION, ARCHITECTURE, Track Final Output, DIFFERENTIATION, DEMO & LOCAL SETUP, Brownie Slides, Thank You.",
       "font": "Arial Black (display) and Calibri (body), inherited from the template",
       "pdf": {
         "path": "submission/presentation/CollegeName_TeamName.pdf",
-        "sha256": "8e1452359bc5b191cc77eac8efce5770f4928ff6bc62eb1a6a2f8a29c657d030",
-        "bytes": 375715,
+        "sha256": "df032430e653558af9b443e5dc560e6c9355461c1b7f2f94037e7afad1c048b8",
+        "bytes": 375954,
         "pages": 9,
         "note": "Native Microsoft PowerPoint export (SaveAs format 32): text is selectable and fonts are embedded. Verified as 9 pages with the figure set re-extracted from the PDF text layer."
       },

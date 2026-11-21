@@ -369,6 +369,8 @@ def s5_output(slide):
          {"size": 9.5, "space": 6}),
         ("The 5.76 pt robustness drop is a real failure, not a measurement artefact; the gate recovers it to 2.39 at 86%/80% coverage.",
          {"size": 9.5, "space": 6}),
+        ("Latency and power were measured on a DEBUGGABLE build (upper bound). A release build strips instrumentation but was not measured.",
+         {"size": 9.5, "space": 6}),
         ("The old 77.02% was these same weights on a cache with a wrong presence mask on 29% of clips.",
          {"size": 9, "colour": CYAN}),
     ], colour=GREY)

@@ -1,11 +1,20 @@
 # Submission handoff pack — Track 2, Samsung XR Hackathon 2026
 
+> **PARTIALLY SUPERSEDED 2026-11-22 — the deadline below is wrong.** The
+> consolidated deck **V3-2** (slides 23–26) moves the final submission to
+> **22 November 2026, 23:59 IST**, and deletes v1's "no extension" sentence.
+> Every "18 November" in this document is the v1 date. The organizer-email
+> drafts below are still unsent and the questions in them still stand.
+>
+> Current state: [`../../submission/FINAL_DELIVERY/CHECKLIST.md`](../../submission/FINAL_DELIVERY/CHECKLIST.md).
+
 This is the one document a human uses to submit. Everything below is either
 already done (and listed so you do not redo it) or is an action only you can
 take. Compiled 2026-11-12 by Agent C after an independent re-extraction of the
 organizer PDF and an audit of every artifact in the tree.
 
-**Deadline: 18 November 2026, 11:59 PM.** The deck does not state a timezone
+**Deadline: 18 November 2026, 11:59 PM (SUPERSEDED — see the banner: the real
+deadline is 22 November 2026, 23:59 IST).** The deck does not state a timezone
 anywhere in its 28 pages (verified: `IST`, `timezone` and `Time zone` return
 zero hits). Treat it as **IST** — the organizers are Samsung R&D Institute
 India, Bangalore. Do not leave submission to the last hour.

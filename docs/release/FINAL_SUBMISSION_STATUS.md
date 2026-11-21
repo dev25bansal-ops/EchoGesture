@@ -1,5 +1,16 @@
 # FINAL SUBMISSION STATUS
 
+> **SUPERSEDED 2026-11-22 — kept as the 2026-11-13 record, not a current
+> status.** This file is not the source of truth and its numbers are wrong.
+> It predates the landmark-cache rebuild, the on-device measurements, the
+> acceptance gate and the signed release build. In particular its 72.78% /
+> 84.39% accuracy, 275.8 ms p95 latency, 11.36 MB size and "crop −10.00 pt"
+> robustness figure are all superseded.
+>
+> Current state: [`../../results/results.csv`](../../results/results.csv)
+> (measured values) and [`JUDGING_SCOREBOARD.md`](JUDGING_SCOREBOARD.md)
+> (those values mapped onto the rubric).
+
 Branch `hackathon/solo-final-submission`, based on `hackathon/echogesture-v2-rc`
 @ `cc00f6a`. This file is the single source of truth for what is done, what is
 verified, and what is blocked.

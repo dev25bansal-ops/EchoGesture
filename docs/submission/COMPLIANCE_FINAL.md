@@ -1,5 +1,16 @@
 # EchoGesture — Track 2 submission compliance (final)
 
+> **SUPERSEDED 2026-11-22 — requirements map only; its measurements are stale.**
+> The rubric quotes and file-format requirements below are still accurate and
+> were extracted from the organizer deck. The **measured** column is not: it was
+> written 2026-11-11, before the landmark-cache rebuild, the on-device
+> measurements and the acceptance gate. Ignore any latency, accuracy or
+> robustness figure here — in particular "crop −10.00 pp" and "occlusion
+> −6.67 pp", which match no current measurement.
+>
+> Current measurements: [`../../results/results.csv`](../../results/results.csv).
+> Those mapped onto the rubric: [`../release/JUDGING_SCOREBOARD.md`](../release/JUDGING_SCOREBOARD.md).
+
 Compiled 2026-11-11 by Agent A (organizer requirements / submission compliance).
 
 **Source of truth:** the organizer deck at the repository root,

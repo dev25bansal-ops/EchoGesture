@@ -1,5 +1,13 @@
 # EchoGesture — shot-by-shot recording guide (2:50)
 
+> **SUPERSEDED 2026-11-22 — do not quote the figures table further down.**
+> It is the four-model era: test top-1 72.78%, 11.37 MB. The shipped system is
+> nine members, **85.45% top-1 / 96.64% top-5 on 1,251 clips**, 8.51 MB
+> classifiers + 7.82 MB detector = **16.33 MB**, with on-device latency now
+> measured (p95 46–54 ms empty frame / 68–70 ms with a hand → **FAIL** vs 50 ms).
+> The shot list and pacing advice are still usable; the numbers are not.
+> Authoritative: `submission/FINAL_DELIVERY/RESULTS.md`.
+
 Every number below was measured in this repo and is reproducible from the
 paths given. Anything not verified is marked **DO NOT SAY**. Nominal cut is
 **2:50**, which satisfies every organizer length reading (2–3 min, 5 min,

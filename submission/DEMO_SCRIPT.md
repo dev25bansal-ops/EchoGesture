@@ -145,7 +145,9 @@ Do **not** say "85% accurate on a phone". See §5.
 > "What this is not: not continuous translation, not a 2,000-word vocabulary —
 > one hundred signs, one at a time. If a hand leaves the frame for a quarter of a
 > clip, accuracy drops about 5.8 points — that is the one criterion I fail.
-> On-device latency is unmeasured. But it runs offline, on a phone, right now."
+> On device it runs about 34–45 ms median, and 46–54 ms at p95 with nothing in
+> frame rising to 68–70 ms once a hand is present — over the 50 ms target, and
+> measured on a debug build. But it runs offline, on a phone, right now."
 
 **End card:** `EchoGesture · Track 02 · <CollegeName_TeamName>`
 
@@ -165,8 +167,11 @@ Say the label with the number or do not say the number.
 | ~15.3 ms p50 / 23.0 ms p95 | MediaPipe **detector**, per frame, desktop x86, unloaded machine | not the classifier; not the full pipeline; not Android |
 | ~4.2 ms | nine-member classifier, desktop | not capture-to-caption |
 | ~4.65 s p50 | full Python `predict()` clip-to-result, **desktop** | not Android |
-| +5.76 pp | hand-dropout loss, unconditional, full 1,251-clip split — **FAIL** | do not present the gated 1.24 pp as the robustness result |
-| 1.24 pp | hand-dropout loss **at the app's margin gate, on accepted clips only**, 86% clean / 80% corrupted coverage | NOT proof of unconditional robustness |
+| +5.76 pp | hand-dropout loss, unconditional, full 1,251-clip split — **FAIL** | do not present the gated figure as the robustness result |
+| 2.39 pp | hand-dropout loss **at the app's margin gate, on accepted clips only**, 86% clean / 80% corrupted coverage | NOT proof of unconditional robustness. (An older 1.24 figure used the coords-kept diagnostic and is superseded.) |
+| 34–45 ms p50 / 46–54 ms p95 (empty frame) / 68–70 ms p95 (hand in frame) | MediaPipe detector, on-device, GPU delegate, Vivo V2404, **debug build** | not a PASS; not the classifier; the release build now shipping should be faster but was not re-measured |
+| 2666–2898 mW | camera subsystem (sensor+ISP+encode), on-device, debug build — **FAIL** vs 500 mW | not the model's own power; per-process attribution unavailable on this device |
+| 19.2% drift / 10 min | SoC max over CPU/GPU/NSP, on-device, debug build — **PASS** vs 20% | only 0.8 points of headroom |
 | 99.7% above 0.8 confidence | corpus, 594 of 1,251 clips | not phone accuracy, not a guarantee |
 
 ## 4. What must never appear on screen
@@ -174,7 +179,9 @@ Say the label with the number or do not say the number.
 - A prediction the model did not produce.
 - A success caption over a failed attempt.
 - "INT8" — the shipped build is FP16, and INT8 compliance is **not** claimed.
-- Power or thermal numbers. Still unmeasured on the GPU path.
+- Power or thermal numbers **presented as anything other than measured-FAIL
+  (power) and measured-PASS with 0.8 pt headroom (thermal)**. Both were measured
+  on 2026-11-19 on the debug build; the old line here said they were unmeasured.
 - **Latency stated as a PASS.** The GPU delegate p95 is 46–54 ms with no hand in
   frame and 68–70 ms with one, on a debug build. If a judge asks, that is the
   whole answer; do not round it into "under 50 ms".

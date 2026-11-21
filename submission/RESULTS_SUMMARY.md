@@ -99,12 +99,12 @@ interchangeable.**
 | --- | --: | --- |
 | Nine-member classifier only | **~4.2 ms p95** (3.1 ms p50) | desktop x86, warm process, all nine `.tflite` interpreters |
 | MediaPipe detector, per frame | **contested: 15.34 ms vs ~135 ms** | see `docs/release/LATENCY_RECONCILIATION.md` |
-| Full `predict()` clip→JSON | **4,650 ms p50** | desktop x86, warm, 32 frames — Dev's corrected figure |
-| Cold start | **159,000 ms** | one-time per process; 134.8 s is MediaPipe graph build |
-| **On-device / on-phone** | **NOT MEASURED** | — |
+| Full `predict()` clip→JSON | **577–749 ms p50** | desktop x86, warm, 32-frame clip, two clean runs. (A 4,650 ms figure was retracted — it was measured under CPU contention.) |
+| Cold start | **12.1–14.7 s** | one-time per process, dominated by MediaPipe's lazy graph build |
+| **On-device / on-phone** | **MEASURED 2026-11-21** | Vivo V2404, GPU delegate — see the table below. p95 46–54 ms empty-frame / 68–70 ms with a hand → **FAIL** vs ≤50 ms |
 
-**The ≤50 ms criterion is NOT MET on desktop and is UNMEASURED on device.** The
-classifier is 0.15% of end-to-end time; the detector dominates.
+**The ≤50 ms criterion FAILS at p95 on device and on desktop.** The classifier is
+a rounding error; the detector dominates.
 
 **Do not quote a per-frame PASS from the laptop figures.** Dev's branch contains
 two mutually incompatible per-frame figures in the same commit (15.34 ms PASS and
@@ -141,7 +141,7 @@ stopped dominating.
 | Level | Worst drop | Verdict | What it corrupts |
 | --- | --: | --- | --- |
 | Landmark, unconditional (harness: presence **and** coords zeroed) | **+5.76 pp** | **FAIL** (≤5) | the 21 points, after detection |
-| Landmark, at app gate (margin ≥ 0.15, **86% clean / 80% corrupted coverage**) | +1.24 pp | PASS *on accepted clips only* | same corruption, fewer clips scored |
+| Landmark, at app gate (margin ≥ 0.15, **86% clean / 80% corrupted coverage**) | **+2.39 pp** | PASS *on accepted clips only* | re-measured 2026-11-18 on the harness corruption. The earlier 1.24 used the coords-kept diagnostic and is superseded. |
 | Pixel (512 letterbox) | +4.48 pp | PASS (≤5) | the video frames, before detection. **Not the app's geometry.** |
 | Pixel (256 squash, 4-model, n=30) | −10.00 pp | **FAIL** — older model generation | the video frames, before detection |
 
@@ -155,7 +155,7 @@ There are two other figures circulating and both are wrong to quote as-is:
   actually 5.51), not from the harness corruption (79.70%, delta 5.76). Dev's own
   `DROP_HAND_ANALYSIS.md` states both variants explicitly.
 
-**Do not quote the gated +1.24 without the coverage.** It is earned by rejecting
+**Do not quote the gated +2.39 without the coverage.** It is earned by rejecting
 14% of clean and 20% of corrupted clips. Whether the competition permits
 abstentions in its robustness metric is **UNKNOWN** — not verified against the
 rubric. Until it is, do not claim a robustness PASS.

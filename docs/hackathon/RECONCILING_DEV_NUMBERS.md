@@ -50,9 +50,15 @@ is an older model, but it is the same conclusion reached with a different
 harness on a different code day. The pixel-level FAIL is not an artifact of one
 branch's methodology.
 
-**What to quote:** landmark robustness **passes** at 4.40 pp; pixel robustness
-**fails** at 10.00 pp on the current model. Never quote 4.40 as the answer to a
-camera-robustness question.
+> **SUPERSEDED 2026-11-22.** The 4.40 pp PASS below is **withdrawn** — it was
+> computed by averaging per-member softmax probabilities, while the shipped code
+> averages raw logits then applies one softmax. Under the real aggregator on the
+> full 1,251-clip split the drop is **5.76 pp → FAIL**. At the app's own margin
+> gate it is **2.39 pp** at 86%/80% coverage. Nothing below should be quoted.
+
+**What to quote (current):** landmark robustness **fails** at 5.76 pp
+unconditional / 2.39 pp gated; pixel robustness 4.48 pp at 512 letterbox (a
+different geometry from the app's native 640×480).
 
 ---
 

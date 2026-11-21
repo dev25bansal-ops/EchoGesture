@@ -240,9 +240,13 @@ python src/main.py path/to/clip.mp4
 
 ## Key dates
 
+Source: the organizer's consolidated deck V3-2, slides 23–26.
+
 - **8 Nov 2026, 23:59 IST** — registration closes
-- **18 Nov 2026, 23:59 IST** — final submission (hard, no extensions)
-- **23 Nov** — top 15 announced · **27 Nov** — live jury demo · **2 Dec** — results
+- **22 Nov 2026, 23:59 IST** — final submission. *(This line previously read
+  18 Nov, as did several docs; V3-2 slide 24 moves it to 22 Nov and v1's "no
+  extension" sentence is deleted from V3-2.)*
+- **29 Nov** — top 12–15 announced · **9 Dec** — final demo · **12 Dec** — results
 
 ## Licensing
 

@@ -133,12 +133,14 @@
       "population": "val_30, ASL Citizen, laptop CPU"
     },
     "corpus_accuracy": {
-      "top1": 77.02,
-      "top5": 92.79,
-      "clips": 1249,
+      "top1": 85.45,
+      "top5": 96.64,
+      "clips": 1251,
       "signers": 11,
-      "source": "Dev, results/results.csv",
-      "not_phone": true
+      "source": "submission/FINAL_DELIVERY/RESULTS.md row 4, re-measured 2026-11-21",
+      "not_phone": true,
+      "geometry": "native 640x480 (the Android app's geometry)",
+      "historical_note": "This block previously read top1 77.02 / top5 92.79 / clips 1249 — that was a cache whose presence mask was wrong on 29% of test clips. The evaluation changed, not the model."
     },
     "latency_laptop": {
       "p50_ms": 236.4,
@@ -153,13 +155,17 @@
       "budget_pp": 5
     },
     "robustness_landmark": {
-      "worst_drop_pp": 5.36,
+      "worst_drop_pp": 5.76,
       "verdict": "FAIL",
-      "note": "supersedes the withdrawn 4.40 PASS (wrong aggregator)"
+      "note": "Landmark drop_hand_25pct on the full 1,251-clip split, shipped mean-logit aggregator. Supersedes the withdrawn 4.40 PASS (wrong aggregator) and the 5.36 figure (old cache). 5.76 is the current unconditional number.",
+      "gated": "2.39 pp at the app's margin>=0.15 gate, 86%/80% coverage"
     },
     "phone": {
-      "status": "NOT TESTED",
-      "reason": "no physical device attached"
+      "status": "RUN ON ONE DEVICE, 2026-11-21",
+      "device": "Vivo V2404, Android 16, arm64-v8a",
+      "what_it_proves": "the pipeline works and the clip path is correct (DARK 73.4%, MECHANIC 89.3%, VOICE 96.9% on held-out clips); the live camera path was verified but three consecutive captures misread as RAZOR2",
+      "accuracy_measured": false,
+      "note": "This block previously said 'NOT TESTED / no physical device attached'."
     },
     "geometry_paired_val346": {
       "clips": 346,
@@ -176,15 +182,15 @@
     "predict_contract": "PASS — five keys, verified from clean extraction",
     "zip_layout": "PASS — src/, models/, results/ per PDF p12",
     "quantization_int8": "FAIL — FP16 shipped; organizer clarification unsent. Do not claim INT8 compliance.",
-    "latency_50ms": "NOT CLAIMED — per-frame detector figures in Dev's branch are unreconciled (15.34 ms vs 135 ms in the same commit); full predict() is 4,650 ms on desktop; on-device unmeasured. The official timing boundary is also unverified against the rubric.",
+    "latency_50ms": "FAIL at p95 — Vivo V2404 GPU delegate 2026-11-21: p95 46-54 ms with no hand in frame, 68-70 ms with a hand in frame, against a <=50 ms target. p50 34-45 ms passes. DEBUGGABLE build, so upper bounds; a signed release build now ships. The old text here said on-device was unmeasured and cited a retracted 4,650 ms desktop figure.",
     "model_size_20mb": "PASS — 16.33 MB including detector",
-    "top1_70pct": "PASS — 85.45% corpus at native 640x480 (Android geometry); 82.47% at 256 squash (the Python entry point). Not phone accuracy.",
+    "top1_70pct": "PASS — 85.45% corpus at native 640x480, which is both the Android app's geometry and predict()'s (8740f27 removed the squash default). Not phone accuracy.",
     "demo_video": "BLOCKED — no physical phone available to record a real prediction",
-    "presentation": "DONE — 8 slides, figures corrected 2026-11-17, all rasterised and inspected; naming pending",
+    "presentation": "DONE — 9 slides in the organizer's own template, CollegeName_TeamName.pptx/.pdf, built 2026-11-22",
     "team_naming": "NEEDS HUMAN",
     "registration": "UNVERIFIED — no confirmation record in repo",
     "rights": "BLOCKED — weights have no confirmed redistribution permission",
-    "robustness_hand_dropout": "FAIL — 5.76 pp unconditional on the full split (harness corruption). At the app's margin>=0.15 gate it is 1.24 pp on 86%/80% coverage; official applicability of abstention is UNKNOWN."
+    "robustness_hand_dropout": "FAIL — 5.76 pp unconditional on the full split. At the app's margin>=0.15 gate it is 2.39 pp on 86%/80% coverage. (Was 1.24/5.36 on the older diagnostic and cache.)"
   },
   "pending_human": [
     "Confirm registration and the exact CollegeName_TeamName string",

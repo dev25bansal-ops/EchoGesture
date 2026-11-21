@@ -37,7 +37,8 @@ the plan and keep the two feature branches separate.
 | Both | Agree on the [handoff contract](HANDOFF.md) and pin the sprint base. | Select the final model together and have Dev independently reproduce the release. |
 
 Registration closes **8 Nov, 11:59 PM IST**. Final submission closes
-**18 Nov, 11:59 PM IST**. Use **17 Nov** as the internal release deadline.
+**22 Nov, 11:59 PM IST** — per the organizer's V3-2 deck, slide 24. *(This said
+18 Nov, which the V3-2 deck supersedes.)*
 
 ## Schedule
 

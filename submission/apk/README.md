@@ -31,6 +31,15 @@ installing:
 sha256sum -c EchoGesture-2026-11-22-release.apk.sha256
 ```
 
+**The 80.8 MB release binary is published as a GitHub release asset, not
+tracked in git** — an 80 MB blob repeatedly timed out the HTTPS push (HTTP 408),
+so it lives at:
+
+https://github.com/dev25bansal-ops/EchoGesture/releases/tag/v2026-11-22-submission
+
+The `.sha256` file in the tree pins the bytes you should get. The older
+debug APK (`EchoGesture-2026-11-21.apk`) IS tracked in this repo.
+
 The release build is signed from an opt-in environment config, so no key
 material or password is in the repository. With `ECHOGESTURE_KEYSTORE` unset,
 `assembleRelease` produces an unsigned APK exactly as before.

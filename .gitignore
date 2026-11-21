@@ -147,3 +147,7 @@ dist/
 # models/ and is marked BLOCKED for publication in ARTIFACT_RIGHTS.md.
 !submission/apk/*.apk
 !submission/apk/*.sha256
+
+# The 80.8 MB release APK is published as a GitHub release asset, not tracked:
+# it times out the HTTPS push. submission/apk/*.apk.sha256 pins its digest.
+submission/apk/EchoGesture-2026-11-22-release.apk

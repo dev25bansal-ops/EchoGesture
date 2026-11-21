@@ -104,6 +104,27 @@
         "bytes": 82894510,
         "why": "debuggable build; kept for the instrumented measurements"
       }
+    },
+    "submission_zip_2026_11_22": {
+      "path": "EchoGesture_Submission.zip (repo root, gitignored)",
+      "sha256": "f95c93f06360f0e3a965cf76f7ca4dc3e8af17a90dae7cf988ea973d96f7eb80",
+      "bytes": 13480607,
+      "built_by": "scripts/release/build_bundle.py build --source . --model models/landmark_ens_tcn21_fp16.tflite --labels models/landmark_labels.json --results results/results.csv --metadata models/landmark_model_meta.json --predictions results/predictions.jsonl --extra scripts/ml/export_ensemble.py --extra scripts/ml/eval_tflite_cache.py",
+      "verified": "clean-room extracted to an empty dir; predict() run from the extracted copy returned NOON1 at 0.955 for NOON_at_07 with the five required keys",
+      "note": "Rebuilt 2026-11-22. The checklist previously claimed sha 7691190b and no such file existed. Not in the repo because *.zip is gitignored."
+    },
+    "hud_evidence_2026_11_22": {
+      "path": "docs/evidence/",
+      "files": [
+        "hud_01_camera_offline.png",
+        "hud_02_glossary.png",
+        "hud_03_refusal_no_hands.png",
+        "hud_04_recording_too_long.png",
+        "hud_05_result_p95.png",
+        "README.md"
+      ],
+      "captured_on": "EchoGesture-2026-11-22-release.apk 03d51354…ab2f49, Vivo V2404, adb",
+      "note": "Unedited device screenshots supporting the 25% occlusions-and-HUD-clarity criterion."
     }
   },
   "evidence": {
@@ -193,5 +214,11 @@
     "Decide model redistribution rights",
     "Authorize and send the organizer clarification email",
     "Submit the Google Form and save the receipt"
+  ],
+  "revisions": [
+    {
+      "date": "2026-11-22",
+      "what": "results/results.csv header PASS -> pass to match the organizer spec (S2:290-315, lowercase `pass` at position 7). COMPLIANCE_FINAL.md had recorded this as FIXED while the shipped file still had uppercase."
+    }
   ]
 }

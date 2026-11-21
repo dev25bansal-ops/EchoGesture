@@ -6,6 +6,7 @@ import android.widget.TextView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -228,23 +229,8 @@ class ResultCardRenderTest {
         }
     }
 
-    /**
-     * The uncertain branch of the result card.
-     *
-     * `renderResult` accepts on `margin >= 0.15 && percent >= 20`. The render
-     * test above drives a real clip whose margin is far above the cut, so it
-     * always takes the accepted branch — meaning the uncertain branch, which is
-     * the one every low-margin capture in the field will hit, had no coverage
-     * at all.
-     *
-     * This drives the same production method with a low-margin result and
-     * asserts the behaviour that matters: the card still SHOWS the prediction
-     * and simply labels it uncertain. It does not withhold the answer, and it
-     * does not ask the user to sign again — an earlier demo script claimed it
-     * did, which is why this is now pinned by a test.
-     */
     @Test
-    fun lowMarginResultIsShownButLabelledUncertain() {
+    fun lowScoreResultShowsItsBestMatchAndLetsTheUserScanAgain() {
         val activity = ActivityLaunch.fresh()
         try {
             val cameraField = MainActivity::class.java.getDeclaredField("cameraScreen")
@@ -269,12 +255,10 @@ class ResultCardRenderTest {
                 HandTracker.Capture::class.java
             ).apply { isAccessible = true }
 
-            // Margin 0.02, well under the 0.15 cut; score 0.61 clears the 0.20
-            // floor, so this isolates the margin gate rather than the guard.
             val uncertain = LandmarkClassifier.Result(
                 prediction = "WHATFOR1",
                 top5 = listOf("WHATFOR1", "OFFEND", "DEAF1", "KNIGHT1", "PENNY"),
-                confidence = 0.61f,
+                confidence = 0.141f,
                 margin = 0.02f,
                 inferenceMillis = 7L
             )
@@ -297,16 +281,9 @@ class ResultCardRenderTest {
             val caption = activity.findViewById<TextView>(R.id.captionText)
             val reliability = activity.findViewById<TextView>(R.id.confidenceLabel)
 
-            // A declined reading must NOT be presented as the recognised sign.
-            // The old contract asserted the opposite - that the guess appears in
-            // the caption - and that is exactly the behaviour the user reported
-            // as "it tells me the wrong word with confidence". The headline now
-            // says it was not recognised; the guess is shown only as reference.
-            assertEquals(
-                "an uncertain result must not present its guess as the sign",
-                activity.getString(R.string.result_uncertain_headline),
-                caption.text.toString()
-            )
+            assertEquals("the top result is visible at 14.1%", uncertain.prediction, caption.text.toString())
+            val badge = activity.findViewById<TextView>(R.id.confidenceBadge)
+            assertTrue(badge.text.toString().contains("%.1f".format(14.1f)))
             assertEquals(
                 "the label above it must mark the reading as reference only",
                 activity.getString(R.string.result_label_diagnostic),
@@ -317,17 +294,18 @@ class ResultCardRenderTest {
                 activity.getString(R.string.result_confidence_uncertain),
                 reliability.text.toString()
             )
-            // The guess is still reachable, so the app informs without claiming.
             val alternatives = activity.findViewById<TextView>(R.id.alternativesText)
-            assertTrue(
-                "the alternatives must still be listed for the reader",
-                alternatives.text.toString().contains("OFFEND")
-            )
-            // And the uncertain label must not read as a request to re-sign.
-            assertTrue(
-                "uncertain label must not claim the app withholds the answer, was '${reliability.text}'",
-                !reliability.text.toString().lowercase().contains("sign again")
-            )
+            assertTrue(alternatives.text.toString().contains("OFFEND"))
+            assertFalse(activity.findViewById<View>(R.id.copyButton).isEnabled)
+            assertFalse(activity.findViewById<View>(R.id.speakButton).isEnabled)
+            instrumentation.runOnMainSync {
+                val next = activity.findViewById<TextView>(R.id.retryButton)
+                assertEquals(activity.getString(R.string.action_recognise_again), next.text.toString())
+                next.performClick()
+                assertEquals("AUTO_ARMED", declared("currentState").get(screen)?.toString())
+                assertEquals(View.GONE, activity.findViewById<View>(R.id.resultCard).visibility)
+                assertEquals(0, screen.root.scrollY)
+            }
         } finally {
             instrumentation.runOnMainSync { activity.finish() }
         }

@@ -20,6 +20,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -134,6 +135,7 @@ class CameraScreen(
     private val copyButton: Button = root.findViewById(R.id.copyButton)
     private val speakButton: Button = root.findViewById(R.id.speakButton)
     private val retryButton: Button = root.findViewById(R.id.retryButton)
+    private var resultFromClip = false
     private val clearButton: Button = root.findViewById(R.id.clearButton)
 
     private val statusCard: View = root.findViewById(R.id.statusCard)
@@ -345,17 +347,7 @@ class CameraScreen(
     // ---- wiring -------------------------------------------------------------
 
     private fun wireControls() {
-        clipButton.setOnClickListener {
-            val picker = android.content.Intent(android.content.Intent.ACTION_OPEN_DOCUMENT)
-                .addCategory(android.content.Intent.CATEGORY_OPENABLE)
-                .setType("video/*")
-                .putExtra(android.content.Intent.EXTRA_LOCAL_ONLY, true)
-            try {
-                clipPicker.launch(picker)
-            } catch (_: android.content.ActivityNotFoundException) {
-                render(UiState.ERROR, detail = activity.getString(R.string.clip_picker_unavailable))
-            }
-        }
+        clipButton.setOnClickListener { openClipPicker() }
         captureButton.setOnClickListener {
             when (currentState) {
                 UiState.RECORDING -> finishRecording()
@@ -373,16 +365,7 @@ class CameraScreen(
         }
         helpButton.setOnClickListener { showHelp() }
         retryButton.setOnClickListener {
-            haptic(HapticFeedbackConstants.KEYBOARD_TAP)
-            // In the camera-failed state there is nothing to arm: the provider
-            // must be restarted. This is the only path that can recover from a
-            // failed first initialisation. Otherwise arm a new sign attempt.
-            if (currentState == UiState.ERROR) {
-                render(UiState.INIT)
-                startCamera(prefs.cameraChoice)
-            } else {
-                startAutoCapture()
-            }
+            if (resultFromClip) openClipPicker() else startAutoCapture()
         }
         clearButton.setOnClickListener { clearResult() }
         statusAction.setOnClickListener {
@@ -422,6 +405,18 @@ class CameraScreen(
         }
     }
 
+    private fun openClipPicker() {
+        val picker = android.content.Intent(android.content.Intent.ACTION_OPEN_DOCUMENT)
+            .addCategory(android.content.Intent.CATEGORY_OPENABLE)
+            .setType("video/*")
+            .putExtra(android.content.Intent.EXTRA_LOCAL_ONLY, true)
+        try {
+            clipPicker.launch(picker)
+        } catch (_: android.content.ActivityNotFoundException) {
+            render(UiState.ERROR, detail = activity.getString(R.string.clip_picker_unavailable))
+        }
+    }
+
     private fun applyPreferences() {
         val sizeSp = prefs.captionSp()
         captionText.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, sizeSp)
@@ -457,6 +452,7 @@ class CameraScreen(
                     UiState.RECORDING -> R.string.record_finish
                     UiState.AUTO_ARMED -> R.string.auto_cancel
                     UiState.AUTO_SIGNING -> R.string.auto_finish_now
+                    UiState.RESULT -> R.string.action_recognise_again
                     else -> R.string.start_recognition
                 }
             )
@@ -513,7 +509,7 @@ class CameraScreen(
                     hideStatus()
                     val accepted = resultLabel.text == activity.getString(R.string.result_label)
                     setLiveStatus(
-                        if (accepted) R.string.result_label else R.string.result_uncertain_headline,
+                        if (accepted) R.string.result_label else R.string.result_label_diagnostic,
                         if (accepted) R.color.success else R.color.warning
                     )
                     resultCard.visibility = View.VISIBLE
@@ -1046,6 +1042,7 @@ class CameraScreen(
         hideStatus()
         t.armAuto(SystemClock.elapsedRealtime())
         render(UiState.AUTO_ARMED)
+        (root as ScrollView).scrollTo(0, 0)
         haptic(HapticFeedbackConstants.KEYBOARD_TAP)
     }
 
@@ -1426,20 +1423,10 @@ class CameraScreen(
 
         val certain = ResultPolicy.isAccepted(result.margin, percent, fromClip)
 
-        // A guess that the policy declined must NOT be presented as the
-        // recognised sign. Before this, captionText got result.prediction
-        // unconditionally, so a 6%-margin reading was shown under the heading
-        // "Recognised sign" and spoken aloud - the exact failure the user
-        // reported. The gloss is now shown only when accepted; otherwise the
-        // headline says it was not recognised and the guess moves to a
-        // clearly-labelled reference line.
-        if (certain) {
-            captionText.text = result.prediction
-            resultLabel.setText(R.string.result_label)
-        } else {
-            captionText.text = activity.getString(R.string.result_uncertain_headline)
-            resultLabel.setText(R.string.result_label_diagnostic)
-        }
+        resultFromClip = fromClip
+        retryButton.setText(if (fromClip) R.string.action_analyze_another else R.string.action_recognise_again)
+        captionText.text = result.prediction
+        resultLabel.setText(if (certain) R.string.result_label else R.string.result_label_diagnostic)
         copyButton.isEnabled = certain
         speakButton.isEnabled = certain
         confidenceBadge.text = activity.getString(
@@ -1480,6 +1467,11 @@ class CameraScreen(
             else -> R.color.danger
         }
         confidenceBadge.setTextColor(ContextCompat.getColor(activity, tone))
+        confidenceBadge.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            if (certain) R.drawable.ic_check else R.drawable.ic_warning, 0, 0, 0
+        )
+        confidenceBadge.compoundDrawableTintList =
+            android.content.res.ColorStateList.valueOf(ContextCompat.getColor(activity, tone))
         confidenceBadge.setBackgroundResource(
             when {
                 certain -> R.drawable.bg_chip

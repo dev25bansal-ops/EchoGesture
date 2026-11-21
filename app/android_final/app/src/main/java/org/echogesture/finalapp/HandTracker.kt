@@ -1,13 +1,14 @@
 package org.echogesture.finalapp
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.os.SystemClock
 import android.util.Log
 import androidx.camera.core.ImageProxy
 import com.google.mediapipe.framework.image.BitmapImageBuilder
 import com.google.mediapipe.framework.image.MPImage
 import com.google.mediapipe.tasks.core.BaseOptions
-import com.google.mediapipe.tasks.vision.core.ImageProcessingOptions
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import androidx.annotation.VisibleForTesting
 import com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarker
@@ -333,13 +334,27 @@ class HandTracker private constructor(
         var convertMs = 0L
         var detectMs = 0L
         return try {
-            // toBitmap() copies the YUV planes into a fresh ARGB_8888 bitmap
-            // and does NOT apply rotation; rotation is passed to MediaPipe via
-            // ImageProcessingOptions below, exactly once.
+            // MediaPipe reports landmarks in the input bitmap's coordinates.
+            // Rotate the pixels so the gesture features share the preview's
+            // upright axes, even when CameraX supplies a sideways sensor buffer.
             val convertStart = SystemClock.elapsedRealtime()
-            val bitmap = imageProxy.toBitmap()
+            val raw = imageProxy.toBitmap()
+            val rotation = imageProxy.imageInfo.rotationDegrees
+            val bitmap = if (rotation == 0) raw else try {
+                Bitmap.createBitmap(
+                    raw, 0, 0, raw.width, raw.height,
+                    Matrix().apply { postRotate(rotation.toFloat()) }, false
+                )
+            } finally {
+                raw.recycle()
+            }
             convertMs = SystemClock.elapsedRealtime() - convertStart
-            mpImage = BitmapImageBuilder(bitmap).build()
+            mpImage = try {
+                BitmapImageBuilder(bitmap).build()
+            } catch (error: RuntimeException) {
+                bitmap.recycle()
+                throw error
+            }
             // detectForVideo() is synchronous: by the time it returns MediaPipe
             // has copied the pixels into its packet, so closing mpImage (which
             // recycles `bitmap`) afterwards is safe.
@@ -350,9 +365,6 @@ class HandTracker private constructor(
                 if (closed.get()) return false
                 detector.detectForVideo(
                     mpImage,
-                    ImageProcessingOptions.builder()
-                        .setRotationDegrees(imageProxy.imageInfo.rotationDegrees)
-                        .build(),
                     nextFrameTs.updateAndGet { previous -> maxOf(previous + 1, frameAtMs) }
                 )
             }

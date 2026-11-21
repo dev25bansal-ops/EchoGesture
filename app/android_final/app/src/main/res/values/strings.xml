@@ -65,13 +65,10 @@
     <string name="result_score">%1$s%% model score</string>
     <string name="result_alternatives_label">Alternatives</string>
     <string name="result_confidence_accepted">Best match — still confirm before relying on it</string>
-    <string name="result_confidence_uncertain">Uncertain — this is the model\'s best guess, not a confirmed reading</string>
-    <!-- Shown in place of the gloss when the reading is not reliable. A guess
-         must never be presented as a recognised sign. -->
-    <string name="result_uncertain_headline">Sign not recognised reliably</string>
-    <string name="result_label_diagnostic">Best guess, for reference only</string>
+    <string name="result_confidence_uncertain">Low confidence. Compare the options below or try the sign on its own.</string>
+    <string name="result_label_diagnostic">Possible match</string>
     <!-- One-tap flow -->
-    <string name="auto_ready">Ready — lower your hands, then sign</string>
+    <string name="auto_ready">Ready for one sign</string>
     <string name="auto_signing_status">Recognising your movement…</string>
     <string name="start_recognition">Start Recognition</string>
     <string name="auto_cancel">Stop waiting</string>
@@ -89,7 +86,8 @@
     <string name="action_copy">Copy</string>
     <string name="action_copied">Copied</string>
     <string name="action_speak">Speak</string>
-    <string name="action_recognise_again">Recognise again</string>
+    <string name="action_recognise_again">Scan next sign</string>
+    <string name="action_analyze_another">Choose another video</string>
     <string name="action_clear_result">Clear</string>
     <string name="tts_unavailable">No offline voice available on this device</string>
 
@@ -173,13 +171,13 @@
 
     <!-- Help -->
     <string name="help_quick_title">New here?</string>
-    <string name="help_quick_body">Hold your hands inside the frame and tap Start Recognition once. The app notices when your sign begins, captures it, and stops by itself. Tap Finish now only if it does not stop on its own.</string>
+    <string name="help_quick_body">Tap Start Recognition with your hands lowered. Perform one sign and wait for the result. Tap Scan next sign to repeat. Check the Glossary for the 100 supported ASL signs.</string>
     <string name="help_title">How to use EchoGesture</string>
     <string name="help_step_1">Point the camera so the signer’s hands are clearly visible.</string>
     <string name="help_step_2">Keep both hands inside the frame guide.</string>
-    <string name="help_step_3">Tap Start Recognition once and perform one supported sign from beginning to end. The app finds where the sign starts and stops and reads exactly that interval. If it does not stop by itself, tap Finish now.</string>
+    <string name="help_step_3">Lower your hands, tap Start Recognition, and perform one supported ASL sign. Wait for the result or tap Finish now after the sign ends.</string>
     <string name="help_step_4">Keep both hands in view for the whole sign. If the recording is too short or shows no hands, the app says so instead of guessing.</string>
-    <string name="help_step_5">Read the recognised sign and the alternatives offered.</string>
+    <string name="help_step_5">Check the match and tap Scan next sign for each new sign. Use a separate video for each sign when importing clips.</string>
     <string name="help_privacy">Everything runs on this phone. Nothing is uploaded.</string>
 
     <!-- Privacy sheet -->
@@ -190,7 +188,7 @@
     <string name="privacy_point_permission">The app has no internet permission and cannot open a network connection.</string>
 
     <string name="action_done">Done</string>
-    <string name="clip_pick">Analyze a video clip</string>
+    <string name="clip_pick">Analyze a one-sign video</string>
     <string name="clip_unreadable">Could not read this video. Choose a different clip.</string>
     <string name="clip_picker_unavailable">Android’s file picker is unavailable on this device.</string>
 </resources>

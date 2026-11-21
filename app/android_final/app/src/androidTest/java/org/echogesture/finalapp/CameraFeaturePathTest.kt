@@ -25,8 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger
  * things the directive requires of the *input* side:
  *
  *  - the analysed image's rotation is reported by CameraX and accepted by the
- *    shipped [HandTracker], which is what MainActivity feeds to MediaPipe
- *    exactly once through ImageProcessingOptions (never baked into the bitmap);
+ *    shipped [HandTracker], which uses it to make an upright MediaPipe bitmap;
  *  - a frame with no hand keeps its position in the 24-frame sequence instead
  *    of being dropped, so a sign is not compressed in time.
  *

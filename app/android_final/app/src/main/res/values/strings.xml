@@ -85,6 +85,12 @@
     <string name="result_capture_detail">Captured %1$d frames over %2$d ms at %3$d fps</string>
     <string name="result_latency_detail">Classifier took %1$d ms on this device</string>
     <string name="result_profiler_detail">Camera delivered at %1$d fps (%2$d frames); analyser took %3$d ms per frame</string>
+    <!-- The scored latency criterion is a p95, so the card must be able to show
+         one. The line above reports analysisP50 (a median of convert+detect);
+         this one reports the per-frame p95 the acceptance criterion is stated
+         against. Shown only when the profile has enough frames to make a p95
+         meaningful, so a 3-frame capture cannot print a fake percentile. -->
+    <string name="result_profiler_p95">Per-frame p95: detect %1$d ms, convert %2$d ms — the ≤50 ms target is a p95</string>
     <string name="result_responsibility">A model score ranks the 100 known signs; it is not a calibrated probability that the reading is correct. Recognises one isolated sign at a time.</string>
     <string name="action_copy">Copy</string>
     <string name="action_copied">Copied</string>

@@ -329,6 +329,13 @@
                 android:layout_height="wrap_content" />
 
             <TextView
+                android:id="@+id/profilerP95Text"
+                style="@style/Text.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <TextView
                 style="@style/Text.Caption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

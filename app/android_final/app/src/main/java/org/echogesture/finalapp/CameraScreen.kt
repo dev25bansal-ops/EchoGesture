@@ -115,6 +115,9 @@ class CameraScreen(
     private val latencyText: TextView = root.findViewById(R.id.latencyText)
     private val captureDetailText: TextView = root.findViewById(R.id.captureDetailText)
     private val profilerDetailText: TextView = root.findViewById(R.id.profilerDetailText)
+    private val profilerP95Text: TextView = root.findViewById(R.id.profilerP95Text)
+    // Constructed with GONE in the layout; only un-hidden when a p95 is meaningful.
+    private val View.isBlank: Boolean get() = this !is TextView || text.isNullOrEmpty()
 
     private var captureCountdown: Runnable = Runnable { }
     private val confidenceLabel: TextView = root.findViewById(R.id.confidenceLabel)
@@ -1379,6 +1382,24 @@ class CameraScreen(
                 p.analysisP50
             )
         } ?: ""
+        // The scored criterion is detect_p95 against ≤50 ms, but analysisP50
+        // above is a MEDIAN of convert+detect and can never stand in for it.
+        // On a release build the HUD is the only readable channel (no run-as,
+        // allowBackup=false), so without this line p95 is unobservable on the
+        // artifact that actually ships. A p95 needs a real sample: below 20
+        // frames it is just the maximum wearing a percentile's name.
+        profilerP95Text.text = tracker?.profiler?.snapshot()?.let { p ->
+            if (p.frames < 20) {
+                ""
+            } else {
+                activity.getString(
+                    R.string.result_profiler_p95,
+                    p.detectP95,
+                    p.convertP95
+                )
+            }
+        } ?: ""
+        profilerP95Text.visibility = if (profilerP95Text.isBlank) View.GONE else View.VISIBLE
         latencyText.text = activity.getString(
             R.string.result_latency_detail,
             result.inferenceMillis

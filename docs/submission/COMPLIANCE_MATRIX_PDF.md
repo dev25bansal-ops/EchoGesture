@@ -51,7 +51,7 @@ contradicts itself the row says so rather than picking a side.
 | R17 | Manifest IDs | `clip_id must match the test manifest exactly` | no organizer manifest was supplied anywhere in the repo; the builder refuses to fabricate one | `scripts/release/build_bundle.py` | **BLOCKED_EXTERNALLY** |
 | R18 | Conversion script | p.10 `Quantized model + conversion script (< 20 MB INT8)`; p.11 `Quantized model file and conversion script` | `scripts/ml/export_tflite_tf.py` is present in the built release ZIP | release bundle listing | **PASS** |
 | R19 | Demo video | p.10 `Demo video (2–3 min) or deployed app URL`; p.24 `Prototype code, 5-min demo video and deck due`; p.25 `Demo video, max 3 minutes (YouTube or Drive link)`; p.27 `a 5-minute demo video by 18th November` | **none recorded**; the recording guide targets a 2:50 cut, which satisfies all three readings | `docs/demo/DEMO_RECORDING_GUIDE.md` | **NOT_TESTED** (no video file exists in the repo) |
-| R19b | Installable APK | not required by the PDF, but strengthens Delivery | `submission/apk/EchoGesture-2026-11-20.apk`, 83,125,166 B, SHA-256 `9c950bc3027f0e34ce4751d9ab0c756868c71e5f93e9e750626d14de71f98526`, arm64-v8a, minSdk 24, targetSdk 34 | `submission/apk/README.md` | **PASS** |
+| R19b | Installable APK | not required by the PDF, but strengthens Delivery | `submission/apk/EchoGesture-2026-11-21.apk`, 82,894,510 B, SHA-256 `96f00458f54de715c7a6f489f9ae92425bc73a089043a91ccbe0ae6d4f060035`, arm64-v8a, minSdk 24, targetSdk 34, built from `29c48b6` | `submission/apk/README.md` | **PASS** |
 
 ## 5. Submission rules (p.24–27)
 
@@ -189,7 +189,7 @@ accurate tests.
 | `predict()` returns the five p.11 keys | `src/main.py` |
 | 100-gloss vocabulary, all uppercase | `models/landmark_labels.json`, 100 keys, all `.isupper()` |
 | Python 3.11 | 3.11.18 |
-| APK 83,125,166 B, SHA-256 `9c950bc3…` | `sha256sum submission/apk/EchoGesture-2026-11-20.apk` |
+| APK 82,894,510 B, SHA-256 `96f00458…` | `sha256sum -c submission/apk/EchoGesture-2026-11-21.apk.sha256` |
 | **139** JVM unit tests pass with 0 failures | `app/android_final/app/src/test`, `./gradlew :app:testDebugUnitTest`, run 2026-11-20 |
 | **34** instrumentation test methods across **20** classes; **15 across 8 classes were run green on device** on 2026-11-20 | `app/android_final/app/src/androidTest` (static count). The remaining classes include diagnostic probes that are documented as hanging — MediaPipe cannot recreate a landmarker twice in one process — so they are not evidence of a passing suite. Do not report "all instrumentation tests pass". |
 
@@ -205,11 +205,14 @@ not quote them interchangeably without saying which denominator is meant.
 
 ### 9.5 Resolved since the 2026-11-12 revision
 
-- **APK size disagreement — RESOLVED.** The three conflicting values
-  (75,072,782 / 75,072,706 B and their hashes) described the previous
-  four-model APK. The current artefact is `submission/apk/EchoGesture-2026-11-20.apk`,
-  83,125,166 B, SHA-256 `9c950bc3027f0e34ce4751d9ab0c756868c71e5f93e9e750626d14de71f98526`,
-  with a `.sha256` file beside it.
+- **APK size disagreement — RESOLVED, TWICE.** The three conflicting values
+  (75,072,782 / 75,072,706 B and their hashes) described the four-model APK. A
+  second drift then recorded 83,125,166 B for a 83,128,337-byte file, which was
+  already stale when written. The artefact is now `EchoGesture-2026-11-21.apk`,
+  82,894,510 B, SHA-256
+  `96f00458f54de715c7a6f489f9ae92425bc73a089043a91ccbe0ae6d4f060035`, rebuilt
+  from `29c48b6` so the binary matches this branch's source, with a `.sha256`
+  file beside it.
 - **Latency — now measured on device.** The 275.8 / 152.5 / 93.9 ms desktop
   p95 figures are superseded for scoring by the Vivo V2404 on-device numbers
   (`latency_on_device_p50` 34–45 ms, `latency_p95` 46–54 ms). Desktop

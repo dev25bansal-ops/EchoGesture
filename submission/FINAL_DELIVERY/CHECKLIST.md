@@ -31,7 +31,7 @@ authorisation I do not have.
 | 7 | Android JVM tests | **DONE** | 150 / 150 pass on the merged `submission/final` tree (was 110 before the camera-fix tests landed) |
 | 8 | Android instrumentation | **DONE** | 16 pass, 0 fail, 1 skip (emulator, API 34) |
 | 9 | Python suite | **DONE — not green** | 433 / 502 pass, 3 fail, 23 error, 43 skip. All 26 traced to gitignored or retired artifacts; classified individually in `TEST_TRIAGE.md`. Not suppressed. |
-| 10 | Clean-extraction `predict()` | **DONE** | 30 / 30 clips, 0 errors, 76.67% top-1 |
+| 10 | `predict()` from the shipped tree | **DONE — re-verified 2026-11-22** | Run from `src/main.py` on a real ASL Citizen clip in the current tree: returned exactly the five required keys, `clip_id` echoed from the filename, and recognised `SAIL2` on a SAIL clip at confidence 0.689. This is the native-geometry path the Android app uses, not the 256-squash path the old ZIP ran. |
 | 11 | Geometry contract | **DONE** | 9 / 9. Default and explicit 256 compare byte-identical on tensors, not just shape. |
 | 12 | Visual slide inspection | **DONE** | All 9 slides rasterised and looked at. No clipped text, collisions, or missing glyphs. Slide 5's six-row results table verified legible row by row. |
 

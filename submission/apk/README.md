@@ -1,12 +1,12 @@
 # EchoGesture APK
 
-Built 2026-11-20 from `submission/final` at commit `ebadd26`.
+Built 2026-11-21 from `submission/final` at commit `29c48b6`.
 
 | | |
 |---|---|
-| File | `EchoGesture-2026-11-20.apk` |
-| Size | 83,128,337 bytes (83.1 MB) |
-| SHA-256 | `bb682468bb065233d8baa5e322907730eb03a8200a7ffad0a541389041fdac17` |
+| File | `EchoGesture-2026-11-21.apk` |
+| Size | 82,894,510 bytes (82.9 MB) |
+| SHA-256 | `96f00458f54de715c7a6f489f9ae92425bc73a089043a91ccbe0ae6d4f060035` |
 | Package | `org.echogesture.finalapp` |
 | Min SDK | 24 (Android 7.0) |
 | Target SDK | 34 |
@@ -16,7 +16,7 @@ The `.sha256` file beside it is the same digest in `sha256sum` format. Verify
 before installing:
 
 ```
-sha256sum -c EchoGesture-2026-11-20.apk.sha256
+sha256sum -c EchoGesture-2026-11-21.apk.sha256
 ```
 
 ## What it does
@@ -39,13 +39,22 @@ Debug-signed, so Android will warn about an unknown source. Enable "Install
 unknown apps" for your file manager, or:
 
 ```
-adb install -r EchoGesture-2026-11-20.apk
+adb install -r EchoGesture-2026-11-21.apk
 ```
 
 ## Known limits, stated rather than buried
 
-- **85.45% top-1** on 11 unseen signers (1,251 clips). That is corpus accuracy;
-  live-camera accuracy is **not** measured and the few data points are worse.
+- **85.45% top-1** on 11 unseen signers (1,251 clips). That is corpus accuracy.
+- **The live camera is the weak path, and it is not corpus-shaped.** The model is
+  completely rotation-variant: all eight signs tested change identity when the
+  hand is rotated 90 degrees. The corpus is landscape and third-person; a phone
+  held portrait is neither. On-device, the same VOICE sign scores 0.969 through
+  the file picker and 0.246 with only 3 of 9 members agreeing through the camera
+  in the same session. Use the clip path for anything that must be reliable.
+- **A held hand that is not a sign still gets a name.** A closed fist held at
+  the chin is reported as RAZOR2 at 0.794 with 9 of 9 members agreeing, because
+  that is what a fist looks like in this lexicon. The gate is the only defence,
+  and a confident wrong reading passes it.
 - **The weakest signs are genuinely weak:** CHEESEGRATER 40%, SINK and SCARF2
   50%. Do not demo those.
 - **Clip analysis takes about 1 s**, not the 10–20 s it used to. The fix was

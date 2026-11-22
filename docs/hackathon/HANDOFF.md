@@ -122,3 +122,19 @@ adb shell am instrument -w -r -e requireCameraVerification true \
   -e class org.echogesture.finalapp.PortraitRecognitionTest#compareCameraConfirmations \
   org.echogesture.finalapp.test/androidx.test.runner.AndroidJUnitRunner
 ```
+
+## Auto 6.4 moderate camera scores
+
+Code commit `bf71e8596dc68a9a747953a038f18968cbfa2cd9` on `codex/android-auto-6.4` produced the signed APK with SHA-256 `c988aa1761f4924e91447cfa820c09a57acf4f52019352d9c4b15aee69f53a92`. The APK upgrades 6.3. Desktop/EchoGesture-Auto-6.4 contains the APK, checksum, local verification manifest and per-clip output.
+
+The additional camera confirmation requires sustained tracking, movement, a distinct second sampling window, and all nine classifiers ranking the same sign first in both windows. Each window needs a score of at least 40% and a lead of at least 35 points. The UI displays the original model score. Close calls show the runner-up's percentage. A preliminary eight-vote rule misidentified FLIP as DOG1, which prompted the unanimity requirement.
+
+On 120 labeled Android 14 ARM64 emulator replays at alternating rotations and two framing distances, both policies ranked 90 signs correctly. Correct confirmations rose from 35 to 45, with zero incorrect confirmations from either policy in this run. In the 40–80% band, 35 of 42 top labels were correct and seven gained confirmation. The first 12 replays informed the rule revision. On the remaining 108, correct confirmations rose from 30 to 39. None of 114 frozen-hand controls gained a confirmation through the new rule. Among the 114 scored captures, feature preparation and classification took median 29 ms and p95 60 ms, excluding the detector. Physical camera accuracy, power, and detector latency for this version require handset measurements.
+
+All 153 release unit tests and the 14 focused Android tests passed. An expanded speech test verified playback for a corroborated 58% score and silence with both scores shown for a 48% vs 46% reading. Build with the commands in the 6.3 handoff. Stage camera64.tsv and its named clips under files/file-corpus in the debug app, then run:
+
+```sh
+adb shell am instrument -w -r -e requireModerateReplay true \
+  -e class org.echogesture.finalapp.PortraitRecognitionTest#measureModerateCameraMatches \
+  org.echogesture.finalapp.test/androidx.test.runner.AndroidJUnitRunner
+```

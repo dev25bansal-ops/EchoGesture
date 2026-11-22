@@ -4,7 +4,9 @@
 > It is the four-model era: test top-1 72.78%, 11.37 MB. The shipped system is
 > nine members, **85.45% top-1 / 96.64% top-5 on 1,251 clips**, 8.51 MB
 > classifiers + 7.82 MB detector = **16.33 MB**, with on-device latency now
-> measured (p95 46–54 ms empty frame / 68–70 ms with a hand → **FAIL** vs 50 ms).
+> measured on the signed release build (p95 **58–72 ms** across four file-pick
+> runs → **FAIL** vs 50 ms; the 46–54 / 68–70 figures this banner used to give
+> are superseded and were not the shipping configuration).
 > The shot list and pacing advice are still usable; the numbers are not.
 > Authoritative: `submission/FINAL_DELIVERY/RESULTS.md`.
 

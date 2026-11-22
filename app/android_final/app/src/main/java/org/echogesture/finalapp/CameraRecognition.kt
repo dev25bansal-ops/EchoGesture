@@ -3,11 +3,13 @@ package org.echogesture.finalapp
 internal data class ScoredRecording(
     val result: LandmarkClassifier.Result,
     val frames: List<HandTracker.Frame>,
-    val mask: FloatArray
+    val mask: FloatArray,
+    val corroborated: Boolean = false
 )
 
-// Reserve the extra classifier pass for plausible first matches.
-private const val RETRY_FLOOR = 0.65f
+// At moderate scores, require all nine models and a clear lead over the runner-up.
+private fun supportsCameraMatch(result: LandmarkClassifier.Result): Boolean =
+    result.confidence >= 0.40f && result.margin >= 0.35f && result.agreeingMembers == 9
 
 internal fun scoreRecording(
     classifier: LandmarkClassifier,
@@ -21,20 +23,25 @@ internal fun scoreRecording(
             frames, tensors.mask)
     }
     val primary = score(samples)
-    if (!autoCapture || primary.result.confidence < RETRY_FLOOR || ResultPolicy.isAccepted(primary.result.margin, primary.result.confidence * 100f) ||
-        !ResultPolicy.hasSustainedTracking(samples)) return primary
+    if (!autoCapture || !ResultPolicy.hasSustainedTracking(samples)) return primary
+    val first = primary.result
+    if (ResultPolicy.isAccepted(first.margin, first.confidence * 100f)) return primary
+    if (first.confidence < 0.65f && !supportsCameraMatch(first)) return primary
 
     val visible = RecordingFeatures.visibleSamples(recording)
     if (visible == samples || !ResultPolicy.hasSustainedTracking(visible)) return primary
     val retry = score(visible)
-    val confirmed = retry.result.prediction == primary.result.prediction &&
+    val confirmed = primary.result.confidence >= 0.65f && retry.result.prediction == primary.result.prediction &&
         ResultPolicy.isAccepted(retry.result.margin, retry.result.confidence * 100f)
+    val corroborated = retry.result.prediction == primary.result.prediction &&
+        supportsCameraMatch(primary.result) && supportsCameraMatch(retry.result) &&
+        SignSegmenter.displacement(visible).count { it > 0.008f } >= 3
     val chosen = if (confirmed) retry else primary
     // Both passes contribute to the inference time even if the first result is retained.
     val timings = primary.result.memberMillis.mapValues { (name, time) ->
         time + retry.result.memberMillis.getValue(name)
     }
-    return chosen.copy(result = chosen.result.copy(
+    return chosen.copy(corroborated = corroborated, result = chosen.result.copy(
         inferenceMillis = primary.result.inferenceMillis + retry.result.inferenceMillis,
         memberMillis = timings
     ))

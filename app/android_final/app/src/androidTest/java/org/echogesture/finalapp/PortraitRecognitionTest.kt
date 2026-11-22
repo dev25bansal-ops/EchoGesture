@@ -183,12 +183,61 @@ class PortraitRecognitionTest {
                                 val elapsedMs = (System.nanoTime() - start) / 1_000_000L
                                 val p = scored.result
                                 val accepted = ResultPolicy.hasSustainedTracking(scored.frames) &&
-                                    ResultPolicy.isAccepted(p.margin, p.confidence * 100f)
+                                    (scored.corroborated || ResultPolicy.isAccepted(p.margin, p.confidence * 100f))
                                 "${p.prediction},${p.confidence},$accepted,$elapsedMs"
                             }
                         } else ",0,false,0,,0,false,0"
                     } else ",0,false,0,,0,false,0"
                     out.println("$clip,$label,$width,$predictions")
+                    out.flush()
+                }
+            }
+        }
+    }
+
+    @Test
+    fun measureModerateCameraMatches() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val dir = File(context.filesDir, "file-corpus")
+        val manifest = File(dir, "camera64.tsv")
+        val required = InstrumentationRegistry.getArguments().getString("requireModerateReplay") == "true"
+        if (required) check(manifest.isFile)
+        assumeTrue(manifest.isFile)
+        val clips = manifest.readLines()
+        if (required) check(clips.size == 120)
+        File(dir, "moderate.csv").printWriter().use { out ->
+            out.println("clip,label,width,prediction,score,margin,votes,v63,v64,ms,frozen_extra")
+            LandmarkClassifier.create(ModelContract.load(context.assets)).use { classifier ->
+                for ((index, line) in clips.withIndex()) {
+                    val (name, label) = line.split('\t')
+                    require(File(name).name == name)
+                    val width = if (index % 4 < 2) 480 else 240
+                    val frames = track(File(dir, name), index, width)
+                    val detector = AutoSegmenter()
+                    detector.arm(0)
+                    val outcome = stream(frames).firstNotNullOfOrNull(detector::offer)
+                    var data = ",0,0,0,false,false,0,false"
+                    if (outcome?.isUsable == true) {
+                        val rec = SignRecorder.Recording(outcome.frames, outcome.startedAtMs, outcome.endedAtMs)
+                        val samples = RecordingFeatures.sample(rec, RecordingFeatures.autoSegment(rec))
+                        if (samples.count { it.hands.isNotEmpty() } >= samples.size * .15) {
+                            val start = System.nanoTime()
+                            val scored = scoreRecording(classifier, rec, samples, true)
+                            val elapsed = (System.nanoTime() - start) / 1_000_000
+                            val p = scored.result
+                            val old = ResultPolicy.hasSustainedTracking(scored.frames) &&
+                                ResultPolicy.isAccepted(p.margin, p.confidence * 100f)
+                            val held = samples.first { it.hands.isNotEmpty() }
+                            val frozen = rec.copy(frames = rec.frames.map {
+                                if (it.hands.isEmpty()) it else held.copy(capturedAtMs = it.capturedAtMs)
+                            })
+                            val heldSamples = RecordingFeatures.sample(frozen, RecordingFeatures.autoSegment(frozen))
+                            val frozenExtra = scoreRecording(classifier, frozen, heldSamples, true).corroborated
+                            assertTrue("A stationary hand must not acquire a new confirmation", !frozenExtra)
+                            data = "${p.prediction},${p.confidence},${p.margin},${p.agreeingMembers},$old,${old || scored.corroborated},$elapsed,$frozenExtra"
+                        }
+                    }
+                    out.println("$name,$label,$width,$data")
                     out.flush()
                 }
             }

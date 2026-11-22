@@ -155,7 +155,8 @@ class LandmarkClassifier(
         /** Per-member invocation time, in meta order. */
         val memberMillis: Map<String, Long> = emptyMap(),
         /** Averaged logits, exposed for parity/debugging. */
-        val averagedLogits: FloatArray? = null
+        val averagedLogits: FloatArray? = null,
+        val agreeingMembers: Int = 0
     ) {
         // FloatArray needs explicit equals/hashCode in a data class.
         override fun equals(other: Any?): Boolean {
@@ -166,6 +167,7 @@ class LandmarkClassifier(
                 confidence == other.confidence &&
                 inferenceMillis == other.inferenceMillis &&
                 memberMillis == other.memberMillis &&
+                agreeingMembers == other.agreeingMembers &&
                 (averagedLogits contentEquals other.averagedLogits)
         }
 
@@ -175,6 +177,7 @@ class LandmarkClassifier(
             result = 31 * result + confidence.hashCode()
             result = 31 * result + inferenceMillis.hashCode()
             result = 31 * result + memberMillis.hashCode()
+            result = 31 * result + agreeingMembers
             result = 31 * result + (averagedLogits?.contentHashCode() ?: 0)
             return result
         }
@@ -238,7 +241,10 @@ class LandmarkClassifier(
             margin = probs[order[0]] - probs[order[1]],
             inferenceMillis = inferenceMillis,
             memberMillis = memberMillis,
-            averagedLogits = averaged
+            averagedLogits = averaged,
+            agreeingMembers = memberLogits.count { logits ->
+                logits.indices.maxByOrNull { logits[it] } == order[0]
+            }
         )
     }
 

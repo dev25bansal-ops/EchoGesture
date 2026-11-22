@@ -69,6 +69,8 @@
     <string name="result_label">Recognised sign</string>
     <string name="result_score">%1$s%% model score</string>
     <string name="result_alternatives_label">Alternatives</string>
+    <string name="result_consistent">All nine models agreed on this sign in two samples of your movement.</string>
+    <string name="result_runner_up">%1$s (%2$.1f%%)</string>
     <string name="result_confidence_accepted">Best match — still confirm before relying on it</string>
     <string name="result_tracking_brief">Your hands were visible too briefly to confirm this match. Keep them in frame for the whole sign.</string>
     <string name="result_move_closer">Your hands look small in the picture. Move closer, keep the whole sign in view, and try again.</string>

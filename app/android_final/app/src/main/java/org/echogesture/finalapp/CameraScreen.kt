@@ -1375,7 +1375,7 @@ class CameraScreen(
             // step marked present whose source frames were interpolated.
             if (prefs.diagnostics) logDiagnostic(scoredCapture, result, totalMs, diagnosticAttempt, fromClip)
             val enoughTracking = !autoCapture || ResultPolicy.hasSustainedTracking(scored.frames)
-            finishInference(generation) { renderResult(result, totalMs, scoredCapture, fromClip, enoughTracking) }
+            finishInference(generation) { renderResult(result, totalMs, scoredCapture, fromClip, enoughTracking, scored.corroborated) }
         } catch (t: Throwable) {
             if (prefs.diagnostics) logDiagnostic(diagnosticCapture, null, 0L, diagnosticAttempt, fromClip)
             finishInference(generation) {
@@ -1476,11 +1476,12 @@ class CameraScreen(
         totalMs: Long,
         capture: HandTracker.Capture,
         fromClip: Boolean,
-        enoughTracking: Boolean = true
+        enoughTracking: Boolean = true,
+        corroborated: Boolean = false
     ) {
         val percent = result.confidence * 100f
 
-        val certain = enoughTracking && ResultPolicy.isAccepted(result.margin, percent, fromClip)
+        val certain = enoughTracking && (corroborated || ResultPolicy.isAccepted(result.margin, percent, fromClip))
 
         resultFromClip = fromClip
         retryButton.setText(if (fromClip) R.string.action_analyze_another else R.string.action_recognise_again)
@@ -1492,7 +1493,11 @@ class CameraScreen(
             R.string.result_score,
             "%.1f".format(percent)
         )
-        alternativesText.text = result.top5.drop(1).joinToString("  ·  ")
+        alternativesText.text = if (!certain && result.margin < ResultPolicy.MIN_MARGIN && result.top5.size > 1) {
+            val secondPercent = (result.confidence - result.margin).coerceIn(0f, 1f) * 100f
+            val runnerUp = activity.getString(R.string.result_runner_up, result.top5[1], secondPercent)
+            (listOf(runnerUp) + result.top5.drop(2)).joinToString("  ·  ")
+        } else result.top5.drop(1).joinToString("  ·  ")
         alternativesLabel.setText(
             if (certain) R.string.result_alternatives_label
             else R.string.result_alternatives_label_diagnostic
@@ -1504,6 +1509,7 @@ class CameraScreen(
         confidenceLabel.text = activity.getString(
             when {
                 !enoughTracking -> R.string.result_tracking_brief
+                corroborated -> R.string.result_consistent
                 certain -> R.string.result_confidence_accepted
                 !fromClip && handsLookDistant(capture.frames) -> R.string.result_move_closer
                 else -> R.string.result_confidence_uncertain

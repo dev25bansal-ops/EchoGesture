@@ -67,6 +67,28 @@ class SpokenResultTest {
 
             show(result.copy(confidence = .20f, margin = .02f))
             runner.runOnMainSync { assertFalse(player.get(speaker) is MediaPlayer) }
+            val fullRender = CameraScreen::class.java.getDeclaredMethod(
+                "renderResult", LandmarkClassifier.Result::class.java, java.lang.Long.TYPE,
+                HandTracker.Capture::class.java, java.lang.Boolean.TYPE, java.lang.Boolean.TYPE,
+                java.lang.Boolean.TYPE
+            ).apply { isAccessible = true }
+            val moderate = result.copy(confidence = .58f, margin = .42f, agreeingMembers = 9)
+            runner.runOnMainSync {
+                fullRender.invoke(cameraScreen, moderate, 15L, capture, false, true, true)
+                assertTrue(activity.findViewById<Button>(R.id.speakButton).isEnabled)
+                val badge = activity.findViewById<android.widget.TextView>(R.id.confidenceBadge)
+                assertEquals(activity.getString(R.string.result_score, "%.1f".format(58f)), badge.text.toString())
+            }
+            assertTrue(await {
+                runCatching { (player.get(speaker) as? MediaPlayer)?.isPlaying == true }.getOrDefault(false)
+            })
+            assertTrue(await { player.get(speaker) == null })
+            show(result.copy(confidence = .48f, margin = .02f))
+            runner.runOnMainSync {
+                assertFalse(activity.findViewById<Button>(R.id.speakButton).isEnabled)
+                val options = activity.findViewById<android.widget.TextView>(R.id.alternativesText)
+                assertTrue(options.text.contains(activity.getString(R.string.result_runner_up, "DEAF1", 46f)))
+            }
             prefs.speech = false
             show(result)
             runner.runOnMainSync { assertFalse(player.get(speaker) is MediaPlayer) }

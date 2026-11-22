@@ -18,8 +18,8 @@ this repository:
 | 4 | Demo video (2–3 min) or deployed app URL | **Pending** — the recording script is [`submission/DEMO_SCRIPT.md`](submission/DEMO_SCRIPT.md); the link goes in the submission form and on slide 7 of the deck |
 
 Also required by the naming rule: the deck must be named
-`CollegeName_TeamName`. It is
-[`submission/presentation/CollegeName_TeamName.pptx`](submission/presentation/CollegeName_TeamName.pptx)
+`VIT_Chennai_Sky_Grazers`. It is
+[`submission/presentation/VIT_Chennai_Sky_Grazers.pptx`](submission/presentation/VIT_Chennai_Sky_Grazers.pptx)
 with the matching PDF beside it, built inside the organizer's own 9-slide
 template. The team+college string and the demo link are the two placeholders
 still to be filled.

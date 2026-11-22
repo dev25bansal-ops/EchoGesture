@@ -68,22 +68,22 @@
       "note": "results/ contains aggregate summaries only (results.csv, eval summaries, quantisation). Per-clip predictions.jsonl is deliberately excluded because clip_id embeds ASL Citizen participant identifiers."
     },
     "presentation": {
-      "path": "submission/presentation/CollegeName_TeamName.pptx",
-      "sha256": "960a12305399371aea0e261f71e58825fe489073b5d47ea6ecc6052bd5f84133",
-      "bytes": 413513,
+      "path": "submission/presentation/VIT_Chennai_Sky_Grazers.pptx",
+      "sha256": "ce577e46d00542aabb2be604e0199979099a50547e93491b730d7c48311a67a7",
+      "bytes": 413539,
       "slides": 9,
       "template": "Built inside the organizer's own template (C:/Users/dev25/Downloads/Submission_Final_forGithub.pptx): the original 9 slides are filled in place, so master, layout and header geometry are the template's, not a reconstruction. Section list is the template's: Track No / Team+College / Members, THE PROBLEM, SOLUTION, ARCHITECTURE, Track Final Output, DIFFERENTIATION, DEMO & LOCAL SETUP, Brownie Slides, Thank You.",
       "font": "Arial Black (display) and Calibri (body), inherited from the template",
       "pdf": {
-        "path": "submission/presentation/CollegeName_TeamName.pdf",
-        "sha256": "d1e959f06d167e05944f03f24473f20ba786e01dfc40b622b8620643fb27adcd",
-        "bytes": 376460,
+        "path": "submission/presentation/VIT_Chennai_Sky_Grazers.pdf",
+        "sha256": "c995831a3ed580ee9c5335402955edc1944ad9ed7e0966785f8e0d39cf62325a",
+        "bytes": 377613,
         "pages": 9,
         "note": "Native Microsoft PowerPoint export (SaveAs format 32): text is selectable and fonts are embedded. Verified as 9 pages with the figure set re-extracted from the PDF text layer."
       },
       "visual_inspection": "All 9 slides rasterised from the exported PDF and inspected: no clipped text, no colliding boxes, no missing glyphs. Slide 5's results table carries all six slide-11 rows with honest verdicts (top1 PASS, latency FAIL, model_size PASS, robustness FAIL, power FAIL, thermal PASS).",
       "open_human_inputs": [
-        "Team+College string on slide 1 is the template placeholder CollegeName_TeamName; the real registered string replaces both the slide text and the file name.",
+        "Team+College string on slide 1 is the template placeholder VIT_Chennai_Sky_Grazers; the real registered string replaces both the slide text and the file name.",
         "Slide 7 carries 'DEMO VIDEO: <paste the 2-3 min YouTube or Drive link here>' in red until the recording is uploaded."
       ],
       "supersedes": "EchoGesture_Track02.pptx / .pdf (8 slides, sections not matching the template, removed from the tree). Those files' on-disk hash had also drifted from the 4df49d66 value the docs recorded, so they were not a byte-reproducible artifact.",
@@ -240,14 +240,14 @@
     "model_size_20mb": "PASS — 16.33 MB including detector",
     "top1_70pct": "PASS — 85.45% corpus at native 640x480, which is both the Android app's geometry and predict()'s (8740f27 removed the squash default). Not phone accuracy.",
     "demo_video": "BLOCKED — no physical phone available to record a real prediction",
-    "presentation": "DONE — 9 slides in the organizer's own template, CollegeName_TeamName.pptx/.pdf, built 2026-11-22",
+    "presentation": "DONE — 9 slides in the organizer's own template, VIT_Chennai_Sky_Grazers.pptx/.pdf, built 2026-11-22",
     "team_naming": "NEEDS HUMAN",
     "registration": "UNVERIFIED — no confirmation record in repo",
     "rights": "BLOCKED — weights have no confirmed redistribution permission",
     "robustness_hand_dropout": "FAIL — 5.76 pp unconditional on the full split. At the app's margin>=0.15 gate it is 2.39 pp on 86%/80% coverage. (Was 1.24/5.36 on the older diagnostic and cache.)"
   },
   "pending_human": [
-    "Confirm registration and the exact CollegeName_TeamName string",
+    "Confirm registration and the exact VIT_Chennai_Sky_Grazers string",
     "Attach a physical phone and run submission/PHONE_TEST_REPORT.md",
     "Record the demo video per submission/DEMO_SCRIPT.md",
     "Decide model redistribution rights",

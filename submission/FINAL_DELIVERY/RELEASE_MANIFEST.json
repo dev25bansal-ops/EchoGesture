@@ -57,16 +57,16 @@
       "clean_room_note": "extracted to empty dir; predict() ran from extracted copy only; 30/30 clips, 23 correct"
     },
     "presentation": {
-      "path": "submission/presentation/CollegeName_TeamName.pptx",
-      "sha256": "960a12305399371aea0e261f71e58825fe489073b5d47ea6ecc6052bd5f84133",
-      "bytes": 413513,
+      "path": "submission/presentation/VIT_Chennai_Sky_Grazers.pptx",
+      "sha256": "ce577e46d00542aabb2be604e0199979099a50547e93491b730d7c48311a67a7",
+      "bytes": 413539,
       "slides": 9,
       "template": "Built inside the organizer's own template (C:/Users/dev25/Downloads/Submission_Final_forGithub.pptx): the original 9 slides are filled in place, so master, layout and header geometry are the template's, not a reconstruction.",
       "font": "Arial Black (display) and Calibri (body), inherited from the template",
       "pdf": {
-        "path": "submission/presentation/CollegeName_TeamName.pdf",
-        "sha256": "d1e959f06d167e05944f03f24473f20ba786e01dfc40b622b8620643fb27adcd",
-        "bytes": 376460,
+        "path": "submission/presentation/VIT_Chennai_Sky_Grazers.pdf",
+        "sha256": "c995831a3ed580ee9c5335402955edc1944ad9ed7e0966785f8e0d39cf62325a",
+        "bytes": 377613,
         "pages": 9,
         "note": "Native Microsoft PowerPoint export (SaveAs format 32): text is selectable and fonts are embedded. Verified as 9 pages with the figure set re-extracted from the PDF text layer."
       },

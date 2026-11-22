@@ -58,10 +58,9 @@ GREEN = RGBColor(0x4A, 0xC8, 0x80)
 DISPLAY = "Arial Black"
 BODY = "Calibri"
 
-# Team members, taken from this repository's own commit authorship rather than
-# guessed from doc mentions. The registration form is the authority; if it
-# lists different people, change this list and rebuild.
-MEMBERS = ["Dev Bansal", "Abhijeet Miskin"]
+# Team members as given by the team lead on 2026-11-22. These are the full
+# names, which is what the first slide a judge sees should carry.
+MEMBERS = ["Dev Datya Pratap Bansal", "Miskin Abhijeet Laxman"]
 
 # The template is 10 x 5.625 in. The header band occupies y=0..0.90, so every
 # content slide gets the rectangle below that and nothing above it.
@@ -349,7 +348,7 @@ def s5_output(slide):
     block(slide, LEFT, TOP + 1.68, 4.45, 0.25, "RESULTS SHEET — WHERE IT STANDS", size=9, colour=GREY)
     rows = [
         ("top1_accuracy", "85.45%", "PASS", GREEN),
-        ("latency_p95", "46–54 / 68–70 ms", "FAIL", AMBER),
+        ("latency_p95", "58–72 ms, release", "FAIL", AMBER),
         ("model_size", "16.33 MB", "PASS", GREEN),
         ("accuracy_drop_robustness", "5.76 pt", "FAIL", RED),
         ("avg_power", "2.7–2.9 W (camera path)", "FAIL", RED),
@@ -369,7 +368,7 @@ def s5_output(slide):
          {"size": 9, "space": 5}),
         ("The 5.76 pt robustness drop is real; the app's gate recovers it to 2.39 at 86%/80% coverage.",
          {"size": 9, "space": 5}),
-        ("Latency and power came from a DEBUGGABLE build. The shipped APK is now the signed release build, so those figures are upper bounds.",
+        ("Latency is now measured on the SIGNED RELEASE APK, four file-pick runs: 58/65/67/72 ms p95, all over the 50 ms target. Power still came from a DEBUGGABLE build and remains an upper bound.",
          {"size": 9, "space": 5}),
         ("The old 77.02% was these weights on a cache with a wrong presence mask on 29% of clips.",
          {"size": 9, "colour": CYAN}),

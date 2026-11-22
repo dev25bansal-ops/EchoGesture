@@ -126,11 +126,14 @@ reconciling because they come from the app's own profiler:
 The app had been building its detector with no delegate at all, so it ran on the
 CPU path. With `Delegate.GPU` requested and CPU as fallback, the detector is
 2.3× faster. But **the honest score on the artifact that ships is the last row**:
-four file-pick classifications on the signed release APK gave detect p95 58, 65,
-67 and 72 ms, all over the 50 ms target. The last two are the *same clip*
-(MECHANIC1), so the 5 ms gap between them is device run-to-run variance rather
-than a content difference — which is itself the useful fact: even the best
-sample on this device is 8 ms over, and the spread does not reach the target.
+19 live-camera sessions on the Auto 6.2 build gave detect p95 from 72 to 100 ms
+(median 85), every one over the 50 ms target, and the analysis step consumed
+0.94–1.02× the inter-frame interval — so the analyser, not the camera, is the
+limit. The superseded release build's four file-pick classifications (detect p95
+58, 65, 67, 72 ms) told the same story on a different path: the last two are the
+*same clip* (MECHANIC1), so the 5 ms gap between them is device run-to-run
+variance rather than a content difference — even the best sample on this device
+is 8 ms over, and the spread does not reach the target.
 
 An earlier version of this section quoted **50–59 ms** for the release build and
 called it "at or inside" the target. **That figure is retracted.**
@@ -142,9 +145,11 @@ how the defect was caught. `ClipAnalyzer` now times its own `detectForVideo`
 calls and names the delegate that actually ran, and the camera-only statistics
 are suppressed on the clip path.
 
-**Still unmeasured:** the live camera with a hand in frame on the release build.
-The HUD can report it now, but no run has been taken, so the row stays `FAIL` on
-that ground as well as on the four clip samples.
+**No longer unmeasured:** the live camera with a hand in frame, on the shipping
+Auto 6.2 build, with the app's own `AnalysisProfiler` reporting per-frame detect,
+convert and interval timings. That measurement is the last row of the table
+above — `docs/evidence/LATENCY_AUTO62_LIVE_CAMERA_2026-11-22.md`. The row stays
+`FAIL`, now on the shipping path rather than on four clip samples.
 
 All of the DEBUG rows are upper bounds. The classifier adds ~40 ms warm on top;
 it is no longer 0.15% of end-to-end, because the detector stopped dominating.
@@ -238,11 +243,11 @@ the honest reason the row stays `FAIL`, and it is measured rather than assumed.
 | "77% accurate on a phone" | Corpus/laptop only; one phone run proves the pipeline, not an accuracy |
 | "184 independent signs tested" | 184 evaluations over **72 unique clips** |
 | "INT8 quantised" | FP16 ships |
-| "Meets the 50 ms target" unconditionally | GPU p95 46–54 ms empty-frame, 68–70 ms with a hand, debug build |
+| "Meets the 50 ms target" unconditionally | Shipping Auto 6.2 GPU p95 is **72–100 ms** live-camera; DEBUG was 46–54 empty-frame / 68–70 with a hand |
 | "Robust to occlusion" | Landmark robustness FAILs at 5.76 pp; native pixel unmeasured |
 | "Continuous translation" | 100 isolated signs |
 | "Robustness criterion passed" | **FAIL** under the shipped aggregator |
-| "The live camera works as well as a clip" | Same sign 0.969 from a file, 0.246 live |
+| "The live camera works as well as a clip" | The live camera is the weaker path — rotation-variant model, landscape third-person corpus; sign into the rear camera in landscape. (The old "0.969 file / 0.246 live" pair was the portrait-normalisation defect, pre-`44b7fc2`; no artifact backs it as shipping behaviour.) |
 
 ---
 

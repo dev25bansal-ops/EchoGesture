@@ -266,9 +266,9 @@ def s3_solution(slide):
           size=19, colour=CYAN, font=BODY)
     slide.shapes[-1].text_frame.paragraphs[0].runs[0].font.bold = True
     steps = [
-        ("1", "Tap Start sign", "The app buffers timestamped hand landmarks — not photographs."),
-        ("2", "Perform the sign", "One isolated sign, one or two hands, any speed."),
-        ("3", "Tap Finish sign", "The interval is trimmed to where motion actually is."),
+        ("1", "Tap Start", "One button begins it. The app buffers timestamped hand landmarks — not photographs."),
+        ("2", "Sign it", "One isolated sign, one or two hands, any speed."),
+        ("3", "No Finish tap", "The app finds the sign's own start and end — you never tap a second time."),
         ("4", "Read the caption", "A gloss appears, with alternatives and a model score."),
     ]
     for i, (n, t, sub) in enumerate(steps):
@@ -387,8 +387,8 @@ def s6_differentiation(slide):
          "The model was always trained with a hand-presence mask — and every export omitted it. "
          "Supplying it made the shipped artifact match the trained one: +4.24 points."),
         ("Record the interval, not a photo",
-         "The user marks Start and Finish. The app classifies that interval and trims idle motion, "
-         "instead of sliding a window over whatever the camera last saw."),
+         "One tap. The app classifies the recorded interval and trims it to where the motion "
+         "actually is, instead of sliding a window over whatever the camera last saw."),
         ("Parity you can check",
          "Nine members at two widths (255 x,y / 381 x,y,z, read per member from the sidecar). "
          "Android and Python agree to 0.000000 on features and 5e-6 on logits across nine clips, "
@@ -438,8 +438,8 @@ def s8_brownie(slide):
         ("Validated on one physical phone. Not robust to heavy occlusion or extreme low light.",
          {"size": 10, "space": 6, "colour": GREY}),
         ("Live camera is the weak path. The model is rotation-variant and the corpus is landscape "
-         "third-person, so the same sign scores 0.969 from a file and 0.246 live. Use a file for "
-         "anything that must be reliable.",
+         "third-person, so sign into the rear camera held in landscape, at conversation distance. "
+         "For anything that must be deterministic, the file-pick path is still there.",
          {"size": 9, "colour": GREY}),
     ])
     block(slide, 5.10, TOP - 0.02, 4.40, 0.25, "ROADMAP, IN ORDER", size=9, colour=GREY)

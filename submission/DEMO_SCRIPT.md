@@ -71,15 +71,15 @@ footer sit on screen for two seconds.
 picture-in-picture. **Four signs, unedited, in real time.**
 
 For each sign:
-1. Tap **Start sign** — the button changes, the app starts buffering.
+1. Tap **Start Recognition** — the one button. The app starts buffering.
 2. Sign once, at a natural speed.
-3. Tap **Finish sign**.
+3. Don't tap again — the app finds the sign's own start and end.
 4. The result card appears — let it sit 3 seconds for the camera.
 
 **Overlay per attempt:** the ground-truth word and the predicted word, both
 literal. Do not clean this up in post.
 
-> "Start, sign, finish. It reads the interval I actually recorded — not a single
+> "One tap, sign, done. It reads the interval I actually recorded — not a single
 > photo, not a rolling window over whatever the camera happened to see."
 
 **If a sign is wrong:** keep it in, say "that one missed", and sign it again. An
@@ -146,9 +146,9 @@ Do **not** say "85% accurate on a phone". See §5.
 > one hundred signs, one at a time. If a hand leaves the frame for a quarter of a
 > clip, accuracy drops about 5.8 points. Three of the six scored criteria fail
 > and that is one of them.
-> On device the detector runs about 34–45 ms median, and 58 to 72 ms at p95
-> across four runs on the signed release build — over the 50 ms target on every
-> sample. But it runs offline, on a phone, right now."
+> On device, on this shipping build with a hand in frame, the detector runs
+> 72 to 100 ms at p95 — median 85, across nineteen live-camera sessions, over the
+> 50 ms target on every one. But it runs offline, on a phone, right now."
 
 **End card:** `EchoGesture · Track 02 · VIT_Chennai_Sky_Grazers`
 
@@ -170,7 +170,7 @@ Say the label with the number or do not say the number.
 | ~4.65 s p50 | full Python `predict()` clip-to-result, **desktop** | not Android |
 | +5.76 pp | hand-dropout loss, unconditional, full 1,251-clip split — **FAIL** | do not present the gated figure as the robustness result |
 | 2.39 pp | hand-dropout loss **at the app's margin gate, on accepted clips only**, 86% clean / 80% corrupted coverage | NOT proof of unconditional robustness. (An older 1.24 figure used the coords-kept diagnostic and is superseded.) |
-| 34–45 ms p50 / 46–54 ms p95 (empty frame) / 68–70 ms p95 (hand in frame) | MediaPipe detector, on-device, GPU delegate, Vivo V2404, **debug build** | not a PASS; not the classifier; the release build now shipping should be faster but was not re-measured |
+| 34–45 ms p50 / 46–54 ms p95 (empty frame) / 68–70 ms p95 (hand in frame) | MediaPipe detector, on-device, GPU delegate, Vivo V2404, **debug build** | not a PASS; not the classifier; the shipping **Auto 6.2** build was re-measured at detect p95 72–100 ms (median 85), live camera, 19 sessions — also FAIL |
 | 2666–2898 mW | camera hardware floor: batterystats prices "camera on" at a fixed 749.4 mA PowerProfile constant (~2.9 W), on-device — **FAIL** vs 500 mW | not the model's own power — it is the cost of the camera being on at all, ~5.8× the budget, so no camera app can pass; app compute is ~157 mW |
 | 19.2% drift / 10 min | SoC max over CPU/GPU/NSP, on-device, debug build — **PASS** vs 20% | only 0.8 points of headroom |
 | 99.7% above 0.8 confidence | corpus, 594 of 1,251 clips | not phone accuracy, not a guarantee |
@@ -183,13 +183,14 @@ Say the label with the number or do not say the number.
 - Power or thermal numbers **presented as anything other than measured-FAIL
   (power) and measured-PASS with 0.8 pt headroom (thermal)**. Both were measured
   on 2026-11-19 on the debug build; the old line here said they were unmeasured.
-- **Latency stated as a PASS.** On the signed release build the GPU delegate p95
-  is **72–100 ms, median 85, across 19 live-camera sessions**, every one over the
-  50 ms target — say the live-camera number, because that is the path the video
-  is showing.
-  p50 (34–45 ms) passes but the criterion is a p95. If a judge asks, that is the
-  whole answer; do not round it into "under 50 ms", and do not quote the older
-  46–54 / 68–70 DEBUG figures as if they were the shipping configuration.
+- **Latency stated as a PASS.** On the shipping **Auto 6.2** build the GPU
+  delegate p95 is **72–100 ms, median 85, across 19 live-camera sessions**, every
+  one over the 50 ms target — say the live-camera number, because that is the
+  path the video is showing.
+  p50 passes but the criterion is a p95. If a judge asks, that is the whole
+  answer; do not round it into "under 50 ms", and do not quote the older
+  46–54 / 68–70 DEBUG figures or the 58–72 release-build file-pick figures as if
+  they were the shipping configuration.
 - "Uncertain — sign again" as a system behaviour. It does not exist.
 
 ## 5. The 77% → 85% change, if a judge asks
@@ -206,21 +207,37 @@ happened to be in our favour.
 
 ## 6. Recording with the current APK
 
-The APK to film is the **signed release build**, not tracked in git because 80.8
-MB times out the HTTPS push. Install it from the GitHub release
-[`v2026-11-22-submission`](https://github.com/dev25bansal-ops/EchoGesture/releases/tag/v2026-11-22-submission)
+The APK to film is **`EchoGesture-Auto-6.2.apk`** — the signed, non-debuggable
+Auto build, 81.3 MB, not tracked in git because the size times out the HTTPS
+push. Install it from the GitHub release
+[`v2026-11-22-auto6.2`](https://github.com/dev25bansal-ops/EchoGesture/releases/tag/v2026-11-22-auto6.2)
 and check the digest against
 `submission/apk/EchoGesture-Auto-6.2.apk.sha256` (`b1c0e671…dcf8`).
 Confirm the footer reads `9-model ensemble · FP16 TFLite · SHA-256 995cc8d0…`
 before you roll. The older `EchoGesture-2026-11-21.apk` is the **debuggable**
-build — it is what every latency, power and thermal figure in `results.csv` was
-measured on, so it is the right artifact for a measurement session and the
-wrong one to ship or to film.
+build the historical `results.csv` latency/power/thermal figures were measured
+on, and the superseded `EchoGesture-2026-11-22-release.apk` (`CN=measurement`)
+is neither the app to ship nor the one to film — Auto 6.2 is.
 
-**Film the clip path, not the live camera.** The same VOICE sign scores 0.969
-through the file picker and 0.246 through the camera in the same session; the
-camera path is a documented limitation, not a demo. Use DARK or MECHANIC — the
-held-out pair — and say so on camera.
+**Film the live camera — that is the product.** Auto 6.2's headline change is the
+one-tap live flow, and it is the path a judge will open. On 2026-11-22 the user
+ran it on the Vivo V2404 through both the rear and front cameras and it detected
+correctly, so the camera is demonstrable; what it is *not* is an accuracy figure.
+
+An earlier draft here said the same VOICE sign scored 0.969 through the file
+picker and 0.246 through the camera. That pair is the **portrait x/y
+normalisation defect**, measured before it was fixed — no artifact in the repo
+backs it and it must not be narrated as shipping behaviour. The mainline fix is
+`44b7fc2`; the Auto lineage carries its own equivalents (`df22ce2`, `01882cc`),
+and on 2026-11-22 the shipping Auto 6.2 build was observed detecting correctly on
+both front and rear cameras. Its lasting lesson still holds and belongs in the
+video: **the live camera is the weaker path** — the model is rotation-variant and
+the corpus is landscape and third-person — so sign into the rear camera held in
+landscape, at conversation distance, and say that constraint out loud.
+
+Use DARK or MECHANIC — the held-out pair — and say so on camera. For anything
+you need deterministic, the file-pick path in Settings is still there as the
+reproducible route.
 
 If the phone is not available, see §7 — but a phone **was** available on
 2026-11-21 and the shipped build was driven on it, so §7 is a fallback, not the

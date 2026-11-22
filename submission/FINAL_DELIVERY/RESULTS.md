@@ -134,9 +134,9 @@ all trace to three gitignored artifacts (see `TEST_TRIAGE.md`).
 | APK `EchoGesture-2026-11-22-release.apk` (*superseded*) | `9930894280967c0809b52595b103e0a36b93097768f7f61e401b7e50a3b4b397` |
 | APK `EchoGesture-2026-11-21.apk` (debuggable; source of the power figure) | `96f00458f54de715c7a6f489f9ae92425bc73a089043a91ccbe0ae6d4f060035` |
 | ZIP `EchoGesture_Submission.zip` | `5d310cecf755f1593a3bc9b9b4b56d38e7ca58962d8da0f0325218c746da8e25` |
-| Deck `VIT_Chennai_Sky_Grazers.pptx` | `ce577e46d00542aabb2be604e0199979099a50547e93491b730d7c48311a67a7` |
-| Deck `VIT_Chennai_Sky_Grazers.pdf` | `c995831a3ed580ee9c5335402955edc1944ad9ed7e0966785f8e0d39cf62325a` |
-| Demo video `EchoGesture_demo_2026-11-22.mp4` (gitignored; upload separately) | `321869c07afaf1b20993c2159d8a07d9e312f718a108956108fb679badebd2a3` |
+| Deck `VIT_Chennai_Sky_Grazers.pptx` | `3879e53c990274eaa77ad1c7aa60706d24b6c18402e55c9e4a57c59c678b9e88` |
+| Deck `VIT_Chennai_Sky_Grazers.pdf` | `9e626eb3ed30fa8a0e6bfbaba41c119d36dd87c26ef77e2050b4f2193896fadc` |
+| Demo video `EchoGesture_demo_2026-11-22.mp4` (gitignored; upload separately) | `dd4ec5fa1b19ca5813c480f0e8458b13c20c5262dbec2d916a1af638963b5b98` |
 
 All hashes above were re-measured from the files on disk on 2026-11-22. The
 previous table listed a ZIP hash (`5d310cec…`) for a file that did not exist,

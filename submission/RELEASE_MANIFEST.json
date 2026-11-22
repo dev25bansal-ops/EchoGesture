@@ -69,14 +69,14 @@
     },
     "presentation": {
       "path": "submission/presentation/VIT_Chennai_Sky_Grazers.pptx",
-      "sha256": "ce577e46d00542aabb2be604e0199979099a50547e93491b730d7c48311a67a7",
+      "sha256": "3879e53c990274eaa77ad1c7aa60706d24b6c18402e55c9e4a57c59c678b9e88",
       "bytes": 413539,
       "slides": 9,
       "template": "Built inside the organizer's own template (C:/Users/dev25/Downloads/Submission_Final_forGithub.pptx): the original 9 slides are filled in place, so master, layout and header geometry are the template's, not a reconstruction. Section list is the template's: Track No / Team+College / Members, THE PROBLEM, SOLUTION, ARCHITECTURE, Track Final Output, DIFFERENTIATION, DEMO & LOCAL SETUP, Brownie Slides, Thank You.",
       "font": "Arial Black (display) and Calibri (body), inherited from the template",
       "pdf": {
         "path": "submission/presentation/VIT_Chennai_Sky_Grazers.pdf",
-        "sha256": "c995831a3ed580ee9c5335402955edc1944ad9ed7e0966785f8e0d39cf62325a",
+        "sha256": "9e626eb3ed30fa8a0e6bfbaba41c119d36dd87c26ef77e2050b4f2193896fadc",
         "bytes": 377613,
         "pages": 9,
         "note": "Native Microsoft PowerPoint export (SaveAs format 32): text is selectable and fonts are embedded. Verified as 9 pages with the figure set re-extracted from the PDF text layer."
@@ -149,8 +149,8 @@
     },
     "demo_video_2026_11_22": {
       "path": "docs/submission/EchoGesture_demo_2026-11-22.mp4",
-      "sha256": "321869c07afaf1b20993c2159d8a07d9e312f718a108956108fb679badebd2a3",
-      "bytes": 28134918,
+      "sha256": "dd4ec5fa1b19ca5813c480f0e8458b13c20c5262dbec2d916a1af638963b5b98",
+      "bytes": 28154151,
       "resolution": "1280x720",
       "fps": 30,
       "frames": 5251,
@@ -280,7 +280,7 @@
     },
     {
       "date": "2026-11-22",
-      "what": "demo video REBUILT (docs/submission/EchoGesture_demo_2026-11-22.mp4, 321869c0...bd2a3, 2:55.2, 10 narrated beats). Supersedes c22d411b...72fc. Two corrections: the on-screen HUD latency caption had quoted a retracted figure and now reads 'release: detect p95 58-72 ms (file-pick)' with clip 67.0 ms; and the robustness narration wrongly called hand-drop the only failing criterion (three rows fail) and now says it is the one we are furthest from fixing. Verified on an extracted frame. Not committed: ASL Citizen footage on a public repo."
+      "what": "demo video RE-RENDERED (docs/submission/EchoGesture_demo_2026-11-22.mp4, dd4ec5fa...5b98, 2:55.0, 10 narrated beats). Supersedes 321869c0...bd2a3, whose HUD caption still showed the superseded release build's 'detect p95 58-72 ms (file-pick)'. The caption now reads 'Auto 6.2: detect p95 72-100 ms (live camera)' - the shipping build's 19-session live-camera measurement - and beat 08 narrates 92 percent, the held-out test split. Verified on an extracted frame. Not committed: ASL Citizen footage on a public repo."
     }
   ]
 }

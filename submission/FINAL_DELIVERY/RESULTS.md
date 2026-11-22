@@ -95,14 +95,16 @@ geometry; the app is 640×480 native. Native-camera robustness is unmeasured.
 | SIGNED RELEASE, file-pick (*superseded build*) | 58 / 65 / 67 / 72 ms p95 across four classifications |
 | **On-device GPU, SIGNED AUTO 6.2, LIVE CAMERA** | **72–100 ms p95, median 85**, across 19 sessions with a hand in frame |
 
-**The ≤50 ms criterion FAILS on every measured sample.** The four release-build
-samples are each 8–22 ms over the 50 ms target; p50 is 34–45 ms and passes, so
-the failure is in the tail. The last two samples are the same clip, which makes
-the 5 ms gap between them device run-to-run variance rather than a content
-difference. An earlier version of this table reported only DEBUG-build figures
-(46–54 ms empty-frame, 68–70 ms with a hand) and called the criterion PARTIAL;
-those are superseded and are retained here only for provenance. Classification
-adds a further ~40 ms warm on top of the detector.
+**The ≤50 ms criterion FAILS on every measured sample.** On the shipping Auto 6.2
+build, all 19 live-camera sessions were over the target (72–100 ms p95, median
+85). The superseded release build's four file-pick samples were each 8–22 ms
+over; p50 passes at 34–45 ms, so the failure is in the tail. The last two of
+those are the same clip, which makes the 5 ms gap between them device run-to-run
+variance rather than a content difference. An earlier version of this table
+reported only DEBUG-build figures (46–54 ms empty-frame, 68–70 ms with a hand)
+and called the criterion PARTIAL; those are superseded and are retained here
+only for provenance. Classification adds a further ~40 ms warm on top of the
+detector.
 
 Sources: `docs/ON_DEVICE_LATENCY_2026-11-19.md` (CPU),
 `docs/GPU_DELEGATE_2026-11-19.md` (GPU, no hand),

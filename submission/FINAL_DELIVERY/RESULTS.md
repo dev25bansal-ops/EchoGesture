@@ -92,7 +92,8 @@ geometry; the app is 640×480 native. Native-camera robustness is unmeasured.
 | On-device **CPU** delegate, 640×480 VIDEO | **95 ms p50 / 166 ms p95** |
 | On-device **GPU**, DEBUG, no hand in frame (superseded) | 46–54 ms p95 — not the shipping configuration |
 | On-device **GPU**, DEBUG, hand in frame (superseded) | 68–70 ms p95 — diagnostics on, not the shipping configuration |
-| **On-device GPU, SIGNED RELEASE, file-pick** | **58 / 65 / 67 / 72 ms p95** across four classifications |
+| SIGNED RELEASE, file-pick (*superseded build*) | 58 / 65 / 67 / 72 ms p95 across four classifications |
+| **On-device GPU, SIGNED AUTO 6.2, LIVE CAMERA** | **72–100 ms p95, median 85**, across 19 sessions with a hand in frame |
 
 **The ≤50 ms criterion FAILS on every measured sample.** The four release-build
 samples are each 8–22 ms over the 50 ms target; p50 is 34–45 ms and passes, so
@@ -127,7 +128,8 @@ all trace to three gitignored artifacts (see `TEST_TRIAGE.md`).
 
 | Artifact | SHA-256 |
 | --- | --- |
-| APK `EchoGesture-2026-11-22-release.apk` (**ship this**) | `9930894280967c0809b52595b103e0a36b93097768f7f61e401b7e50a3b4b397` |
+| APK `EchoGesture-Auto-6.2.apk` (**ship this**) | `b1c0e6710e24352dc24a9ebe930527cb7667f67abca905915ea8c49a9ac2dcf8` |
+| APK `EchoGesture-2026-11-22-release.apk` (*superseded*) | `9930894280967c0809b52595b103e0a36b93097768f7f61e401b7e50a3b4b397` |
 | APK `EchoGesture-2026-11-21.apk` (debuggable; source of the power figure) | `96f00458f54de715c7a6f489f9ae92425bc73a089043a91ccbe0ae6d4f060035` |
 | ZIP `EchoGesture_Submission.zip` | `5d310cecf755f1593a3bc9b9b4b56d38e7ca58962d8da0f0325218c746da8e25` |
 | Deck `VIT_Chennai_Sky_Grazers.pptx` | `ce577e46d00542aabb2be604e0199979099a50547e93491b730d7c48311a67a7` |

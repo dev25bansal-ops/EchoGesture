@@ -101,7 +101,7 @@ interchangeable.**
 | MediaPipe detector, per frame | **contested: 15.34 ms vs ~135 ms** | see `docs/release/LATENCY_RECONCILIATION.md` |
 | Full `predict()` clip→JSON | **577–749 ms p50** | desktop x86, warm, 32-frame clip, two clean runs. (A 4,650 ms figure was retracted — it was measured under CPU contention.) |
 | Cold start | **12.1–14.7 s** | one-time per process, dominated by MediaPipe's lazy graph build |
-| **On-device / on-phone** | **MEASURED 2026-11-22, signed release** | Vivo V2404, GPU delegate — see the table below. p95 **58 / 65 / 67 / 72 ms** across four file-pick runs, every sample over the ≤50 ms target → **FAIL** |
+| **On-device / on-phone** | **MEASURED 2026-11-22 on the shipping Auto 6.2 build** | Vivo V2404, GPU delegate — see the table below. Per-frame detect p95 **72–100 ms (median 85)** across 19 **live-camera** sessions with a hand in frame, every session over the ≤50 ms target → **FAIL** |
 
 **The ≤50 ms criterion FAILS at p95 on device and on desktop.** The classifier is
 a rounding error; the detector dominates.
@@ -120,7 +120,8 @@ reconciling because they come from the app's own profiler:
 | DEBUG, CPU delegate | 95 ms | 166 ms | FAIL |
 | DEBUG, GPU, **no hand in frame** (2026-11-19, *before* the 640 resolution pin) | 34–45 ms | 46–54 ms | at target, but not the shipping config |
 | DEBUG, GPU, **hand in frame** (2026-11-21, *after* the pin, diagnostics ON) | 50–58 ms | 68–70 ms | FAIL, and carries a diagnostic bitmap copy the release build does not pay |
-| **SIGNED RELEASE, GPU, file-pick** (2026-11-22) | — | **58 / 65 / 67 / 72 ms** | **FAIL, 8–22 ms over** |
+| SIGNED RELEASE, GPU, file-pick (2026-11-22, *superseded build*) | — | 58 / 65 / 67 / 72 ms | FAIL, 8–22 ms over |
+| **SIGNED AUTO 6.2, GPU, LIVE CAMERA, hand in frame** (2026-11-22) | **57 ms** | **72–100 ms, median 85** | **FAIL, 22–50 ms over** |
 
 The app had been building its detector with no delegate at all, so it ran on the
 CPU path. With `Delegate.GPU` requested and CPU as fallback, the detector is
@@ -148,11 +149,14 @@ that ground as well as on the four clip samples.
 All of the DEBUG rows are upper bounds. The classifier adds ~40 ms warm on top;
 it is no longer 0.15% of end-to-end, because the detector stopped dominating.
 
-> "The detector takes 58–72 ms p95 on the GPU delegate on the signed release
-> build, measured four times off the app's own per-frame timer. The ≤50 ms
-> target is a p95, so that fails by 8–22 ms. The classifier is about 40 ms warm
-> and is not the problem. Desktop-CPU figures were 142–151 ms and are
-> historical."
+> "The detector takes 72–100 ms p95 per frame on the GPU delegate on the
+> shipping Auto 6.2 build, measured over 19 live-camera sessions with a hand in
+> frame, off the app's own per-frame profiler. The ≤50 ms target is a p95, so
+> that fails by 22–50 ms in every one. The classifier is 54–211 ms per clip
+> (median 91) and is not the problem: it runs once per sign, not once per frame.
+> Convert never exceeded 50 ms. The analyser, not the camera, is the limit — it
+> processed 40% of the frames the camera delivered. Desktop-CPU figures were
+> 142–151 ms and are historical."
 
 ---
 
@@ -183,8 +187,8 @@ rubric. Until it is, do not claim a robustness PASS.
 The gate is **top-1 minus top-2 probability margin ≥ 0.15** plus a 20% score
 floor, verified at `CameraScreen.kt:958`. It is **not** a 0.8 confidence
 threshold and **not** a 0.5 abstention, and it does **not** withhold the
-prediction — the card still shows the top-1, labelled *"Uncertain — this is the
-model's best guess, not a confirmed reading."*
+prediction — the card still shows the top-1, headed **"POSSIBLE MATCH"** with
+*"Low confidence. Compare the options below or try the sign on its own."*
 
 The pixel PASS at 4.48 is at **512 letterbox**, which the Android app does not
 use — it runs 640×480 native. **Native-geometry pixel robustness has not been

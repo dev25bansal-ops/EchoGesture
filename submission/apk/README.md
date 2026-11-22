@@ -1,108 +1,109 @@
 # EchoGesture APK
 
-**Ship this one: `EchoGesture-2026-11-22-release.apk`.** It is a signed,
-non-debuggable **release** build. Every latency, power and thermal figure in
-this repo was measured on the older DEBUGGABLE build, whose instrumentation is
-overhead the release build does not carry — so those numbers are upper bounds
-on the artifact you are actually installing.
+**Ship this one: `EchoGesture-Auto-6.2.apk`.** It is a signed, non-debuggable
+release build and it is the app the submission is scored on.
 
-| | Release (ship) | Debug (historical) |
-|---|---|---|
-| File | `EchoGesture-2026-11-22-release.apk` | `EchoGesture-2026-11-21.apk` |
-| Size | 80,815,568 bytes (80.8 MB) | 82,894,510 bytes (82.9 MB) |
-| SHA-256 | `9930894280967c0809b52595b103e0a36b93097768f7f61e401b7e50a3b4b397` | `96f00458f54de715c7a6f489f9ae92425bc73a089043a91ccbe0ae6d4f060035` |
-| `android:debuggable` | **absent (not debuggable)** | `true` |
-| Signature | `CN=measurement` | debug key |
-| Unit tests | **150 / 150 pass** on the release variant | 150 / 150 |
+| | Auto 6.2 (ships) | Auto 6.1 | Release (superseded) | Debug (historical) |
+|---|---|---|---|---|
+| File | `EchoGesture-Auto-6.2.apk` | `EchoGesture-Auto-6.1.apk` | `EchoGesture-2026-11-22-release.apk` | `EchoGesture-2026-11-21.apk` |
+| Size | 81,281,198 bytes | — | 80,816,048 bytes | 82,894,510 bytes |
+| SHA-256 | `b1c0e6710e24352dc24a9ebe930527cb7667f67abca905915ea8c49a9ac2dcf8` | `07cd81f2f701d4c6eee199c96b3795857b72013e8066da6fda6dc34f87a54e23` | `9930894280967c0809b52595b103e0a36b93097768f7f61e401b7e50a3b4b397` | `96f00458f54de715c7a6f489f9ae92425bc73a089043a91ccbe0ae6d4f060035` |
+| Package | `org.echogesture.finalapp.auto` | same | `org.echogesture.finalapp` | same |
+| Version | vc 9 / 6.2 | vc 8 / 6.1 | vc 1 / 1.0 | vc 1 / 1.0 |
+| Signature | `CN=EchoGesture Auto` | same | `CN=measurement` | debug key |
+| `android:debuggable` | **absent** | absent | absent | `true` |
 
-| | |
-|---|---|
-| Package | `org.echogesture.finalapp` |
-| Min SDK | 24 (Android 7.0) |
-| Target SDK | 34 |
-| Arch | arm64-v8a |
-| Model assets | 9 FP16 `.tflite` + `hand_landmarker.task` (10 files, identical to debug) |
-| `ensemble_test_top1` in the APK's own sidecar | **0.8545** — matches the deck |
+The Auto variants carry their own package ID and signing identity precisely so
+they install **alongside** the older builds rather than replacing them. That is
+why both can be on the phone at once.
 
-Both `.sha256` files are the digest in `sha256sum` format. Verify before
-installing:
+## Where it comes from
 
-Replaces the 00:29 build (`a56ba20f…8ada7`) with a rebuild that adds the
-per-frame p95 line to the result card. App code only: same 10 model assets,
-same signing key, so the certificate is unchanged. Measured on the device
-before publishing — see `submission/RELEASE_MANIFEST.json`
-(`rebuilt_2026_11_22`).
+Auto 6.2 is built from branch **`codex/android-auto-6.2`**, commit
+**`33e82b5dafff08df7cfa92088f81aacc2418af8d`**. That commit is not just
+claimed — `docs/hackathon/HANDOFF.md` on the branch records it beside this exact
+SHA-256, and the build itself refuses to package unless the model bytes match:
+
+`app/android_final/app/build.gradle.kts` defines a `verifyPinnedAssets` task
+that hard-fails `assembleRelease` when any of the nine `*_fp16.tflite` members
+or `hand_landmarker.task` is missing or hashes differently from its pin. All ten
+pins plus `landmark_labels.json` were re-verified against this repository's
+`models/` on 2026-11-22. **A swapped classifier cannot get past the build.**
+
+## Install
+
+Signed with a local key, not a Play Store certificate, so Android warns about an
+unknown source. Enable "Install unknown apps" for your file manager, or:
 
 ```
-sha256sum -c EchoGesture-2026-11-22-release.apk.sha256
+adb install -r EchoGesture-Auto-6.2.apk
 ```
 
-**The 80.8 MB release binary is published as a GitHub release asset, not
-tracked in git** — an 80 MB blob repeatedly timed out the HTTPS push (HTTP 408),
-so it lives at:
+Verify the bytes first:
 
-https://github.com/dev25bansal-ops/EchoGesture/releases/tag/v2026-11-22-submission
+```
+sha256sum -c EchoGesture-Auto-6.2.apk.sha256
+```
 
-The `.sha256` file in the tree pins the bytes you should get. The older
-debug APK (`EchoGesture-2026-11-21.apk`) IS tracked in this repo.
+**The 81 MB binary is published as a GitHub release asset, not tracked in git** —
+an 80 MB blob repeatedly timed out the HTTPS push (HTTP 408), so the canonical
+copy lives at:
 
-The release build is signed from an opt-in environment config, so no key
-material or password is in the repository. With `ECHOGESTURE_KEYSTORE` unset,
-`assembleRelease` produces an unsigned APK exactly as before.
+https://github.com/dev25bansal-ops/EchoGesture/releases/tag/v2026-11-22-auto6.2
+
+The `.sha256` file in the tree pins the bytes you should get. GitHub's own
+server-side digest for the uploaded asset matches this hash exactly, so the
+release asset and the tree agree.
 
 ## What it does
 
 Offline sign language recognition for 100 isolated ASL signs. No network
 permission at all — the manifest removes INTERNET and ACCESS_NETWORK_STATE that
 MediaPipe's transitive dependency injects, so the installed app cannot open a
-socket.
+socket. The Settings screen states this and the idle screen carries a green
+**Offline** badge.
 
-Two ways to use it:
+Three ways to use it:
 
-- **Start sign → perform → stop.** Recording ends by itself ~900 ms after your
-  hand settles (`AutoFinishDetector`), or immediately if you tap Finish.
+- **One tap.** Tap **Start Recognition**, perform one sign, and the app finds
+  the sign's own start and end and shows the result — no Finish tap. This is the
+  Auto variant's headline change.
 - **Pick a video clip.** Classifies a file directly, with no camera involved.
-  This is the deterministic path and the one to use when checking the app works.
-
-## Install
-
-Signed with a local key, not a Play Store certificate, so Android will warn
-about an unknown source. Enable "Install unknown apps" for your file manager, or:
-
-```
-adb install -r EchoGesture-2026-11-22-release.apk
-```
+  This is the deterministic path and the one to use when checking it works.
+- **Speak.** A confirmed sign can be played aloud from 100 bundled
+  pronunciations, entirely offline.
 
 ## Known limits, stated rather than buried
 
-- **85.45% top-1** on 11 unseen signers (1,251 clips). That is corpus accuracy.
-- **The live camera is the weak path, and it is not corpus-shaped.** The model is
-  completely rotation-variant: all eight signs tested change identity when the
-  hand is rotated 90 degrees. The corpus is landscape and third-person; a phone
-  held portrait is neither. On-device, the same VOICE sign scores 0.969 through
-  the file picker and 0.246 with only 3 of 9 members agreeing through the camera
-  in the same session. Use the clip path for anything that must be reliable.
+- **85.45% top-1** on 11 unseen signers (1,251 clips). That is **corpus
+  accuracy**, not phone accuracy, and it is unchanged by this build.
+- **Latency fails on this build, measured on the path a user takes.** Nineteen
+  live-camera sessions with a hand in frame gave per-frame detect p95 of
+  **72–100 ms (median 85)** against a 50 ms target — over in **19 of 19**.
+  Analysis consumed 0.94–1.02× the inter-frame interval, so the analyser
+  discarded frames the camera delivered (2,135 delivered, 863 processed). The
+  detector is the bottleneck; convert never exceeded 50 ms and the classifier is
+  54–211 ms per clip, once. See
+  `docs/evidence/LATENCY_AUTO62_LIVE_CAMERA_2026-11-22.md`.
+- **Robustness fails unconditionally.** Landmark `drop_hand_25pct` costs
+  **+5.76 pt**. The app's margin ≥ 0.15 gate recovers it to +2.39 at 86% clean /
+  80% corrupted coverage, and whether the competition permits abstentions is
+  unknown.
+- **Power fails at the camera hardware floor.** `batterystats` prices
+  camera-on at a fixed PowerProfile constant of 749.4 mA (~2.9 W), roughly 5.8×
+  the 500 mW budget, so **no** live-camera app on this device can pass that row.
 - **A held hand that is not a sign still gets a name.** A closed fist held at
   the chin is reported as RAZOR2 at 0.794 with 9 of 9 members agreeing, because
-  that is what a fist looks like in this lexicon. The gate is the only defence,
-  and a confident wrong reading passes it.
-- **The weakest signs are genuinely weak:** CHEESEGRATER 40%, SINK and SCARF2
-  50%. Do not demo those.
-- **Clip analysis takes about 1 s**, not the 10–20 s it used to. The fix was
-  replacing per-frame seeking with a sequential `MediaExtractor` + `MediaCodec`
-  decode (`SequentialVideoDecoder.kt`), measured at 8,700–21,200 ms before and
-  ~870 ms after.
+  that is what a fist looks like in this lexicon. The gate is the only defence.
 - **Two demo clips are training clips.** NOON and VOICE were seen during
   training; DARK and MECHANIC are held out. Only the held-out pair says anything
   about generalisation.
-- **The acceptance gate declines rather than guesses** when the top-2 margin is
-  under 0.15, and a held hand that is not signing still gets a named gloss about
-  43% of the time. Both are documented in `docs/`.
-- **A declined reading now looks different from an accepted one, everywhere.**
-  The live pill, the card header and the score badge all follow the gate: an
-  accepted reading reads "Recognised sign" in green with a check, a declined one
-  reads "Uncertain reading" in amber with a warning triangle. Verified on device
-  in both directions — EAT1 at 22.2% declined, MECHANIC1 at 89.3% accepted.
+- **A declined reading looks different from an accepted one, everywhere.** An
+  accepted reading reads **"RECOGNISED SIGN"** in green; a low-margin one reads
+  **"POSSIBLE MATCH"** in amber with *"Low confidence. Compare the options below
+  or try the sign on its own."*; and a capture with no hand reads **"No hands in
+  view"** with *"No sign started. Tap Start Recognition and perform one sign."*
+  A refusal is not recorded to History.
 
 ## Rights — read this before redistributing
 
@@ -112,20 +113,23 @@ derived and carry no redistribution permission**. `NOTICE` and
 publication**. They are in this public repository so the submitted system is
 reproducible; they are **not licensed for commercial reuse**. The MediaPipe
 detector (`hand_landmarker.task`) is Apache-2.0 and redistributable with
-attribution. The app code is MIT.
+attribution. The 100 pronunciation MP3s are bundled app assets. The app code is
+MIT.
 
 ## Rebuilding it yourself
 
 `app/src/main/assets/` is gitignored, so a clean clone cannot assemble an APK
-until the model files are put there:
+until the model files are put there. The build then verifies them against the
+pins:
 
 ```
 cp models/*.tflite models/*.task models/*.json \
    app/android_final/app/src/main/assets/
 cd app/android_final
-JAVA_HOME=<jdk17> ./gradlew :app:assembleDebug
+JAVA_HOME=<jdk17> ./gradlew :app:assembleRelease
 ```
 
 The asset directory needs `hand_landmarker.task`, the nine `*_fp16.tflite`
 members, `landmark_labels.json` and `landmark_model_meta.json` — the same set
-`results.csv` row `model_size` counts.
+`results.csv` row `model_size` counts. Signing is opt-in through
+`ECHOGESTURE_KEYSTORE`; with it unset the release variant stays unsigned.

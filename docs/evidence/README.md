@@ -1,54 +1,59 @@
 # HUD evidence, captured on the shipping build
 
-Five screenshots taken on the signed release APK
-(`EchoGesture-2026-11-22-release.apk`, `9930894…4b397`) on the physical
+Six screenshots taken on **EchoGesture Auto 6.2**
+(`EchoGesture-Auto-6.2.apk`, SHA-256 `b1c0e671…dcf8`) on the physical
 Vivo V2404, 2026-11-22, driven over adb. They exist because the
 "Occlusions & HUD clarity" criterion is 25% of the quality score and is the
 one place a judge can check our claim against a picture rather than a number.
 
-Each shot is unedited — no crop, no annotation. The status bar and the
-`9-model ensemble · FP16 TFLite · SHA-256 995cc8d0…` footer are left in
-deliberately, so the artifact that produced the screen is identifiable.
+Each shot is unedited — no crop, no annotation. The status bar is left in
+deliberately, so the capture time and battery state stay visible.
+
+**These supersede the five `hud_0*.png` shots**, which were taken on
+`EchoGesture-2026-11-22-release.apk` (`9930894…4b397`) — the build that
+is no longer submitted. The old files are kept in this directory so the
+change is auditable, but no claim in the submission may cite them any more.
+Two things differ on the shipping build and are visible below: the app is
+titled **EchoGesture Auto**, and the result card reports
+*Analysis / classifier* instead of a per-frame `Clip detect p95` line.
 
 | File | What it shows | Claim it supports |
 | --- | --- | --- |
-| `hud_01_camera_offline.png` | Idle camera screen, green **Offline** badge, footer with the ensemble SHA | The app runs with no network permission; the model identity is on screen |
-| `hud_02_glossary.png` | The glossary of the 100 output classes | The vocabulary is exactly what the model emits, inspectable |
-| `hud_03_refusal_no_hands.png` | **"No hands in view — Hands were visible for too little of that recording."** | The app declines rather than guesses when no hand is found. This state also produces **no History entry** — a refusal is not recorded as a recognition |
-| `hud_04_recording_too_long.png` | **"Perform one sign, then tap Finish"** with a Cancel affordance, mid-recording | Constructive guidance during capture, not an error after the fact |
-| `hud_05_result_p95.png` | `MECHANIC1`, **89.3% model score**, alternatives `DEMAND1 · HALLOWEEN1 · FAIL · DECIDE1`, and the clip's own **"Clip detect p95: 67 ms (GPU delegate) — the ≤50 ms target is a p95"** | A real accepted reading, the alternatives are always shown, and the scored latency metric is readable on the artifact that ships |
+| `auto62_01_camera_offline.png` | Idle camera screen, green **Offline** badge, **"Searching for hands"** pill, the framing guide, and the "New here?" guidance card | The app runs with no network permission, and the idle state tells the user what it is doing |
+| `auto62_02_settings_model_hash.png` | Settings → **MODEL**: "9-model ensemble / logit-averaged, one softmax", "FP16 TFLite", the **ensemble SHA-256 `995cc8d0…b4bb`**, and all nine member filenames. Same screen carries **Export diagnostics…** and the **Capture diagnostics** toggle | The model identity is on screen on the artifact that ships, so a judge can match it to `results.csv` without trusting the README |
+| `auto62_03_glossary_100.png` | The glossary, headed **"100 of 100 signs"**, with a search field | The vocabulary is exactly what the model emits, and it is inspectable |
+| `auto62_04_refusal_no_hands.png` | **"No hands in view"** in the live pill (amber), and the result panel **"No hands in view — No sign started. Tap Start Recognition and perform one sign."** | The app declines rather than guesses when no hand is found. A refusal produces **no History entry** — a refusal is not a recognition |
+| `auto62_05_live_result.png` | `VOICE`, **62.4% model score**, header **"POSSIBLE MATCH"**, alternatives `RABBIT2 · COMB2 · HOSPITAL1 · JEWELRY`, **"Analysis 201 ms · classifier 186 ms"**, **"20 samples over 2217 ms · 9 samples/s"**, and the Copy / Speak / Scan-next / Clear actions | A real reading from the **live camera**, with its alternatives always shown, and the timing the app actually records on the path a user takes |
+| `auto62_06_history_saved.png` | History with the toggle on: subtitle **"Saved on this device"**, one entry `VOICE 85% 11:52 AM`, and a **Clear history** affordance | History persistence works, and the user can see and delete what is stored |
 
-## What shot 05 also tells us honestly
+## What these shots tell us honestly
 
-That capture reported **detect p95 72 ms**. Measured across four file-pick
-classifications on the signed release build — NOON1 58 ms, DARK1 65 ms,
-MECHANIC1 67 ms, and MECHANIC1 again at 72 ms — every sample is **over** the
-50 ms target, by 8 to 22 ms. The last two samples are the same clip, so the
-spread between them is device run-to-run variance, not a content difference.
-The range is recorded in `results/results.csv` (`latency_p95` notes) and the
-row is `FAIL`.
+**Shot 05 is a low-confidence reading, and it is labelled as one.** The header
+reads "POSSIBLE MATCH", not "Recognised sign", and the body says *"Low
+confidence. Compare the options below or try the sign on its own."* We are not
+showing a cherry-picked 95% card. The 62.4% score and the amber warning
+triangle are the gate doing its job.
 
-**The earlier 50–59 ms span is retracted.** `ClipAnalyzer` builds its own
-`HandLandmarker` and never called `HandTracker.profiler`, so the HUD's
-`Per-frame p95` line was reading the *live camera* profiler — leftover frames
-from an empty room — and printing them under a clip result. A cold-started app
-that had never opened the camera still showed `detect 46 ms`. `ClipAnalyzer`
-now times its own `detectForVideo` calls and reports which delegate actually
-ran; shot 05 was re-taken after that fix and shows the clip's real detector
-p95. This is a defect we found in our own instrument, so it is written down
-rather than quietly corrected.
+**The Auto build does not print a per-frame p95 on the result card.** The
+release build did, and `hud_05_result_p95.png` is the only screenshot in this
+repository that ever showed it. That line does not exist on the shipping
+build, so the latency row is evidenced by the app's own diagnostics export
+instead: `LATENCY_AUTO62_LIVE_CAMERA_2026-11-22.md` and the raw
+`auto6.2_diagnostics_live_camera_2026-11-22.txt` beside it, which carry
+`detect_p95` for 19 live-camera sessions. That is a stronger record than a
+screenshot, because it is per-session rather than one card.
 
-The live-camera-with-a-hand path is still unmeasured on the release build,
-which is a second, independent reason the row stays `FAIL`.
+**Every latency sample on this build is over target.** The 19-session export
+gives per-frame detect p95 of 72–100 ms, median 85 ms, against a 50 ms
+criterion. The row is `FAIL` and these shots do not pretend otherwise.
 
 ## What these shots do not show
 
-- **No live-camera accuracy.** Every correct reading above is the file-pick
-  path. The live camera was tested separately and misreads a still closed fist
-  as `RAZOR2`, which is diagnosed in
-  `docs/CAMERA_MISREAD_DIAGNOSIS_2026-11-21.md`.
-- **No phone accuracy claim.** One device, one signer. A correct clip reading
-  is evidence the pipeline works, not a measured accuracy.
-- **No "uncertain" label.** None of these captures produced a low-margin
-  result, so the uncertain state is not pictured here. It is described in
-  `docs/HUD_AND_OCCLUSION_EVIDENCE_2026-11-22.md` and was **not** staged.
+- **No accuracy claim.** One device, one signer. A correct reading is evidence
+  the pipeline works, not a measured accuracy. The 85.45% figure is a corpus
+  number over 1,251 signer-disjoint clips.
+- **No power or thermal measurement.** Both need their own run; see
+  `docs/POWER_THERMAL_2026-11-19.md` for the figures in `results.csv`.
+- **The "recording too long" state is not pictured here.** The Auto build ends
+  a capture automatically, so the old `hud_04` state ("Perform one sign, then
+  tap Finish") does not exist in the same form on this build.

@@ -8,8 +8,9 @@ Everything else is information.
 > **Superseded 2026-11-21 — kept as the original sign-off record.** Two items
 > below have since been resolved: the physical phone was reached and the shipped
 > build driven on it, and the shipped APK's metadata now reads `0.8545`, matching
-> the deck. The APK to ship is now `EchoGesture-2026-11-22-release.apk`
-> (`9930894…4b397`), the signed non-debuggable build; the older debug APK
+> the deck. The APK to ship is now `EchoGesture-Auto-6.2.apk`
+> (`b1c0e671…dcf8`), the signed non-debuggable build from
+> `codex/android-auto-6.2` @ `33e82b5`; the debug APK
 > `EchoGesture-2026-11-21.apk` (`96f00458…0035`) is what every latency, power
 > and thermal figure was measured on. Current numbers:
 > [`RESULTS.md`](RESULTS.md) and [`CHECKLIST.md`](CHECKLIST.md).

@@ -17,7 +17,7 @@ corrections are not negotiable:
 | Wrong | Right |
 | --- | --- |
 | "Below 0.8 confidence the model is right 99.7%" | "**Above** 0.8 confidence, the model was correct on 99.7% of 594 evaluated clips" — and this is a **laptop/corpus** figure, not phone accuracy |
-| "The app asks you to sign again when unsure" | The app **always shows its best guess**. When the margin is below 0.15 it labels the card *"Uncertain — this is the model's best guess, not a confirmed reading."* It never withholds a prediction. |
+| "The app asks you to sign again when unsure" | The app **always shows its best guess**. When the margin is below 0.15 the card is headed **"POSSIBLE MATCH"** with *"Low confidence. Compare the options below or try the sign on its own."* It never withholds a prediction. A capture with **no hand** is the different case: it refuses with *"No hands in view — No sign started."* |
 | 77.02% top-1 / 92.79% top-5 / 1,249 clips | **85.45%** top-1 / **96.64%** top-5 over **1,251** clips, 11 unseen signers |
 
 **Do not script UI behaviour the app does not implement.** The uncertain state is
@@ -29,7 +29,7 @@ a *label on a shown result*, not an abstention.
 
 | Item | Check |
 | --- | --- |
-| APK | `EchoGesture-2026-11-22-release.apk`, SHA-256 `9930894…4b397` — signed release build, from [release `v2026-11-22-submission`](https://github.com/dev25bansal-ops/EchoGesture/releases/tag/v2026-11-22-submission). Do **not** film the older `EchoGesture-2026-11-21.apk`; it is the debuggable build whose instrumentation the release removes. |
+| APK | **`EchoGesture-Auto-6.2.apk`**, SHA-256 `b1c0e671…dcf8` — signed release build, from [release `v2026-11-22-auto6.2`](https://github.com/dev25bansal-ops/EchoGesture/releases/tag/v2026-11-22-auto6.2). This is the shipping app, so film **this** one. Do **not** film `EchoGesture-2026-11-22-release.apk` (superseded) or the older `EchoGesture-2026-11-21.apk` (debuggable). |
 | Model identity | Camera footer reads **`9-model ensemble · FP16 TFLite · SHA-256 995cc8d0…`** |
 | Network | Airplane mode **ON** for the whole recording |
 | Second camera | A separate phone or camera filming the screen *and* the signer |
@@ -89,8 +89,8 @@ takes, and judges notice edited cuts.
 ### 1:07 – 1:25 · The uncertain label — only if it happens naturally
 
 **Do not stage this.** If a real attempt produces a low-margin result, the card
-carries the *"Uncertain — this is the model's best guess, not a confirmed
-reading"* label. Point at it and say:
+is headed **"POSSIBLE MATCH"** with *"Low confidence. Compare the options below
+or try the sign on its own."* Point at it and say:
 
 > "Notice it still gave me an answer, but it told me not to trust it. That label
 > appears when the top two candidates are close together. The app does not hide
@@ -184,7 +184,9 @@ Say the label with the number or do not say the number.
   (power) and measured-PASS with 0.8 pt headroom (thermal)**. Both were measured
   on 2026-11-19 on the debug build; the old line here said they were unmeasured.
 - **Latency stated as a PASS.** On the signed release build the GPU delegate p95
-  is 58–72 ms across four file-pick runs, every sample over the 50 ms target.
+  is **72–100 ms, median 85, across 19 live-camera sessions**, every one over the
+  50 ms target — say the live-camera number, because that is the path the video
+  is showing.
   p50 (34–45 ms) passes but the criterion is a p95. If a judge asks, that is the
   whole answer; do not round it into "under 50 ms", and do not quote the older
   46–54 / 68–70 DEBUG figures as if they were the shipping configuration.
@@ -208,7 +210,7 @@ The APK to film is the **signed release build**, not tracked in git because 80.8
 MB times out the HTTPS push. Install it from the GitHub release
 [`v2026-11-22-submission`](https://github.com/dev25bansal-ops/EchoGesture/releases/tag/v2026-11-22-submission)
 and check the digest against
-`submission/apk/EchoGesture-2026-11-22-release.apk.sha256` (`9930894…4b397`).
+`submission/apk/EchoGesture-Auto-6.2.apk.sha256` (`b1c0e671…dcf8`).
 Confirm the footer reads `9-model ensemble · FP16 TFLite · SHA-256 995cc8d0…`
 before you roll. The older `EchoGesture-2026-11-21.apk` is the **debuggable**
 build — it is what every latency, power and thermal figure in `results.csv` was

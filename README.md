@@ -28,16 +28,34 @@ template. Slide 1 carries the team string and the full member names; slide 9
 carries the team string. The **demo link** is the one placeholder still to be
 filled — it goes on slide 7 and in the submission form.
 
-**The APK to install** is the signed release build, published as a release asset
-(80.8 MB is too large for a reliable git push):
-[release `v2026-11-22-submission`](https://github.com/dev25bansal-ops/EchoGesture/releases/tag/v2026-11-22-submission).
+**The APK to install** is **EchoGesture Auto 6.2**, published as a release asset
+(81 MB is too large for a reliable git push):
+[release `v2026-11-22-auto6.2`](https://github.com/dev25bansal-ops/EchoGesture/releases/tag/v2026-11-22-auto6.2).
 Its digest is pinned by
-[`submission/apk/EchoGesture-2026-11-22-release.apk.sha256`](submission/apk/EchoGesture-2026-11-22-release.apk.sha256).
+[`submission/apk/EchoGesture-Auto-6.2.apk.sha256`](submission/apk/EchoGesture-Auto-6.2.apk.sha256),
+and the same bytes are at `submission/apk/EchoGesture-Auto-6.2.apk` in the tree.
+
+| | EchoGesture Auto 6.2 (ships) |
+| --- | --- |
+| File | `EchoGesture-Auto-6.2.apk` — 81,281,198 bytes |
+| SHA-256 | `b1c0e6710e24352dc24a9ebe930527cb7667f67abca905915ea8c49a9ac2dcf8` |
+| Package | `org.echogesture.finalapp.auto`, versionCode 9 / versionName 6.2 |
+| Signature | `CN=EchoGesture Auto` |
+| Permissions | `CAMERA` only — **no INTERNET** |
+| Source | branch `codex/android-auto-6.2`, commit `33e82b5` |
+
+It rebuilds from this tree: `app/android_final/app/build.gradle.kts` carries a
+`verifyPinnedAssets` task that fails the build unless the nine ensemble members
+and `hand_landmarker.task` are present and match their pinned SHA-256s, and all
+ten pins were re-verified against `models/` on 2026-11-22. Auto 6.2 adds
+one-tap automatic segmentation, offline speech for confirmed signs, and an
+on-device diagnostics export over the previous release build.
 
 **Current numbers, in one line:** 85.45% top-1 / 96.64% top-5 on 1,251
-signer-disjoint clips; 16.33 MB total; on-device GPU p95 **58–72 ms** across
-four file-pick runs on the signed release build. Three of the six scored rows
-pass and three fail — the table in
+signer-disjoint clips; 16.33 MB total; on-device GPU per-frame detect p95
+**72–100 ms (median 85)** across 19 live-camera sessions on the shipping build,
+over the 50 ms target in every one. Three of the six scored rows pass and three
+fail — the table in
 [`submission/FINAL_DELIVERY/RESULTS.md`](submission/FINAL_DELIVERY/RESULTS.md)
 states which, in its own words.
 
@@ -130,11 +148,11 @@ its device, runtime and how to reproduce it.
 | Model size | **pass** | 8.51 MB across nine members, plus 7.82 MB MediaPipe = 16.33 MB (under the ≤25 MB budget) |
 | Pixel robustness ≤ 5 pt | **pass, +4.48** | full 1,251-clip split, four corruptions all under budget |
 | Landmark robustness ≤ 5 pt | **1 of 6 fails raw, passes gated** | `drop_hand_25pct` is +5.76 FAIL scored on every clip; **+2.39 PASS** at the app's own margin ≥ 0.15 gate (92.13% clean / 89.74% corrupted at 86%/80% coverage). All five other corruptions pass (camera-further −0.24, half-framerate −1.52, drop-landmarks −2.16, jitter σ0.03 −3.20, jitter σ0.01 +0.16). Both rows are in `results.csv`; the honest reading is in [HUD_AND_OCCLUSION_EVIDENCE_2026-11-22.md](docs/HUD_AND_OCCLUSION_EVIDENCE_2026-11-22.md) |
-| HUD clarity (25% of the rubric) | **pass, verified on a phone** | The app declines rather than guesses: a no-hands or thin capture gets a specific refusal (*"No hands in view"*, *"Hands were visible for too little of that recording"*) and is **not** added to History. A low-margin reading is still shown but labelled *"Uncertain — this is the model's best guess"*. The gate is one function, `ResultPolicy.evaluate`, worth 86.1% coverage at 96.0% accuracy. Evidence: [HUD_AND_OCCLUSION_EVIDENCE_2026-11-22.md](docs/HUD_AND_OCCLUSION_EVIDENCE_2026-11-22.md) |
+| HUD clarity (25% of the rubric) | **pass, verified on a phone** | The app declines rather than guesses: a no-hands or thin capture gets a specific refusal — **"No hands in view"** with *"No sign started. Tap Start Recognition and perform one sign."* — and is **not** added to History (verified on the shipping build). A low-margin reading is still shown but labelled **"POSSIBLE MATCH"** with *"Low confidence. Compare the options below or try the sign on its own."*, and every reading lists four alternatives. The gate is one function, `ResultPolicy.evaluate`, worth 86.1% coverage at 96.0% accuracy. Evidence: [HUD_AND_OCCLUSION_EVIDENCE_2026-11-22.md](docs/HUD_AND_OCCLUSION_EVIDENCE_2026-11-22.md) |
 | Classifier latency | **pass (desktop)** | 4.2 ms/clip for nine members, x86. **Not an on-device figure** |
 | Per-frame detector latency | **pass (desktop), p50 20.3 ms / p95 34.1 ms** | inside the 50 ms budget; 160 frames. Reproduce: `scripts/ml/latency_per_frame.py` |
 | End-to-end per clip | **~720 ms (desktop)** | warm `predict()` on a 32-frame clip; the detector is ~600 ms of it, the classifier 4.2 ms. **Not an on-device figure** |
-| On-device latency | **FAIL — every measured p95 is over the target** | Vivo V2404, GPU delegate, **signed release build**: detect p95 **58 / 65 / 67 / 72 ms** across four file-pick classifications, 8–22 ms over the ≤50 ms target, p50 34–45 ms (which passes). The last two samples are the same clip, so that spread is run-to-run variance rather than a content difference. Earlier figures are superseded and **not** the shipping configuration: 46–54 ms (empty-frame, DEBUG, before the 640 resolution pin) and 68–70 ms (hand in frame, DEBUG, diagnostics on). The previously published "51 ms and 50 ms / 0–1 ms over" claim is **retracted** — `ClipAnalyzer` never wrote to `HandTracker.profiler`, so the HUD was printing live-camera frames under a clip result. The live-camera-with-a-hand path remains unmeasured on the release build, which is a second independent reason `results.csv` row `latency_p95` stays `FAIL` |
+| On-device latency | **FAIL — every measured p95 is over the target** | Vivo V2404, GPU delegate, **shipping Auto 6.2 build**: per-frame detect p95 **72–100 ms, median 85**, over the ≤50 ms target in **19 of 19** live-camera sessions with a hand in frame. Analysis consumed 0.94–1.02× the camera's inter-frame interval (`limit=ANALYSER` in 19/19), so the analyser discarded frames the camera delivered — 2,135 delivered, 863 processed (40.4%). Convert never exceeded 50 ms, ruling out the YUV→Bitmap copy, so the detector is the bottleneck. Supersedes the four file-pick samples on the release build (58 / 65 / 67 / 72 ms), which is no longer the submitted APK; the live-camera number is **worse**, which is the honest reading for a user holding a phone. Evidence: [LATENCY_AUTO62_LIVE_CAMERA_2026-11-22.md](docs/evidence/LATENCY_AUTO62_LIVE_CAMERA_2026-11-22.md) and the raw [diagnostics export](docs/evidence/auto6.2_diagnostics_live_camera_2026-11-22.txt) |
 | Power ≤ 500 mW | **FAIL, 2666–2898 mW** | **This is the camera hardware floor, not the model.** batterystats prices "camera on" at a fixed PowerProfile constant of **749.4 mA** — five independent blocks in one on-device dump agree to under 0.2% across screen-on, screen-off and doze states, which no real current can do. At 3.87 V that is ~2.9 W, about **5.8× the budget**, so no live-camera app on this device can pass. 84% of the app's own attributed drain is that same camera line; app compute is ~157 mW. `docs/POWER_THERMAL_2026-11-19.md` |
 | Thermal drift ≤ 20% | **PASS, 19.2%** | SoC 45.8→56.7°C over 10 min, thermal status LIGHT throughout. Only 0.8 pt of headroom. `docs/POWER_THERMAL_2026-11-19.md` |
 

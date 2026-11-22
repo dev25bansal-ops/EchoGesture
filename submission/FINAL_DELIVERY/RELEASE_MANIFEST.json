@@ -104,7 +104,8 @@
         "sha256": "96f00458f54de715c7a6f489f9ae92425bc73a089043a91ccbe0ae6d4f060035",
         "bytes": 82894510,
         "why": "debuggable build; kept for the instrumented measurements"
-      }
+      },
+      "status": "SUPERSEDED 2026-11-22 — not the submitted app; kept for provenance"
     },
     "submission_zip_2026_11_22": {
       "path": "EchoGesture_Submission.zip (repo root, gitignored)",
@@ -117,15 +118,16 @@
     "hud_evidence_2026_11_22": {
       "path": "docs/evidence/",
       "files": [
-        "hud_01_camera_offline.png",
-        "hud_02_glossary.png",
-        "hud_03_refusal_no_hands.png",
-        "hud_04_recording_too_long.png",
-        "hud_05_result_p95.png",
-        "README.md"
+        "docs/evidence/auto62_01_camera_offline.png",
+        "docs/evidence/auto62_02_settings_model_hash.png",
+        "docs/evidence/auto62_03_glossary_100.png",
+        "docs/evidence/auto62_04_refusal_no_hands.png",
+        "docs/evidence/auto62_05_live_result.png",
+        "docs/evidence/auto62_06_history_saved.png"
       ],
-      "captured_on": "EchoGesture-2026-11-22-release.apk 99308942...b4b397, Vivo V2404, adb",
-      "note": "Unedited device screenshots supporting the 25% occlusions-and-HUD-clarity criterion."
+      "captured_on": "EchoGesture-Auto-6.2.apk b1c0e67...2dcf8, Vivo V2404, adb",
+      "note": "The Auto 6.2 result card does not print a per-frame Clip detect p95 line, so the latency row is evidenced by the app's own diagnostics export instead: docs/evidence/auto6.2_diagnostics_live_camera_2026-11-22.txt (19 live-camera sessions).",
+      "supersedes": "the five hud_0*.png shots on EchoGesture-2026-11-22-release.apk"
     },
     "demo_video_2026_11_22": {
       "path": "docs/submission/EchoGesture_demo_2026-11-22.mp4",
@@ -145,6 +147,22 @@
         "narration_fix": "The robustness beat said hand-drop was the one criterion we fail. Three rows fail (latency_p95, accuracy_drop_robustness, avg_power); it now says robustness is the one we are furthest from fixing, and adds the gated +2.39 figure.",
         "replaces_sha256": "c22d411b3b5df9d426878f4a0c1d02ba4efab0ebfcfb5bdd9dfbf386cfae72fc"
       }
+    },
+    "apk_auto_6_2_SHIPS": {
+      "path": "submission/apk/EchoGesture-Auto-6.2.apk",
+      "sha256": "b1c0e6710e24352dc24a9ebe930527cb7667f67abca905915ea8c49a9ac2dcf8",
+      "bytes": 81281198,
+      "package": "org.echogesture.finalapp.auto",
+      "versionCode": 9,
+      "versionName": "6.2",
+      "signer": "CN=EchoGesture Auto",
+      "permissions": [
+        "android.permission.CAMERA"
+      ],
+      "source_branch": "codex/android-auto-6.2",
+      "source_commit": "33e82b5dafff08df7cfa92088f81aacc2418af8d",
+      "github_release": "https://github.com/dev25bansal-ops/EchoGesture/releases/tag/v2026-11-22-auto6.2",
+      "status": "SHIPS — the submitted app"
     }
   },
   "evidence": {

@@ -9,10 +9,22 @@
 > records at **85.45%** top-1 / 96.64% top-5 — figures the old four-member model
 > could not produce.
 >
-> Independent check that does not lean on ground truth: parsing the gloss
-> embedded in each `clip_id` and comparing to `prediction` agrees on
-> **1,069 / 1,251 = 85.45%**, exactly the claimed top-1. Uppercase and
-> in-vocabulary on all 1,251 lines; `top5[0] == prediction` throughout.
+> What a filename-only check can and cannot prove, measured 2026-11-22:
+> all 1,251 records are **in-vocabulary** (100/100 glosses) and
+> `top5[0] == prediction` on **1,251 / 1,251**. But the gloss in `clip_id` does
+> **not** carry the variant number the vocabulary uses — the clip is `-DEAF`
+> while the label is `DEAF1` — so **1,059** of 1,251 records are unresolvable
+> from the filename alone, and **192** name a different word outright
+> (`-EAT` → `DOG1`). A filename check therefore bounds accuracy at **≤ 84.65%**
+> and cannot reconstruct 85.45%.
+>
+> **The 85.45% does not come from this file** — it comes from
+> `results/eval_summary_test.json`, where the evaluation harness compares each
+> prediction against the corpus's own label (`top1_pct 85.45`, `top5_pct 96.64`,
+> `n 1251`, `members 9`, `aggregator mean-logit`). Quote that file for accuracy;
+> a previous version of this note claimed the filename check reproduced
+> "1,069 / 1,251 = 85.45%", and **that claim does not reproduce** and has been
+> removed.
 >
 > One field is on this export and not on `predict()`: `latency_scope:
 > "classifier_only"`, because the file is built from **cached landmarks** and its

@@ -36,6 +36,16 @@ that recording. Keep both hands in the guide while you sign."* The app refused
 rather than emitting an argmax. The refusal was also **not** written to History —
 a declined capture never appears as a recognised sign.
 
+**Re-observed on the shipping build, 2026-11-22 12:09 IST.** With the one-tap
+flow, tapping **Start Recognition** and not signing produced, after the
+auto-segmentation window closed, the amber panel **"No hands in view"** over
+*"No sign started. Tap Start Recognition and perform one sign."* (`auto_no_sign`).
+Screenshot: [`auto62_04_refusal_no_hands.png`](evidence/auto62_04_refusal_no_hands.png).
+The wording is the one-tap variant's rather than the record-then-finish variant's,
+which is expected — but it means a judge reading an older quote of the
+*"Hands were visible for too little"* line should be pointed at this screenshot
+for the state they will actually see when they try it.
+
 That last point matters more than it looks. The ensemble always returns a
 distribution over 100 glosses, so it always has an argmax; on a real phone
 recording it returned `FLIP` at 10.6% and `TAIL1` at 24.2% for input that carried
@@ -53,8 +63,16 @@ judge is most likely to check, because conflating them is the common failure.
 | State | When | What the card says |
 | --- | --- | --- |
 | **Declined** | Too few frames, no hands, low coverage, stall | No reading at all. One of the refusals above. |
-| **Uncertain** | A reading exists but `margin < 0.15` | `result_uncertain_label` = *"Uncertain reading"*, plus *"Uncertain — this is the model's best guess, not a confirmed reading"* |
-| **Accepted** | `margin ≥ 0.15` and score ≥ 20% | *"Best match — still confirm before relying on it"* |
+| **Uncertain** | A reading exists but `margin < 0.15` | Header **"POSSIBLE MATCH"** (`result_label_diagnostic`), body *"Low confidence. Compare the options below or try the sign on its own."* (`result_confidence_uncertain`) |
+| **Accepted** | `margin ≥ 0.15` and score ≥ 20% | Header **"Recognised sign"** (`result_label`), body *"Best match — still confirm before relying on it"* (`result_confidence_accepted`) |
+
+**These strings are quoted from the shipping build.** Verified 2026-11-22 against
+`app/android_final/app/src/main/res/values/strings.xml` on branch
+`codex/android-auto-6.2` (commit `33e82b5`), and confirmed on screen in
+[`auto62_05_live_result.png`](evidence/auto62_05_live_result.png), where the card
+in fact reads "POSSIBLE MATCH" at 62.4%. An earlier version of this section
+quoted *"Uncertain — this is the model's best guess, not a confirmed reading"*,
+which belongs to the superseded release build and **is not on the shipping app**.
 
 The gate is one function, [`ResultPolicy.evaluate`](../../app/android_final/app/src/main/java/org/echogesture/finalapp/ResultPolicy.kt#L77), so it can be measured
 rather than described. **The app never withholds a prediction on the uncertain

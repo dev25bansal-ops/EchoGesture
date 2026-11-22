@@ -348,7 +348,7 @@ def s5_output(slide):
     block(slide, LEFT, TOP + 1.68, 4.45, 0.25, "RESULTS SHEET — WHERE IT STANDS", size=9, colour=GREY)
     rows = [
         ("top1_accuracy", "85.45%", "PASS", GREEN),
-        ("latency_p95", "58–72 ms, release", "FAIL", AMBER),
+        ("latency_p95", "72–100 ms, live camera", "FAIL", AMBER),
         ("model_size", "16.33 MB", "PASS", GREEN),
         ("accuracy_drop_robustness", "5.76 pt", "FAIL", RED),
         ("avg_power", "2.7–2.9 W (camera path)", "FAIL", RED),
@@ -368,7 +368,7 @@ def s5_output(slide):
          {"size": 9, "space": 5}),
         ("The 5.76 pt robustness drop is real; the app's gate recovers it to 2.39 at 86%/80% coverage.",
          {"size": 9, "space": 5}),
-        ("Latency is now measured on the SIGNED RELEASE APK, four file-pick runs: 58/65/67/72 ms p95, all over the 50 ms target. Power still came from a DEBUGGABLE build and remains an upper bound.",
+        ("Latency is measured on the SHIPPING Auto 6.2 APK, live camera with a hand in frame, 19 sessions: detect p95 72–100 ms (median 85), all 19 over the 50 ms target. The analyser, not the camera, is the limit — it processed 40% of delivered frames. Power still came from a DEBUGGABLE build and remains an upper bound.",
          {"size": 9, "space": 5}),
         ("The old 77.02% was these weights on a cache with a wrong presence mask on 29% of clips.",
          {"size": 9, "colour": CYAN}),
@@ -406,9 +406,9 @@ def s6_differentiation(slide):
 
 def s7_demo(slide, shots_dir: pathlib.Path):
     retitle(slide, "DEMO & LOCAL SETUP")
-    shots = [("01_camera_nine_model.png", "Camera — nine-model identity in the footer"),
-             ("02_glossary.png", "Glossary — the 100 supported signs"),
-             ("03_history.png", "History — stored on device only")]
+    shots = [("01_camera_nine_model.png", "Settings — nine-model identity and ensemble SHA-256"),
+             ("02_glossary.png", "Glossary — 100 of 100 supported signs"),
+             ("03_history.png", "History — stored on this device only")]
     for i, (f, cap) in enumerate(shots):
         p = shots_dir / f
         x = LEFT + i * 2.05

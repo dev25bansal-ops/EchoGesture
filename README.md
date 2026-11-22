@@ -18,16 +18,16 @@ this repository:
 | 1 | `predict()` implementation, one JSON object per test clip | [`src/main.py`](src/main.py) — `predict(video_path, clip_id=None)`. Predictions: [`results/predictions.jsonl`](results/predictions.jsonl), 1,251 lines. Each line carries the five fields the deck's example shows (`clip_id`, `prediction`, `top5`, `confidence`, `latency_ms`) **plus one documented extra, `latency_scope: "classifier_only"`** — because this file is produced from cached landmarks, so its `latency_ms` times the nine interpreters only and does not include video decode or MediaPipe. Recording the scope keeps a ~13 ms number from being misread as end-to-end; `predict()` itself returns exactly the five required keys. |
 | 2 | Results sheet: one row per metric, measured vs target, pass/fail | [`results/results.csv`](results/results.csv) — six scored rows plus supporting measurements, each with its device and reproduction command |
 | 3 | Repository with a README showing how to run it, a quantized model, and the conversion script | This file (run instructions below) · nine FP16 `.tflite` members in [`models/`](models/) · [`scripts/ml/export_ensemble.py`](scripts/ml/export_ensemble.py) |
-| 4 | Demo video (2–3 min) or deployed app URL | **Recorded, 2:55** — `docs/submission/EchoGesture_demo_2026-11-22.mp4` (28,154,151 B, sha256 `dd4ec5fa…5b98`), built by `scripts/media/build_demo_video.py` from real model output. The script it follows is [`submission/DEMO_SCRIPT.md`](submission/DEMO_SCRIPT.md). **The file is gitignored (`*.mp4`) and deliberately not committed**, because it contains ASL Citizen footage under the Microsoft Research non-commercial licence and this repository is public — the same constraint as the weights, below. Upload it with the form; the hosted link also goes on slide 7 and in the submission form. |
+| 4 | Demo video (2–3 min) or deployed app URL | **Recorded and hosted** — **[https://drive.google.com/file/d/1vojMAB5cpxQc-LkbCZlxoBeoqUklFqsE/view](https://drive.google.com/file/d/1vojMAB5cpxQc-LkbCZlxoBeoqUklFqsE/view)**. Public, no sign-in required; verified anonymously — an unauthenticated `GET` returns the full 6,729,172 bytes as `video/mp4` and the SHA-256 matches the local file byte for byte. `EchoGesture_demo_2026-11-22.mp4`, 640×368, 30 fps, **1:20**, with narration. The same link is on slide 7 of the deck. **The file is gitignored (`*.mp4`) and deliberately not committed**, because it contains ASL Citizen footage under the Microsoft Research non-commercial licence and this repository is public — the same constraint as the weights, below. |
 
 Also required by the naming rule: the deck must be named
 `VIT_Chennai_Sky_Grazers`. It is
 [`submission/presentation/VIT_Chennai_Sky_Grazers.pptx`](submission/presentation/VIT_Chennai_Sky_Grazers.pptx)
 with the matching PDF beside it, built inside the organizer's own 9-slide
 template. Slide 1 carries the team string and the full member names; slide 9
-carries the team string. The **demo link** is the one placeholder still to be
-filled — the video itself is recorded (item 4 above); uploading it and pasting
-the URL on slide 7 and into the submission form is what remains.
+carries the team string. The **demo link is filled in**: the video is recorded
+and hosted (item 4 above), and the same URL is on slide 7 of both the `.pptx`
+and the `.pdf`, as a clickable hyperlink rather than plain text.
 
 **The APK to install** is **EchoGesture Auto 6.2**, published as a release asset
 (81 MB is too large for a reliable git push):

@@ -134,10 +134,14 @@ all trace to three gitignored artifacts (see `TEST_TRIAGE.md`).
 | APK `EchoGesture-2026-11-22-release.apk` (*superseded*) | `9930894280967c0809b52595b103e0a36b93097768f7f61e401b7e50a3b4b397` |
 | APK `EchoGesture-2026-11-21.apk` (debuggable; source of the power figure) | `96f00458f54de715c7a6f489f9ae92425bc73a089043a91ccbe0ae6d4f060035` |
 | ZIP `EchoGesture_Submission.zip` | `5d310cecf755f1593a3bc9b9b4b56d38e7ca58962d8da0f0325218c746da8e25` |
-| Deck `VIT_Chennai_Sky_Grazers.pptx` | `6a2ea2bc6d1ac6778b6a50c2ba02436f39cdb224256b3ee5cfc274d2684ed615` |
-| Deck `VIT_Chennai_Sky_Grazers.pdf` | `5ebc5d09ad6f36b76f18cb51ade656e3ac76b0385573e0a712a3049e5474a40f` |
-| Demo video `EchoGesture_demo_2026-11-22.mp4` (gitignored; upload separately) | `dd4ec5fa1b19ca5813c480f0e8458b13c20c5262dbec2d916a1af638963b5b98` |
+| Deck `VIT_Chennai_Sky_Grazers.pptx` | `9837b222082119d0227345c0611767b45d624a0787b1b877f4e2c646e21ceeab` |
+| Deck `VIT_Chennai_Sky_Grazers.pdf` | `97000bee6ecf43c563617e6816fcdc1fdfc9816c25c41ac99e210fd906abcd5c` |
+| Demo video `EchoGesture_demo_2026-11-22.mp4` (**the submitted one**, 1:20, hosted on Drive — gitignored, upload separately) | `0c55189b8e9de913f46b5bea4c49893b8008a42664ab24ef1c0febbda2fbd4a2` |
 
 All hashes above were re-measured from the files on disk on 2026-11-22. The
 previous table listed a ZIP hash (`5d310cec…`) for a file that did not exist,
-and deck hashes from before the team-name rename; both are replaced.
+and deck hashes from before the team-name rename; both are replaced. The deck
+and PDF hashes were re-pinned once more after the demo link was added to slide 7
+(the clickable hyperlink and its PDF link annotation both changed the bytes).
+The demo row now names the team's own 1:20 recording; the earlier
+`dd4ec5fa…` 2:55 entry was a generated walkthrough and is superseded.

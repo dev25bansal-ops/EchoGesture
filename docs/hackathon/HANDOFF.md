@@ -106,3 +106,19 @@ Build with ./gradlew :app:assembleRelease :app:testReleaseUnitTest in app/androi
 Auto 6.2 is signed with the Auto release key and upgrades Auto 6.1. Source commit 33e82b5dafff08df7cfa92088f81aacc2418af8d produced APK SHA-256 b1c0e6710e24352dc24a9ebe930527cb7667f67abca905915ea8c49a9ac2dcf8. The package is in Desktop/EchoGesture-Final-6.2. Build in app/android_final with ./gradlew :app:assembleRelease :app:testReleaseUnitTest. Run SpokenResultTest, CameraLifecycleTest and OneTapCaptureTest on a dual-camera Android emulator in airplane mode.
 
 The app plays one of 100 bundled pronunciations after confirming a sign. Previously saved speech choices stay in effect. The app skips hand analysis during processing and the result screen. Android instrumentation saw playback, no playback for uncertain or muted results, and no additional analyzed frames while displaying the result. The signed upgrade played the WHATFOR1 pronunciation. Model bytes match Dev’s reference. Audio adds 432,224 bytes. The 30-clip import rerun exactly matched the six-point-one labels, scores, margins and confirmation decisions. Detector latency, power and thermals for this release still need a physical phone run. The rubric retains Dev’s measured failures for detector latency, hand-drop robustness and camera power.
+
+## Auto 6.3 camera confirmations
+
+Source commit 9a55534a7dd2468bd7f80dcaede449e871705bae on `codex/android-auto-6.3` produced signed APK SHA-256 `89ed6daa5a5ed84fb955d5aca9e96145c598e70702154583817ee990cee74557`. The installable upgrade, checksum, local verification manifest and per-clip results are in Desktop/EchoGesture-Auto-6.3.
+
+For an uncertain automatic capture with sustained hand tracking and a first score of at least 65%, the app can classify a second window of the same landmarks. It confirms the second result only if both windows rank the same sign first and the second meets the existing 85% score and margin requirements. A small-hand framing hint is available on uncertain camera results. On 120 development replays the rule recovered six correct confirmations.
+
+On a separate 80-clip Android 14 ARM64 emulator replay, half the clips were rendered at half width to simulate a distant signer. Top-1 stayed at 63/80 and median score at 75.3%. Correct confirmations rose from 25 to 28, including 9 to 12 in the distant group. Neither version confirmed an incorrect label. Median feature preparation plus classification took 26 ms in both arms. Nearest-rank p95 rose from 38 to 55 ms, excluding camera tracking, on sequential paired runs. Phone power, latency and live signer accuracy remain unmeasured for this revision.
+
+Build in app/android_final with `./gradlew :app:assembleRelease :app:testReleaseUnitTest :app:assembleDebug :app:assembleDebugAndroidTest`. Install both debug APKs and stage the named videos and camera-verification.tsv in the debug app's files/file-corpus directory. Run:
+
+```sh
+adb shell am instrument -w -r -e requireCameraVerification true \
+  -e class org.echogesture.finalapp.PortraitRecognitionTest#compareCameraConfirmations \
+  org.echogesture.finalapp.test/androidx.test.runner.AndroidJUnitRunner
+```

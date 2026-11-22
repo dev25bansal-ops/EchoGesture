@@ -153,6 +153,48 @@ class PortraitRecognitionTest {
         File(directory, "rear-framing-results.csv").writeText(rows.joinToString("\n", postfix = "\n"))
     }
 
+    @Test
+    fun compareCameraConfirmations() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val directory = File(context.filesDir, "file-corpus")
+        val manifest = File(directory, "camera-verification.tsv")
+        val required = InstrumentationRegistry.getArguments().getString("requireCameraVerification") == "true"
+        if (required) check(manifest.isFile)
+        assumeTrue(manifest.isFile)
+        val lines = manifest.readLines()
+        if (required) check(lines.size == 80)
+        File(directory, "camera-verification.csv").printWriter().use { out ->
+            out.println("clip,expected,width,baseline,baseline_score,baseline_accepted,baseline_ms,current,current_score,current_accepted,current_ms")
+            LandmarkClassifier.create(ModelContract.load(context.assets)).use { classifier ->
+                for ((index, line) in lines.withIndex()) {
+                    val (clip, label) = line.split('\t')
+                    require(File(clip).name == clip)
+                    val width = if (index % 4 < 2) 480 else 240
+                    val detector = AutoSegmenter()
+                    detector.arm(0)
+                    val outcome = stream(track(File(directory, clip), index, width)).firstNotNullOfOrNull(detector::offer)
+                    val predictions = if (outcome?.isUsable == true) {
+                        val rec = SignRecorder.Recording(outcome.frames, outcome.startedAtMs, outcome.endedAtMs)
+                        val samples = RecordingFeatures.sample(rec, RecordingFeatures.autoSegment(rec))
+                        if (samples.count { it.hands.isNotEmpty() } >= samples.size * .15) {
+                            listOf(false, true).joinToString(",") { retry ->
+                                val start = System.nanoTime()
+                                val scored = scoreRecording(classifier, rec, samples, retry)
+                                val elapsedMs = (System.nanoTime() - start) / 1_000_000L
+                                val p = scored.result
+                                val accepted = ResultPolicy.hasSustainedTracking(scored.frames) &&
+                                    ResultPolicy.isAccepted(p.margin, p.confidence * 100f)
+                                "${p.prediction},${p.confidence},$accepted,$elapsedMs"
+                            }
+                        } else ",0,false,0,,0,false,0"
+                    } else ",0,false,0,,0,false,0"
+                    out.println("$clip,$label,$width,$predictions")
+                    out.flush()
+                }
+            }
+        }
+    }
+
     private fun track(file: File, index: Int, frameWidth: Int = 480): List<HandTracker.Frame> {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val rotation = if (index % 2 == 0) 90 else 270

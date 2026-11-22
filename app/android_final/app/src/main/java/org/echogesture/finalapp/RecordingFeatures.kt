@@ -84,6 +84,18 @@ object RecordingFeatures {
     internal fun autoSegment(recording: SignRecorder.Recording): SignSegmenter.Segment =
         SignSegmenter.choose(recording.frames, fpsOf(recording), padSeconds = 1f)
 
+    /** Keep the visible hand interval plus one observed frame at each boundary. */
+    internal fun visibleSamples(recording: SignRecorder.Recording): List<HandTracker.Frame> {
+        val frames = recording.frames
+        val first = frames.indexOfFirst { it.hands.isNotEmpty() }
+        if (first < 0) return emptyList()
+        val end = frames.indexOfLast { it.hands.isNotEmpty() } + 2
+        val segment = SignSegmenter.Segment(
+            (first - 1).coerceAtLeast(0), end.coerceAtMost(frames.size), SignSegmenter.Reason.TRIMMED
+        )
+        return sample(recording, segment)
+    }
+
     /** Achieved frame rate of the recording, from its own timestamps. */
     fun fpsOf(recording: SignRecorder.Recording): Float {
         val n = recording.frameCount

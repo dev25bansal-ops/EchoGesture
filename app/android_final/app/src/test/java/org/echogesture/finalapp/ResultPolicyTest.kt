@@ -6,6 +6,18 @@ import org.junit.Test
 
 class ResultPolicyTest {
     @Test
+    fun distanceHintNeedsSeveralFramesWithOnlySmallHands() {
+        fun hand(height: Float) = HandTracker.Hand(0, FloatArray(63).also { it[4] = height })
+        fun frames(vararg hands: HandTracker.Hand) = List(6) { HandTracker.Frame(hands.toList(), 80L * it) }
+        val small = hand(0.10f)
+        val large = hand(0.20f)
+        assertTrue(handsLookDistant(frames(small)))
+        assertFalse(handsLookDistant(frames(small, large)))
+        assertFalse(handsLookDistant(frames(small).take(3)))
+        assertFalse(handsLookDistant(frames()))
+    }
+
+    @Test
     fun isolatedHandDetectionsCannotConfirmACameraCaption() {
         val hand = HandTracker.Hand(0, FloatArray(63))
         fun frame(ms: Long) = HandTracker.Frame(listOf(hand), ms)

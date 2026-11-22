@@ -1363,17 +1363,19 @@ class CameraScreen(
                 finishInference(generation) { render(UiState.LOW_FRAMES) }
                 return
             }
-            val tensors = RecordingFeatures.buildBoth(sampled)
-            diagnosticAttempt = attempt?.withMaskFrom(tensors.mask)
-            val result = c.predict(tensors.featuresXY, tensors.mask, tensors.featuresXYZ)
+            val scored = scoreRecording(c, recording, sampled, autoCapture)
+            diagnosticAttempt = attempt?.withMaskFrom(scored.mask)
+            val result = scored.result
+            val scoredCapture = if (scored.frames === sampled) capture else captureOf(scored.frames)
+            diagnosticCapture = scoredCapture
             val totalMs = (System.nanoTime() - started) / 1_000_000L
             // The mask that was actually fed to the nine members, not an estimate
             // derived from hand-bearing frame counts. These differ: the mask is
             // built after resampling to 24 steps, so the model can be given a
             // step marked present whose source frames were interpolated.
-            if (prefs.diagnostics) logDiagnostic(capture, result, totalMs, diagnosticAttempt, fromClip)
-            val enoughTracking = !autoCapture || ResultPolicy.hasSustainedTracking(sampled)
-            finishInference(generation) { renderResult(result, totalMs, capture, fromClip, enoughTracking) }
+            if (prefs.diagnostics) logDiagnostic(scoredCapture, result, totalMs, diagnosticAttempt, fromClip)
+            val enoughTracking = !autoCapture || ResultPolicy.hasSustainedTracking(scored.frames)
+            finishInference(generation) { renderResult(result, totalMs, scoredCapture, fromClip, enoughTracking) }
         } catch (t: Throwable) {
             if (prefs.diagnostics) logDiagnostic(diagnosticCapture, null, 0L, diagnosticAttempt, fromClip)
             finishInference(generation) {
@@ -1503,6 +1505,7 @@ class CameraScreen(
             when {
                 !enoughTracking -> R.string.result_tracking_brief
                 certain -> R.string.result_confidence_accepted
+                !fromClip && handsLookDistant(capture.frames) -> R.string.result_move_closer
                 else -> R.string.result_confidence_uncertain
             }
         )

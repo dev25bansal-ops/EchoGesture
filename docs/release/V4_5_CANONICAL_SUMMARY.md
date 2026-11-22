@@ -130,7 +130,7 @@ all trace to three gitignored artifacts (see `V4_5_TEST_TRIAGE.md`).
 | Artifact | SHA-256 |
 | --- | --- |
 | APK `echogesture-p1.apk` | `150ffeeb0eaaa8914db362e2bcd41de26c93608193ebcee8457433dc5ea5cb7a` |
-| ZIP `EchoGesture_Submission.zip` | `7691190b8ce045684a6117ab6a2b97b7b79327563147e9699f69cec939646cca` |
+| ZIP `EchoGesture_Submission.zip` | `5d310cecf755f1593a3bc9b9b4b56d38e7ca58962d8da0f0325218c746da8e25` |
 | Deck `EchoGesture_Track02.pptx` | `951d5177c435c02c4a0cce763c82945e6b4a5a7dfe3c5aad05aa435112350e66` |
 
 ---

@@ -9,7 +9,7 @@ Everything else is information.
 > below have since been resolved: the physical phone was reached and the shipped
 > build driven on it, and the shipped APK's metadata now reads `0.8545`, matching
 > the deck. The APK to ship is now `EchoGesture-2026-11-22-release.apk`
-> (`03d51354…ab2f49`), the signed non-debuggable build; the older debug APK
+> (`9930894…4b397`), the signed non-debuggable build; the older debug APK
 > `EchoGesture-2026-11-21.apk` (`96f00458…0035`) is what every latency, power
 > and thermal figure was measured on. Current numbers:
 > [`RESULTS.md`](RESULTS.md) and [`CHECKLIST.md`](CHECKLIST.md).
@@ -27,7 +27,7 @@ Everything else is information.
 | Detector SHA-256 | `fbc2a300…cde1` |
 | Preprocessing | **Native 640×480**, unconditionally — `clip_to_landmarks(..., size=None)` at `src/main.py:336`. The 256-squash default and `ECHOGESTURE_FRAME_SIZE` were removed in `8740f27`; this row previously said the opposite. |
 | APK | `echogesture-p1.apk`, `150ffeeb…cb7a`, 83,350,522 B |
-| Submission ZIP | `EchoGesture_Submission.zip`, `7691190b…6cca`, 13,379,265 B |
+| Submission ZIP | `EchoGesture_Submission.zip`, `5d310cec…8e25`, 13,379,265 B |
 
 **No retraining, no architecture change, no new sweep.** Your weights are consumed
 exactly as delivered.

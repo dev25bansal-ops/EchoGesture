@@ -10,7 +10,7 @@ on the artifact you are actually installing.
 |---|---|---|
 | File | `EchoGesture-2026-11-22-release.apk` | `EchoGesture-2026-11-21.apk` |
 | Size | 80,815,568 bytes (80.8 MB) | 82,894,510 bytes (82.9 MB) |
-| SHA-256 | `03d51354397b7fa8b90bd032323accd156d67deae2bdb9be67b2ca8484ab2f49` | `96f00458f54de715c7a6f489f9ae92425bc73a089043a91ccbe0ae6d4f060035` |
+| SHA-256 | `9930894280967c0809b52595b103e0a36b93097768f7f61e401b7e50a3b4b397` | `96f00458f54de715c7a6f489f9ae92425bc73a089043a91ccbe0ae6d4f060035` |
 | `android:debuggable` | **absent (not debuggable)** | `true` |
 | Signature | `CN=measurement` | debug key |
 | Unit tests | **150 / 150 pass** on the release variant | 150 / 150 |

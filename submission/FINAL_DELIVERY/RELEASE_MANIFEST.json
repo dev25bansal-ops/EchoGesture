@@ -222,7 +222,7 @@
     "model_size_20mb": "PASS — 16.33 MB including detector",
     "top1_70pct": "PASS — 85.45% corpus at native 640x480, which is both the Android app's geometry and predict()'s (8740f27 removed the squash default). Not phone accuracy.",
     "demo_video": "BLOCKED — not recorded",
-    "presentation": "DONE — 9 slides in the organizer's own template, CollegeName_TeamName.pptx/.pdf, built 2026-11-22",
+    "presentation": "DONE — 9 slides in the organizer's own template, now named VIT_Chennai_Sky_Grazers. Slide 1 carries the team string and the full member names (Dev Datya Pratap Bansal, Miskin Abhijeet Laxman); slide 9 carries the team string. Slide 5's latency row is corrected at the generator, build_template_deck.py, so a rebuild cannot revert it.",
     "team_naming": "NEEDS HUMAN",
     "registration": "UNVERIFIED — no confirmation record in repo",
     "rights": "BLOCKED — weights have no confirmed redistribution permission"

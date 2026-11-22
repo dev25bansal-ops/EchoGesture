@@ -29,7 +29,7 @@ a *label on a shown result*, not an abstention.
 
 | Item | Check |
 | --- | --- |
-| APK | `EchoGesture-2026-11-22-release.apk`, SHA-256 `03d51354…ab2f49` — signed release build, from [release `v2026-11-22-submission`](https://github.com/dev25bansal-ops/EchoGesture/releases/tag/v2026-11-22-submission). Do **not** film the older `EchoGesture-2026-11-21.apk`; it is the debuggable build whose instrumentation the release removes. |
+| APK | `EchoGesture-2026-11-22-release.apk`, SHA-256 `9930894…4b397` — signed release build, from [release `v2026-11-22-submission`](https://github.com/dev25bansal-ops/EchoGesture/releases/tag/v2026-11-22-submission). Do **not** film the older `EchoGesture-2026-11-21.apk`; it is the debuggable build whose instrumentation the release removes. |
 | Model identity | Camera footer reads **`9-model ensemble · FP16 TFLite · SHA-256 995cc8d0…`** |
 | Network | Airplane mode **ON** for the whole recording |
 | Second camera | A separate phone or camera filming the screen *and* the signer |
@@ -144,12 +144,13 @@ Do **not** say "85% accurate on a phone". See §5.
 
 > "What this is not: not continuous translation, not a 2,000-word vocabulary —
 > one hundred signs, one at a time. If a hand leaves the frame for a quarter of a
-> clip, accuracy drops about 5.8 points — that is the one criterion I fail.
-> On device it runs about 34–45 ms median, and 46–54 ms at p95 with nothing in
-> frame rising to 68–70 ms once a hand is present — over the 50 ms target, and
-> measured on a debug build. But it runs offline, on a phone, right now."
+> clip, accuracy drops about 5.8 points. Three of the six scored criteria fail
+> and that is one of them.
+> On device the detector runs about 34–45 ms median, and 58 to 72 ms at p95
+> across four runs on the signed release build — over the 50 ms target on every
+> sample. But it runs offline, on a phone, right now."
 
-**End card:** `EchoGesture · Track 02 · <CollegeName_TeamName>`
+**End card:** `EchoGesture · Track 02 · VIT_Chennai_Sky_Grazers`
 
 ---
 
@@ -182,9 +183,11 @@ Say the label with the number or do not say the number.
 - Power or thermal numbers **presented as anything other than measured-FAIL
   (power) and measured-PASS with 0.8 pt headroom (thermal)**. Both were measured
   on 2026-11-19 on the debug build; the old line here said they were unmeasured.
-- **Latency stated as a PASS.** The GPU delegate p95 is 46–54 ms with no hand in
-  frame and 68–70 ms with one, on a debug build. If a judge asks, that is the
-  whole answer; do not round it into "under 50 ms".
+- **Latency stated as a PASS.** On the signed release build the GPU delegate p95
+  is 58–72 ms across four file-pick runs, every sample over the 50 ms target.
+  p50 (34–45 ms) passes but the criterion is a p95. If a judge asks, that is the
+  whole answer; do not round it into "under 50 ms", and do not quote the older
+  46–54 / 68–70 DEBUG figures as if they were the shipping configuration.
 - "Uncertain — sign again" as a system behaviour. It does not exist.
 
 ## 5. The 77% → 85% change, if a judge asks
@@ -205,7 +208,7 @@ The APK to film is the **signed release build**, not tracked in git because 80.8
 MB times out the HTTPS push. Install it from the GitHub release
 [`v2026-11-22-submission`](https://github.com/dev25bansal-ops/EchoGesture/releases/tag/v2026-11-22-submission)
 and check the digest against
-`submission/apk/EchoGesture-2026-11-22-release.apk.sha256` (`03d51354…ab2f49`).
+`submission/apk/EchoGesture-2026-11-22-release.apk.sha256` (`9930894…4b397`).
 Confirm the footer reads `9-model ensemble · FP16 TFLite · SHA-256 995cc8d0…`
 before you roll. The older `EchoGesture-2026-11-21.apk` is the **debuggable**
 build — it is what every latency, power and thermal figure in `results.csv` was

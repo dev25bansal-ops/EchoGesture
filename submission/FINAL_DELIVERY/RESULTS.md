@@ -20,7 +20,7 @@ ranked against each other.
 | 4 | Nine-member ensemble, fresh extraction, native 640×480, **1,251** test | **85.45%** | **Re-measured here** — the shipped ensemble; 1,069/1,251 |
 | 5a | Nine-member ensemble, **346-clip validation**, 256 squash | **82.37%** | **Measured here**, historical squash geometry |
 | 5b | Nine-member ensemble, **346-clip validation**, native 640×480 | **85.84%** | **Measured here**, opt-in native geometry |
-| 6 | Submission ZIP (`7691190b…`), clean extraction, 30 clips | **76.67%** | **HISTORICAL** — that ZIP predates `8740f27` and runs 256 squash; it is not in the tree and is not what `predict()` does now |
+| 6 | Submission ZIP (`5d310cec…`), clean extraction, 30 clips | **76.67%** | **HISTORICAL** — that ZIP predates `8740f27` and runs 256 squash; it is not in the tree and is not what `predict()` does now |
 | 7 | Physical Android phone | — | **Run on one device 2026-11-21**, pipeline verified; **no accuracy measured** |
 
 ### Which number belongs to the submission
@@ -90,13 +90,18 @@ geometry; the app is 640×480 native. Native-camera robustness is unmeasured.
 | 15.7 ms/frame (MediaPipe) | **RETRACTED** — no supporting artifact ever existed |
 | Desktop x86 per-frame, 256 squash | ~142–151 ms p50 — above the 50 ms budget |
 | On-device **CPU** delegate, 640×480 VIDEO | **95 ms p50 / 166 ms p95** |
-| On-device **GPU** delegate, no hand in frame | **46–54 ms p95**, 19–25 analysed fps |
-| On-device **GPU** delegate, hand in frame | **68–70 ms p95**, 16–18 analysed fps |
+| On-device **GPU**, DEBUG, no hand in frame (superseded) | 46–54 ms p95 — not the shipping configuration |
+| On-device **GPU**, DEBUG, hand in frame (superseded) | 68–70 ms p95 — diagnostics on, not the shipping configuration |
+| **On-device GPU, SIGNED RELEASE, file-pick** | **58 / 65 / 67 / 72 ms p95** across four classifications |
 
-**The ≤50 ms criterion is PARTIAL.** On the GPU delegate the detector sits at or
-just inside 50 ms when nothing is in frame, and 18–20 ms over it once a hand is
-present. Both are DEBUGGABLE builds, so they are upper bounds. The gap matters
-because single-member TFLite classification adds ~40 ms warm on top.
+**The ≤50 ms criterion FAILS on every measured sample.** The four release-build
+samples are each 8–22 ms over the 50 ms target; p50 is 34–45 ms and passes, so
+the failure is in the tail. The last two samples are the same clip, which makes
+the 5 ms gap between them device run-to-run variance rather than a content
+difference. An earlier version of this table reported only DEBUG-build figures
+(46–54 ms empty-frame, 68–70 ms with a hand) and called the criterion PARTIAL;
+those are superseded and are retained here only for provenance. Classification
+adds a further ~40 ms warm on top of the detector.
 
 Sources: `docs/ON_DEVICE_LATENCY_2026-11-19.md` (CPU),
 `docs/GPU_DELEGATE_2026-11-19.md` (GPU, no hand),
@@ -122,51 +127,13 @@ all trace to three gitignored artifacts (see `TEST_TRIAGE.md`).
 
 | Artifact | SHA-256 |
 | --- | --- |
-| APK `EchoGesture-2026-11-22-release.apk` (**ship this**) | `03d51354397b7fa8b90bd032323accd156d67deae2bdb9be67b2ca8484ab2f49` |
-| APK `EchoGesture-2026-11-21.apk` (debuggable; source of every latency/power figure) | `96f00458f54de715c7a6f489f9ae92425bc73a089043a91ccbe0ae6d4f060035` |
-| ZIP `EchoGesture_Submission.zip` | `7691190b8ce045684a6117ab6a2b97b7b79327563147e9699f69cec939646cca` |
-| Deck `CollegeName_TeamName.pptx` | `e8361b55008deac511cbfa6b3fd705900a9e8032eef386b8288fa6d6e6abb395` |
-| Deck `CollegeName_TeamName.pdf` | `cec8b236f8ba44cc89efce9528f0f241a5e0d5905c19f3ab9cbbead7f1904a52` |
+| APK `EchoGesture-2026-11-22-release.apk` (**ship this**) | `9930894280967c0809b52595b103e0a36b93097768f7f61e401b7e50a3b4b397` |
+| APK `EchoGesture-2026-11-21.apk` (debuggable; source of the power figure) | `96f00458f54de715c7a6f489f9ae92425bc73a089043a91ccbe0ae6d4f060035` |
+| ZIP `EchoGesture_Submission.zip` | `5d310cecf755f1593a3bc9b9b4b56d38e7ca58962d8da0f0325218c746da8e25` |
+| Deck `VIT_Chennai_Sky_Grazers.pptx` | `ce577e46d00542aabb2be604e0199979099a50547e93491b730d7c48311a67a7` |
+| Deck `VIT_Chennai_Sky_Grazers.pdf` | `c995831a3ed580ee9c5335402955edc1944ad9ed7e0966785f8e0d39cf62325a` |
+| Demo video `EchoGesture_demo_2026-11-22.mp4` (gitignored; upload separately) | `321869c07afaf1b20993c2159d8a07d9e312f718a108956108fb679badebd2a3` |
 
----
-
-## Claims that must not be made
-
-| Never say | Because |
-| --- | --- |
-| "77% / 82% / 85% accurate on a phone" | No phone accuracy has been measured; one phone run only proves the pipeline works |
-| "85.84% is our submission's accuracy" | That is opt-in native geometry on validation |
-| "184 independent signs" | 184 evaluations over 72 unique clips |
-| "INT8 quantised" | FP16 ships |
-| "Meets the 50 ms target unconditionally" | GPU p95 is 46–54 ms empty, 68–70 ms with a hand in frame, on a debug build |
-| "Robustness criteria pass" | Landmark FAILs 5.36; native pixel unmeasured |
-| "Android and Python pipelines are identical" | VIDEO-mode vs IMAGE-mode detect |
-| "15.7 ms per frame" | Retracted |
-| "The live camera is as reliable as a clip" | Same sign: 0.969 from a file, 0.246 live in the same session |
-
----
-
-## Blocked on humans
-
-Registration unverified · exact `CollegeName_TeamName` · demo video · model
-redistribution rights · Google Form approval.
-
----
-
-## Metadata discrepancy — resolved 2026-11-21
-
-`assets/landmark_model_meta.json` ships inside the APK with
-`ensemble_test_top1`. It previously read `0.7702`, the cached-landmark figure,
-while the deck quoted 85.45%. **That is no longer true of the shipped APK.**
-
-Verified by extracting the field from `EchoGesture-2026-11-21.apk` itself:
-
-| | value | provenance |
-| --- | --: | --- |
-| `EchoGesture-2026-11-21.apk` | **0.8545** | native-cache rebuild, matches the deck |
-| Historical `echogesture-p1.apk` | 0.7702 | cached-landmark run; presence mask wrong on 29% of test clips |
-
-The field is metadata only — `ModelContract.kt` reads the file for member order
-and widths, never for accuracy — so nothing on screen changes. It is included
-here because an organizer who unzips the APK reads it, and it should agree with
-the deck. It now does.
+All hashes above were re-measured from the files on disk on 2026-11-22. The
+previous table listed a ZIP hash (`5d310cec…`) for a file that did not exist,
+and deck hashes from before the team-name rename; both are replaced.

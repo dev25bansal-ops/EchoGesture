@@ -3,6 +3,9 @@
 **Track 2 — Samsung XR Hackathon 2026**
 Organized by **Samsung R&D Institute India, Bangalore** (XR Perception Group & PRISM)
 
+**Team Sky Grazers** — VIT Chennai
+Dev Datya Pratap Bansal · Miskin Abhijeet Laxman
+
 ---
 
 ## The four submission items, and where they are
@@ -21,8 +24,9 @@ Also required by the naming rule: the deck must be named
 `VIT_Chennai_Sky_Grazers`. It is
 [`submission/presentation/VIT_Chennai_Sky_Grazers.pptx`](submission/presentation/VIT_Chennai_Sky_Grazers.pptx)
 with the matching PDF beside it, built inside the organizer's own 9-slide
-template. The team+college string and the demo link are the two placeholders
-still to be filled.
+template. Slide 1 carries the team string and the full member names; slide 9
+carries the team string. The **demo link** is the one placeholder still to be
+filled — it goes on slide 7 and in the submission form.
 
 **The APK to install** is the signed release build, published as a release asset
 (80.8 MB is too large for a reliable git push):

@@ -16,7 +16,7 @@ Statuses: **DONE** · **FAILED** · **BLOCKED** · **NOT TESTED** · **NEEDS HUM
 | Item | Owner | Priority | Status | Evidence | Next action |
 | --- | --- | --- | --- | --- | --- |
 | Registration completed | Abhijeet | **P0** | **NEEDS HUMAN — UNVERIFIED** | No confirmation record in the repo. `docs/submission/organizer/` says "Nothing received." | Produce the Google Form confirmation email. Without it the final submission link is never sent. |
-| Exact `CollegeName_TeamName` | Abhijeet | **P0** | **NEEDS HUMAN** | The string is not in the repo by design | Copy it verbatim from the registration entry |
+| Exact `CollegeName_TeamName` | — | **P0** | **DONE 2026-11-22** | `VIT_Chennai_Sky_Grazers` (college VIT Chennai, team Sky Grazers), supplied by the team lead | Applied to the deck, PDF and README |
 | Both members from one of the five eligible colleges | Abhijeet | **P0** | **NEEDS HUMAN** | College field is a closed list of 5 institutions | Confirm against the live form |
 | Final submission form link | Abhijeet | **P0** | **BLOCKED** | Only sent to registered teams | Arrives after registration is confirmed |
 
@@ -86,9 +86,9 @@ first thing to check, before any further engineering.
 
 | Item | Owner | Status | Evidence |
 | --- | --- | --- | --- |
-| Deck built | Abhijeet | **DONE** | `submission/presentation/CollegeName_TeamName.pptx`, 9 slides, built inside the organizer's own template |
+| Deck built | — | **DONE** | `submission/presentation/VIT_Chennai_Sky_Grazers.pptx`, 9 slides, built inside the organizer's own template |
 | Deck content covers PDF p25 list | Abhijeet | **DONE** | the template's own sections: theme/track, title, team+college, problem, solution, architecture, final output, differentiation, demo+setup, limits/roadmap |
-| Deck renamed to `CollegeName_TeamName` | Abhijeet | **NEEDS HUMAN** | Depends on the registration string |
+| Deck renamed to `CollegeName_TeamName` | — | **DONE 2026-11-22** | `VIT_Chennai_Sky_Grazers.pptx` / `.pdf`; slide 1 carries the team string and the full member names, slide 9 the team string |
 | Real screenshots in deck | Abhijeet | **DONE** | 3 captured from the shipped build |
 | Demo script | Abhijeet | **DONE** | `submission/DEMO_SCRIPT.md` |
 | Demo video recorded | Abhijeet | **BLOCKED** | Needs a phone and a camera |

@@ -101,7 +101,7 @@ interchangeable.**
 | MediaPipe detector, per frame | **contested: 15.34 ms vs ~135 ms** | see `docs/release/LATENCY_RECONCILIATION.md` |
 | Full `predict()` clip→JSON | **577–749 ms p50** | desktop x86, warm, 32-frame clip, two clean runs. (A 4,650 ms figure was retracted — it was measured under CPU contention.) |
 | Cold start | **12.1–14.7 s** | one-time per process, dominated by MediaPipe's lazy graph build |
-| **On-device / on-phone** | **MEASURED 2026-11-21** | Vivo V2404, GPU delegate — see the table below. p95 46–54 ms empty-frame / 68–70 ms with a hand → **FAIL** vs ≤50 ms |
+| **On-device / on-phone** | **MEASURED 2026-11-22, signed release** | Vivo V2404, GPU delegate — see the table below. p95 **58 / 65 / 67 / 72 ms** across four file-pick runs, every sample over the ≤50 ms target → **FAIL** |
 
 **The ≤50 ms criterion FAILS at p95 on device and on desktop.** The classifier is
 a rounding error; the detector dominates.

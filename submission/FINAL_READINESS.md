@@ -6,7 +6,7 @@ Date 2026-11-14. Deadline 2026-11-18 23:59 IST. Internal target 2026-11-17.
 
 > **Superseded 2026-11-21 — kept as a dated record.** Three things in this file
 > have since changed: a physical phone *was* reached and the shipped build driven
-> on it; the APK to ship is `EchoGesture-2026-11-22-release.apk` (`03d51354…ab2f49`),
+> on it; the APK to ship is `EchoGesture-2026-11-22-release.apk` (`9930894…4b397`),
 > with the debuggable `EchoGesture-2026-11-21.apk` (`96f00458…0035`) behind every
 > latency, power and thermal number; and the deck quotes 85.45%. For current numbers read
 > [`FINAL_DELIVERY/RESULTS.md`](FINAL_DELIVERY/RESULTS.md) and
@@ -87,10 +87,10 @@ Re-read from the organizer deck, not from internal notes.
 | `src/` holds the whole implementation (p12) | **PASS** |
 | `results/predictions.json` + `results.csv` (p11, p12) | **PASS (provisional)** — no organizer manifest exists, so these are our own clip IDs, clearly not organizer IDs |
 | Quantised model + conversion script (p10, p11) | **PARTIAL** — conversion script included; model is FP16, budget met by size (16.33 MB < 20 MB) |
-| Demo video 2–3 min (p10, p25) | **BLOCKED** — not recorded |
-| Presentation, named `CollegeName_TeamName` (p25) | **DONE, needs renaming** |
+| Demo video 2–3 min (p10, p25) | **RECORDED 2026-11-22** — `docs/submission/EchoGesture_demo_2026-11-22.mp4`, 2:55, needs an upload URL on slide 7 |
+| Presentation, named `CollegeName_TeamName` (p25) | **DONE** — `VIT_Chennai_Sky_Grazers.pptx` / `.pdf` |
 | Public or shared GitHub repo (p25) | **PASS** — repo is public |
-| One submission per team via Google Form (p25) | **BLOCKED** — needs authorization |
+| One submission per team via Google Form (p25) | **BLOCKED** — needs authorization; I will not submit or report it submitted without a receipt |
 
 ### The INT8 question
 
@@ -138,9 +138,10 @@ Dev has not yet run them.
 1. **Registration is unverified.** No confirmation record exists anywhere in the
    repo. If the team did not register by 8 Nov, the final submission link was
    never sent, and nothing else in this package can be submitted.
-2. **The `CollegeName_TeamName` string** is needed to name the PPT, the ZIP and
-   the APK. It is deliberately not in the repo.
-3. **The demo video** needs a phone and a camera.
+2. **The `CollegeName_TeamName` string is resolved** — `VIT_Chennai_Sky_Grazers`,
+   applied to the deck and PDF. The ZIP and APK keep their product names, which
+   the naming rule does not govern.
+3. **The demo video is recorded**; it needs an upload and a link on slide 7.
 4. **Rights.** The weights are ASL Citizen-derived with no confirmed
    redistribution permission. Submitting them is the owner's decision.
 5. **The Google Form** requires explicit authorization and produces the receipt

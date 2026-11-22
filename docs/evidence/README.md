@@ -1,7 +1,7 @@
 # HUD evidence, captured on the shipping build
 
 Five screenshots taken on the signed release APK
-(`EchoGesture-2026-11-22-release.apk`, `03d51354…ab2f49`) on the physical
+(`EchoGesture-2026-11-22-release.apk`, `9930894…4b397`) on the physical
 Vivo V2404, 2026-11-22, driven over adb. They exist because the
 "Occlusions & HUD clarity" criterion is 25% of the quality score and is the
 one place a judge can check our claim against a picture rather than a number.

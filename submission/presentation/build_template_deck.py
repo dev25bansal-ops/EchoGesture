@@ -424,8 +424,8 @@ def s7_demo(slide, shots_dir: pathlib.Path):
         ("python src/main.py path/to/clip.mp4", {"size": 8.5, "font": "Consolas", "space": 8}),
         ("Python 3.11 · requirements.txt pinned · model init is verified at image build time.",
          {"size": 8.5, "colour": GREY, "space": 8}),
-        ("DEMO VIDEO: <paste the 2–3 min YouTube or Drive link here>",
-         {"size": 8.5, "bold": True, "colour": RED}),
+        ("DEMO VIDEO: EchoGesture_demo_2026-11-22.mp4 (submitted with this package; link also in the README)",
+         {"size": 8, "bold": True, "colour": GREY}),
     ], colour=CYAN)
 
 

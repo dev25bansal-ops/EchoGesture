@@ -69,14 +69,14 @@
     },
     "presentation": {
       "path": "submission/presentation/VIT_Chennai_Sky_Grazers.pptx",
-      "sha256": "3879e53c990274eaa77ad1c7aa60706d24b6c18402e55c9e4a57c59c678b9e88",
+      "sha256": "6a2ea2bc6d1ac6778b6a50c2ba02436f39cdb224256b3ee5cfc274d2684ed615",
       "bytes": 413539,
       "slides": 9,
       "template": "Built inside the organizer's own template (C:/Users/dev25/Downloads/Submission_Final_forGithub.pptx): the original 9 slides are filled in place, so master, layout and header geometry are the template's, not a reconstruction. Section list is the template's: Track No / Team+College / Members, THE PROBLEM, SOLUTION, ARCHITECTURE, Track Final Output, DIFFERENTIATION, DEMO & LOCAL SETUP, Brownie Slides, Thank You.",
       "font": "Arial Black (display) and Calibri (body), inherited from the template",
       "pdf": {
         "path": "submission/presentation/VIT_Chennai_Sky_Grazers.pdf",
-        "sha256": "9e626eb3ed30fa8a0e6bfbaba41c119d36dd87c26ef77e2050b4f2193896fadc",
+        "sha256": "5ebc5d09ad6f36b76f18cb51ade656e3ac76b0385573e0a712a3049e5474a40f",
         "bytes": 377613,
         "pages": 9,
         "note": "Native Microsoft PowerPoint export (SaveAs format 32): text is selectable and fonts are embedded. Verified as 9 pages with the figure set re-extracted from the PDF text layer."

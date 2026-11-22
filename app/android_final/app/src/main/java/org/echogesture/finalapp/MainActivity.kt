@@ -50,13 +50,14 @@ class MainActivity : AppCompatActivity() {
 
         prefs = AppPreferences(this)
         history = RecognitionHistory(this)
+        volumeControlStream = android.media.AudioManager.STREAM_MUSIC
         speaker = Speaker(this)
         diagnostics = DiagnosticsLog(this) { prefs.diagnostics }
 
         cameraScreen = CameraScreen(this, prefs, history, speaker, diagnostics)
         glossaryScreen = GlossaryScreen(this, history, speaker)
         historyScreen = HistoryScreen(this, history, prefs)
-        settingsScreen = SettingsScreen(this, prefs, history, speaker, diagnostics)
+        settingsScreen = SettingsScreen(this, prefs, history, diagnostics)
 
         contentHost.addView(
             cameraScreen.root,

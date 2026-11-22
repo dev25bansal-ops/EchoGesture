@@ -35,7 +35,7 @@ class AppPreferences(context: Context) {
         set(v) = prefs.edit().putBoolean(KEY_HAPTICS, v).apply()
 
     var speech: Boolean
-        get() = prefs.getBoolean(KEY_SPEECH, false)
+        get() = prefs.getBoolean(KEY_SPEECH, true)
         set(v) = prefs.edit().putBoolean(KEY_SPEECH, v).apply()
 
     /**

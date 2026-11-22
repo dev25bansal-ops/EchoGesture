@@ -22,7 +22,6 @@ class SettingsScreen(
     private val activity: MainActivity,
     private val prefs: AppPreferences,
     private val history: RecognitionHistory,
-    private val speaker: Speaker,
     private val diagnostics: DiagnosticsLog
 ) {
 
@@ -103,14 +102,8 @@ class SettingsScreen(
             callbacks.onPreferencesChanged()
         }
         switchSpeech.setOnCheckedChangeListener { _, checked ->
-            if (checked && !speaker.isAvailable()) {
-                speaker.initialise()
-            }
             prefs.speech = checked
             callbacks.onPreferencesChanged()
-            if (checked && !speaker.isAvailable()) {
-                Toast.makeText(activity, R.string.tts_unavailable, Toast.LENGTH_SHORT).show()
-            }
         }
         switchSaveHistory.setOnCheckedChangeListener { _, checked ->
             prefs.saveHistory = checked

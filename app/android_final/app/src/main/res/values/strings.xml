@@ -94,7 +94,7 @@
     <string name="action_recognise_again">Scan next sign</string>
     <string name="action_analyze_another">Choose another video</string>
     <string name="action_clear_result">Clear</string>
-    <string name="tts_unavailable">No offline voice available on this device</string>
+    <string name="speech_unavailable">Could not play the sign aloud</string>
 
     <!-- Glossary -->
     <string name="glossary_title">Glossary</string>
@@ -139,7 +139,7 @@
     <string name="caption_size_medium">Medium</string>
     <string name="caption_size_large">Large</string>
     <string name="settings_speech">Speak results</string>
-    <string name="settings_speech_detail">Read the recognised sign aloud using the on-device voice</string>
+    <string name="settings_speech_detail">Read confirmed signs aloud in English</string>
     <string name="settings_save_history">Keep history on this device</string>
     <string name="settings_save_history_detail">When off, history is kept in memory and cleared when the app closes. No video is ever stored.</string>
     <string name="settings_diagnostics">Capture diagnostics</string>

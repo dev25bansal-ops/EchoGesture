@@ -240,7 +240,6 @@ class CameraScreen(
         applyPreferences()
         if (!modelReady) modelIdentity.text = activity.getString(R.string.camera_state_preparing)
         render(if (modelReady) UiState.WAITING else UiState.INIT)
-        speaker.initialise()
 
         if (hasCameraPermission()) startCamera(prefs.cameraChoice)
         else if (cameraAvailable && !prefs.requestedCameraPermission) requestCameraPermission()
@@ -839,8 +838,11 @@ class CameraScreen(
                 .also { analysis ->
                     analysis.setAnalyzer(trackerExecutor) { image ->
                         val now = SystemClock.elapsedRealtime()
-                        val captureActive = isAutoCapturing() || currentState == UiState.RECORDING
-                        if (!captureActive && now < nextIdleFrameAt) {
+                        val state = currentState
+                        val captureActive = state == UiState.AUTO_ARMED || state == UiState.AUTO_SIGNING ||
+                            state == UiState.RECORDING
+                        val shouldCheckPreview = state == UiState.WAITING && now >= nextIdleFrameAt
+                        if (!captureActive && !shouldCheckPreview) {
                             image.close()
                         } else {
                             if (!captureActive) nextIdleFrameAt = now + IDLE_ANALYSIS_INTERVAL_MS
@@ -1582,9 +1584,8 @@ class CameraScreen(
     }
 
     private fun speakResult(text: String) {
-        val spoken = speaker.speak(text)
-        if (!spoken) {
-            Toast.makeText(activity, R.string.tts_unavailable, Toast.LENGTH_SHORT).show()
+        speaker.speak(text) {
+            Toast.makeText(activity, R.string.speech_unavailable, Toast.LENGTH_SHORT).show()
         }
     }
 

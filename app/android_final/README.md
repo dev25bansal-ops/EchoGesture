@@ -313,3 +313,9 @@ Native libraries are the arm64-v8a `jni/*.so` from `tasks-vision.aar`,
 `tflite2.aar` and `camera-core.aar`; all seven prepared assets (four ensemble
 members + labels + meta + detector) come from the `Prepare model assets` step
 above.
+
+## Offline pronunciation
+
+The app plays one bundled MP3 per model label. Each filename uses the class index from models/landmark_labels.json. To regenerate the files, run `python3 app/android_final/generate_pronunciations.py` with CMU Flite 2.2 and FFmpeg with libmp3lame available. The samples were generated with Flite's SLT voice. [Flite source and license](https://github.com/festvox/flite/blob/v2.2/COPYING)
+
+Confirmed signs play automatically by default. **Settings → Speak results** controls automatic playback. The result card also includes **Speak** for replay. The app uses the media volume.

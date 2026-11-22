@@ -103,8 +103,8 @@ class GlossaryScreen(
             Toast.makeText(activity, R.string.action_copied, Toast.LENGTH_SHORT).show()
         }
         view.findViewById<Button>(R.id.sheetGlossSpeak).setOnClickListener {
-            if (!speaker.speak(label)) {
-                Toast.makeText(activity, R.string.tts_unavailable, Toast.LENGTH_SHORT).show()
+            speaker.speak(label) {
+                Toast.makeText(activity, R.string.speech_unavailable, Toast.LENGTH_SHORT).show()
             }
         }
         dialog.setContentView(view)

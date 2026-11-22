@@ -51,22 +51,22 @@
     },
     "submission_zip": {
       "path": "submission/EchoGesture_Submission.zip",
-      "sha256": "7691190b8ce045684a6117ab6a2b97b7b79327563147e9699f69cec939646cca",
-      "bytes": 13379265,
+      "sha256": "5d310cecf755f1593a3bc9b9b4b56d38e7ca58962d8da0f0325218c746da8e25",
+      "bytes": 13365184,
       "clean_room_verified": true,
       "clean_room_note": "extracted to empty dir; predict() ran from extracted copy only; 30/30 clips, 23 correct"
     },
     "presentation": {
       "path": "submission/presentation/CollegeName_TeamName.pptx",
-      "sha256": "697dd71ef5f2ab35bef6a0372560d4d3312e2004e069a498ed54d8b1009373fc",
-      "bytes": 413516,
+      "sha256": "960a12305399371aea0e261f71e58825fe489073b5d47ea6ecc6052bd5f84133",
+      "bytes": 413513,
       "slides": 9,
       "template": "Built inside the organizer's own template (C:/Users/dev25/Downloads/Submission_Final_forGithub.pptx): the original 9 slides are filled in place, so master, layout and header geometry are the template's, not a reconstruction.",
       "font": "Arial Black (display) and Calibri (body), inherited from the template",
       "pdf": {
         "path": "submission/presentation/CollegeName_TeamName.pdf",
-        "sha256": "1e2a1717680b989a35a404e7d393ac37538c6f0b08e213250796eb65209f0559",
-        "bytes": 376539,
+        "sha256": "d1e959f06d167e05944f03f24473f20ba786e01dfc40b622b8620643fb27adcd",
+        "bytes": 376460,
         "pages": 9,
         "note": "Native Microsoft PowerPoint export (SaveAs format 32): text is selectable and fonts are embedded. Verified as 9 pages with the figure set re-extracted from the PDF text layer."
       },

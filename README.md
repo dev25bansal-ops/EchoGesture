@@ -31,8 +31,8 @@ Its digest is pinned by
 [`submission/apk/EchoGesture-2026-11-22-release.apk.sha256`](submission/apk/EchoGesture-2026-11-22-release.apk.sha256).
 
 **Current numbers, in one line:** 85.45% top-1 / 96.64% top-5 on 1,251
-signer-disjoint clips; 16.33 MB total; on-device GPU p95 46–54 ms with an empty
-frame and 68–70 ms with a hand, on a debug build. Three of the six scored rows
+signer-disjoint clips; 16.33 MB total; on-device GPU p95 **58–72 ms** across
+four file-pick runs on the signed release build. Three of the six scored rows
 pass and three fail — the table in
 [`submission/FINAL_DELIVERY/RESULTS.md`](submission/FINAL_DELIVERY/RESULTS.md)
 states which, in its own words.
@@ -130,7 +130,7 @@ its device, runtime and how to reproduce it.
 | Classifier latency | **pass (desktop)** | 4.2 ms/clip for nine members, x86. **Not an on-device figure** |
 | Per-frame detector latency | **pass (desktop), p50 20.3 ms / p95 34.1 ms** | inside the 50 ms budget; 160 frames. Reproduce: `scripts/ml/latency_per_frame.py` |
 | End-to-end per clip | **~720 ms (desktop)** | warm `predict()` on a 32-frame clip; the detector is ~600 ms of it, the classifier 4.2 ms. **Not an on-device figure** |
-| On-device latency | **FAIL at p95, but at the target on the shipping build** | Vivo V2404, GPU delegate, DEBUGGABLE build: detect p50 34–45 ms, p95 46–54 ms (no hand) / 68–70 ms (hand in frame) against a ≤50 ms target. The 68–70 ms was taken with diagnostics ON after the resolution pin, so it is not the shipping configuration. On the signed release build the HUD now reports a real p95: **detect p95 51 ms and 50 ms** on two picked clips, with convert 3–4 ms. That is the file-pick path, not the live camera with a hand, so `results.csv` row `latency_p95` stays `FAIL` — the overrun is 0–1 ms on a measured path rather than 18–20 ms on an unmeasured one |
+| On-device latency | **FAIL — every measured p95 is over the target** | Vivo V2404, GPU delegate, **signed release build**: detect p95 **58 / 65 / 67 / 72 ms** across four file-pick classifications, 8–22 ms over the ≤50 ms target, p50 34–45 ms (which passes). The last two samples are the same clip, so that spread is run-to-run variance rather than a content difference. Earlier figures are superseded and **not** the shipping configuration: 46–54 ms (empty-frame, DEBUG, before the 640 resolution pin) and 68–70 ms (hand in frame, DEBUG, diagnostics on). The previously published "51 ms and 50 ms / 0–1 ms over" claim is **retracted** — `ClipAnalyzer` never wrote to `HandTracker.profiler`, so the HUD was printing live-camera frames under a clip result. The live-camera-with-a-hand path remains unmeasured on the release build, which is a second independent reason `results.csv` row `latency_p95` stays `FAIL` |
 | Power ≤ 500 mW | **FAIL, 2666–2898 mW** | **This is the camera hardware floor, not the model.** batterystats prices "camera on" at a fixed PowerProfile constant of **749.4 mA** — five independent blocks in one on-device dump agree to under 0.2% across screen-on, screen-off and doze states, which no real current can do. At 3.87 V that is ~2.9 W, about **5.8× the budget**, so no live-camera app on this device can pass. 84% of the app's own attributed drain is that same camera line; app compute is ~157 mW. `docs/POWER_THERMAL_2026-11-19.md` |
 | Thermal drift ≤ 20% | **PASS, 19.2%** | SoC 45.8→56.7°C over 10 min, thermal status LIGHT throughout. Only 0.8 pt of headroom. `docs/POWER_THERMAL_2026-11-19.md` |
 

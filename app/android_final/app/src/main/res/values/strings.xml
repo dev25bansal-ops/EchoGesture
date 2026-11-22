@@ -91,6 +91,7 @@
          against. Shown only when the profile has enough frames to make a p95
          meaningful, so a 3-frame capture cannot print a fake percentile. -->
     <string name="result_profiler_p95">Per-frame p95: detect %1$d ms, convert %2$d ms — the ≤50 ms target is a p95</string>
+    <string name="result_profiler_p95_clip">Clip detect p95: %1$d ms (%3$s delegate) — the ≤50 ms target is a p95</string>
     <string name="result_responsibility">A model score ranks the 100 known signs; it is not a calibrated probability that the reading is correct. Recognises one isolated sign at a time.</string>
     <string name="action_copy">Copy</string>
     <string name="action_copied">Copied</string>

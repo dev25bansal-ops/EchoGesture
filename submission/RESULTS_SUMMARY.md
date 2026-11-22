@@ -112,27 +112,44 @@ two mutually incompatible per-frame figures in the same commit (15.34 ms PASS an
 measured end-to-end is 4.65 s, which only ~135 ms/frame explains. Those laptop
 numbers were never reconciled against each other.
 
-**They were superseded on 2026-11-21 by a direct on-device measurement**, which
-does not need reconciling because it comes from the app's own profiler:
+**They were superseded by direct on-device measurements**, which do not need
+reconciling because they come from the app's own profiler:
 
-| Path, Vivo V2404, 640×480 VIDEO | p50 | p95 |
-| --- | --: | --: |
-| CPU delegate | 95 ms | 166 ms |
-| **GPU delegate, no hand in frame** | — | **46–54 ms** |
-| **GPU delegate, hand in frame** | 50–59 ms | **68–70 ms** |
+| Build and path, Vivo V2404, 640×480 VIDEO | p50 | p95 | Verdict |
+| --- | --: | --: | --- |
+| DEBUG, CPU delegate | 95 ms | 166 ms | FAIL |
+| DEBUG, GPU, **no hand in frame** (2026-11-19, *before* the 640 resolution pin) | 34–45 ms | 46–54 ms | at target, but not the shipping config |
+| DEBUG, GPU, **hand in frame** (2026-11-21, *after* the pin, diagnostics ON) | 50–58 ms | 68–70 ms | FAIL, and carries a diagnostic bitmap copy the release build does not pay |
+| **SIGNED RELEASE, GPU, file-pick** (2026-11-22) | — | **58 / 65 / 67 ms** | **FAIL, 8–17 ms over** |
 
 The app had been building its detector with no delegate at all, so it ran on the
 CPU path. With `Delegate.GPU` requested and CPU as fallback, the detector is
-2.3× faster and moves from "clearly over budget" to "at or inside it" in the
-empty-frame regime — and 18–20 ms over once a hand is present.
+2.3× faster. But **the honest score on the artifact that ships is the last row**:
+three file-pick classifications on the signed release APK — NOON1, DARK1 and
+MECHANIC1 — gave detect p95 58, 65 and 67 ms, all over the 50 ms target.
 
-All of these are DEBUGGABLE builds, so they are upper bounds. The classifier adds
-~40 ms warm on top; it is no longer 0.15% of end-to-end, because the detector
-stopped dominating.
+An earlier version of this section quoted **50–59 ms** for the release build and
+called it "at or inside" the target. **That figure is retracted.**
+`ClipAnalyzer` builds its own `HandLandmarker` and never wrote to
+`HandTracker.profiler`, so the HUD's p95 line was reporting *live-camera*
+frames — from an empty room — underneath a clip result. A cold-started app that
+had never opened the camera still displayed `detect 46 ms` on a clip, which is
+how the defect was caught. `ClipAnalyzer` now times its own `detectForVideo`
+calls and names the delegate that actually ran, and the camera-only statistics
+are suppressed on the clip path.
 
-> "About 40 ms for the classifier; the detector takes 46–70 ms p95 on the GPU
-> delegate depending on whether a hand is in frame. Measured on one physical
-> phone, debug build. Desktop-CPU figures were 142–151 ms and are historical."
+**Still unmeasured:** the live camera with a hand in frame on the release build.
+The HUD can report it now, but no run has been taken, so the row stays `FAIL` on
+that ground as well as on the three clip samples.
+
+All of the DEBUG rows are upper bounds. The classifier adds ~40 ms warm on top;
+it is no longer 0.15% of end-to-end, because the detector stopped dominating.
+
+> "The detector takes 58–67 ms p95 on the GPU delegate on the signed release
+> build, measured three times off the app's own per-frame timer. The ≤50 ms
+> target is a p95, so that fails by 8–17 ms. The classifier is about 40 ms warm
+> and is not the problem. Desktop-CPU figures were 142–151 ms and are
+> historical."
 
 ---
 

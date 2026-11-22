@@ -86,17 +86,18 @@
     },
     "apk_release_2026_11_22": {
       "path": "submission/apk/EchoGesture-2026-11-22-release.apk",
-      "sha256": "03d51354397b7fa8b90bd032323accd156d67deae2bdb9be67b2ca8484ab2f49",
-      "bytes": 80815568,
+      "sha256": "9930894280967c0809b52595b103e0a36b93097768f7f61e401b7e50a3b4b397",
+      "bytes": 80816048,
       "debuggable": false,
       "signed": "CN=measurement — local key supplied via environment; no key material in the repo",
       "unit_tests": "150 / 150 pass on the release variant",
       "ensemble_test_top1_in_apk": 0.8545,
-      "note": "SIGNED RELEASE build — this is the artifact to install. Every latency, power and thermal figure in results.csv was measured on the older DEBUGGABLE build, so those are upper bounds on this one. Same 10 model assets as debug (9 FP16 tflite + hand_landmarker.task).",
+      "note": "SIGNED RELEASE build - this is the artifact to install. App-code change only: no model, no preprocessing, no geometry change, so the 85.45% top-1 and the 16.33 MB footprint are unchanged. The latency figures quoted above ARE from this build; the power and thermal figures in results.csv were measured on the older DEBUGGABLE build and remain upper bounds on this one.",
       "rebuilt_2026_11_22": {
-        "reason": "Adds the per-frame p95 line to the result card (result_profiler_p95). App-code change only — no model, no preprocessing, no geometry change.",
-        "measured_on_device": "Two file-pick classifications on this exact build, signed with the same key as the previous APK (cert 6573b6fd…1bb97): MECHANIC1 detect p95 51 ms / convert 4 ms, DARK1 detect p95 50 ms / convert 3 ms. File-pick path, not the live camera with a hand at the device.",
-        "replaces_sha256": "a56ba20f3b8a88c9e0be49c196a0ca29e66f0e69ad4e80d9bd4803dfa7e8ada7"
+        "reason": "Makes ClipAnalyzer time its own detectForVideo calls and report the delegate that actually ran, and suppresses the camera-only statistics on the clip path.",
+        "why_it_mattered": "The detector has TWO separate HandLandmarker instances. ClipAnalyzer builds its own and never wrote to HandTracker.profiler, so the HUD per-frame p95 line was reporting LIVE-CAMERA frames under a clip result. Proven on a cold-started app that had never opened the camera: it still showed detect 46 ms on a clip. Every file-pick latency this project previously published (the 50-59 ms span, and this entry formerly 51/50 ms) came from that defect and is retracted.",
+        "measured_on_device": "Three file-pick classifications on THIS build, signed with the same key (cert 6573b6fd...1bb97), diagnostics off: NOON1 detect p95 58 ms (32 frames), DARK1 65 ms (25 frames), MECHANIC1 67 ms (32 frames). GPU delegate each time, not a silent CPU fallback. All three are over the 50 ms target.",
+        "replaces_sha256": "03d51354397b7fa8b90bd032323accd156d67deae2bdb9be67b2ca8484ab2f49"
       },
       "supersedes": {
         "path": "submission/apk/EchoGesture-2026-11-21.apk",
@@ -123,21 +124,27 @@
         "hud_05_result_p95.png",
         "README.md"
       ],
-      "captured_on": "EchoGesture-2026-11-22-release.apk 03d51354…ab2f49, Vivo V2404, adb",
+      "captured_on": "EchoGesture-2026-11-22-release.apk 99308942...b4b397, Vivo V2404, adb",
       "note": "Unedited device screenshots supporting the 25% occlusions-and-HUD-clarity criterion."
     },
     "demo_video_2026_11_22": {
       "path": "docs/submission/EchoGesture_demo_2026-11-22.mp4",
-      "sha256": "c22d411b3b5df9d426878f4a0c1d02ba4efab0ebfcfb5bdd9dfbf386cfae72fc",
-      "bytes": 27206235,
+      "sha256": "f5b30435ad6a8fc6c4ca4ef81f8707962b05b0c5bf0a970bd330f25c2878b5a7",
+      "bytes": 28134325,
       "resolution": "1280x720",
       "fps": 30,
-      "frames": 5073,
-      "duration_s": 169.1,
+      "frames": 5251,
+      "duration_s": 175.0,
       "audio": "present (one soun/mp4a stream)",
       "builder": "scripts/media/build_demo_video.py",
       "committed": false,
-      "note": "Recorded 2026-11-22. Contains ASL Citizen footage under the Microsoft Research non-commercial licence, so it is gitignored like the APK and deliberately NOT committed to this public repo (same constraint as the weights, see NOTICE). Upload it and paste the link into slide 7; the recording itself is done."
+      "note": "Recorded 2026-11-22. Contains ASL Citizen footage under the Microsoft Research non-commercial licence, so it is gitignored like the APK and deliberately NOT committed to this public repo (same constraint as the weights, see NOTICE). Upload it and paste the link into slide 7; the recording itself is done.",
+      "rebuilt_2026_11_22": {
+        "reason": "Removes a retracted latency figure burned into the on-screen HUD, and corrects a narration error.",
+        "latency_caption": "was release: detect p95 50-59 ms -> now release: detect p95 58-67 ms, with clip 67.0 ms (the worst sample, not the best). The 50-59 span was a measurement defect: ClipAnalyzer never wrote to HandTracker.profiler, so the HUD reported live-camera frames under a clip result. Verified on an extracted frame (f02662.png) that both the header range and the bottom clip line render correctly.",
+        "narration_fix": "The robustness beat said hand-drop was the one criterion we fail. Three rows fail (latency_p95, accuracy_drop_robustness, avg_power); it now says robustness is the one we are furthest from fixing, and adds the gated +2.39 figure.",
+        "replaces_sha256": "c22d411b3b5df9d426878f4a0c1d02ba4efab0ebfcfb5bdd9dfbf386cfae72fc"
+      }
     }
   },
   "evidence": {
@@ -235,7 +242,7 @@
     },
     {
       "date": "2026-11-22",
-      "what": "demo video recorded (docs/submission/EchoGesture_demo_2026-11-22.mp4, c22d411b...72fc, 2:49.3, 10 narrated beats). Supersedes the never-existing recording the checklist described. Its earlier on-screen latency label said 'detect p95 46 ms' from a DEBUG build; corrected to 'release: detect p95 50-59 ms (file-pick)' to match the shipping APK measurement. Not committed: ASL Citizen footage on a public repo."
+      "what": "demo video REBUILT (docs/submission/EchoGesture_demo_2026-11-22.mp4, f5b30435...8b5a7, 2:55.2, 10 narrated beats). Supersedes c22d411b...72fc. Two corrections: the on-screen HUD latency caption had quoted a retracted figure and now reads 'release: detect p95 58-67 ms (file-pick)' with clip 67.0 ms; and the robustness narration wrongly called hand-drop the only failing criterion (three rows fail) and now says it is the one we are furthest from fixing. Verified on an extracted frame. Not committed: ASL Citizen footage on a public repo."
     }
   ]
 }

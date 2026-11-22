@@ -16,17 +16,28 @@ deliberately, so the artifact that produced the screen is identifiable.
 | `hud_02_glossary.png` | The glossary of the 100 output classes | The vocabulary is exactly what the model emits, inspectable |
 | `hud_03_refusal_no_hands.png` | **"No hands in view — Hands were visible for too little of that recording."** | The app declines rather than guesses when no hand is found. This state also produces **no History entry** — a refusal is not recorded as a recognition |
 | `hud_04_recording_too_long.png` | **"Perform one sign, then tap Finish"** with a Cancel affordance, mid-recording | Constructive guidance during capture, not an error after the fact |
-| `hud_05_result_p95.png` | `MECHANIC1`, **89.3% model score**, alternatives `DEMAND1 · HALLOWEEN1 · FAIL · DECIDE1`, and **"Per-frame p95: detect 59 ms, convert 5 ms — the ≤50 ms target is a p95"** | A real accepted reading, the alternatives are always shown, and the scored latency metric is readable on the artifact that ships |
+| `hud_05_result_p95.png` | `MECHANIC1`, **89.3% model score**, alternatives `DEMAND1 · HALLOWEEN1 · FAIL · DECIDE1`, and the clip's own **"Clip detect p95: 67 ms (GPU delegate) — the ≤50 ms target is a p95"** | A real accepted reading, the alternatives are always shown, and the scored latency metric is readable on the artifact that ships |
 
 ## What shot 05 also tells us honestly
 
-That capture reported **detect p95 59 ms**, above the 50/51 ms seen earlier on
-the same build. Across five file-pick classifications on the release build the
-observed detect p95 spans **50–59 ms**. The spread is real and is recorded as a
-range in `results/results.csv` (`latency_p95` notes) rather than quoted as the
-best value. On this path the target is met at the low end and missed by ~9 ms
-at the high end; the live-camera-with-a-hand path remains unmeasured, so the
-row stays `FAIL`.
+That capture reported **detect p95 67 ms**. Measured across three file-pick
+classifications on the signed release build — NOON1 58 ms, DARK1 65 ms,
+MECHANIC1 67 ms, GPU delegate each time — every sample is **over** the 50 ms
+target, by 8 to 17 ms. The range is recorded in `results/results.csv`
+(`latency_p95` notes) and the row is `FAIL`.
+
+**The earlier 50–59 ms span is retracted.** `ClipAnalyzer` builds its own
+`HandLandmarker` and never called `HandTracker.profiler`, so the HUD's
+`Per-frame p95` line was reading the *live camera* profiler — leftover frames
+from an empty room — and printing them under a clip result. A cold-started app
+that had never opened the camera still showed `detect 46 ms`. `ClipAnalyzer`
+now times its own `detectForVideo` calls and reports which delegate actually
+ran; shot 05 was re-taken after that fix and shows the clip's real detector
+p95. This is a defect we found in our own instrument, so it is written down
+rather than quietly corrected.
+
+The live-camera-with-a-hand path is still unmeasured on the release build,
+which is a second, independent reason the row stays `FAIL`.
 
 ## What these shots do not show
 

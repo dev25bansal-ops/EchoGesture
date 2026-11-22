@@ -281,8 +281,9 @@ def main():
         "We would rather show you the hard part. Robustness passes on pixels: "
         "blur, low light, downscaling and JPEG all stay under five points. But "
         "if a hand leaves the frame for a quarter of a clip, accuracy drops "
-        "five point seven six points — that is a real limitation, and the one "
-        "criterion we fail.",
+        "five point seven six points. With the acceptance gate the loss is two "
+        "point three nine, and it declines instead of guessing. Robustness is "
+        "the one we are furthest from fixing.",
         card(["Where it fails",
               "",
               "PASS  pixel-level corruption:  +4.48 points",
@@ -354,22 +355,25 @@ def main():
         frames = OD.sample_file_frames(vp, max_frames=200)
         mid = frames[len(frames) // 2]
         st = OD.CaptionState(OD.PROVISIONAL_THRESHOLD)
-        # The desktop predicts at 0.6-3.5 s depending entirely on machine load,
+        # The desktop predicts in 0.6-3.5 s depending entirely on machine load,
         # and in a submission video that number would read as the system's
         # latency when it is really this laptop's. The figure a judge should
-        # see is the one measured ON THE SHIPPING RELEASE APK via its own HUD
-        # line (result_profiler_p95): detect p95 spans 50-59 ms across five
+        # see is the one measured ON THE SIGNED RELEASE APK by ClipAnalyzer's
+        # own per-frame timer: detect p95 58 / 65 / 67 ms across three
         # file-pick classifications (results/results.csv, latency_p95 notes;
         # docs/evidence/README.md). The earlier 46 ms came from a debug build
-        # and is superseded. Substituted explicitly and labelled as a range,
-        # not silently rewritten, so the HUD stays honest about what it is
-        # showing -- and the 86-char cut in render() keeps the range on screen.
+        # and the 50-59 ms span that replaced it was a measurement defect --
+        # ClipAnalyzer never wrote to HandTracker.profiler, so the HUD had been
+        # reporting live-camera frames under a clip result. Both are retracted;
+        # neither appears here. The worst sample (67) is shown rather than the
+        # best, and the range goes in the label, so the overlay cannot be read
+        # as a claim better than what was measured.
         res = dict(res)
-        res["latency_ms"] = 50.0
-        res["capture_to_result_ms"] = 50.0
+        res["latency_ms"] = 67.0
+        res["capture_to_result_ms"] = 67.0
         res.pop("queue_wait_ms", None)
         st.update(res)
-        hud = OD.render(mid, st, "release: detect p95 50-59 ms (file-pick)",
+        hud = OD.render(mid, st, "release: detect p95 58-67 ms (file-pick)",
                         OD.PROVISIONAL_THRESHOLD)
         hud = cv2.resize(hud, (W, H), interpolation=cv2.INTER_LINEAR)
         demo_frames.append(hud)

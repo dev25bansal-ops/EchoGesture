@@ -1152,7 +1152,13 @@ class CameraScreen(
      * four pinned interpreters, same mean-logit → single-softmax aggregation.
      * Record mode differs only in which frames it hands over.
      */
-    private fun runInference(recording: SignRecorder.Recording, c: LandmarkClassifier) {
+    private fun runInference(
+        recording: SignRecorder.Recording,
+        c: LandmarkClassifier,
+        clipP95: Long = 0L,
+        clipCopyP95: Long = 0L,
+        clipDelegate: String = ""
+    ) {
         try {
             if (recording.frameCount == 0) {
                 processing = false
@@ -1199,7 +1205,9 @@ class CameraScreen(
             val totalMs = (System.nanoTime() - started) / 1_000_000L
             processing = false
             if (prefs.diagnostics) logDiagnostic(capture, result, totalMs)
-            activity.runOnUiThread { renderResult(result, totalMs, capture) }
+            activity.runOnUiThread {
+                renderResult(result, totalMs, capture, clipP95, clipCopyP95, clipDelegate)
+            }
         } catch (t: Throwable) {
             processing = false
             render(UiState.ERROR, detail = activity.getString(R.string.error_inference))
@@ -1242,7 +1250,10 @@ class CameraScreen(
                         )
                         // runInference resets `processing` itself on every exit
                         // path, so it must not be cleared here first.
-                        runInference(outcome.recording, c)
+                        runInference(
+                            outcome.recording, c,
+                            outcome.detectP95Ms, outcome.copyP95Ms, outcome.delegate
+                        )
                     }
                     is ClipAnalyzer.Outcome.Failed -> {
                         processing = false
@@ -1319,7 +1330,10 @@ class CameraScreen(
     private fun renderResult(
         result: LandmarkClassifier.Result,
         totalMs: Long,
-        capture: HandTracker.Capture
+        capture: HandTracker.Capture,
+        clipP95: Long = 0L,
+        clipCopyP95: Long = 0L,
+        clipDelegate: String = ""
     ) {
         val percent = result.confidence * 100f
 
@@ -1374,21 +1388,44 @@ class CameraScreen(
         // limit -- and a sparse window means the features carry less motion
         // than the signer made, because velocity is a plain per-frame
         // difference with no dt.
-        profilerDetailText.text = tracker?.profiler?.snapshot()?.let { p ->
-            activity.getString(
-                R.string.result_profiler_detail,
-                p.effectiveFps.roundToInt(),
-                p.delivered,
-                p.analysisP50
-            )
-        } ?: ""
+        profilerDetailText.text = if (clipP95 > 0L) {
+            // This line describes the CAMERA's analyser. On the file-pick path
+            // there is no camera and no analyser: showing it printed the live
+            // room's fps and frame count under a clip result, which reads as a
+            // description of the clip. The clip's own detect cost is on the
+            // p95 line below; there is nothing truthful to put here.
+            ""
+        } else {
+            tracker?.profiler?.snapshot()?.let { p ->
+                activity.getString(
+                    R.string.result_profiler_detail,
+                    p.effectiveFps.roundToInt(),
+                    p.delivered,
+                    p.analysisP50
+                )
+            } ?: ""
+        }
         // The scored criterion is detect_p95 against ≤50 ms, but analysisP50
         // above is a MEDIAN of convert+detect and can never stand in for it.
         // On a release build the HUD is the only readable channel (no run-as,
         // allowBackup=false), so without this line p95 is unobservable on the
         // artifact that actually ships. A p95 needs a real sample: below 20
         // frames it is just the maximum wearing a percentile's name.
-        profilerP95Text.text = tracker?.profiler?.snapshot()?.let { p ->
+        //
+        // Which p95 depends on the path. A clip result must report the CLIP's
+        // own detector time: [ClipAnalyzer] builds a separate HandLandmarker
+        // and never calls HandTracker.profiler, so reading the tracker here
+        // showed the live room's camera figures — or, on a cold tracker,
+        // nothing — under a clip result. That mislabelled a number as clip
+        // latency when it was camera latency.
+        val clipP95Text = if (clipP95 > 0L) {
+            activity.getString(
+                R.string.result_profiler_p95_clip, clipP95, clipCopyP95, clipDelegate
+            )
+        } else {
+            null
+        }
+        profilerP95Text.text = clipP95Text ?: (tracker?.profiler?.snapshot()?.let { p ->
             if (p.frames < 20) {
                 ""
             } else {
@@ -1398,7 +1435,7 @@ class CameraScreen(
                     p.convertP95
                 )
             }
-        } ?: ""
+        } ?: "")
         profilerP95Text.visibility = if (profilerP95Text.isBlank) View.GONE else View.VISIBLE
         latencyText.text = activity.getString(
             R.string.result_latency_detail,

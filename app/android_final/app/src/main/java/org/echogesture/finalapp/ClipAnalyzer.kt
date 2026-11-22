@@ -84,7 +84,22 @@ object ClipAnalyzer {
             val frameCount: Int,
             val handFrames: Int,
             /** True when [MAX_FRAMES_DEFAULT] cut the clip short. */
-            val truncated: Boolean
+            val truncated: Boolean,
+            /**
+             * p95 of per-frame detectForVideo time on THIS clip, in ms.
+             *
+             * The result card used to show the camera analyser's p95 on the
+             * file-pick path, which is a different pipeline: this path builds
+             * its own HandLandmarker, never calls [HandTracker.profiler], and
+             * feeds decoded frames rather than camera ones. A cold tracker
+             * therefore left the line blank and a warm one printed the empty
+             * room's camera figures over a clip result. Measured here instead.
+             */
+            val detectP95Ms: Long = 0L,
+            /** p95 of the bitmap-copy stage, which this path pays and the camera path does not. */
+            val copyP95Ms: Long = 0L,
+            /** "GPU" or "CPU" — which detector actually ran, since GPU falls back silently. */
+            val delegate: String = ""
         ) : Outcome
 
         data class Failed(val reason: Reason, val detail: String = "") : Outcome {
@@ -175,15 +190,22 @@ object ClipAnalyzer {
         }
         val tLandmarker = android.os.SystemClock.elapsedRealtime()
 
-        val out = ArrayList<HandTracker.Frame>(frames.size)
+        var out = ArrayList<HandTracker.Frame>(frames.size)
         var handFrames = 0
         var copyMs = 0L
         var detectMs = 0L
         var toHandsMs = 0L
+        // Per-frame samples for the percentiles the result card shows. Kept
+        // per frame rather than as a running total because a p95 cannot be
+        // recovered from a sum, and this path is now the only honest source of
+        // a clip-latency percentile on the shipping build.
+        val detectSamples = LongArray(frames.size)
+        val copySamples = LongArray(frames.size)
         // VIDEO mode requires strictly increasing timestamps. Container PTS is
         // not guaranteed monotonic after scaling (two targets can resolve to
         // the same millisecond) and MediaPipe faults on a repeat, so clamp.
         var lastTs = Long.MIN_VALUE / 2
+        var fi = 0
         try {
             for (f in frames) {
                 val c0 = android.os.SystemClock.elapsedRealtime()
@@ -202,6 +224,11 @@ object ClipAnalyzer {
                 toHandsMs += c3 - c2
                 if (hands.isNotEmpty()) handFrames++
                 out.add(HandTracker.Frame(hands, f.ptsMs))
+                if (fi < detectSamples.size) {
+                    detectSamples[fi] = c2 - c1
+                    copySamples[fi] = c1 - c0
+                }
+                fi++
             }
         } catch (t: Throwable) {
             return Outcome.Failed(Outcome.Failed.Reason.UNREADABLE, t.javaClass.simpleName)
@@ -228,12 +255,32 @@ object ClipAnalyzer {
         )
         val startedAt = out.first().capturedAtMs
         val stoppedAt = out.last().capturedAtMs
+        val n = out.size
         return Outcome.Analysed(
             recording = SignRecorder.Recording(out, startedAt, stoppedAt),
-            frameCount = out.size,
+            frameCount = n,
             handFrames = handFrames,
-            truncated = frames.size >= maxFrames
+            truncated = frames.size >= maxFrames,
+            detectP95Ms = percentile95(detectSamples, n),
+            copyP95Ms = percentile95(copySamples, n),
+            delegate = lastDelegate
         )
+    }
+
+    /**
+     * Nearest-rank p95 over the first [n] samples.
+     *
+     * Nearest-rank, not interpolated: with 20-40 frames an interpolated
+     * percentile invents a value between two real measurements, and the
+     * criterion being reported is a threshold ("is it under 50 ms"), so a
+     * sample that was actually observed is the defensible number.
+     */
+    private fun percentile95(samples: LongArray, n: Int): Long {
+        if (n <= 0 || samples.isEmpty()) return 0L
+        val used = samples.copyOfRange(0, minOf(n, samples.size)).also { it.sort() }
+        if (used.isEmpty()) return 0L
+        val rank = kotlin.math.ceil(0.95 * used.size).toInt().coerceIn(1, used.size)
+        return used[rank - 1]
     }
 
     /** One decoded frame with the presentation time it will be handed to MediaPipe at. */
@@ -374,11 +421,23 @@ object ClipAnalyzer {
                     .build()
             )
         return try {
-            build(Delegate.GPU)
+            build(Delegate.GPU).also { lastDelegate = "GPU" }
         } catch (t: Throwable) {
-            build(Delegate.CPU)
+            build(Delegate.CPU).also { lastDelegate = "CPU" }
         }
     }
+
+    /**
+     * Which delegate the detector actually got, for the result card.
+     *
+     * The GPU request falls back to CPU silently, and the two differ by 2-3x
+     * on this workload. Without this the card's p95 is a number with no stated
+     * delegate behind it, and a reader cannot tell a GPU measurement from a
+     * CPU one. Written only by [createLandmarker], read after [analyse].
+     */
+    @Volatile
+    var lastDelegate: String = ""
+        private set
 
     /** Identical handedness mapping to [HandTracker]: Left=0, Right=1, no mirroring. */
     private fun toHands(

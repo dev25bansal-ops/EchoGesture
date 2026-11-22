@@ -32,25 +32,30 @@
   },
   "artifacts": {
     "apk_v4_3": {
-      "path": "dist/echogesture-v4.3-masked.apk",
+      "path": ".scratch/apkcheck/echogesture-v4.3-masked.apk",
       "sha256": "3db9d94ad761a76bdcf5dd9b3eaeff7e91dd14a51eaee2eca44acb98f1380896",
       "bytes": 83350522,
       "source_commit": "5251bf8",
-      "note": "Footer string misstates 4 members. Superseded by apk_p1."
+      "note": "HISTORICAL. Not in the deliverable tree; the file survives only under .scratch/apkcheck/. Hash and byte count re-measured 2026-11-22 so the entry is internally consistent.",
+      "present_on_disk": true
     },
     "apk_p1": {
-      "path": "app/android_final/app/build/outputs/apk/debug/app-debug.apk",
+      "path": null,
       "sha256": "150ffeeb0eaaa8914db362e2bcd41de26c93608193ebcee8457433dc5ea5cb7a",
       "bytes": 83350522,
       "change": "footer model count derived from loaded members; string resource parameterised",
-      "verified": "installs and launches on Android 14 emulator; footer reads '9-model ensemble'"
+      "verified": "installs and launches on Android 14 emulator; footer reads '9-model ensemble'",
+      "present_on_disk": false,
+      "note": "HISTORICAL, not part of the deadline package. Kept only so older references resolve. The build artifact is no longer on disk; the shipped APK is apk_auto_6_2_SHIPS below. The gradle debug output at this path was rebuilt and no longer matches the recorded hash/bytes, so the path is cleared rather than left wrong."
     },
     "apk_v4_2_rollback": {
-      "path": "dist/echogesture-v4.2.apk",
-      "sha256": "5490e02908159e24dac1b45dca7b21afbbe77909fb62ceab4348828e8d939dfc"
+      "path": null,
+      "sha256": "5490e02908159e24dac1b45dca7b21afbbe77909fb62ceab4348828e8d939dfc",
+      "present_on_disk": false,
+      "note": "HISTORICAL, not part of the deadline package. Kept only so older references resolve. The build artifact is no longer on disk; the shipped APK is apk_auto_6_2_SHIPS below."
     },
     "submission_zip": {
-      "path": "submission/EchoGesture_Submission.zip",
+      "path": "EchoGesture_Submission.zip",
       "sha256": "5d310cecf755f1593a3bc9b9b4b56d38e7ca58962d8da0f0325218c746da8e25",
       "bytes": 13365184,
       "layout": "EchoGesture/{src,models,results}",
@@ -65,12 +70,12 @@
         "clean_extraction_predict": "WHATFOR1 on clip 0283886564670357-WHAT FOR, confidence 0.9749, top5 [WHATFOR1, OFFEND, DEAF1, KNIGHT1, PENNY]",
         "participant_ids_present": false
       },
-      "note": "results/ contains aggregate summaries only (results.csv, eval summaries, quantisation). Per-clip predictions.jsonl is deliberately excluded because clip_id embeds ASL Citizen participant identifiers."
+      "note": "Repo root, gitignored (*.zip) - upload it with the form. Built by scripts/release/build_bundle.py, which stages and self-verifies 25 entries including the 9 FP16 members, src/main.py, results/results.csv and results/predictions.jsonl."
     },
     "presentation": {
       "path": "submission/presentation/VIT_Chennai_Sky_Grazers.pptx",
       "sha256": "6a2ea2bc6d1ac6778b6a50c2ba02436f39cdb224256b3ee5cfc274d2684ed615",
-      "bytes": 413539,
+      "bytes": 526422,
       "slides": 9,
       "template": "Built inside the organizer's own template (C:/Users/dev25/Downloads/Submission_Final_forGithub.pptx): the original 9 slides are filled in place, so master, layout and header geometry are the template's, not a reconstruction. Section list is the template's: Track No / Team+College / Members, THE PROBLEM, SOLUTION, ARCHITECTURE, Track Final Output, DIFFERENTIATION, DEMO & LOCAL SETUP, Brownie Slides, Thank You.",
       "font": "Arial Black (display) and Calibri (body), inherited from the template",
@@ -126,12 +131,10 @@
       "status": "SUPERSEDED 2026-11-22 — not the submitted app; kept for provenance"
     },
     "submission_zip_2026_11_22": {
-      "path": "EchoGesture_Submission.zip (repo root, gitignored)",
-      "sha256": "f95c93f06360f0e3a965cf76f7ca4dc3e8af17a90dae7cf988ea973d96f7eb80",
-      "bytes": 13480607,
-      "built_by": "scripts/release/build_bundle.py build --source . --model models/landmark_ens_tcn21_fp16.tflite --labels models/landmark_labels.json --results results/results.csv --metadata models/landmark_model_meta.json --predictions results/predictions.jsonl --extra scripts/ml/export_ensemble.py --extra scripts/ml/eval_tflite_cache.py",
-      "verified": "clean-room extracted to an empty dir; predict() run from the extracted copy returned NOON1 at 0.955 for NOON_at_07 with the five required keys",
-      "note": "Rebuilt 2026-11-22. The checklist previously claimed sha 7691190b and no such file existed. Not in the repo because *.zip is gitignored."
+      "path": "EchoGesture_Submission.zip",
+      "sha256": "5d310cecf755f1593a3bc9b9b4b56d38e7ca58962d8da0f0325218c746da8e25",
+      "bytes": 13365184,
+      "note": "Same artifact as submission_zip; this key was added 2026-11-22 and previously pointed at a non-existent root path with a mismatched hash. Corrected to the one zip that exists on disk."
     },
     "hud_evidence_2026_11_22": {
       "path": "docs/evidence/",
@@ -181,6 +184,13 @@
       "source_commit": "33e82b5dafff08df7cfa92088f81aacc2418af8d",
       "github_release": "https://github.com/dev25bansal-ops/EchoGesture/releases/tag/v2026-11-22-auto6.2",
       "status": "SHIPS — the submitted app"
+    },
+    "presentation_pdf": {
+      "path": "submission/presentation/VIT_Chennai_Sky_Grazers.pdf",
+      "sha256": "5ebc5d09ad6f36b76f18cb51ade656e3ac76b0385573e0a712a3049e5474a40f",
+      "bytes": 398491,
+      "pages": 9,
+      "note": "Native Microsoft PowerPoint export from the same .pptx, not the PIL rasteriser (which was only ever a layout check). Text is selectable and fonts are embedded; every figure was re-extracted from the PDF text layer to confirm it carries the corrected numbers."
     }
   },
   "evidence": {

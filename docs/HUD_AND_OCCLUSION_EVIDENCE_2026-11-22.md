@@ -46,6 +46,24 @@ which is expected — but it means a judge reading an older quote of the
 *"Hands were visible for too little"* line should be pointed at this screenshot
 for the state they will actually see when they try it.
 
+**Re-confirmed independently, 2026-11-22 14:31 IST.** Repeated from a cold idle
+state to rule out a stale screen: tapped **Start Recognition** with the camera on
+an empty room, and the same amber **"No hands in view"** panel appeared within
+8 seconds and held for the full 32-second observation. History was then opened
+and held **six entries, all 85–95%, none from the refusal** — the declined
+capture was not recorded as a sign. Screenshot:
+[`auto62_07_refusal_reproduced_2026-11-22.png`](evidence/auto62_07_refusal_reproduced_2026-11-22.png).
+
+That repeat matters because a tap earlier in the same session had produced a
+**52.9% "POSSIBLE MATCH"** instead, which looked like the no-hands path leaking a
+guess. It was not: the tap landed before the button had entered its waiting
+state, so a previously buffered clip was scored — the "POSSIBLE MATCH" label and
+the low-confidence body are exactly what the gate should say about a clip it
+scored weakly, real input or not. Once the waiting state was actually entered,
+the refusal is deterministic. The distinction to keep: the app refuses when the
+**recorder** has no usable input; once a clip exists, the model always produces
+a distribution and the **gate** labels it rather than refusing.
+
 That last point matters more than it looks. The ensemble always returns a
 distribution over 100 glosses, so it always has an argmax; on a real phone
 recording it returned `FLIP` at 10.6% and `TAIL1` at 24.2% for input that carried

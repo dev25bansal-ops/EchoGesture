@@ -25,6 +25,7 @@ titled **EchoGesture Auto**, and the result card reports
 | `auto62_04_refusal_no_hands.png` | **"No hands in view"** in the live pill (amber), and the result panel **"No hands in view — No sign started. Tap Start Recognition and perform one sign."** | The app declines rather than guesses when no hand is found. A refusal produces **no History entry** — a refusal is not a recognition |
 | `auto62_05_live_result.png` | `VOICE`, **62.4% model score**, header **"POSSIBLE MATCH"**, alternatives `RABBIT2 · COMB2 · HOSPITAL1 · JEWELRY`, **"Analysis 201 ms · classifier 186 ms"**, **"20 samples over 2217 ms · 9 samples/s"**, and the Copy / Speak / Scan-next / Clear actions | A real reading from the **live camera**, with its alternatives always shown, and the timing the app actually records on the path a user takes |
 | `auto62_06_history_saved.png` | History with the toggle on: subtitle **"Saved on this device"**, one entry `VOICE 85% 11:52 AM`, and a **Clear history** affordance | History persistence works, and the user can see and delete what is stored |
+| `auto62_07_refusal_reproduced_2026-11-22.png` | The same amber **"No hands in view"** panel as shot 04, captured 2026-11-22 14:31 IST from a cold idle state, 8 s after tapping Start Recognition at an empty room | The refusal is **deterministic**, not a one-off: a second independent run produced the same panel, and History held six real entries with none from the refusal |
 
 ## What these shots tell us honestly
 

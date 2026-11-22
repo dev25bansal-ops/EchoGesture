@@ -83,7 +83,7 @@ publication of a per-participant evaluation table.
 | Artifact | Claim | Evidence in repo | Verdict |
 | --- | --- | --- | --- |
 | `hand_landmarker.task` | Apache-2.0, Google MediaPipe | Upstream URL recorded in `NOTICE`; file is an unmodified download of the published MediaPipe asset | **Grant exists upstream.** Attribution must ship. The Apache-2.0 text is **not** vendored in the tree — add it. |
-| Four `landmark_ens_*_fp16.tflite` | Trained by Dev on ASL Citizen / WLASL-derived data | **None.** No written permission anywhere in the repo. | **UNRESOLVED** |
+| Nine `landmark_ens_*_fp16.tflite` | Trained by the team on **ASL Citizen-derived** features only. This row previously said "ASL Citizen / WLASL-derived" and counted four members; both were wrong — `scripts/ml/extract_landmarks.py` reads the ASL Citizen `splits/*.csv` and nothing else, and there are nine members, not four. | **None.** No written permission anywhere in the repo. | **UNRESOLVED** |
 | `landmark_classifier_int8.tflite` | Same training lineage | None | **UNRESOLVED** |
 | `ptoq_100_int8` / `s3d_conv1d_qat_int8.tflite` | Third-party, WLASL-derived | `README.md` previously said "MIT-licensed"; `NOTICE` says no permission. The upstream *code* may be MIT; the *weights* inherit WLASL's academic/non-commercial terms. | **UNRESOLVED** |
 | ASL Citizen participant table | — | None | **UNRESOLVED** |

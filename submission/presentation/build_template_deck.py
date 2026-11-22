@@ -459,6 +459,18 @@ def s8_brownie(slide):
         slide.shapes[-1].text_frame.paragraphs[0].runs[0].font.bold = True
         block(slide, 5.38, y, 4.10, 0.75, t, size=9.5, colour=BODY_TEXT, line=1.14)
 
+    # Full statement: submission/AI_DISCLOSURE.md. Kept to one line here so the
+    # disclosure is visible in the deck, not only in the repository.
+    block(slide, LEFT, 4.78, 9.20, 0.45, [([
+        ("AI DISCLOSURE — ",
+         {"size": 7.5, "bold": True, "colour": BODY_TEXT}),
+        ("Code and prose were written with AI coding assistants (Claude Code, Codex; "
+         "165 of 418 commits carry a Claude trailer). The product itself runs two "
+         "on-device models, MediaPipe and a nine-member ensemble. Full statement: "
+         "submission/AI_DISCLOSURE.md",
+         {"size": 7.5, "colour": GREY}),
+    ], {})], line=1.10)
+
 
 def s9_thanks(slide, team: str):
     for sh in slide.shapes:

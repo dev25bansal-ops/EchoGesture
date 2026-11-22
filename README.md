@@ -404,6 +404,19 @@ this is a research/hackathon entry, not a commercial release.
 Anyone reusing this work commercially should treat the weights as **not
 licensed for that use**. The detector (`hand_landmarker.task`) is Google
 MediaPipe, Apache-2.0, redistributable with attribution. The code is MIT.
+
+### AI disclosure
+
+How this project was built, and what AI runs inside the shipped product, are
+stated separately in **[`submission/AI_DISCLOSURE.md`](submission/AI_DISCLOSURE.md)**.
+In short: the code and prose were written with AI coding assistants (Claude Code,
+Codex; 165 of 418 commits in this repository carry a Claude trailer), while the
+product itself runs Google MediaPipe plus a nine-member FP16 ensemble entirely
+on-device. The two members named on slide 1 reviewed and approved the submission
+as their own work. A one-line summary is on deck slide 8.
+
+The organizers' brief and registration form carry no AI-disclosure requirement;
+this exists because the honest thing is to state it anyway.
 The datasets and any local landmark caches are not in this repository at all.
 
 ## Working data and environment

@@ -74,18 +74,18 @@
     },
     "presentation": {
       "path": "submission/presentation/VIT_Chennai_Sky_Grazers.pptx",
-      "sha256": "9837b222082119d0227345c0611767b45d624a0787b1b877f4e2c646e21ceeab",
-      "bytes": 573845,
+      "sha256": "225d2f0ce88ae54274d83524b01ea6d29efecd109d664ce8d00f7a41d542b03d",
+      "bytes": 574060,
       "slides": 9,
       "template": "Built inside the organizer's own template (C:/Users/dev25/Downloads/Submission_Final_forGithub.pptx): the original 9 slides are filled in place, so master, layout and header geometry are the template's, not a reconstruction. Section list is the template's: Track No / Team+College / Members, THE PROBLEM, SOLUTION, ARCHITECTURE, Track Final Output, DIFFERENTIATION, DEMO & LOCAL SETUP, Brownie Slides, Thank You.",
       "font": "Arial Black (display) and Calibri (body), inherited from the template",
       "pdf": {
         "path": "submission/presentation/VIT_Chennai_Sky_Grazers.pdf",
-        "sha256": "97000bee6ecf43c563617e6816fcdc1fdfc9816c25c41ac99e210fd906abcd5c",
-        "bytes": 403123,
+        "sha256": "72d1adc51d5b7d980229b67bb7b54b765a746a5312212a6ad81fda32641dad51",
+        "bytes": 405071,
         "pages": 9,
         "note": "Native Microsoft PowerPoint export (SaveAs format 32): text is selectable and fonts are embedded. Verified as 9 pages with the figure set re-extracted from the PDF text layer.",
-        "replaced_sha256": "5ebc5d09ad6f36b76f18cb51ade656e3ac76b0385573e0a712a3049e5474a40f"
+        "replaced_sha256": "97000bee6ecf43c563617e6816fcdc1fdfc9816c25c41ac99e210fd906abcd5c"
       },
       "visual_inspection": "All 9 slides rasterised from the exported PDF and inspected: no clipped text, no colliding boxes, no missing glyphs. Slide 5's results table carries all six slide-11 rows with honest verdicts (top1 PASS, latency FAIL, model_size PASS, robustness FAIL, power FAIL, thermal PASS).",
       "open_human_inputs": [],
@@ -104,7 +104,7 @@
           "replaced_sha256": "e8361b55008deac511cbfa6b3fd705900a9e8032eef386b8288fa6d6e6abb395"
         }
       ],
-      "replaced_sha256": "6a2ea2bc6d1ac6778b6a50c2ba02436f39cdb224256b3ee5cfc274d2684ed615",
+      "replaced_sha256": "9837b222082119d0227345c0611767b45d624a0787b1b877f4e2c646e21ceeab",
       "human_inputs_resolved_2026_11_22": [
         "Team+College string: resolved. Slides 1 and 9 and both file names now carry VIT_Chennai_Sky_Grazers.",
         "Slide 7 demo link: resolved. The placeholder was replaced with https://drive.google.com/file/d/1vojMAB5cpxQc-LkbCZlxoBeoqUklFqsE/view, added as a clickable hyperlink in the .pptx and as a live link annotation in the .pdf."
@@ -190,10 +190,11 @@
     },
     "presentation_pdf": {
       "path": "submission/presentation/VIT_Chennai_Sky_Grazers.pdf",
-      "sha256": "97000bee6ecf43c563617e6816fcdc1fdfc9816c25c41ac99e210fd906abcd5c",
-      "bytes": 403123,
+      "sha256": "72d1adc51d5b7d980229b67bb7b54b765a746a5312212a6ad81fda32641dad51",
+      "bytes": 405071,
       "pages": 9,
-      "note": "Native Microsoft PowerPoint export from the same .pptx, not the PIL rasteriser (which was only ever a layout check). Text is selectable and fonts are embedded; every figure was re-extracted from the PDF text layer to confirm it carries the corrected numbers."
+      "note": "Native Microsoft PowerPoint export from the same .pptx, not the PIL rasteriser (which was only ever a layout check). Text is selectable and fonts are embedded; every figure was re-extracted from the PDF text layer to confirm it carries the corrected numbers.",
+      "replaced_sha256": "97000bee6ecf43c563617e6816fcdc1fdfc9816c25c41ac99e210fd906abcd5c"
     },
     "demo_video_hosted_2026_11_22": {
       "url": "https://drive.google.com/file/d/1vojMAB5cpxQc-LkbCZlxoBeoqUklFqsE/view?usp=sharing",
@@ -205,6 +206,12 @@
       "public": true,
       "access_check": "Verified unauthenticated: GET to drive.google.com/uc?export=download returns the full 6729172 B as video/mp4, isItemTrashed:false, sha256 of downloaded bytes equals the local file.",
       "note": "The team's own recording, linked from slide 7 as a clickable hyperlink. 1:20 against the deck's 2-3 min ask - stated, not hidden. Supersedes demo_video_2026_11_22 (the generated 2:55 walkthrough), which is retained for older references but is not what was submitted."
+    },
+    "ai_disclosure_2026_11_22": {
+      "path": "submission/AI_DISCLOSURE.md",
+      "sha256": "1a3565c4f14c36655dceab0b00ffaa19583a879c6cb6836ac4bd5e27fee5cc7d",
+      "bytes": 8651,
+      "note": "Discloses AI used to build the project (Claude Code, Codex; 165/418 commits carry a Claude trailer) separately from AI inside the product (MediaPipe hand landmarker + nine-member FP16 ensemble). States that the organizers require no such disclosure and that this exists anyway. A one-line summary is on deck slide 8."
     }
   },
   "evidence": {

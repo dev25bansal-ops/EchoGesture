@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.camera.core.ImageProxy
 import com.google.mediapipe.framework.image.BitmapImageBuilder
 import com.google.mediapipe.framework.image.MPImage
+import com.google.mediapipe.tasks.core.Delegate
 import com.google.mediapipe.tasks.core.BaseOptions
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import androidx.annotation.VisibleForTesting
@@ -24,7 +25,8 @@ import java.util.concurrent.atomic.AtomicLong
  */
 class HandTracker private constructor(
     /** Null only for a test tracker; production construction always supplies one. */
-    private val landmarker: HandLandmarker?
+    private var landmarker: HandLandmarker?,
+    private var cpuFallback: (() -> HandLandmarker)? = null
 ) : AutoCloseable {
 
     private val nextFrameTs = AtomicLong(0L)
@@ -284,14 +286,28 @@ class HandTracker private constructor(
         @VisibleForTesting
         fun createForTest(context: Context): HandTracker = HandTracker(landmarker = null)
 
+        private val gpuFailed = AtomicBoolean(false)
+
         fun create(context: Context, modelAssetPath: String): HandTracker {
-            return HandTracker(createLandmarker(context, modelAssetPath, RunningMode.VIDEO))
+            val app = context.applicationContext
+            val cpu = { createLandmarker(app, modelAssetPath, RunningMode.VIDEO) }
+            if (!gpuFailed.get()) {
+                try {
+                    return HandTracker(createLandmarker(app, modelAssetPath, RunningMode.VIDEO, Delegate.GPU), cpu)
+                } catch (failure: RuntimeException) {
+                    gpuFailed.set(true)
+                    Log.w(TAG, "GPU initialization failed, using CPU", failure)
+                }
+            }
+            return HandTracker(cpu())
         }
 
-        internal fun createLandmarker(context: Context, modelAssetPath: String, mode: RunningMode): HandLandmarker {
+        internal fun createLandmarker(
+            context: Context, modelAssetPath: String, mode: RunningMode, delegate: Delegate = Delegate.CPU
+        ): HandLandmarker {
             val options = HandLandmarker.HandLandmarkerOptions.builder()
                 .setBaseOptions(
-                    BaseOptions.builder().setModelAssetPath(modelAssetPath).build()
+                    BaseOptions.builder().setModelAssetPath(modelAssetPath).setDelegate(delegate).build()
                 )
                 .setRunningMode(mode)
                 .setNumHands(2)
@@ -365,14 +381,26 @@ class HandTracker private constructor(
             // has copied the pixels into its packet, so closing mpImage (which
             // recycles `bitmap`) afterwards is safe.
             val detectStart = SystemClock.elapsedRealtime()
-            val detector = landmarker
-                ?: throw IllegalStateException("no landmarker: test tracker cannot analyse")
             val result = synchronized(detectorLock) {
                 if (closed.get()) return false
-                detector.detectForVideo(
-                    mpImage,
-                    nextFrameTs.updateAndGet { previous -> maxOf(previous + 1, frameAtMs) }
-                )
+                val detector = checkNotNull(landmarker)
+                val stamp = nextFrameTs.updateAndGet { previous -> maxOf(previous + 1, frameAtMs) }
+                try {
+                    detector.detectForVideo(mpImage, stamp)
+                } catch (failure: RuntimeException) {
+                    // Some GPU drivers accept graph creation and fail on the first inference.
+                    val createCpu = cpuFallback ?: throw failure
+                    gpuFailed.set(true)
+                    cpuFallback = null
+                    Log.w(TAG, "GPU frame failed, retrying on CPU", failure)
+                    landmarker = null
+                    try {
+                        detector.close()
+                    } catch (closeFailure: RuntimeException) {
+                        Log.w(TAG, "GPU graph reported its error during cleanup", closeFailure)
+                    }
+                    createCpu().also { landmarker = it }.detectForVideo(mpImage, stamp)
+                }
             }
             detectMs = SystemClock.elapsedRealtime() - detectStart
             // MediaPipe makes x and depth relative to image width and y relative
@@ -575,7 +603,17 @@ class HandTracker private constructor(
 
     override fun close() {
         if (closed.compareAndSet(false, true)) {
-            synchronized(detectorLock) { landmarker?.close() }
+            synchronized(detectorLock) {
+                try {
+                    landmarker?.close()
+                } catch (failure: RuntimeException) {
+                    // Closing a failed MediaPipe graph can rethrow its inference error.
+                    Log.w(TAG, "Detector reported an error during cleanup", failure)
+                } finally {
+                    landmarker = null
+                    cpuFallback = null
+                }
+            }
             clear()
         }
     }

@@ -244,15 +244,34 @@ android {
         applicationId = "org.echogesture.finalapp"
         minSdk = 24
         targetSdk = 34
-        versionCode = 6
-        versionName = "5.9"
+        versionCode = 7
+        versionName = "6.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    // Release signing is opt-in through the environment so no key material or
+    // password is ever committed. When ECHOGESTURE_KEYSTORE is unset the release
+    // variant stays unsigned and `assembleRelease` produces an unsigned APK,
+    // exactly as before this block existed.
+    signingConfigs {
+        val ksPath = System.getenv("ECHOGESTURE_KEYSTORE")
+        if (ksPath != null) {
+            create("releaseEnv") {
+                storeFile = file(ksPath)
+                storePassword = System.getenv("ECHOGESTURE_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("ECHOGESTURE_KEY_ALIAS") ?: "tmp"
+                keyPassword = System.getenv("ECHOGESTURE_KEY_PASSWORD")
+                    ?: System.getenv("ECHOGESTURE_KEYSTORE_PASSWORD")
+            }
+        }
     }
 
     buildTypes {
         release {
+            applicationIdSuffix = ".auto"
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfigs.findByName("releaseEnv")?.let { signingConfig = it }
         }
     }
 

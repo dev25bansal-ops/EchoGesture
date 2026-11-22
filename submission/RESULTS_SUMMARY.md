@@ -120,13 +120,16 @@ reconciling because they come from the app's own profiler:
 | DEBUG, CPU delegate | 95 ms | 166 ms | FAIL |
 | DEBUG, GPU, **no hand in frame** (2026-11-19, *before* the 640 resolution pin) | 34–45 ms | 46–54 ms | at target, but not the shipping config |
 | DEBUG, GPU, **hand in frame** (2026-11-21, *after* the pin, diagnostics ON) | 50–58 ms | 68–70 ms | FAIL, and carries a diagnostic bitmap copy the release build does not pay |
-| **SIGNED RELEASE, GPU, file-pick** (2026-11-22) | — | **58 / 65 / 67 ms** | **FAIL, 8–17 ms over** |
+| **SIGNED RELEASE, GPU, file-pick** (2026-11-22) | — | **58 / 65 / 67 / 72 ms** | **FAIL, 8–22 ms over** |
 
 The app had been building its detector with no delegate at all, so it ran on the
 CPU path. With `Delegate.GPU` requested and CPU as fallback, the detector is
 2.3× faster. But **the honest score on the artifact that ships is the last row**:
-three file-pick classifications on the signed release APK — NOON1, DARK1 and
-MECHANIC1 — gave detect p95 58, 65 and 67 ms, all over the 50 ms target.
+four file-pick classifications on the signed release APK gave detect p95 58, 65,
+67 and 72 ms, all over the 50 ms target. The last two are the *same clip*
+(MECHANIC1), so the 5 ms gap between them is device run-to-run variance rather
+than a content difference — which is itself the useful fact: even the best
+sample on this device is 8 ms over, and the spread does not reach the target.
 
 An earlier version of this section quoted **50–59 ms** for the release build and
 called it "at or inside" the target. **That figure is retracted.**
@@ -140,14 +143,14 @@ are suppressed on the clip path.
 
 **Still unmeasured:** the live camera with a hand in frame on the release build.
 The HUD can report it now, but no run has been taken, so the row stays `FAIL` on
-that ground as well as on the three clip samples.
+that ground as well as on the four clip samples.
 
 All of the DEBUG rows are upper bounds. The classifier adds ~40 ms warm on top;
 it is no longer 0.15% of end-to-end, because the detector stopped dominating.
 
-> "The detector takes 58–67 ms p95 on the GPU delegate on the signed release
-> build, measured three times off the app's own per-frame timer. The ≤50 ms
-> target is a p95, so that fails by 8–17 ms. The classifier is about 40 ms warm
+> "The detector takes 58–72 ms p95 on the GPU delegate on the signed release
+> build, measured four times off the app's own per-frame timer. The ≤50 ms
+> target is a p95, so that fails by 8–22 ms. The classifier is about 40 ms warm
 > and is not the problem. Desktop-CPU figures were 142–151 ms and are
 > historical."
 
@@ -188,6 +191,39 @@ use — it runs 640×480 native. **Native-geometry pixel robustness has not been
 measured** and is not claimed.
 
 See `docs/release/ROBUSTNESS_RECONCILIATION.md` for the full derivation.
+
+### We isolated why the landmark failure cannot be repaired cheaply
+
+Before accepting +5.76 as information-limited, we tested the two plausible
+repairs against the shipped 9-member ensemble on the full 1251-clip split. Both
+failed, and the way they failed is the finding:
+
+| Variant | Clean | Corrupted | Delta | vs baseline |
+| --- | --: | --: | --: | --: |
+| baseline (ship as-is) | 85.18 | 79.92 | **−5.26** | — |
+| hold last valid pose across the gap | 85.58 | 80.16 | −5.42 | −0.16 (worse) |
+| linear interpolation across the gap | 85.42 | 80.24 | −5.18 | +0.08 (noise) |
+
+*(The baseline −5.26 differs from the scored +5.76 because this screen uses one
+corruption seed; the scored figure averages the harness's own seeds. The ranking
+and the conclusion are unaffected.)*
+
+Then the decisive control: the training augmentation (`hand_dropout` in
+`scripts/ml/search.py`) zeroes **only the presence flag** and leaves coordinates
+intact, while the eval harness zeroes **both**. If that mismatch were the cause,
+flag-only corruption would score much better than coords+flag. It does not:
+
+| Corruption | Accuracy | Delta |
+| --- | --: | --: |
+| coords **and** flag zeroed (what the harness scores) | 79.92 | **−5.26** |
+| **flag only** (what training actually simulated) | 79.92 | **−5.26** |
+| coords only (no mask headroom) | 78.49 | −6.69 |
+
+Identical to a tenth of a point. The model already ignores an absent hand's
+coordinates entirely on the flag, so the zeroing convention is not the problem
+and a matched retrain would not help. **The loss is information loss**: a hand
+absent for a quarter of the clip cannot be recovered from what remains. That is
+the honest reason the row stays `FAIL`, and it is measured rather than assumed.
 
 ---
 

@@ -20,11 +20,13 @@ deliberately, so the artifact that produced the screen is identifiable.
 
 ## What shot 05 also tells us honestly
 
-That capture reported **detect p95 67 ms**. Measured across three file-pick
+That capture reported **detect p95 72 ms**. Measured across four file-pick
 classifications on the signed release build — NOON1 58 ms, DARK1 65 ms,
-MECHANIC1 67 ms, GPU delegate each time — every sample is **over** the 50 ms
-target, by 8 to 17 ms. The range is recorded in `results/results.csv`
-(`latency_p95` notes) and the row is `FAIL`.
+MECHANIC1 67 ms, and MECHANIC1 again at 72 ms — every sample is **over** the
+50 ms target, by 8 to 22 ms. The last two samples are the same clip, so the
+spread between them is device run-to-run variance, not a content difference.
+The range is recorded in `results/results.csv` (`latency_p95` notes) and the
+row is `FAIL`.
 
 **The earlier 50–59 ms span is retracted.** `ClipAnalyzer` builds its own
 `HandLandmarker` and never called `HandTracker.profiler`, so the HUD's

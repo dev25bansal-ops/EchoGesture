@@ -171,11 +171,46 @@ The remaining honest lever is aggregation, not the model: `drop_hand` costs
 and quoting the first alone understates the artifact's real behaviour. Both
 ship, labelled.
 
-The remaining honest lever is aggregation, not the model: `drop_hand` costs
-**5.76 points unconditional** and **2.39 at the shipped acceptance gate at
-86%/80% coverage**. Quoting the second number alone would overstate the result,
-and quoting the first alone understates the artifact's real behaviour. Both
-ship, labelled.
+### Why a matched retrain would not have helped either — the decisive control
+
+The retrain above changed *how much* dropout was applied. A separate question is
+whether the shipped model loses accuracy because of a **train/eval convention
+mismatch** rather than because the information is gone. It is worth ruling out
+explicitly, because it is the one hypothesis under which a cheap fix would exist.
+
+The training augmentation (`hand_dropout`, `scripts/ml/search.py:64`) zeroes
+**only the presence flag** and leaves the landmark coordinates intact. The
+evaluation corruption (`c_drop_hand`, `scripts/ml/robustness.py:88`) zeroes
+**both**. So training simulated "flag says gone, numbers still meaningful" while
+scoring asks about "flag says gone, numbers are zeros". If the model were
+sensitive to that difference, the fix would be a one-line change to the
+augmentation.
+
+It is not sensitive. Measured on the shipped 9-member ensemble over the full
+1,251-clip split, same corruption seeds, `.scratch/test_flag_only_drop.py`:
+
+| corruption | top-1 | delta vs clean 85.18% |
+| --- | --: | --: |
+| coordinates **and** flag zeroed (what the harness scores) | 79.92% | **−5.26** |
+| **flag only** (what training actually simulated) | 79.92% | **−5.26** |
+| coordinates only (no mask headroom) | 78.49% | −6.69 |
+
+Flag-only and coords+flag are **identical to a tenth of a point**. The model
+already discards an absent hand's coordinates entirely, purely on the flag — the
+mask does exactly the job it was designed for. Zeroing the coordinates as well
+therefore adds no new information and costs nothing. The mismatch is real in the
+code but inert in the model, so aligning the two conventions would change
+nothing.
+
+This is the mechanism behind "absence is signal, not missing data." The model
+does not see zeros and get confused; it sees the flag go to zero and stops
+reading the hand. What remains is a genuine deficit of evidence: a hand absent
+for a quarter of the clip cannot be recovered from the frames in which it is
+present. Together with the retrain (5.76 → 5.12 at a 5.2-point clean cost) and
+gap-filling (+5.04 at a 1.12-point clean cost, still failing), that is three
+independent repairs tested and rejected, and a fourth — the convention fix —
+shown to be a no-op before it was attempted. The row stays `FAIL`, and it is
+known to be information-limited rather than unattempted.
 
 ---
 

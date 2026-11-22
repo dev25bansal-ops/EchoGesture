@@ -149,6 +149,15 @@ through the mount returns
 `{"prediction": "SAIL2", "confidence": 0.6893, "latency_ms": 621.54}` — the same
 gloss and confidence that `predict()` gives on the host for that clip.
 
+**This was also verified from GitHub, not just from a working tree.** A fresh
+`git clone --depth 1 --branch submission/final` into an empty directory, built
+with `--no-cache`, downloaded and installed every pinned dependency
+(`pip` re-ran; the layer was not cached), reached `model init OK: 9 members`,
+and the resulting image passed the smoke test. So the path a judge takes —
+clone the repo, run `docker build`, run `docker run` — works from the pushed
+tree. Note that `pip install` needs network access to PyPI; a build behind a
+restricted proxy will fail at that layer rather than at anything we control.
+
 The image builds on the **models that are in this repository**. An earlier
 revision of `.dockerignore` excluded `models/` and `app/` while the Dockerfile
 `COPY`s both, so `docker build` failed with

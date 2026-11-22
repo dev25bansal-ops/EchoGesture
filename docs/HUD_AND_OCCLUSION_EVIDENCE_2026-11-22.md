@@ -81,11 +81,16 @@ path** — it shows the best guess and labels it. Do not describe the app as
 
 Why margin rather than the raw score: on 82 authorised validation clips the mean
 margin was **0.378 when the top-1 was correct and 0.064 when it was wrong**. The
-raw score does not separate those cases nearly as well. Recalibrated on 345
-validation clips across five unseen signers, the shipped rule accepts **86.1% of
-captures at 96.0% accuracy**; the 13.9% it declines are only **35.4% accurate**.
-Declining is therefore the correct direction, and the coverage cost is stated
-rather than hidden.
+raw score does not separate those cases nearly as well. The rule is calibrated on
+345 **validation** clips across five unseen signers, where it accepts **86.1% of
+captures at 96.0% accuracy** and the 13.9% it declines are only **35.4%
+accurate** — but validation is the split the thresholds were chosen on, so those
+figures are optimistic. On the **held-out test split** (1,255 clips, never used
+to choose) the same rule reads **86.1% coverage at 92.13% accuracy**, and the
+clips it declines are **43.3% accurate**. Quote the test figure when the claim is
+about how the shipped app behaves; the validation figure describes the
+calibration, not the result. Declining is the correct direction either way, and
+the coverage cost is stated rather than hidden.
 
 ---
 

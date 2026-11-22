@@ -380,9 +380,9 @@ def s6_differentiation(slide):
     items = [
         ("A HUD that says when it is unsure",
          "The score chip is colour-coded and the caption is gated: a margin rule calibrated "
-         "on 345 unseen-signer clips accepts 86.1% of captures at 96.0% accuracy and declines "
-         "the 13.9% that score 35.4%. Capture facts and inference time are separate lines, "
-         "so a slow analyser cannot be misread as a slow model."),
+         "on the validation split accepts 86.1% of captures at 92.1% accuracy on the "
+         "held-out test split and declines the 13.9% that score 43.3%. Capture facts and "
+         "inference time are separate lines, so a slow analyser cannot be misread as a slow model."),
         ("Attention masking",
          "The model was always trained with a hand-presence mask — and every export omitted it. "
          "Supplying it made the shipped artifact match the trained one: +4.24 points."),

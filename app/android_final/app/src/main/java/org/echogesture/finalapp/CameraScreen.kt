@@ -95,6 +95,7 @@ class CameraScreen(
          * gloss. It is deliberately below the observed minimum: the first and
          * last frames of a real sign are often empty.
          */
+        internal const val REAR_CLOSE_ZOOM = 1.5f
         private const val MIN_HAND_FRACTION = 0.15
 
         /**
@@ -151,6 +152,8 @@ class CameraScreen(
     private val helpButton: Button = root.findViewById(R.id.helpButton)
     private val flipButton: ImageButton = root.findViewById(R.id.flipButton)
     private val torchButton: ImageButton = root.findViewById(R.id.torchButton)
+    private val rearZoomButton: Button = root.findViewById(R.id.rearZoomButton)
+    private var zoomChanging = false
 
     private val trackerExecutor = Executors.newSingleThreadExecutor()
     private val inferExecutor = Executors.newSingleThreadExecutor()
@@ -383,6 +386,7 @@ class CameraScreen(
             switchCamera()
         }
         torchButton.setOnClickListener { toggleTorch() }
+        rearZoomButton.setOnClickListener { toggleRearZoom() }
         copyButton.setOnClickListener {
             val text = captionText.text?.toString().orEmpty()
             if (text.isNotEmpty()) {
@@ -434,7 +438,9 @@ class CameraScreen(
 
             val cameraLive = hasCameraPermission() && camera != null
             captureButton.isEnabled =
-                modelReady && cameraLive && state != UiState.PROCESSING && state != UiState.AUTO_SIGNING
+                modelReady && cameraLive && !zoomChanging && state != UiState.PROCESSING && state != UiState.AUTO_SIGNING
+            rearZoomButton.isEnabled = !zoomChanging && state != UiState.PROCESSING &&
+                state != UiState.AUTO_ARMED && state != UiState.AUTO_SIGNING && state != UiState.RECORDING
             clipButton.isEnabled = modelReady && state != UiState.PROCESSING &&
                 state != UiState.RECORDING && state != UiState.AUTO_ARMED && state != UiState.AUTO_SIGNING
 
@@ -812,6 +818,7 @@ class CameraScreen(
         val provider = cameraProvider ?: return
         val binding = ++cameraBindingGeneration
         camera = null
+        zoomChanging = false
         boundSelector = null
         var nextIdleFrameAt = 0L
         try {
@@ -850,6 +857,7 @@ class CameraScreen(
 
             camera = provider.bindToLifecycle(activity, selector, newPreview, analysis)
             boundSelector = selector
+            updateRearZoom()
             updateTorchVisibility()
             if (!processing && currentState != UiState.RESULT) {
                 render(if (modelReady) UiState.WAITING else UiState.INIT)
@@ -857,6 +865,7 @@ class CameraScreen(
                 captureButton.isEnabled = modelReady
             }
         } catch (t: Throwable) {
+            updateRearZoom()
             updateTorchVisibility()
             if (!processing && currentState != UiState.RESULT) {
                 render(UiState.ERROR, detail = activity.getString(R.string.error_camera_start))
@@ -898,6 +907,39 @@ class CameraScreen(
                 AppPreferences.CameraChoice.FRONT
             }
         }
+    }
+
+    private fun updateRearZoom() {
+        val zoom = camera?.cameraInfo?.zoomState?.value
+        val show = boundSelector == CameraSelector.DEFAULT_BACK_CAMERA && zoom != null &&
+            zoom.maxZoomRatio >= REAR_CLOSE_ZOOM && zoom.minZoomRatio <= 1f
+        rearZoomButton.visibility = if (show) View.VISIBLE else View.GONE
+        val close = show && (zoom?.zoomRatio ?: 1f) >= REAR_CLOSE_ZOOM
+        rearZoomButton.setText(if (close) R.string.rear_zoom_close else R.string.rear_zoom_wide)
+        rearZoomButton.contentDescription = activity.getString(
+            if (close) R.string.rear_zoom_out else R.string.rear_zoom_in
+        )
+        guidanceText.setText(if (show) R.string.rear_camera_guidance else R.string.camera_guidance)
+    }
+
+    private fun toggleRearZoom() {
+        val lens = camera ?: return
+        val zoom = lens.cameraInfo.zoomState.value ?: return
+        if (!rearZoomButton.isEnabled || rearZoomButton.visibility != View.VISIBLE) return
+        zoomChanging = true
+        rearZoomButton.isEnabled = false
+        captureButton.isEnabled = false
+        val change = lens.cameraControl.setZoomRatio(if (zoom.zoomRatio < REAR_CLOSE_ZOOM) REAR_CLOSE_ZOOM else 1f)
+        change.addListener({
+            if (!bound || camera !== lens) return@addListener
+            zoomChanging = false
+            tracker?.clear()
+            lastFrameHadHands = false
+            updateRearZoom()
+            val state = currentState
+            rearZoomButton.isEnabled = state != UiState.PROCESSING
+            captureButton.isEnabled = modelReady && hasCameraPermission() && state != UiState.PROCESSING
+        }, ContextCompat.getMainExecutor(activity))
     }
 
     private fun updateTorchVisibility() {

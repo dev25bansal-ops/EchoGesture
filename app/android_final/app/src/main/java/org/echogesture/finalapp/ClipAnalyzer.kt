@@ -6,13 +6,27 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import java.util.concurrent.ExecutionException
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
 import com.google.mediapipe.framework.image.BitmapImageBuilder
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarker
 
 /** Samples the entire selected clip and keeps only landmarks. Runs on the inference executor. */
-internal class ClipAnalyzer(private val context: Context) : AutoCloseable {
+internal class ClipAnalyzer(
+    private val context: Context,
+    private val parallel: Boolean = Runtime.getRuntime().availableProcessors() >= 4
+) : AutoCloseable {
     private var detector: HandLandmarker? = null
+    private val worker = if (parallel) Executors.newSingleThreadExecutor() else null
+    // The worker initializes, invokes, and closes its own IMAGE-mode detector.
+    private var workerDetector: HandLandmarker? = null
+    private var workerAvailable = parallel
+
+    private fun createDetector() = HandTracker.createLandmarker(
+        context, ModelContract.DETECTOR_ASSET, RunningMode.IMAGE
+    )
 
     fun analyze(uri: Uri, keepGoing: () -> Boolean = { true }): SignRecorder.Recording {
         val retriever = MediaMetadataRetriever()
@@ -20,25 +34,50 @@ internal class ClipAnalyzer(private val context: Context) : AutoCloseable {
             retriever.setDataSource(context, uri)
             val durationMs = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
                 ?.toLongOrNull()?.takeIf { it > 0 } ?: error("Video duration unavailable")
-            val landmarker = detector ?: HandTracker.createLandmarker(
-                context, ModelContract.DETECTOR_ASSET, RunningMode.IMAGE
-            ).also { detector = it }
+            val landmarker = detector ?: createDetector().also { detector = it }
             val frames = ArrayList<HandTracker.Frame>(SAMPLES)
-            val rotation = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)
-                ?.toIntOrNull() ?: 0
-            if (rotation == 0) {
-                val decoded = SequentialClipDecoder.sample(
-                    context, uri, durationMs, SAMPLES, MAX_EDGE, keepGoing
-                ) { bitmap, timeMs ->
-                    frames.add(track(landmarker, bitmap, timeMs))
+            var pending: Future<HandTracker.Frame>? = null
+            var workerFailed = false
+            fun finishPending() {
+                val task = pending ?: return
+                pending = null
+                try {
+                    frames.add(task.get())
+                } catch (failure: ExecutionException) {
+                    workerAvailable = false
+                    workerFailed = true
+                    Log.w("ClipAnalyzer", "Parallel tracking failed, retrying with one detector", failure)
                 }
-                check(keepGoing()) { "Clip analysis cancelled" }
-                if (decoded >= SAMPLES * 9 / 10 && frames.last().capturedAtMs >= durationMs * 9 / 10) {
-                    Log.i("ClipAnalyzer", "Sampled ${frames.size} frames using sequential decode")
-                    return SignRecorder.Recording(frames, 0, durationMs)
-                }
-                frames.clear()
             }
+            val decoded = try {
+                SequentialClipDecoder.sample(context, uri, durationMs, SAMPLES, MAX_EDGE, keepGoing) { bitmap, timeMs ->
+                    if (pending == null && workerAvailable && worker != null) {
+                        pending = worker.submit<HandTracker.Frame> {
+                            val other = try {
+                                workerDetector ?: createDetector().also { workerDetector = it }
+                            } catch (failure: RuntimeException) {
+                                bitmap.recycle()
+                                throw failure
+                            }
+                            track(other, bitmap, timeMs)
+                        }
+                    } else {
+                        val frame = track(landmarker, bitmap, timeMs)
+                        finishPending()
+                        frames.add(frame)
+                    }
+                }
+            } finally {
+                finishPending()
+            }
+            check(keepGoing()) { "Clip analysis cancelled" }
+            if (!workerFailed && decoded >= SAMPLES * 9 / 10 &&
+                frames.last().capturedAtMs >= durationMs * 9 / 10
+            ) {
+                Log.i("ClipAnalyzer", "Sampled ${frames.size} frames using sequential decode")
+                return SignRecorder.Recording(frames, 0, durationMs)
+            }
+            frames.clear()
             for (index in 0 until SAMPLES) {
                 check(keepGoing()) { "Clip analysis cancelled" }
                 val timestampUs = (durationMs * 1000 - 1) * index / (SAMPLES - 1)
@@ -79,6 +118,13 @@ internal class ClipAnalyzer(private val context: Context) : AutoCloseable {
     }
 
     override fun close() {
+        worker?.let {
+            it.execute {
+                workerDetector?.close()
+                workerDetector = null
+            }
+            it.shutdown()
+        }
         detector?.close()
         detector = null
     }

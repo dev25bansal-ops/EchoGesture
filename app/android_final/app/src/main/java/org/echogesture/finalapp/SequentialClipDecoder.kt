@@ -3,6 +3,7 @@ package org.echogesture.finalapp
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageFormat
+import android.graphics.Matrix
 import android.media.Image
 import android.media.MediaCodec
 import android.media.MediaCodecInfo.CodecCapabilities
@@ -11,7 +12,7 @@ import android.media.MediaFormat
 import android.net.Uri
 import android.os.SystemClock
 
-/** Reads short upright clips in one pass. The retriever handles other formats and providers. */
+/** Reads short clips in one pass. The retriever handles other formats and providers. */
 internal object SequentialClipDecoder {
     private const val MAX_DURATION_MS = 20_000L
     private const val MAX_DECODE_MS = 12_000L
@@ -36,9 +37,12 @@ internal object SequentialClipDecoder {
                 extractor.getTrackFormat(it).getString(MediaFormat.KEY_MIME)?.startsWith("video/") == true
             } ?: return 0
             val format = extractor.getTrackFormat(track)
-            if (format.containsKey(MediaFormat.KEY_ROTATION) && format.getInteger(MediaFormat.KEY_ROTATION) != 0) {
-                return 0
-            }
+            val rotation = if (format.containsKey(MediaFormat.KEY_ROTATION))
+                format.getInteger(MediaFormat.KEY_ROTATION) else 0
+            if (rotation !in listOf(0, 90, 180, 270)) return 0
+            if (rotation != 0) format.setInteger(MediaFormat.KEY_ROTATION, 0)
+            format.setInteger(MediaFormat.KEY_PRIORITY, 0)
+            val correction = Matrix().apply { postRotate(rotation.toFloat()) }
             if (maxOf(format.getInteger(MediaFormat.KEY_WIDTH), format.getInteger(MediaFormat.KEY_HEIGHT)) > 1920) {
                 return 0
             }
@@ -101,7 +105,12 @@ internal object SequentialClipDecoder {
                     decoder.releaseOutputBuffer(output, false)
                 }
                 if (bitmap != null) {
-                    accept(bitmap, pts / 1000)
+                    val frame = if (rotation == 0) bitmap else try {
+                        Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, correction, false)
+                    } finally {
+                        bitmap.recycle()
+                    }
+                    accept(frame, pts / 1000)
                     count++
                     nextUs += stepUs
                     while (nextUs <= pts) nextUs += stepUs

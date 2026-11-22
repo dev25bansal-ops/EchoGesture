@@ -115,6 +115,19 @@
                 android:layout_margin="@dimen/space_3"
                 android:orientation="horizontal">
 
+                <Button
+                    android:id="@+id/rearZoomButton"
+                    style="@style/Widget.IconButton.Overlay"
+                    android:layout_width="56dp"
+                    android:layout_height="@dimen/touch_min"
+                    android:layout_marginEnd="@dimen/space_2"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="0dp"
+                    android:contentDescription="@string/rear_zoom_in"
+                    android:text="@string/rear_zoom_wide"
+                    android:textColor="@color/text_on_dark"
+                    android:visibility="gone" />
+
                 <ImageButton
                     android:id="@+id/flipButton"
                     style="@style/Widget.IconButton.Overlay"

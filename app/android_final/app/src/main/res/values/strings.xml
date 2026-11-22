@@ -13,6 +13,11 @@
 
     <!-- Camera screen -->
     <string name="camera_header_title">Camera</string>
+    <string name="rear_zoom_wide">1×</string>
+    <string name="rear_zoom_close">1.5×</string>
+    <string name="rear_zoom_in">Zoom in on the signer</string>
+    <string name="rear_zoom_out">Return to the wide camera view</string>
+    <string name="rear_camera_guidance">Keep both hands in view. Use 1.5× for a distant signer.</string>
     <string name="camera_guidance">Keep your hands in frame</string>
     <string name="camera_state_searching">Searching for hands</string>
     <string name="camera_state_detected">Hands detected</string>

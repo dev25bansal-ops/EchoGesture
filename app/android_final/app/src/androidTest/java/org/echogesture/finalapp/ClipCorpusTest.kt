@@ -31,32 +31,41 @@ class ClipCorpusTest {
         if (required) check(clipLabels.size >= 30) { "Run the complete labelled sample" }
         val loaded = ModelContract.load(context.assets)
         val outcomes = mutableListOf<String>()
-        ClipAnalyzer(context).use { analyzer ->
-            LandmarkClassifier.create(loaded).use { classifier ->
-                for ((clip, expected) in clipLabels) {
-                    val started = SystemClock.elapsedRealtime()
-                    val recording = analyzer.analyze(Uri.fromFile(clip))
-                    val frames = recording.frames
-                    val coverage = frames.count { it.hands.isNotEmpty() }.toFloat() / frames.size
-                    if (coverage < 0.15f) {
-                        outcomes += "$expected,,0,0,false,${SystemClock.elapsedRealtime() - started}"
-                        continue
+        val compare = InstrumentationRegistry.getArguments().getString("compareImport") == "true"
+        ClipAnalyzer(context, parallel = false).use { baseline ->
+            ClipAnalyzer(context).use { production ->
+                LandmarkClassifier.create(loaded).use { classifier ->
+                    for ((index, clipLabel) in clipLabels.withIndex()) {
+                        val (clip, expected) = clipLabel
+                        val paths = if (!compare) listOf("current" to production)
+                            else if (index % 2 == 0) listOf("baseline" to baseline, "current" to production)
+                            else listOf("current" to production, "baseline" to baseline)
+                        for ((path, analyzer) in paths) {
+                            val started = SystemClock.elapsedRealtime()
+                            val recording = analyzer.analyze(Uri.fromFile(clip))
+                            val frames = recording.frames
+                            val coverage = frames.count { it.hands.isNotEmpty() }.toFloat() / frames.size
+                            if (coverage < 0.15f) {
+                                outcomes += "$expected,,0,0,false,${SystemClock.elapsedRealtime() - started},$path"
+                                continue
+                            }
+                            val features = RecordingFeatures.buildBoth(frames)
+                            val result = classifier.predict(features.featuresXY, features.mask, features.featuresXYZ)
+                            val duration = SystemClock.elapsedRealtime() - started
+                            val score = result.confidence * 100
+                            val accepted = ResultPolicy.isAccepted(result.margin, score, fromClip = true)
+                            outcomes += String.format(
+                                Locale.US, "%s,%s,%.6f,%.6f,%s,%d,%s",
+                                expected, result.prediction, score, result.margin, accepted, duration, path
+                            )
+                        }
                     }
-                    val features = RecordingFeatures.buildBoth(frames)
-                    val result = classifier.predict(features.featuresXY, features.mask, features.featuresXYZ)
-                    val duration = SystemClock.elapsedRealtime() - started
-                    val score = result.confidence * 100
-                    val accepted = ResultPolicy.isAccepted(result.margin, score, fromClip = true)
-                    outcomes += String.format(
-                        Locale.US, "%s,%s,%.6f,%.6f,%s,%d",
-                        expected, result.prediction, score, result.margin, accepted, duration
-                    )
                 }
             }
         }
-        assertEquals(clipLabels.size, outcomes.size)
+        assertEquals(clipLabels.size * if (compare) 2 else 1, outcomes.size)
         File(directory, "results.csv").writeText(
-            "expected,prediction,score_percent,margin,accepted,wall_ms\n" + outcomes.joinToString("\n") + "\n"
+            "expected,prediction,score_percent,margin,accepted,wall_ms,variant\n" + outcomes.joinToString("\n") + "\n"
         )
     }
 }

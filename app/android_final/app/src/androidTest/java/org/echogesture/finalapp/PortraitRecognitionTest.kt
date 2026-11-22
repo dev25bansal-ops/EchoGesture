@@ -125,7 +125,35 @@ class PortraitRecognitionTest {
         }
     }
 
-    private fun track(file: File, index: Int): List<HandTracker.Frame> {
+    @Test
+    fun compareWideAndCloseFramingForDistantSigners() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val directory = File(context.filesDir, "file-corpus")
+        val manifest = File(directory, "manifest.tsv")
+        val required = InstrumentationRegistry.getArguments().getString("requireRearFraming") == "true"
+        if (required) check(manifest.isFile)
+        assumeTrue(manifest.isFile)
+        val rows = mutableListOf("clip,expected,zoom,prediction,score,accepted")
+        LandmarkClassifier.create(ModelContract.load(context.assets)).use { classifier ->
+            for ((index, line) in manifest.readLines().filter { it.isNotBlank() }.withIndex()) {
+                val (clip, expected) = line.split('\t')
+                require(File(clip).name == clip)
+                for (zoom in listOf(1f, CameraScreen.REAR_CLOSE_ZOOM)) {
+                    val frames = track(File(directory, clip), index, (240 * zoom).toInt())
+                    val detector = AutoSegmenter()
+                    detector.arm(0)
+                    val outcome = stream(frames).firstNotNullOfOrNull(detector::offer)
+                    val prediction = if (outcome?.isUsable == true) {
+                        classify(classifier, outcome.frames, automatic = true)
+                    } else ",0,false"
+                    rows += "$clip,$expected,$zoom,$prediction"
+                }
+            }
+        }
+        File(directory, "rear-framing-results.csv").writeText(rows.joinToString("\n", postfix = "\n"))
+    }
+
+    private fun track(file: File, index: Int, frameWidth: Int = 480): List<HandTracker.Frame> {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val rotation = if (index % 2 == 0) 90 else 270
         val uri = Uri.fromFile(file)
@@ -140,12 +168,13 @@ class PortraitRecognitionTest {
         HandTracker.create(context, ModelContract.DETECTOR_ASSET).use { tracker ->
             SequentialClipDecoder.sample(context, uri, durationMs, 32, 640, { true }) { bitmap, ms ->
                 val tall = Bitmap.createBitmap(480, 640, Bitmap.Config.ARGB_8888)
-                val h = 480 * bitmap.height / bitmap.width
+                val h = frameWidth * bitmap.height / bitmap.width
+                val left = (480 - frameWidth) / 2
                 val top = (640 - h) / 2
                 try {
                     Canvas(tall).apply {
                         drawColor(Color.DKGRAY)
-                        drawBitmap(bitmap, null, Rect(0, top, 480, top + h), null)
+                        drawBitmap(bitmap, null, Rect(left, top, left + frameWidth, top + h), null)
                     }
                     val sensor = Bitmap.createBitmap(
                         tall, 0, 0, tall.width, tall.height,
@@ -199,12 +228,17 @@ class PortraitRecognitionTest {
             inputs + (100L..1200L step 100L).map { HandTracker.Frame(emptyList(), tail + it) }
     }
 
-    private fun classify(classifier: LandmarkClassifier, frames: List<HandTracker.Frame>): String {
+    private fun classify(
+        classifier: LandmarkClassifier, frames: List<HandTracker.Frame>, automatic: Boolean = false
+    ): String {
         if (frames.none { it.hands.isNotEmpty() }) return ",0,false"
         val recording = SignRecorder.Recording(frames, frames.first().capturedAtMs, frames.last().capturedAtMs)
-        val features = RecordingFeatures.buildBoth(recording)
+        val samples = if (automatic) RecordingFeatures.sample(recording, RecordingFeatures.autoSegment(recording))
+            else RecordingFeatures.sample(recording)
+        val features = RecordingFeatures.buildBoth(samples)
         val p = classifier.predict(features.featuresXY, features.mask, features.featuresXYZ)
-        val accepted = ResultPolicy.isAccepted(p.margin, p.confidence * 100f)
+        val accepted = (!automatic || ResultPolicy.hasSustainedTracking(samples)) &&
+            ResultPolicy.isAccepted(p.margin, p.confidence * 100f)
         return "${p.prediction},${p.confidence},$accepted"
     }
 }

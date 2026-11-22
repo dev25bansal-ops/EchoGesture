@@ -18,7 +18,7 @@ this repository:
 | 1 | `predict()` implementation, one JSON object per test clip | [`src/main.py`](src/main.py) — `predict(video_path, clip_id=None)`. Predictions: [`results/predictions.jsonl`](results/predictions.jsonl), 1,251 lines. Each line carries the five fields the deck's example shows (`clip_id`, `prediction`, `top5`, `confidence`, `latency_ms`) **plus one documented extra, `latency_scope: "classifier_only"`** — because this file is produced from cached landmarks, so its `latency_ms` times the nine interpreters only and does not include video decode or MediaPipe. Recording the scope keeps a ~13 ms number from being misread as end-to-end; `predict()` itself returns exactly the five required keys. |
 | 2 | Results sheet: one row per metric, measured vs target, pass/fail | [`results/results.csv`](results/results.csv) — six scored rows plus supporting measurements, each with its device and reproduction command |
 | 3 | Repository with a README showing how to run it, a quantized model, and the conversion script | This file (run instructions below) · nine FP16 `.tflite` members in [`models/`](models/) · [`scripts/ml/export_ensemble.py`](scripts/ml/export_ensemble.py) |
-| 4 | Demo video (2–3 min) or deployed app URL | **Pending** — the recording script is [`submission/DEMO_SCRIPT.md`](submission/DEMO_SCRIPT.md); the link goes in the submission form and on slide 7 of the deck |
+| 4 | Demo video (2–3 min) or deployed app URL | **Recorded, 2:55** — `docs/submission/EchoGesture_demo_2026-11-22.mp4` (28,154,151 B, sha256 `dd4ec5fa…5b98`), built by `scripts/media/build_demo_video.py` from real model output. The script it follows is [`submission/DEMO_SCRIPT.md`](submission/DEMO_SCRIPT.md). **The file is gitignored (`*.mp4`) and deliberately not committed**, because it contains ASL Citizen footage under the Microsoft Research non-commercial licence and this repository is public — the same constraint as the weights, below. Upload it with the form; the hosted link also goes on slide 7 and in the submission form. |
 
 Also required by the naming rule: the deck must be named
 `VIT_Chennai_Sky_Grazers`. It is
@@ -26,7 +26,8 @@ Also required by the naming rule: the deck must be named
 with the matching PDF beside it, built inside the organizer's own 9-slide
 template. Slide 1 carries the team string and the full member names; slide 9
 carries the team string. The **demo link** is the one placeholder still to be
-filled — it goes on slide 7 and in the submission form.
+filled — the video itself is recorded (item 4 above); uploading it and pasting
+the URL on slide 7 and into the submission form is what remains.
 
 **The APK to install** is **EchoGesture Auto 6.2**, published as a release asset
 (81 MB is too large for a reliable git push):
@@ -44,12 +45,32 @@ and the same bytes are at `submission/apk/EchoGesture-Auto-6.2.apk` in the tree.
 | Permissions | `CAMERA` only — **no INTERNET** |
 | Source | branch `codex/android-auto-6.2`, commit `33e82b5` |
 
-It rebuilds from this tree: `app/android_final/app/build.gradle.kts` carries a
-`verifyPinnedAssets` task that fails the build unless the nine ensemble members
-and `hand_landmarker.task` are present and match their pinned SHA-256s, and all
-ten pins were re-verified against `models/` on 2026-11-22. Auto 6.2 adds
+**Which branch the APK builds from, stated exactly.** The shipping APK is built
+from **`codex/android-auto-6.2` at `33e82b5`**, which is pushed to `origin` and
+is *not* merged into this branch. The two lines have diverged: this branch
+(`submission/final`) carries a later record-then-finish app whose
+`applicationId` is `org.echogesture.finalapp`, and the auto branch carries the
+one-tap app with `applicationIdSuffix = ".auto"`. So:
+
+```bash
+git fetch origin
+git checkout codex/android-auto-6.2      # 33e82b5 — the tree this APK builds from
+cd app/android_final
+./gradlew :app:assembleRelease           # verifyPinnedAssets gates all ten model assets
+```
+
+`app/android_final/app/build.gradle.kts` on **that branch** carries the
+`verifyPinnedAssets` task, which fails the build unless the nine ensemble
+members and `hand_landmarker.task` are present and match their pinned SHA-256s;
+all ten pins were re-verified against `models/` on 2026-11-22. Auto 6.2 adds
 one-tap automatic segmentation, offline speech for confirmed signs, and an
 on-device diagnostics export over the previous release build.
+
+The Kotlin under `app/android_final` **on this branch** is the earlier
+record-then-finish app, and it is a real, tested codebase — 150/150 JVM tests
+pass and `assembleRelease` succeeds with `verifyPinnedAssets` — but it is **not**
+what the shipping APK was built from. Read section "Two Android apps, and which
+one ships" below before quoting a filename from either tree.
 
 **Current numbers, in one line:** 85.45% top-1 / 96.64% top-5 on 1,251
 signer-disjoint clips; 16.33 MB total; on-device GPU per-frame detect p95
@@ -60,6 +81,31 @@ fail — the table in
 states which, in its own words.
 
 ---
+
+## Two Android apps, and which one ships
+
+This repository contains **two different Android implementations** of the same
+nine-member ensemble. They are not two names for one thing, and a filename from
+one is not evidence about the other.
+
+| | **Shipping — Auto 6.2** | **On this branch** |
+| --- | --- | --- |
+| Branch | `codex/android-auto-6.2` @ `33e82b5` | `submission/final` |
+| Package | `org.echogesture.finalapp.auto` (`.auto` suffix on release) | `org.echogesture.finalapp` |
+| Capture flow | **One tap.** Start Recognition; the app finds the sign's own start and end | Record, then tap Finish |
+| Segmenter | `AutoSegmenter.kt` | `AutoFinishDetector.kt` + `SignSegmenter.kt` |
+| File decode | `SequentialClipDecoder.kt` | `SequentialVideoDecoder.kt` |
+| Speech | Offline pronunciations bundled | Rule-based speaker |
+| Tests | 150/150 JVM pass on this branch's app, which is a **different** app | 150/150 JVM pass; `assembleRelease` green |
+| Status | **Ships.** Release asset `v2026-11-22-auto6.2` | Reference implementation; does **not** build the shipping APK |
+
+Both run the same `models/` ensemble and both gate results through
+`ResultPolicy.kt`. What differs is the user-facing capture flow and the
+per-frame instrumentation. **Every screenshot in `docs/evidence/` is from the
+shipping Auto 6.2 build, not from this branch's app**, and the README's
+"one tap, no Finish" language describes Auto 6.2.
+
+If a claim and a screenshot disagree, the screenshot is the shipping build.
 
 ## Reproducing the submitted system
 
@@ -73,6 +119,12 @@ docker build -t echogesture .
 docker run --rm echogesture                                  # pipeline smoke test
 docker run --rm -v "$PWD/clips:/clips" echogesture /clips/sign.mp4   # predict() on a clip
 ```
+
+> **Windows / PowerShell:** pass the mount as an absolute path with forward
+> slashes and set `MSYS_NO_PATHCONV=1` if you are in Git Bash, otherwise the
+> shell rewrites `/clips` into a Windows path and Docker reports
+> `no such file: C:/Program Files/Git/clips/sign.mp4`.
+> `docker run --rm -v "E:/samsung/clips:/clips" echogesture /clips/sign.mp4`
 
 The no-argument run executes every stage inside the container and exits non-zero
 if any did not: video decode, MediaPipe detection, the feature build, and all
@@ -90,9 +142,19 @@ wheel, and `libegl1`/`libgles2` are installed because MediaPipe's landmark
 detector loads `libEGL.so.1` at runtime — without them `predict()` raises
 `OSError: libEGL.so.1` after the image builds successfully.
 
-Verified 2026-11-19 on Docker 29.9.3, linux/x86_64: build succeeds and rejects a
-missing model at build time; smoke test exits 0; a real corpus clip returns
-`{"prediction": "FLIP", "confidence": 0.9953, "latency_ms": 668.51}`.
+Verified **2026-11-22** on Docker 29.9.3, linux/x86_64: build succeeds and rejects
+a missing model at build time (`model init OK: 9 members`); the no-argument
+smoke test exits 0 and prints `9 interpreters invoked`; and a real corpus clip
+through the mount returns
+`{"prediction": "SAIL2", "confidence": 0.6893, "latency_ms": 621.54}` — the same
+gloss and confidence that `predict()` gives on the host for that clip.
+
+The image builds on the **models that are in this repository**. An earlier
+revision of `.dockerignore` excluded `models/` and `app/` while the Dockerfile
+`COPY`s both, so `docker build` failed with
+`failed to compute cache key: ... "/app/smoke_test.py": not found`. That is
+fixed as of 2026-11-22; if you are on a checkout from before then, the build
+will fail exactly there.
 
 ### Without Docker
 
@@ -128,9 +190,14 @@ when written and is no longer. An even earlier revision of this paragraph then
 overclaimed the other way — that *every* rubric metric was on-device — which the
 `device` column contradicts. Both are fixed here.
 
-**The Android app is in this repository at [`app/android_final/`](app/android_final/)**
-and builds with Gradle. It runs the same nine-member ensemble as `src/main.py`,
-verified byte-identical by the SHA-256 shown in the app's own footer.
+**The Android app in this repository at [`app/android_final/`](app/android_final/)**
+builds with Gradle and runs the same nine-member ensemble as `src/main.py`. The
+ensemble identity is provable on both paths: `src/main.py` loads the byte-pinned
+`models/*.tflite`, and the shipping app shows the same **ensemble SHA-256
+`995cc8d0…b4bb`** on its own Settings screen, so a judge can match the phone to
+`results.csv` without trusting this file. Note the branch distinction in
+"Two Android apps" above: the code on *this* branch is the record-then-finish
+implementation, and the one-tap app that ships lives on `codex/android-auto-6.2`.
 
 Current numbers: [`results/results.csv`](results/results.csv) — every row states
 its device, runtime and how to reproduce it.
@@ -149,9 +216,9 @@ its device, runtime and how to reproduce it.
 | Pixel robustness ≤ 5 pt | **pass, +4.48** | full 1,251-clip split, four corruptions all under budget |
 | Landmark robustness ≤ 5 pt | **1 of 6 fails raw, passes gated** | `drop_hand_25pct` is +5.76 FAIL scored on every clip; **+2.39 PASS** at the app's own margin ≥ 0.15 gate (92.13% clean / 89.74% corrupted at 86%/80% coverage). All five other corruptions pass (camera-further −0.24, half-framerate −1.52, drop-landmarks −2.16, jitter σ0.03 −3.20, jitter σ0.01 +0.16). Both rows are in `results.csv`; the honest reading is in [HUD_AND_OCCLUSION_EVIDENCE_2026-11-22.md](docs/HUD_AND_OCCLUSION_EVIDENCE_2026-11-22.md) |
 | HUD clarity (25% of the rubric) | **pass, verified on a phone** | The app declines rather than guesses: a no-hands or thin capture gets a specific refusal — **"No hands in view"** with *"No sign started. Tap Start Recognition and perform one sign."* — and is **not** added to History (verified on the shipping build). A low-margin reading is still shown but labelled **"POSSIBLE MATCH"** with *"Low confidence. Compare the options below or try the sign on its own."*, and every reading lists four alternatives. The gate is one function, `ResultPolicy.evaluate`, worth 86.1% coverage at **92.1% accuracy on the held-out test split** (the 96.0% often quoted is the *validation* split the gate was chosen on, and is optimistic). Evidence: [HUD_AND_OCCLUSION_EVIDENCE_2026-11-22.md](docs/HUD_AND_OCCLUSION_EVIDENCE_2026-11-22.md) |
-| Classifier latency | **pass (desktop)** | 4.2 ms/clip for nine members, x86. **Not an on-device figure** |
-| Per-frame detector latency | **pass (desktop), p50 20.3 ms / p95 34.1 ms** | inside the 50 ms budget; 160 frames. Reproduce: `scripts/ml/latency_per_frame.py` |
-| End-to-end per clip | **~720 ms (desktop)** | warm `predict()` on a 32-frame clip; the detector is ~600 ms of it, the classifier 4.2 ms. **Not an on-device figure** |
+| Classifier latency | **pass (desktop)** | 3.9–4.8 ms/clip p95 for the nine members, x86, warm process. **Not an on-device figure** |
+| Per-frame detector latency | **pass (desktop), p50 15.3 ms / p95 23.0 ms** | inside the 50 ms budget; 160 frames × 3 clean runs. Reproduce: `scripts/ml/latency_per_frame.py` (committed result: `results/latency_per_frame_distribution.json`) |
+| End-to-end per clip | **577–749 ms p50 (desktop)** | warm `predict()` on a 32-frame clip over six clips; the detector is the bulk of it, the classifier ~4 ms. **Not an on-device figure** |
 | On-device latency | **FAIL — every measured p95 is over the target** | Vivo V2404, GPU delegate, **shipping Auto 6.2 build**: per-frame detect p95 **72–100 ms, median 85**, over the ≤50 ms target in **19 of 19** live-camera sessions with a hand in frame. Analysis consumed 0.94–1.02× the camera's inter-frame interval (`limit=ANALYSER` in 19/19), so the analyser discarded frames the camera delivered — 2,135 delivered, 863 processed (40.4%). Convert never exceeded 50 ms, ruling out the YUV→Bitmap copy, so the detector is the bottleneck. Supersedes the four file-pick samples on the release build (58 / 65 / 67 / 72 ms), which is no longer the submitted APK; the live-camera number is **worse**, which is the honest reading for a user holding a phone. Evidence: [LATENCY_AUTO62_LIVE_CAMERA_2026-11-22.md](docs/evidence/LATENCY_AUTO62_LIVE_CAMERA_2026-11-22.md) and the raw [diagnostics export](docs/evidence/auto6.2_diagnostics_live_camera_2026-11-22.txt) |
 | Power ≤ 500 mW | **FAIL, 2666–2898 mW** | **This is the camera hardware floor, not the model.** batterystats prices "camera on" at a fixed PowerProfile constant of **749.4 mA** — five independent blocks in one on-device dump agree to under 0.2% across screen-on, screen-off and doze states, which no real current can do. At 3.87 V that is ~2.9 W, about **5.8× the budget**, so no live-camera app on this device can pass. 84% of the app's own attributed drain is that same camera line; app compute is ~157 mW. `docs/POWER_THERMAL_2026-11-19.md` |
 | Thermal drift ≤ 20% | **PASS, 19.2%** | SoC 45.8→56.7°C over 10 min, thermal status LIGHT throughout. Only 0.8 pt of headroom. `docs/POWER_THERMAL_2026-11-19.md` |
@@ -249,14 +316,14 @@ The classifier itself is sub-millisecond.
 ```
 .
 ├── app/
-│   ├── android_final/              # THE ANDROID APP (Kotlin, Gradle)
+│   ├── android_final/              # Android app (Kotlin, Gradle) — see "Two Android apps"
 │   │   └── app/src/main/java/org/echogesture/finalapp/
 │   │       ├── CameraScreen.kt     # camera tab, record mode, clip picker
 │   │       ├── HandTracker.kt      # MediaPipe detector + in-flight close guard
 │   │       ├── LandmarkClassifier.kt  # nine-member ensemble + agreement
 │   │       ├── ClipAnalyzer.kt     # file decode -> landmarks -> predict
-│   │       ├── SequentialVideoDecoder.kt  # MediaExtractor+MediaCodec (-24x decode)
-│   │       ├── AutoFinishDetector.kt  # ends a recording when the hand settles
+│   │       ├── SequentialVideoDecoder.kt  # MediaExtractor+MediaCodec (this branch)
+│   │       ├── AutoFinishDetector.kt  # this branch's capture end
 │   │       ├── SignRecorder.kt     # Start/Finish interval + MIN_FRAMES floor
 │   │       ├── ResultPolicy.kt     # acceptance gate (margin >= 0.15)
 │   │       └── FeatureTransform.kt # Kotlin port of features.py

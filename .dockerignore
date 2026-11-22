@@ -10,12 +10,16 @@ venv/
 **/__pycache__/
 **/*.py[cod]
 
-# Model weights are mounted at runtime, never baked in.
-models/
+# The image bakes in the nine FP16 members and hand_landmarker.task (Dockerfile
+# COPYs models/), because a run must work with no host mounts. Keeping the
+# context small is what this file is for, not excluding those.
 
 # Research trees, datasets, clips and Android sources the image never uses.
 evaluation/
-app/
+# app/ is NOT excluded wholesale: the Dockerfile needs app/smoke_test.py.
+# The Android sources under it are the 284 MB, so exclude those specifically.
+app/android_final/
+app/offline_demo.py
 clemchris/
 hengck/
 hoyso_infer/
